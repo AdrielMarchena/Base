@@ -36,21 +36,21 @@ namespace utils
 	*		  '#' character is used to parse the extensions easily
 	* 
 	*	Throw: An std::filesystem::filesystem_error if the directory does not exist
-	*		   You can define 'BASE_ENGINE_NO_EXEPTION' so this funtions dosent throw that
+	*		   You can define 'BASE_ENGINE_NO_FILE_EXEPTION' so this funtions dosent throw that
 	*/
 	std::vector<std::pair<std::string, std::string>> Files::GetPairText(const std::string& dir, const std::string& ext)
 	{
 		
 		auto parse_ext = ParseThing(ext);
-#ifndef BASE_ENGINE_NO_EXEPTION
-		if (std::filesystem::exists(dir))
+#ifndef BASE_ENGINE_NO_FILE_EXEPTION
+		if (!std::filesystem::exists(dir))
 		{
 			
 			const std::string msg = "The directory " + dir + " does not exists"; //FIXME: Do i really need this temp std::string ?
-			throw ex::directory_not_found(msg.c_str());
+			throw ex::directory_not_found(msg.c_str(),dir.c_str());
 		}
 #else
-		if (fs::exists(dir))
+		if (!fs::exists(dir))
 		{
 			std::vector<std::pair<std::string, std::string>> name_path_pair;
 			return name_path_pair;
