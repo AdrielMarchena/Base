@@ -1,6 +1,5 @@
 /*
 *	@file SoundBuffer.cpp
-*	@author Adriel Marchena Santos
 *	
 *	Audio and OpenAL Related things
 *
