@@ -1,3 +1,10 @@
+/*
+*	@file MouseArgs.h
+*	@author Adriel Marchena Santos
+*	
+*	Args passed to a Window method or event
+*/
+
 #pragma once
 #include "input/Mouse.h"
 namespace en
@@ -10,6 +17,9 @@ namespace en
 		RELEASE,
 		SCROLL
 	};
+	/**
+	* Some info about mouse events
+	*/
 	struct MouseArgs
 	{
 		MouseArgs() = default;

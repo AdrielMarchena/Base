@@ -1,3 +1,12 @@
+/*
+*	@file Colisions.h
+*	@author Adriel Marchena Santos
+*	
+*	Functions and others things to colision calculations
+*
+*	Implementation File and Header
+*/
+
 #pragma once
 #include "glm/glm.hpp"
 #include <algorithm>

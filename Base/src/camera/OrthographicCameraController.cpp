@@ -1,3 +1,12 @@
+/*
+*	@file OrthographicCameraController.h
+*	@author Adriel Marchena Santos
+*	
+*	Camera Contoller to the camera system
+*
+* 	Implementation File
+*/
+
 #include "OrthographicCameraController.h"
 #include "input/Keyboard.h"
 namespace en {

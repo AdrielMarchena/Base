@@ -1,3 +1,12 @@
+/*
+*	@file OrthographicCamera.cpp
+*	@author Adriel Marchena Santos
+*	
+*	Camera System
+*
+*	Implementation File
+*/
+
 #include "OrthographicCamera.h"
 #include "glm/gtc/matrix_transform.hpp"
 

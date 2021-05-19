@@ -1,4 +1,13 @@
- #include "AudioSource.h"
+/*
+*	@file AudioSource.cpp
+*	@author Adriel Marchena Santos
+*	
+*	kind of a audio player, use things here to play audios
+*
+*	Implementation File
+*/
+
+#include "AudioSource.h"
 
 #include <future>
 

@@ -1,3 +1,11 @@
+/*
+*	@file OrthographicCameraController.h
+*	@author Adriel Marchena Santos
+*	
+*	Camera Contoller to the camera system
+*
+*/
+
 #pragma once
 
 #include "OrthographicCamera.h"

@@ -1,3 +1,12 @@
+/*
+*	@file Animator.h
+*	@author Adriel Marchena Santos
+*	
+*	Animation System
+*
+* 	Implementation File
+*/
+
 #include "Animator.h"
 
 #include "utils/Logs.h"

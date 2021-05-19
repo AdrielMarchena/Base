@@ -1,3 +1,14 @@
+/*
+* 	@file RandomList.cpp
+*
+* 	File handlind things here
+* 	Part a grab from The Cherno
+*	Other part from Doom source code
+
+* 	Implementation File
+*/
+
+
 #include "RandomList.h"
 
 std::mt19937 Random::s_RandomEngine;

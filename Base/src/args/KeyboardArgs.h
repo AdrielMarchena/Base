@@ -1,3 +1,10 @@
+/*
+*	@file KeyboardArgs.h
+*	@author Adriel Marchena Santos
+*	
+*	Args passed to a Window method or event
+*/
+
 #pragma once
 #include "input/Keyboard.h"
 namespace en
@@ -8,6 +15,9 @@ namespace en
 		PRESS,
 		RELEASE
 	};
+	/**
+	* Some info about keyboard event
+	*/
 	struct KeyboardArgs
 	{
 		KeyboardArgs() = default;

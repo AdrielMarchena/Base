@@ -1,3 +1,13 @@
+/*
+*	@file Ambient.cpp
+*	@author Adriel Marchena Santos
+*	
+*	Ambient system wich provide a simple way to insert
+*	ambient light and source lights in a shader
+*	
+*	Implementation File
+*/
+
 #include "Ambient.h"
 
 namespace en
@@ -20,7 +30,7 @@ namespace windowing
 	void Ambient::AddStaticLightSource(const LightSource& source)
 	{
 		m_StaticLightSource.push_back(source);
-		m_StaticLightSource.shrink_to_fit(); //Keep size consistent so the shader use the right size
+		m_StaticLightSource.shrink_to_fit(); //Keep size consistent to the shader
 	}
 
 	void Ambient::UpdateStaticLight(const render::Shader& _Shader, const uint8_t _LightSourceLimit)

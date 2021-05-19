@@ -1,3 +1,16 @@
+/*
+* @file Window.cpp
+* 
+* 	@author Adriel Marchena Santos
+* 	Contact: adriel_contato@hotmail.com
+*
+*	The Window Class is meant to be the father here
+*  	you shold create another class that inheri from Window
+*   and use the overrideble methods to make your game, or something
+*
+*	Implementation File
+*/
+
 #include "Window.h"
 
 #include "render/Texture.h"

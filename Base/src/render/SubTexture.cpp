@@ -1,3 +1,11 @@
+/*
+*	@file SubTexture.cpp
+*	
+*	Subtexture Stuff is here
+*
+*	Implementation File
+*/
+
 #include "SubTexture.h"
 
 #include <iostream>

@@ -1,3 +1,13 @@
+/*
+*	@file AudioDevice.cpp
+*	@author Adriel Marchena Santos
+*	
+*	Ambient system wich provide a simple way to insert
+*	ambient light and source lights in a shader
+*
+*	Implementation File
+*/
+
 #include "AudioDevice.h"
 
 #include <exception>

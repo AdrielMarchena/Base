@@ -1,8 +1,7 @@
 /*
 * @file Texture.h
 *
-* @author Adriel Marchena Santos
-* Contact: adriel_contato@hotmail.com
+* Texture Stuff
 */
 
 #pragma once

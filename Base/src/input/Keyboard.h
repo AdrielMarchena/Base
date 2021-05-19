@@ -1,3 +1,10 @@
+/*
+*	@file Keyboard.h
+*	@author Adriel Marchena Santos
+*	
+*	Keyboard stuff
+*/
+
 #pragma once
 #include <array>
 #include "gl/glew.h"

@@ -1,3 +1,10 @@
+/*
+* @file Files.h
+* @author Adriel Marchena Santos
+*
+* File handlind things here
+*/
+
 #pragma once
 
 #include <vector>

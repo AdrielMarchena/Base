@@ -1,3 +1,9 @@
+/*
+* @file ParticleSystem.h
+*
+* Particle System Stuff
+*/
+
 #pragma once
 
 #include "glm/glm.hpp"

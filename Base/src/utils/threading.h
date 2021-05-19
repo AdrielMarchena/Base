@@ -1,10 +1,18 @@
+/*
+* 	@file threading.cpp
+* 	@author Adriel Marchena Santos
+*
+* 	A resource load for multi thread things
+*
+*/
+
 #pragma once
 #include <future>
 namespace en
 {
 namespace utils
 {
-
+	//TODO: copy safe this entire thing, there's a mutex here
 	template<typename T, typename F>
 	struct ResourceLoads
 	{

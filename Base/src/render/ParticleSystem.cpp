@@ -1,3 +1,11 @@
+/*
+*	@file ParticleSystem.cpp
+*
+*	Particle System Stuff
+*
+*	Implementation File
+*/
+
 #include "ParticleSystem.h"
 #include "utils/RandomList.h"
 

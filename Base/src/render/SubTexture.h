@@ -1,3 +1,9 @@
+/*
+*	@file SubTexture.h
+*	
+*	Subtexture Stuff is here
+*/
+
 #pragma once
 #include "Texture.h"
 #include "glm/glm.hpp"

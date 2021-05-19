@@ -1,3 +1,11 @@
+/*
+*	@file OrthographicCamera.h
+*	@author Adriel Marchena Santos
+*	
+*	Camera System
+*
+*/
+
 #pragma once
 
 #include <glm/glm.hpp>

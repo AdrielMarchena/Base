@@ -1,3 +1,12 @@
+/*
+* 	@file RandomList.cpp
+*
+* 	File handlind things here
+* 	Part a grab from The Cherno
+*	Other part from Doom source code
+
+*/
+
 #pragma once
 #include <random>
 

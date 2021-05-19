@@ -1,3 +1,11 @@
+/*
+*	@file VirtualArgs.h
+*	@author Adriel Marchena Santos
+*	
+*	brief A bunch of includes
+*	related to functions Args to the Window class
+*	and events
+*/
 #pragma once
 
 #include "RenderArgs.h"

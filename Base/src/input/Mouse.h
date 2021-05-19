@@ -1,3 +1,11 @@
+/*
+*	@file Mouse.h
+*	@author Adriel Marchena Santos
+*	
+*	Mouse stuff
+*
+*/
+
 #pragma once
 
 #include <array>

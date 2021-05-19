@@ -1,3 +1,10 @@
+/*
+*	@file Keyboard.cpp
+*	@author Adriel Marchena Santos
+*	
+*	Keyboard stuff
+*/
+
 #include "Keyboard.h"
 #include <iostream>
 namespace en

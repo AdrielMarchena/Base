@@ -1,3 +1,11 @@
+/*
+*	@file Animator.h
+*	@author Adriel Marchena Santos
+*	
+*	Animation System
+*
+*/
+
 #pragma once
 #include <stdint.h>
 #include <vector>
@@ -35,9 +43,21 @@ namespace ett
 		
 		Animator(const AnimationSpecs& _Specs);
 		Animator(){}
-
+		
+		//TODO: Maybe add a method to create a new subTextures, this way, you can maintain the others specs
+		
+		/**
+		* Run the animation based on the specs, if the loop is false
+		* it will return the last Frame from on
+		*/
 		render::SubTexture& Run(float_t dt);
+		/**
+		* Resets the animation to the values on the givin specs
+		*/
 		void Reset();
+		/**
+		* Set a new Animation specs, includin new Texture to Crop
+		*/
 		void SetNewTexture(const AnimationSpecs& _Specs);
 
 	};

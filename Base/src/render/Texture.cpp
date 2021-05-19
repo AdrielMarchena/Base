@@ -1,3 +1,11 @@
+/*
+*	@file Texture.cpp
+*
+*	Texture Stuff
+*
+*	Implementation File
+*/
+
 #include "Texture.h"
 #include "stb_image/stb_image.h"
 #include "utils/threading.h"

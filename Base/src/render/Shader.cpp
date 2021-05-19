@@ -1,3 +1,11 @@
+/*
+*	@file Shader.cpp
+*	
+*	Shader Stuff, parser to external files etc...
+*
+*	Implementation File
+*/
+
 #include "Shader.h"
 
 #include <iostream>

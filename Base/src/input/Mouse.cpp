@@ -1,3 +1,12 @@
+/*
+*	@file Mouse.cpp
+*	@author Adriel Marchena Santos
+*	
+*	Mouse stuff
+*
+*	Implement File
+*/
+
 #include "Mouse.h"
 #include <iostream>
 namespace en

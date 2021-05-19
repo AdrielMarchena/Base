@@ -1,3 +1,11 @@
+/*
+*	@file Ambient.h
+*	@author Adriel Marchena Santos
+*	
+*	Ambient system wich provide a simple way to insert
+*	ambient light and source lights in a shader
+*/
+
 #pragma once
 
 #include "glm/glm.hpp"
@@ -36,7 +44,9 @@ namespace windowing
 				return m_StaticLightSource[index];
 			}
 		}
-
+		/**
+		* update the Ambient Light
+		*/
 		void UpdateAmbient(glm::vec3 value, const render::Shader& _Shader, bool UpdateShader = true);
 
 		void AddStaticLightSource(const LightSource& source);

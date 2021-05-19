@@ -1,3 +1,13 @@
+/*
+* 	@file Logs.cpp
+*
+*	Some Logs shenanigans to well, log
+* 	Also some only debug logs and this kinda of stuff
+*
+* 	Implementation File
+*/
+
+
 #pragma once
 #include <iostream>
 

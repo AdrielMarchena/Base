@@ -1,3 +1,9 @@
+/*
+*	@file Shader.h
+*	
+*	Shader Stuff, parser to external files etc...
+*/
+
 #pragma once
 #include <string>
 #include <cstdint>

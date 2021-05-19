@@ -1,3 +1,10 @@
+/*
+*	@file AudioSource.h
+*	@author Adriel Marchena Santos
+*	
+*	kind of a audio player, use things here to play audios
+*/
+
 #pragma once
 
 #include <string>
@@ -81,13 +88,19 @@ namespace aux
 
 		AudioSource(){}
 		~AudioSource();
-
+		
+		/**
+		* Play the audio
+		*/
 		void Play();
 		void Loop(bool loop);
 		void SetGain(float gain);
 		bool IsPlaying();
 		ALuint GetBuffer();
 		ALuint GetSource();
+		/**
+		* Load audio files and Create Asynchronously a bunch of instances of this class
+		*/
 		static std::unordered_map<std::string, AudioSource> LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait = true);
 	private:
 	   ALuint p_Source;

@@ -1,3 +1,8 @@
+/*
+*	You probably won't use this file
+*
+*/
+
 #include <iostream>
 #include <exception>
 #include "gl/glew.h"

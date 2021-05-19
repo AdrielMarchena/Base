@@ -1,3 +1,12 @@
+/*
+*	@file SoundBuffer.cpp
+*	@author Adriel Marchena Santos
+*	
+*	Audio and OpenAL Related things
+*
+*	Implementation File
+*/
+
 #include "SoundBuffer.h"
 #include "sndfile.h"
 #include <inttypes.h>
