@@ -1,11 +1,14 @@
 #include "Animator.h"
 
-
+#include "utils/Logs.h"
 
 namespace en
 {
 namespace ett
 {
+	static constexpr float_t default_x_sprite_size = 64.0f;
+	static constexpr float_t default_y_sprite_size = 64.0f;
+	static render::Texture default_white_texture = render::Texture();
 	Animator::Animator(const AnimationSpecs& _Specs)
 	{
 		SetNewTexture(_Specs);
@@ -41,17 +44,27 @@ namespace ett
 		specs = _Specs;
 		glm::vec2 atlas_size = specs.atlas->GetSize();
 
-		if (specs.threshold <= 0)
+		if (specs.threshold <= 0.0f)
 			specs.threshold = default_threshold;
 		
-		if (specs.sprite_size == glm::vec2(0))
-			specs.sprite_size = { 64.0f,64.0f };
+		if (specs.sprite_size.x == 0.0f)
+			specs.sprite_size.x = default_x_sprite_size;
+		if (specs.sprite_size.y == 0.0f)
+			specs.sprite_size.y = default_y_sprite_size;
 
-		if (specs.decrement <= 0)
+		if (specs.decrement <= 0.0f)
 			specs.decrement = default_decrement;
+
 
 		//Create SubTextures
 		float_t calc_size = atlas_size.x / specs.sprite_size.x;
+
+		if (calc_size <= 0.0f)
+		{
+			specs.atlas = &default_white_texture;
+			calc_size = 1.0f;
+		}
+
 		for (int i = 0; i < calc_size; i++)
 		{
 			m_CroppedTexture.push_back(render::SubTexture::CreateFromCoords(
@@ -59,7 +72,7 @@ namespace ett
 			);
 		}
 
-		if (specs.timestamp <= 0)
+		if (specs.timestamp < 0)
 			specs.timestamp = specs.threshold / m_CroppedTexture.size();
 
 		if (specs.texture_offset < 0) //Kinda redundant, this is unsigned

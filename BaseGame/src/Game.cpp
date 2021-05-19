@@ -92,7 +92,7 @@ static inline void test_movement(Rect& move, Rect& stati_c,UpdateArgs args)
 }
 
 Game::Game(const char* title, float_t w, float_t h, bool resizeble)
-	:Window(title, w, h, resizeble),m_emiter(1000)
+	:Window(title, w, h, resizeble),m_emiter(100)
 {
 }
 
@@ -101,7 +101,7 @@ void Game::OnAttach(AttachArgs args)
 	//Texuture
 	try
 	{
-		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText("test_imgs"));
+		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText("tet_imgs"));
 	}
 	catch (const utils::ex::directory_not_found& dex)
 	{
@@ -116,7 +116,7 @@ void Game::OnAttach(AttachArgs args)
 	//Audios
 	try 
 	{
-		m_Audios = aux::AudioSource::LoadAsyncAudios(utils::Files::GetPairText("test_audio", ".mp3#.ogg#.wav"));
+		m_Audios = aux::AudioSource::LoadAsyncAudios(utils::Files::GetPairText("test_auio", ".mp3#.ogg#.wav"));
 	}
 	catch (const utils::ex::directory_not_found& dex)
 	{
@@ -128,7 +128,7 @@ void Game::OnAttach(AttachArgs args)
 		//TODO: Put a default audio on the u_map or maybe throw this again
 		LOG_NORMAL("Can't create Audios, Error: " << ex.what());
 	}
-
+	//Quads
 	test_rect1 =
 	{
 		{50,50},

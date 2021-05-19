@@ -5,6 +5,7 @@ namespace en
 {
 namespace render
 {
+	static render::Texture default_white_texture = render::Texture();
 	SubTexture::SubTexture(const Texture* texture, const glm::vec2& min, const glm::vec2& max)
 		:m_Texture(texture)
 	{
@@ -17,7 +18,8 @@ namespace render
 		}
 		else
 		{
-			std::cout << "Texture does not exist!" << std::endl;
+			//Anoying cout, just return nullptr
+			//std::cout << "Texture does not exist!" << std::endl;
 			m_Texture = nullptr;
 		}
 
@@ -37,7 +39,8 @@ namespace render
 	{
 		if (!m_Texture || !m_Texture->GetId())
 		{
-			std::cout << "Texture does not exist!" << std::endl;
+			//Anoying cout, just return NULL
+			//std::cout << "Texture does not exist!" << std::endl;
 			return NULL;
 		}
 		return m_Texture->GetId();
