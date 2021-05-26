@@ -35,7 +35,7 @@ namespace windowing
 
 	void Ambient::UpdateStaticLight(const render::Shader& _Shader, const uint8_t _LightSourceLimit)
 	{
-		std::size_t l_size = std::min(m_StaticLightSource.size(), (std::size_t)_LightSourceLimit);
+		uint8_t l_size = std::min(m_StaticLightSource.size(), (std::size_t)_LightSourceLimit);
 
 		_Shader.Bind();
 		_Shader.SetUniform1f("u_LightQtd", l_size);

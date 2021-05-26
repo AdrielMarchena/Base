@@ -5,7 +5,6 @@
 *	Ambient system wich provide a simple way to insert
 *	ambient light and source lights in a shader
 */
-
 #pragma once
 
 #include "glm/glm.hpp"
@@ -37,12 +36,18 @@ namespace windowing
 
 		Ambient():m_Ambient(Day){}
 
+		/**
+		* Return a default value if the index is <= 0 or > than the
+		* number of lights
+		*/
 		LightSource& operator[](uint32_t index)
 		{
-			if (index >= 0)
+			if (index >= 0 && index < m_StaticLightSource.size())
 			{
 				return m_StaticLightSource[index];
 			}
+			static LightSource blankLightSource{};
+			return blankLightSource;
 		}
 		/**
 		* update the Ambient Light

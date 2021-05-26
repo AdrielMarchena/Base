@@ -206,7 +206,7 @@
     <ClCompile Include="src\input\Mouse.cpp" />
     <ClCompile Include="src\render\Shader.cpp" />
     <ClCompile Include="src\render\render2D.cpp" />
-    <ClCompile Include="src\test.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\RandomList.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\render\Texture.cpp" />

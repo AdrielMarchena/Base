@@ -19,33 +19,36 @@ namespace ett
 {
 	struct AnimationSpecs
 	{
-		int32_t threshold; // if 0, set to a default value of 350
-		int32_t timestamp; // If 0, calculate based on threshold and the atlas
-		int32_t decrement; // if 0, default to 5
-		uint32_t texture_offset; // if less 0, default to 0
-		render::Texture* atlas; // Atlas Texture
-		glm::vec2 sprite_size; //if 0, default to 64x64
+		float_t threshold = 350.0f; // if 0, set to a default value of 350
+		float_t timestamp = 0.0f; // If 0, calculate based on threshold and the atlas
+		float_t decrement = 5.0f; // if 0, default to 5
+		uint32_t texture_offset = 0; // default to 0
+		glm::vec2 sprite_size = {64.0f,64.0f}; //if 0, default to 64x64
+		render::Texture& atlas; // Atlas Texture
 
+		AnimationSpecs();
+		AnimationSpecs(render::Texture& texture);
+		AnimationSpecs& operator=(AnimationSpecs& other);
 	};
 	class Animator
 	{
 	private:
-		AnimationSpecs specs;
-		int32_t current_threshold = 0;
-		int32_t current_timestamp = 0;
-		int32_t current_tex_index = 0;
+		AnimationSpecs m_Specs;
+		float_t m_CurrentThreshold = 0.0f;
+		float_t m_CurrentTimeStamp = 0.0f;
+		uint32_t m_CurrentTexIndex = 0.0f;
 		std::vector<render::SubTexture> m_CroppedTexture;
 
-		const static int default_threshold = 350;
-		const static int default_decrement = 5;
+		static constexpr float_t default_threshold = 350.0f;
+		static constexpr float_t default_decrement = 5.0f;
 	public:
 		bool loop = true;
 		
 		Animator(const AnimationSpecs& _Specs);
-		Animator(){}
+		Animator();
 		
-		//TODO: Maybe add a method to create a new subTextures, this way, you can maintain the others specs
-		
+		const AnimationSpecs& GetSpecs() const { return m_Specs; }
+
 		/**
 		* Run the animation based on the specs, if the loop is false
 		* it will return the last Frame from on

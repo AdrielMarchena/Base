@@ -11,6 +11,8 @@
 
 #include "utils/Logs.h"
 
+#include <limits>
+
 namespace en
 {
 namespace ett
@@ -18,80 +20,111 @@ namespace ett
 	static constexpr float_t default_x_sprite_size = 64.0f;
 	static constexpr float_t default_y_sprite_size = 64.0f;
 	static render::Texture default_white_texture = render::Texture();
+	
+	AnimationSpecs::AnimationSpecs()
+		:atlas(default_white_texture)
+	{
+	}
+	AnimationSpecs::AnimationSpecs(render::Texture& texture)
+		:atlas(texture)
+	{
+	}
+
+	AnimationSpecs& AnimationSpecs::operator=(AnimationSpecs& other)
+	{
+		if (this == &other)
+			return *this;
+		threshold = other.threshold;
+		timestamp = other.timestamp;
+		decrement = other.decrement;
+		texture_offset = other.texture_offset;
+		sprite_size = other.sprite_size;
+		atlas = other.atlas;
+		return *this;
+	}
+
 	Animator::Animator(const AnimationSpecs& _Specs)
 	{
 		SetNewTexture(_Specs);
 	}
 
+	Animator::Animator()
+		:m_Specs()
+	{
+		m_Specs.atlas = default_white_texture;
+		default_white_texture = render::Texture(); //This is trash
+	}
+
 	render::SubTexture& Animator::Run(float_t dt)
 	{
-		if (current_timestamp <= 0)
+		if (m_CurrentTimeStamp <= 0)
 		{
 			//Go to next texture
-			current_tex_index = (current_tex_index + 1) % m_CroppedTexture.size();
-			current_timestamp = specs.timestamp;
+			m_CurrentTexIndex = std::min(float((m_CurrentTexIndex + 1) % m_CroppedTexture.size()),(std::numeric_limits<float_t>::max()));
+			//I think this black magic prevent overfloat
+			m_CurrentTimeStamp = m_Specs.timestamp;
 		}
 
-		if (loop && current_threshold <= 0 && current_timestamp <= 0)
+		if (loop && m_CurrentThreshold <= 0 && m_CurrentTimeStamp <= 0)
 		{
 			Reset();
 		}
 		
-		double_t delta_decrement = specs.decrement * dt;
-		current_timestamp -= delta_decrement;
-		current_threshold -= delta_decrement;
-		return m_CroppedTexture[current_tex_index];
+		double_t delta_decrement = m_Specs.decrement * dt;
+		m_CurrentTimeStamp -= delta_decrement;
+		m_CurrentThreshold -= delta_decrement;
+		return m_CroppedTexture[m_CurrentTexIndex];
 	}
 	void Animator::Reset()
 	{
-		current_tex_index = specs.texture_offset;
-		current_threshold = specs.threshold;
-		current_timestamp = specs.timestamp;
+		m_CurrentTexIndex = m_Specs.texture_offset;
+		m_CurrentThreshold = m_Specs.threshold;
+		m_CurrentTimeStamp = m_Specs.timestamp;
 	}
 	void Animator::SetNewTexture(const AnimationSpecs& _Specs)
 	{
-		specs = _Specs;
-		glm::vec2 atlas_size = specs.atlas->GetSize();
+		m_Specs = const_cast<AnimationSpecs&>(_Specs);
+		glm::vec2 atlas_size = m_Specs.atlas.GetSize();
 
-		if (specs.threshold <= 0.0f)
-			specs.threshold = default_threshold;
+		if (m_Specs.threshold <= 0.0f)
+			m_Specs.threshold = default_threshold;
 		
-		if (specs.sprite_size.x == 0.0f)
-			specs.sprite_size.x = default_x_sprite_size;
-		if (specs.sprite_size.y == 0.0f)
-			specs.sprite_size.y = default_y_sprite_size;
+		if (m_Specs.sprite_size.x == 0.0f)
+			m_Specs.sprite_size.x = default_x_sprite_size;
+		if (m_Specs.sprite_size.y == 0.0f)
+			m_Specs.sprite_size.y = default_y_sprite_size;
 
-		if (specs.decrement <= 0.0f)
-			specs.decrement = default_decrement;
+		if (m_Specs.decrement <= 0.0f)
+			m_Specs.decrement = default_decrement;
 
 
 		//Create SubTextures
-		float_t calc_size = atlas_size.x / specs.sprite_size.x;
+		float_t calc_size = atlas_size.x / m_Specs.sprite_size.x;
 
 		if (calc_size <= 0.0f)
 		{
-			specs.atlas = &default_white_texture;
+			m_Specs.atlas = default_white_texture;
 			calc_size = 1.0f;
 		}
 
 		for (int i = 0; i < calc_size; i++)
 		{
 			m_CroppedTexture.push_back(render::SubTexture::CreateFromCoords(
-				specs.atlas, atlas_size, { i,0.0f }, specs.sprite_size)
+				m_Specs.atlas, atlas_size, { i,0.0f }, m_Specs.sprite_size)
 			);
 		}
 
-		if (specs.timestamp < 0)
-			specs.timestamp = specs.threshold / m_CroppedTexture.size();
+		if (m_Specs.timestamp <= 0)
+			m_Specs.timestamp = m_Specs.threshold / m_CroppedTexture.size();
 
-		if (specs.texture_offset < 0) //Kinda redundant, this is unsigned
-			specs.texture_offset = 0;
-		if (specs.texture_offset >= m_CroppedTexture.size())
-			specs.texture_offset = m_CroppedTexture.size() - 1;
+		if (m_Specs.texture_offset < 0) //Kinda redundant, this is unsigned
+			m_Specs.texture_offset = 0;
+		if (m_Specs.texture_offset >= m_CroppedTexture.size())
+			m_Specs.texture_offset = m_CroppedTexture.size() - 1;
 
-		current_threshold = specs.threshold;
-		current_timestamp = specs.timestamp;
-		current_tex_index = 0;
+		m_CurrentThreshold = m_Specs.threshold;
+		m_CurrentTimeStamp = m_Specs.timestamp;
+		m_CurrentTexIndex = 0;
 	}
 }
 }

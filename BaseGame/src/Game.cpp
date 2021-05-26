@@ -101,7 +101,7 @@ void Game::OnAttach(AttachArgs args)
 	//Texuture
 	try
 	{
-		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText("tet_imgs"));
+		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText("test_imgs"));
 	}
 	catch (const utils::ex::directory_not_found& dex)
 	{
@@ -114,13 +114,13 @@ void Game::OnAttach(AttachArgs args)
 		LOG_NORMAL("Can't create Textures, Error: " << ex.what());
 	}
 	//Audios
-	try 
+	try
 	{
-		m_Audios = aux::AudioSource::LoadAsyncAudios(utils::Files::GetPairText("test_auio", ".mp3#.ogg#.wav"));
+		m_Audios = aux::AudioSource::LoadAsyncAudios(utils::Files::GetPairText("test_audio", ".mp3#.ogg#.wav"));
 	}
 	catch (const utils::ex::directory_not_found& dex)
 	{
-		//TODO: Put a default texture on the u_map (do not rethrow)
+		//TODO: Put a default texture on the u_map (do not rethrow please)
 		LOG_NORMAL("Directory to Audios " << dex.path() << " not found!");
 	}
 	catch (const std::exception& ex)
@@ -142,15 +142,8 @@ void Game::OnAttach(AttachArgs args)
 		{0,0}
 	};
 
-	ett::AnimationSpecs specs =
-	{
-		NULL,
-		NULL,
-		10,
-		NULL,
-		&m_Textures["atlas"],
-		{64,64}
-	};
+	ett::AnimationSpecs specs(m_Textures["atlas"]);
+	specs.decrement = 10.0f;
 	
 	m_animator.SetNewTexture(specs);
 	m_animator.loop = true;
