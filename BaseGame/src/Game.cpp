@@ -3,7 +3,7 @@
 
 #include <filesystem>
 
-static inline void MainMenuBar()
+static inline void MainMenuBar(const ImGuiArgs& args)
 {
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -116,7 +116,7 @@ void Game::OnAttach(AttachArgs args)
 	//Audios
 	try
 	{
-		m_Audios = aux::AudioSource::LoadAsyncAudios(utils::Files::GetPairText("test_audio", ".mp3#.ogg#.wav"));
+		m_Audios = aux::AudioSource::LoadAudios(utils::Files::GetPairText("test_audio", ".mp3#.ogg#.wav"));
 	}
 	catch (const utils::ex::directory_not_found& dex)
 	{
@@ -224,7 +224,7 @@ void Game::OnRender(RenderArgs args)
 
 void Game::OnImGui(ImGuiArgs args)
 {
-	MainMenuBar();
+	MainMenuBar(args);
 	static float_t sc = 1000.0f;
 	ImGui::Text("Quad Colors");
 		ImGui::ColorEdit4("Moving Quad", &imInfo.color1.x);
@@ -237,19 +237,34 @@ void Game::OnImGui(ImGuiArgs args)
 		ImGui::SliderFloat("Particle Life Time", &imInfo.ParticlesLifeTime, 0.01f, 100.0f);
 	ImGui::Text("Light Control");
 		ImGui::SliderFloat("Ambient Light", &sc, 0.0f, 1.0f);
-		ImGui::SliderFloat("Middle Light Itencity", &imInfo.light1It,0.0f,1000.0f);
-		ImGui::SliderFloat("0x0 Light Itencity",	&imInfo.light2It,0.0f,1000.0f);
-		if (ImGui::Button("Apply Light Change"))
-		{
+		ImGui::SliderFloat("Middle Light Intencity", &imInfo.light1It,0.0f,1000.0f);
+		ImGui::SliderFloat("0x0 Light Intencity",	&imInfo.light2It,0.0f,1000.0f);
+		//if (ImGui::Button("Apply Light Change"))
+		//{
 			imInfo.ambientLight = { sc,sc,sc };
 			m_ambient.UpdateAmbient(imInfo.ambientLight,args.render.GetShader(),false);
 			m_ambient[0].m_LightIntencity = imInfo.light2It;
 			m_ambient[1].m_LightIntencity = imInfo.light1It;
 			m_ambient.UpdateStaticLight(args.render.GetShader());
+		//}
+
+		ImGui::Text("Audio");
+
+		ImGui::SliderFloat("Global Gain", &imInfo.gGain, 0.0f, 1.0f);
+		ImGui::SliderFloat("Global Pitch", &imInfo.gPitch, 0.0f, 10.0f);
+
+		for (auto& audio : m_Audios) //audio is a pair
+		{
+			//Update global gain and pitch for testing
+			audio.second.SetGain(imInfo.gGain);
+			audio.second.SetPitch(imInfo.gPitch);
+
+			const std::string button_label = "Play " + audio.first;
+			if (ImGui::Button(button_label.c_str()))
+				audio.second.Play();
 		}
 
-		if (ImGui::Button("Play 01 - Casino Calavera"))
-			m_Audios["shot_sound"].Play();
+
 
 	Window::OnImGui(args);
 }

@@ -21,6 +21,7 @@ namespace aux
 	*/
 	void DeleteDevices();
 	
+
 	ALCdevice*  GetDevicePtr();
 	ALCcontext* GetContextPtr();
 

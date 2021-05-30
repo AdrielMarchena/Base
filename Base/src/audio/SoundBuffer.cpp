@@ -14,7 +14,6 @@ namespace en
 {
 namespace aux
 {
-
 	ALuint LoadSoundEffect(const char* filename)
 	{
 		ALenum err, format;

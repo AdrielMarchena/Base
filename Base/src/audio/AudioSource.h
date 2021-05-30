@@ -15,7 +15,10 @@ namespace en
 {
 namespace aux
 {
-
+	static constexpr float_t gMin_pitch = 0.0f;
+	static constexpr float_t gMax_pitch = 10000.0f;
+	static constexpr float_t gMin_gain  = 0.0f;
+	static constexpr float_t gMax_gain  = 10000.0f;
 	class AudioSource
 	{
 	public:
@@ -94,7 +97,10 @@ namespace aux
 		*/
 		void Play();
 		void Loop(bool loop);
+		//Clamp to gMin_gain and gMax_gain value
 		void SetGain(float gain);
+		//Clamp to gMin_pitch and gMax_pitch value
+		void SetPitch(float pitch);
 		bool IsPlaying();
 		ALuint GetBuffer();
 		ALuint GetSource();
@@ -102,8 +108,9 @@ namespace aux
 		* Load audio files and Create Asynchronously a bunch of instances of this class
 		*/
 		static std::unordered_map<std::string, AudioSource> LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait = true);
+		static std::unordered_map<std::string, AudioSource> LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait = true);
 	private:
-	   ALuint p_Source;
+	   ALuint p_Source = NULL;
 		float p_Pitch = 1.f;
 		float p_Gain = 1.f;
 		float p_Position[3] = { 0,0,0 };

@@ -14,6 +14,20 @@
 #include "utils/threading.h"
 #include "SoundBuffer.h"
 #include "utils/Logs.h"
+
+#include <algorithm>
+
+//#include "Al_Error.h"
+
+#define MY_AL_CHECK_ERROR(error,message) \
+		{if (error = alGetError() != AL_NO_ERROR)\
+		{\
+			const std::string errorm = message + std::string(", AL ERROR: ") + alGetString(error);\
+			throw std::exception(errorm.c_str());\
+		}\
+		const std::string errorm = message;\
+		throw std::exception(errorm.c_str());}\
+
 namespace en
 {
 namespace aux
@@ -21,18 +35,19 @@ namespace aux
 	//TODO: It's probably better to store the source buffer on the map, either way, can still get the source buffer from the AudioSource
 	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait)
 	{
-		utils::ResourceLoads<std::string, AudioSource> loads;
+		utils::ResourceLoads<std::string, ALuint> loads;
 		auto lamb = [&](const std::string& name, const std::string& path)
 		{
 			auto info = LoadSoundEffect(path.c_str());
 			if (info)
 			{
-				D_LOG("sound: '" << name << "' Loaded!");
-				std::lock_guard<std::mutex> lock(loads.mutex); // Since the lock is here, there is not to much of a gain here
-				loads.resources[name] = AudioSource(info);
+				//std::lock_guard<std::mutex> lock(loads.mutex); // Since the lock is here, there is not to much of a gain here
+				//loads.resources[name] = AudioSource(info);
+				loads.resources[name] = info;
+				LOG_NORMAL("sound: '" << name << "' Loaded!");
 			}
 			else
-				D_LOG("sound: '" << name << "' Can't be loaded");
+				LOG_NORMAL("sound: '" << name << "' Can't be loaded");
 		};
 
 		for (auto& name : _NameFile)
@@ -40,32 +55,78 @@ namespace aux
 			loads.futures[name.first] = std::async(std::launch::async, lamb, name.first, name.second);
 		}
 
-		/*std::unordered_map<std::string, AudioSource> tmp;
+		std::unordered_map<std::string, AudioSource> tmp;
 		while (!loads.isAllLoad())
 		{
 			for (auto& inf : loads.resources)
 			{
 				if (loads.futures[inf.first]._Is_ready())
 				{
-					tmp[inf.first] = AudioSource(inf.second);
-					inf.second = 0;
-					loads.futures.erase(inf.first);
-					loads.resources.erase(inf.first);
+					try
+					{
+						if (!inf.second)
+							throw std::exception("Buffer not created!");
+						tmp[inf.first] = AudioSource(inf.second);
+						inf.second = 0;
+						loads.futures.erase(inf.first);
+						loads.resources.erase(inf.first);
+						LOG_NORMAL(inf.first + " AudioSource created!");
+					}
+					catch (const std::exception& ex)
+					{
+						const std::string error_what = ex.what();
+						LOG_WARNING(inf.first << " could not be used to create AudioSorce\nError: " + error_what);
+					}
 					break;
 				}
 			}
-		}*/
+		}
 
-		if (_Wait)
-			loads.waitAll();
+		/*if (_Wait)
+			loads.waitAll();*/
 
-		return std::move(loads.resources);
+		return std::move(tmp);
+	}
+
+	std::unordered_map<std::string, AudioSource> AudioSource::LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait)
+	{
+		std::unordered_map<std::string, AudioSource> tmp;
+		for (auto& f : _NameFile)
+		{
+			try
+			{
+				auto info = LoadSoundEffect(f.second.c_str());
+				if (info)
+				{
+					LOG_NORMAL("sound: '" << f.first << "' Loaded!");
+				}
+				else
+				{
+					LOG_NORMAL("sound: '" << f.first << "' Can't be loaded");
+					throw std::exception("Buffer not created!");
+				}
+				tmp[f.first] = AudioSource(info);
+				LOG_NORMAL(f.first + " AudioSource created!");
+			}
+			catch (const std::exception& ex)
+			{
+				const std::string error_what = ex.what();
+				LOG_WARNING(f.first << " could not be used to create AudioSorce\nError: " + error_what);
+			}
+		}
+		return std::move(tmp);
 	}
 
 	AudioSource::AudioSource(ALuint Buffer, float gain)
 	{
+		alGetError(); //Clear errors
+		ALenum error = 0;
 		p_Gain = gain;
 		alGenSources(1, &p_Source);
+		
+		if(!p_Source)
+			MY_AL_CHECK_ERROR(error,"Could not create source ID");
+
 		alSourcef(p_Source, AL_PITCH, p_Pitch);
 		alSourcef(p_Source, AL_GAIN, p_Gain);
 		alSource3f(p_Source, AL_POSITION, p_Position[0], p_Position[1], p_Position[2]);
@@ -74,6 +135,11 @@ namespace aux
 
 		p_Buffer = Buffer;
 		alSourcei(p_Source, AL_BUFFER, (ALint)p_Buffer);
+		if (error = alGetError() != AL_NO_ERROR)\
+		{\
+			const std::string errorm = std::string("Something went wrong on alSourcei: ") + alGetString(error); \
+			throw std::exception(errorm.c_str()); \
+		}\
 	}
 
 	AudioSource::~AudioSource()
@@ -85,7 +151,6 @@ namespace aux
 
 	void AudioSource::Play()
 	{
-
 		alSourcePlay(p_Source);
 
 		/*ALint state = AL_PLAYING;
@@ -106,8 +171,14 @@ namespace aux
 
 	void AudioSource::SetGain(float gain)
 	{
-		p_Gain = gain;
+		p_Gain = std::clamp(gain, gMin_gain, gMax_gain);
 		alSourcef(p_Source, AL_GAIN, p_Gain);
+	}
+
+	void AudioSource::SetPitch(float pitch)
+	{
+		p_Pitch = std::clamp(pitch,gMin_pitch,gMax_pitch);
+		alSourcef(p_Source, AL_PITCH, p_Pitch);
 	}
 
 	bool AudioSource::IsPlaying()

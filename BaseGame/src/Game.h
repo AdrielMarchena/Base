@@ -21,7 +21,8 @@ struct ImGuiInfoPack
 	render::ParticleProps Effect = render::ParticleProps::Effects[0];
 	int32_t ParticlesPer = 10;
 	float_t ParticlesLifeTime = 10;
-
+	float_t gGain = 1.0f;
+	float_t gPitch = 1.0f;
 };
 
 class Game: public windowing::Window
