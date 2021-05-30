@@ -39,6 +39,16 @@
 *.ilk
 *.pdb
 
+#audio files
+*.[Mm]4[Aa]
+*.[Aa][Aa][Cc]
+*.[Ww][Mm][Aa]
+*.[Ff][Ll][Aa][Cc]
+*.[Ww][Aa][Vv]
+*.[Oo][Gg][Gg]
+*.[Mm][Pp]3
+*.[Mm][Pp]4
+
 #Bin folder or something
 [Dd][Ee][Bb][Uu][Gg]/
 [Rr][Ee][Ll][Ee][Aa][Ss][Ee]/
