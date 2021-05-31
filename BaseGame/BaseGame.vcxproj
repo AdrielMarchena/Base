@@ -171,11 +171,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Cell.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Cell.h" />
     <ClInclude Include="src\Game.h" />
   </ItemGroup>
   <ItemGroup>

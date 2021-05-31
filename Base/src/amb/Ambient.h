@@ -34,7 +34,9 @@ namespace windowing
 		const static glm::vec3 Night;
 		const static glm::vec3 Day;
 
-		Ambient():m_Ambient(Day){}
+		Ambient():m_Ambient(Day)
+		{
+		}
 
 		/**
 		* Return a default value if the index is <= 0 or > than the
