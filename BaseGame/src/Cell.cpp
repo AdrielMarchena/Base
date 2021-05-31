@@ -1,17 +1,17 @@
 #include "Cell.h"
 
-const glm::vec2 Size = { 5.0f,5.0f };
+const glm::vec2 Size = { 50.0f,50.0f };
 const glm::vec3 Global_Live_Color = { 1.0f, 1.0f, 1.0f };
 const glm::vec3 Global_Dead_Color = { 0.1f, 0.1f, 0.1f };
 
-static bool CheckNeighbours(int col, int row, bool map[TOTAL_COLUMNS][TOTAL_ROWS])
+static bool CheckNeighbours(int p_col, int p_row, bool map[TOTAL_COLUMNS][TOTAL_ROWS])
 {
 	//Rules
 	// < 3 livin neighbours = Die
 	// = 3 livin neighbours = Live
 	// > 3 livin neighbours = Die
 	// if dead and = 3 livin neighbours = revive
-	if (col < 0 || row < 0)
+	if (p_col < 0 || p_row < 0)
 		return false;
 	
 	//    #0 #1 #2
@@ -21,22 +21,23 @@ static bool CheckNeighbours(int col, int row, bool map[TOTAL_COLUMNS][TOTAL_ROWS
 	constexpr char middle = 1;
 	int living_neighbours = 0;
 
-	int col_start = col - 1;
-	int col_end = col + 1;
-	int row_start = row - 1;
-	int row_end = row + 1;
+	int col_start = p_col == 0 ? 0 : p_col - 1;
+	int col_end = p_col + 1;
+	int row_start = p_row == 0 ? 0 : p_row - 1;
+	int row_end = p_row + 1;
 
-	for (int col = col_start; col < col_end; col++)
+	for (int col = col_start; col <= col_end; col++)
 	{
 		if (col < 0 || col >= TOTAL_COLUMNS)
 			continue; // Skip out of bounds
-		for (int row = row_start; row < row_end; row++)
+		for (int row = row_start; row <= row_end; row++)
 		{
 			if (row < 0 || row >= TOTAL_COLUMNS)
 				continue; // Skip out of bounds
-			if (col == middle && row == middle)
+			if (col == p_col && row == p_row)
 				continue; // don't check with yourself
-			if (map[col, row])
+			bool populated = map[col, row];
+			if (populated)
 				living_neighbours++;
 		}
 	}
@@ -74,7 +75,9 @@ void Map::DrawCells(const en::RenderArgs& args)
 		for (int row = 0; row < TOTAL_ROWS; row++)
 		{
 			const glm::vec3& color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
-			args.render.DrawQuad(glm::vec2(col, row) * Size, Size, glm::vec4(color, 1.0f));
+			float cm = args.camera_ctr.GetZoomLevel();
+			args.render.DrawOutLineQuad(glm::vec2(col-50, row-50) * Size, Size, { 1.0f,1.0f,1.0f,1.0f },1,1.0f);
+			args.render.DrawQuad(glm::vec2(col-50, row-50) * Size , Size , glm::vec4(color, 1.0f),1);
 		}
 	}
 }

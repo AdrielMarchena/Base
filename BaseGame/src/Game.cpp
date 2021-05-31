@@ -25,18 +25,27 @@ Game::Game(const char* title, float_t w, float_t h, bool resizeble)
 void Game::OnAttach(AttachArgs args)
 {
 	std::vector<InitActiveCell> actives;
-	for (int i = 0; i < 10*4; i+=4)
+
+	for (int i = 0; i < 100; i++)
 	{
-		actives.push_back({i+1,i+0});
-		actives.push_back({i+2,i+0});
-		actives.push_back({i+3,i+0});
-		actives.push_back({i+4,i+0});
+		for (int j = 0; j < 100; j++)
+		{
+			actives.push_back({ i,j });
+		}
 	}
 
 	CellGame.OnAttach(actives);
 
-	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetShader());
+	m_Ambient.AddStaticLightSource({
+		{0,0,0},
+		{0,0,0,0},
+		1
+		});
+	
+	m_Ambient.UpdateStaticLight(args.render.GetShader());
 
+	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetShader());
+	
 	Window::OnAttach(args);
 }
 
@@ -49,7 +58,7 @@ void Game::OnUpdate(UpdateArgs args)
 
 void Game::OnRender(RenderArgs args)
 {
-	args.render.DrawQuad({ 50,50 }, { 50,50 }, { 1.0f,1.0f,1.0f,1.0f });
+	args.render.DrawQuad({ -500,-500 }, { 1500,1500 }, { 1.0f,1.0f,1.0f,1.0f });
 
 	CellGame.DrawCells(args);
 
