@@ -35,6 +35,8 @@ void Game::OnAttach(AttachArgs args)
 
 	CellGame.OnAttach(actives);
 
+	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetShader());
+
 	Window::OnAttach(args);
 }
 
