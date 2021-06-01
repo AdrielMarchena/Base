@@ -1,8 +1,8 @@
 <h1 class="code-line" data-line-start=0 data-line-end=1 ><a id="Base_0"></a>Base</h1>
 <h2 class="code-line" data-line-start=1 data-line-end=2 ><a id="_A_Game_Engine__1"></a><em>A “Game Engine”</em></h2>
-<p class="has-line-data" data-line-start="3" data-line-end="6">Base is a “Game Engine”, that, in reallity<br>
-is just some kind of framework, and a not so good one,<br>
-but hey, there’s a way to make a game in this thing (i think).</p>
+<p class="has-line-data" data-line-start="3" data-line-end="6">Base is like a “Game Engine” but in reallity<br>
+is a framework (and not a good one).<br>
+A least is possible to make a game in it, propably.</p>
 <p class="has-line-data" data-line-start="7" data-line-end="9">The two things i do using multithread i’m probably doing wrong<br>
 witch is, loading images, and loading and create audio and audio buffer or whatever</p>
 <h2 class="code-line" data-line-start=10 data-line-end=11 ><a id="Features_10"></a>Features</h2>
