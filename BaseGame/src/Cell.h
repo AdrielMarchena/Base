@@ -3,8 +3,8 @@
 #include "args/UpdateArgs.h"
 #include "args/RenderArgs.h"
 
-#define TOTAL_COLUMNS 100
-#define TOTAL_ROWS 100
+#define TOTAL_COLUMNS 800 / 50
+#define TOTAL_ROWS 600 / 50
 
 struct InitActiveCell
 {

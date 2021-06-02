@@ -26,13 +26,11 @@ void Game::OnAttach(AttachArgs args)
 {
 	std::vector<InitActiveCell> actives;
 
-	for (int i = 0; i < 100; i++)
-	{
-		for (int j = 0; j < 100; j++)
-		{
-			actives.push_back({ i,j });
-		}
-	}
+	actives.push_back({2,2});
+	actives.push_back({3,2});
+	actives.push_back({3,3});
+	actives.push_back({2,3});
+	actives.push_back({2,4});
 
 	CellGame.OnAttach(actives);
 
@@ -58,8 +56,6 @@ void Game::OnUpdate(UpdateArgs args)
 
 void Game::OnRender(RenderArgs args)
 {
-	args.render.DrawQuad({ -500,-500 }, { 1500,1500 }, { 1.0f,1.0f,1.0f,1.0f });
-
 	CellGame.DrawCells(args);
 
 	for (auto& lamb : m_RenderThisPlease)

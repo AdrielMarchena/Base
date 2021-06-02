@@ -1,8 +1,8 @@
 #include "Cell.h"
 
 const glm::vec2 Size = { 50.0f,50.0f };
-const glm::vec3 Global_Live_Color = { 1.0f, 1.0f, 1.0f };
-const glm::vec3 Global_Dead_Color = { 0.1f, 0.1f, 0.1f };
+const glm::vec4 Global_Live_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+const glm::vec4 Global_Dead_Color = { 0.1f, 0.1f, 0.1f, 1.0f };
 
 static bool CheckNeighbours(int p_col, int p_row, bool map[TOTAL_COLUMNS][TOTAL_ROWS])
 {
@@ -56,6 +56,13 @@ static void CopyHere(bool origin[TOTAL_COLUMNS][TOTAL_ROWS], bool dest[TOTAL_COL
 
 void Map::UpdateCells(const en::UpdateArgs& args)
 {
+	static float timestamp = 1;
+	if (timestamp >= 0)
+	{
+		timestamp -= 1 * args.dt;
+		return;
+	}// Only do stuff when this timestamp hit's 0
+
 	CopyHere(OldCells,NewCells);
 
 	for (int col = 0; col < TOTAL_COLUMNS; col++)
@@ -66,6 +73,7 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 		}
 	}
 	CopyHere(NewCells,OldCells);
+	timestamp = 5;
 }
 
 void Map::DrawCells(const en::RenderArgs& args)
@@ -74,10 +82,11 @@ void Map::DrawCells(const en::RenderArgs& args)
 	{
 		for (int row = 0; row < TOTAL_ROWS; row++)
 		{
-			const glm::vec3& color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
+			const glm::vec4& quad_color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
+			const glm::vec4& grid_color = !OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
 			float cm = args.camera_ctr.GetZoomLevel();
-			args.render.DrawOutLineQuad(glm::vec2(col-50, row-50) * Size, Size, { 1.0f,1.0f,1.0f,1.0f },1,1.0f);
-			args.render.DrawQuad(glm::vec2(col-50, row-50) * Size , Size , glm::vec4(color, 1.0f),1);
+			args.render.DrawOutLineQuad(glm::vec2(col, row) * Size, Size, grid_color, 0.5f);
+			args.render.DrawQuad(glm::vec2(col, row) * Size , Size , quad_color);
 		}
 	}
 }
