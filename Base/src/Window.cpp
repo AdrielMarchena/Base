@@ -31,7 +31,7 @@ namespace en
 		using namespace utils;
 
 		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
-			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, true)
+			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, false)
 		{
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
@@ -134,7 +134,7 @@ namespace en
 					"u_ViewProj",
 					m_camera.GetCamera().GetViewProjectionMatrix()
 				);
-				OnUpdate({ deltaTime,mouse,keyboard });
+				OnUpdate({ deltaTime,mouse,keyboard,m_pos(mouse) });
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
