@@ -256,6 +256,9 @@ namespace render
 	void render2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t thick,
 				   float_t layer, float_t rotation, const glm::vec3& axis)
 	{
+		//FIXME: Bottom and TOP are less thick than Right and Left lines
+		//Probably the bottom thick is to the wrong side, and the top as well
+		//Or, the Left and Right Lines are to thick
 		DrawQuad(position, { thick,size.y }, color,layer,rotation,axis);
 		DrawQuad({ position.x,position.y + size.y }, { size.x,thick }, color, layer, rotation, axis);
 		DrawQuad(position + size, { -thick,-size.y }, color, layer, rotation, axis);
