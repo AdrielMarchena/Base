@@ -26,11 +26,11 @@ void Game::OnAttach(AttachArgs args)
 {
 	std::vector<InitActiveCell> actives;
 
-	actives.push_back({2,2});
-	actives.push_back({3,2});
-	actives.push_back({3,3});
-	actives.push_back({2,3});
-	actives.push_back({2,4});
+	//actives.push_back({0,0});
+	actives.push_back({8,8});
+	actives.push_back({9,8});
+	actives.push_back({10,8});
+	//actives.push_back({11,8});
 
 	CellGame.OnAttach(actives);
 

@@ -1,10 +1,23 @@
 #include "Cell.h"
 
-const glm::vec2 Size = { 50.0f,50.0f };
+#include <iostream>
+#include <algorithm>
+const glm::vec2 Size = { 25.0f,25.0f };
 const glm::vec4 Global_Live_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 const glm::vec4 Global_Dead_Color = { 0.1f, 0.1f, 0.1f, 1.0f };
 
-static bool CheckNeighbours(int p_col, int p_row, bool map[TOTAL_COLUMNS][TOTAL_ROWS])
+static void IterateMap(const std::function<void(int col, int row)>& func)
+{
+	for (int col = 0; col < TOTAL_COLUMNS; col++)
+	{
+		for (int row = 0; row < TOTAL_COLUMNS; row++)
+		{
+			func(col, row);
+		}
+	}
+}
+
+bool Map::CheckNeighbours(int p_col, int p_row, float dt)
 {
 	//Rules
 	// < 3 livin neighbours = Die
@@ -20,11 +33,12 @@ static bool CheckNeighbours(int p_col, int p_row, bool map[TOTAL_COLUMNS][TOTAL_
 	// #2  N  N	 N
 	constexpr char middle = 1;
 	int living_neighbours = 0;
-
+	bool alive = false;
 	int col_start = p_col == 0 ? 0 : p_col - 1;
-	int col_end = p_col + 1;
+	int col_end = p_col == TOTAL_COLUMNS ? p_col - 1 : p_col + 1;
 	int row_start = p_row == 0 ? 0 : p_row - 1;
-	int row_end = p_row + 1;
+	int row_end = p_row == TOTAL_ROWS ? p_row - 1 : p_row + 1;
+
 
 	for (int col = col_start; col <= col_end; col++)
 	{
@@ -35,17 +49,27 @@ static bool CheckNeighbours(int p_col, int p_row, bool map[TOTAL_COLUMNS][TOTAL_
 			if (row < 0 || row >= TOTAL_COLUMNS)
 				continue; // Skip out of bounds
 			if (col == p_col && row == p_row)
+			{
+				alive = OldCells[col][row];
 				continue; // don't check with yourself
-			bool populated = map[col, row];
+			}
+			bool populated = OldCells[col][row];
 			if (populated)
 				living_neighbours++;
 		}
 	}
 
-	if (living_neighbours == 3)
-		return true;
-	else
+	//Dead
+	if (!alive)
+	{
+		if (living_neighbours == 3)
+			return true;
 		return false;
+	}
+	//Alive
+	if (living_neighbours == 2 || living_neighbours == 3)
+		return true;
+	return false;
 
 }
 
@@ -56,24 +80,52 @@ static void CopyHere(bool origin[TOTAL_COLUMNS][TOTAL_ROWS], bool dest[TOTAL_COL
 
 void Map::UpdateCells(const en::UpdateArgs& args)
 {
+	//Mouse test
+	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_1))
+	{
+		auto mouse_pos = (args.m_pos / Size);
+		OldCells[(int)mouse_pos.x][(int)mouse_pos.y] = true;
+	}
+
+	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_2))
+	{
+		auto mouse_pos = (args.m_pos / Size);
+		OldCells[(int)mouse_pos.x][(int)mouse_pos.y] = false;
+	}
+
+	if (args.keyboard.isClicked(GLFW_KEY_Q))
+	{
+		IterateMap([&](int col, int row)
+		{
+			OldCells[col][row] = false;
+		});
+	}
+
+	if (args.keyboard.isClicked(GLFW_KEY_P))
+	{
+		pause = !pause;
+	}
+
+	if (pause) // Do nothing other than check input if paused
+		return;
+
+
 	static float timestamp = 1;
 	if (timestamp >= 0)
 	{
 		timestamp -= 1 * args.dt;
 		return;
-	}// Only do stuff when this timestamp hit's 0
+	}
 
 	CopyHere(OldCells,NewCells);
 
-	for (int col = 0; col < TOTAL_COLUMNS; col++)
+	IterateMap([&](int col, int row)
 	{
-		for (int row = 0; row < TOTAL_ROWS; row++)
-		{
-			NewCells[col][row] = CheckNeighbours(col,row,NewCells);
-		}
-	}
+		NewCells[col][row] = CheckNeighbours(col, row);
+	});
+	
 	CopyHere(NewCells,OldCells);
-	timestamp = 5;
+	timestamp = 1;
 }
 
 void Map::DrawCells(const en::RenderArgs& args)
@@ -89,17 +141,19 @@ void Map::DrawCells(const en::RenderArgs& args)
 			args.render.DrawQuad(glm::vec2(col, row) * Size , Size , quad_color);
 		}
 	}
+	for (auto& lamb : m_RenderThisPlease)
+		lamb(args);
+	m_RenderThisPlease.clear();
 }
 
 void Map::OnAttach(const std::vector<InitActiveCell>& actives)
 {
-	for (int col = 0; col < TOTAL_COLUMNS; col++)
-	{
-		for (int row = 0; row < TOTAL_COLUMNS; row++)
-		{
-			OldCells[col][row] = false;
-		}
-	}
+
+	IterateMap([&](int col, int row)
+	{ 
+		OldCells[col][row] = false;
+	});
+
 	for (auto& ac : actives)
 	{
 		if (ac.Column >= TOTAL_COLUMNS || ac.Row >= TOTAL_ROWS)
