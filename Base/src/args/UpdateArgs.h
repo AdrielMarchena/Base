@@ -17,5 +17,6 @@ namespace en
 		float dt;
 		input::Mouse& mouse;
 		input::Keyboard& keyboard;
+		glm::vec2 m_pos;
 	};
 }
