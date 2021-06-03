@@ -19,18 +19,20 @@ class Map
 private:
 	std::vector<std::function<void(const en::RenderArgs& r_args)>> m_RenderThisPlease;
 	//TODO: Pass this matrix to Heap memory
-	bool OldCells[TOTAL_COLUMNS][TOTAL_ROWS];
-	bool NewCells[TOTAL_COLUMNS][TOTAL_ROWS];
+	bool** OldCells;
+	bool** NewCells;
 	bool pause = false;
 	float init_timestamp = 1.0f;
 	float decay_timestamp = 1.0f;
 public:
 	Map(const std::vector<InitActiveCell>& actives);
-	Map() = default;
+	Map();
+	~Map();
 	void OnAttach(const std::vector<InitActiveCell>& actives);
 	void UpdateCells(const en::UpdateArgs& args);
 	void DrawCells(const en::RenderArgs& args);
 	void OnImGui(const en::ImGuiArgs& args);
 private:
 	bool CheckNeighbours(int p_col, int p_row,float dt = 1);
+	void InitMatrix();
 };

@@ -18,7 +18,7 @@ static inline void MainMenuBar(const ImGuiArgs& args)
 }
 
 Game::Game(const char* title, float_t w, float_t h, bool resizeble)
-	:Window(title, w, h, resizeble)
+	:Window(title, w, h, resizeble),CellGame(Map())
 {
 }
 

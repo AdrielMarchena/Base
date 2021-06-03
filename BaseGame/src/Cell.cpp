@@ -32,7 +32,6 @@ bool Map::CheckNeighbours(int p_col, int p_row, float dt)
 	// #0  N  N	 N	 N = Neighbour
 	// #1  N  O	 N   O = Actual Cell
 	// #2  N  N	 N
-	constexpr char middle = 1;
 	int living_neighbours = 0;
 	bool alive = false;
 	int col_start = p_col == 0 ? 0 : p_col - 1;
@@ -74,9 +73,12 @@ bool Map::CheckNeighbours(int p_col, int p_row, float dt)
 
 }
 
-static void CopyHere(bool origin[TOTAL_COLUMNS][TOTAL_ROWS], bool dest[TOTAL_COLUMNS][TOTAL_ROWS])
+static void CopyHere(bool** origin, bool** dest)
 {
-	std::copy(&origin[0][0], &origin[0][0] + TOTAL_COLUMNS * TOTAL_ROWS, &dest[0][0]);
+	IterateMap([&](int col, int row) {
+		dest[col][row] = origin[col][row];
+	});
+	//std::copy(&origin[0][0], &origin[0][0] + TOTAL_COLUMNS * TOTAL_ROWS, &dest[0][0]);
 }
 
 void Map::UpdateCells(const en::UpdateArgs& args)
@@ -109,7 +111,6 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 
 	if (pause) // Do nothing other than check input if paused
 		return;
-
 
 	static float timestamp = init_timestamp;
 	if (timestamp >= 0)
@@ -160,7 +161,6 @@ void Map::OnImGui(const en::ImGuiArgs& args)
 
 void Map::OnAttach(const std::vector<InitActiveCell>& actives)
 {
-
 	IterateMap([&](int col, int row)
 	{ 
 		OldCells[col][row] = false;
@@ -176,5 +176,34 @@ void Map::OnAttach(const std::vector<InitActiveCell>& actives)
 
 Map::Map(const std::vector<InitActiveCell>& actives)
 {
+	InitMatrix();
 	OnAttach(actives);
+}
+
+Map::Map()
+{
+	InitMatrix();
+}
+
+void Map::InitMatrix()
+{
+	OldCells = new bool* [TOTAL_COLUMNS];
+	NewCells = new bool* [TOTAL_COLUMNS];
+
+	for (size_t i = 0; i < TOTAL_COLUMNS; ++i)
+	{
+		OldCells[i] = new bool[TOTAL_ROWS];
+		NewCells[i] = new bool[TOTAL_ROWS];
+	}
+}
+
+Map::~Map()
+{
+	for (size_t i = 0; i < TOTAL_COLUMNS; ++i)
+	{
+		delete[] OldCells[i];
+		delete[] NewCells[i];
+	}
+	delete[] OldCells;
+	delete[] NewCells;
 }
