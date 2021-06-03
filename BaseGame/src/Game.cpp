@@ -69,6 +69,8 @@ void Game::OnImGui(ImGuiArgs args)
 {
 	MainMenuBar(args);
 
+	CellGame.OnImGui(args);
+
 	Window::OnImGui(args);
 }
 

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include "imgui.h"
 const glm::vec2 Size = { 25.0f,25.0f };
 const glm::vec4 Global_Live_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 const glm::vec4 Global_Dead_Color = { 0.1f, 0.1f, 0.1f, 1.0f };
@@ -83,13 +84,13 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 	//Mouse test
 	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_1))
 	{
-		auto mouse_pos = (args.m_pos / Size);
+		auto mouse_pos = (args.m_pos / Size + glm::vec2(400/25, 300/25));
 		OldCells[(int)mouse_pos.x][(int)mouse_pos.y] = true;
 	}
 
 	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_2))
 	{
-		auto mouse_pos = (args.m_pos / Size);
+		auto mouse_pos = (args.m_pos / Size + glm::vec2(400/25, 300/25));
 		OldCells[(int)mouse_pos.x][(int)mouse_pos.y] = false;
 	}
 
@@ -110,10 +111,10 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 		return;
 
 
-	static float timestamp = 1;
+	static float timestamp = init_timestamp;
 	if (timestamp >= 0)
 	{
-		timestamp -= 1 * args.dt;
+		timestamp -= decay_timestamp * args.dt;
 		return;
 	}
 
@@ -125,7 +126,7 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 	});
 	
 	CopyHere(NewCells,OldCells);
-	timestamp = 1;
+	timestamp = init_timestamp;
 }
 
 void Map::DrawCells(const en::RenderArgs& args)
@@ -137,13 +138,24 @@ void Map::DrawCells(const en::RenderArgs& args)
 			const glm::vec4& quad_color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
 			const glm::vec4& grid_color = !OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
 			float cm = args.camera_ctr.GetZoomLevel();
-			args.render.DrawOutLineQuad(glm::vec2(col, row) * Size, Size, grid_color, 0.5f);
-			args.render.DrawQuad(glm::vec2(col, row) * Size , Size , quad_color);
+			args.render.DrawOutLineQuad(glm::vec2(col, row) * Size - glm::vec2(400, 300), Size, grid_color, 0.5f);
+			args.render.DrawQuad(glm::vec2(col, row) * Size - glm::vec2(400,300) , Size , quad_color);
 		}
 	}
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
 	m_RenderThisPlease.clear();
+}
+
+void Map::OnImGui(const en::ImGuiArgs& args)
+{
+	ImGui::Text("Configs");
+	ImGui::SliderFloat("Init timestamp velocity", &init_timestamp, -1.0f, 5.0f);
+	ImGui::SliderFloat("Decay timestamp velocity", &decay_timestamp, 0.0001f, 5.0f);
+	if(ImGui::Button("Pause"))
+	{
+		pause = !pause;
+	}
 }
 
 void Map::OnAttach(const std::vector<InitActiveCell>& actives)

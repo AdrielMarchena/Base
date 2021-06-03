@@ -2,10 +2,11 @@
 #include "glm/glm.hpp"
 #include "args/UpdateArgs.h"
 #include "args/RenderArgs.h"
+#include "args/ImGuiArgs.h"
 #include <functional>
 
-#define TOTAL_COLUMNS 800 / 25
-#define TOTAL_ROWS 600 / 25
+#define TOTAL_COLUMNS 100
+#define TOTAL_ROWS 100
 
 struct InitActiveCell
 {
@@ -17,15 +18,19 @@ class Map
 {
 private:
 	std::vector<std::function<void(const en::RenderArgs& r_args)>> m_RenderThisPlease;
+	//TODO: Pass this matrix to Heap memory
 	bool OldCells[TOTAL_COLUMNS][TOTAL_ROWS];
 	bool NewCells[TOTAL_COLUMNS][TOTAL_ROWS];
 	bool pause = false;
+	float init_timestamp = 1.0f;
+	float decay_timestamp = 1.0f;
 public:
 	Map(const std::vector<InitActiveCell>& actives);
 	Map() = default;
 	void OnAttach(const std::vector<InitActiveCell>& actives);
 	void UpdateCells(const en::UpdateArgs& args);
 	void DrawCells(const en::RenderArgs& args);
+	void OnImGui(const en::ImGuiArgs& args);
 private:
 	bool CheckNeighbours(int p_col, int p_row,float dt = 1);
 };
