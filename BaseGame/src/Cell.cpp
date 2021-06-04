@@ -6,8 +6,9 @@
 const glm::vec2 Size = { 25.0f,25.0f };
 const glm::vec4 Global_Live_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 const glm::vec4 Global_Dead_Color = { 0.1f, 0.1f, 0.1f, 1.0f };
+const glm::vec2 Default_Draw_Offset = { TOTAL_COLUMNS / 2,TOTAL_ROWS / 2 };
 
-static void IterateMap(const std::function<void(int col, int row)>& func)
+static void iterate_matrix(const std::function<void(int col, int row)>& func)
 {
 	for (int col = 0; col < TOTAL_COLUMNS; col++)
 	{
@@ -17,11 +18,22 @@ static void IterateMap(const std::function<void(int col, int row)>& func)
 		}
 	}
 }
+static inline float col_clamp(float n)
+{
+	const static float total = TOTAL_COLUMNS-1;
+	return std::clamp(n, 0.0f, total);
+}
+
+static inline float row_clamp(float n)
+{
+	const static float total = TOTAL_ROWS-1;
+	return std::clamp(n, 0.0f, total);
+}
 
 bool Map::CheckNeighbours(int p_col, int p_row, float dt)
 {
 	//Rules
-	// < 3 livin neighbours = Die
+	// < 2 livin neighbours = Die
 	// = 3 livin neighbours = Live
 	// > 3 livin neighbours = Die
 	// if dead and = 3 livin neighbours = revive
@@ -38,7 +50,6 @@ bool Map::CheckNeighbours(int p_col, int p_row, float dt)
 	int col_end = p_col == TOTAL_COLUMNS ? p_col - 1 : p_col + 1;
 	int row_start = p_row == 0 ? 0 : p_row - 1;
 	int row_end = p_row == TOTAL_ROWS ? p_row - 1 : p_row + 1;
-
 
 	for (int col = col_start; col <= col_end; col++)
 	{
@@ -75,10 +86,8 @@ bool Map::CheckNeighbours(int p_col, int p_row, float dt)
 
 static void CopyHere(bool** origin, bool** dest)
 {
-	IterateMap([&](int col, int row) {
-		dest[col][row] = origin[col][row];
-	});
-	//std::copy(&origin[0][0], &origin[0][0] + TOTAL_COLUMNS * TOTAL_ROWS, &dest[0][0]);
+	for(int col = 0; col < TOTAL_COLUMNS;col++)
+		std::copy(&origin[col][0], &origin[col][TOTAL_ROWS], &dest[col][0]);
 }
 
 void Map::UpdateCells(const en::UpdateArgs& args)
@@ -86,19 +95,19 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 	//Mouse test
 	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_1))
 	{
-		auto mouse_pos = (args.m_pos / Size + glm::vec2(400/25, 300/25));
-		OldCells[(int)mouse_pos.x][(int)mouse_pos.y] = true;
+		const glm::vec2 mouse_pos = (args.m_pos / Size + (Default_Draw_Offset / 25.0f));
+		OldCells[(int)col_clamp(mouse_pos.x)][(int)row_clamp(mouse_pos.y)] = true;
 	}
 
 	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_2))
 	{
-		auto mouse_pos = (args.m_pos / Size + glm::vec2(400/25, 300/25));
-		OldCells[(int)mouse_pos.x][(int)mouse_pos.y] = false;
+		const glm::vec2 mouse_pos = (args.m_pos / Size + (Default_Draw_Offset / 25.0f));
+		OldCells[(int)col_clamp(mouse_pos.x)][(int)row_clamp(mouse_pos.y)] = false;
 	}
 
 	if (args.keyboard.isClicked(GLFW_KEY_Q))
 	{
-		IterateMap([&](int col, int row)
+		iterate_matrix([&](int col, int row)
 		{
 			OldCells[col][row] = false;
 		});
@@ -121,7 +130,7 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 
 	CopyHere(OldCells,NewCells);
 
-	IterateMap([&](int col, int row)
+	iterate_matrix([&](int col, int row)
 	{
 		NewCells[col][row] = CheckNeighbours(col, row);
 	});
@@ -132,17 +141,14 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 
 void Map::DrawCells(const en::RenderArgs& args)
 {
-	for (int col = 0; col < TOTAL_COLUMNS; col++)
-	{
-		for (int row = 0; row < TOTAL_ROWS; row++)
-		{
-			const glm::vec4& quad_color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
-			const glm::vec4& grid_color = !OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
-			float cm = args.camera_ctr.GetZoomLevel();
-			args.render.DrawOutLineQuad(glm::vec2(col, row) * Size - glm::vec2(400, 300), Size, grid_color, 0.5f);
-			args.render.DrawQuad(glm::vec2(col, row) * Size - glm::vec2(400,300) , Size , quad_color);
-		}
-	}
+	iterate_matrix([&](int col, int row) {
+		const glm::vec4& quad_color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
+		const glm::vec4& grid_color = !OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
+		float cm = args.camera_ctr.GetZoomLevel();
+		args.render.DrawOutLineQuad(glm::vec2(col, row) * Size - Default_Draw_Offset, Size, grid_color, 1.5f);
+		args.render.DrawQuad(glm::vec2(col, row) * Size - Default_Draw_Offset, Size, quad_color);
+	});
+
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
 	m_RenderThisPlease.clear();
@@ -150,9 +156,13 @@ void Map::DrawCells(const en::RenderArgs& args)
 
 void Map::OnImGui(const en::ImGuiArgs& args)
 {
+	ImGui::Text("'P' to Pause");
+	ImGui::Text("Right click revive");
+	ImGui::Text("Left click kill");
+	ImGui::Text("'Q' kill everything");
 	ImGui::Text("Configs");
-	ImGui::SliderFloat("Init timestamp velocity", &init_timestamp, -1.0f, 5.0f);
-	ImGui::SliderFloat("Decay timestamp velocity", &decay_timestamp, 0.0001f, 5.0f);
+	ImGui::SliderFloat("Init timestamp velocity", &init_timestamp, -0.1f, 2.0f);
+	ImGui::SliderFloat("Decay timestamp velocity", &decay_timestamp, 0.1f, 2.0f);
 	if(ImGui::Button("Pause"))
 	{
 		pause = !pause;
@@ -161,7 +171,7 @@ void Map::OnImGui(const en::ImGuiArgs& args)
 
 void Map::OnAttach(const std::vector<InitActiveCell>& actives)
 {
-	IterateMap([&](int col, int row)
+	iterate_matrix([&](int col, int row)
 	{ 
 		OldCells[col][row] = false;
 	});

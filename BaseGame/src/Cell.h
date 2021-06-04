@@ -21,7 +21,7 @@ private:
 	//TODO: Pass this matrix to Heap memory
 	bool** OldCells;
 	bool** NewCells;
-	bool pause = false;
+	bool pause = true;
 	float init_timestamp = 1.0f;
 	float decay_timestamp = 1.0f;
 public:
