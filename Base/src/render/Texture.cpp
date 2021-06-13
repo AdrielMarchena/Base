@@ -12,6 +12,7 @@
 #include <future>
 #include <mutex>
 #include "utils/Logs.h"
+#include "utils/Generic.h"
 namespace en
 {
 namespace render
@@ -69,15 +70,24 @@ namespace render
 		return info;
 	}
 	
-	static inline void CreateTexture(std::unordered_map<std::string, Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info)
+	static inline void CreateTexture(std::unordered_map<std::string, Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
 	{
+		using namespace utils;
 		while (!info.isAllLoad())
 		{
 			for (auto& inf : info.resources)
 			{
 				if (info.futures[inf.first]._Is_ready())
 				{
-					map[inf.first] = Texture(inf.second);
+					std::string name = inf.first;
+					switch (nameCaps)
+					{
+						case NameCaps::NONE: break;
+						case NameCaps::ALL_LOWER: name = utils::ToLower(name); break;
+						case NameCaps::ALL_UPPER: name = utils::ToUpper(name); break;
+						default: break;
+					}
+					map[name] = Texture(inf.second);
 					D_LOG("TEXTURE CREATED image: '" << inf.first << "' Loaded!");
 					inf.second.clear();
 					info.futures.erase(inf.first);
@@ -88,7 +98,7 @@ namespace render
 		}
 	}
 
-	std::unordered_map<std::string, Texture> Texture::LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names,uint8_t batchLimit)
+	std::unordered_map<std::string, Texture> Texture::LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps, uint8_t batchLimit)
 	{
 		utils::ResourceLoads<std::string, ImageInfo> loads;
 		auto lamb = [&](const std::string& name, const std::string& path) {
@@ -117,13 +127,13 @@ namespace render
 			count++;
 			if (count >= batchLimit)
 			{
-				CreateTexture(mm, loads);
+				CreateTexture(mm, loads,nameCaps);
 				loads.resources.clear();
 				loads.futures.clear();
 				count = 0;
 			}
 		}
-		CreateTexture(mm, loads);
+		CreateTexture(mm, loads,nameCaps);
 		return mm; //Move because texture is there
 	}
 	void ImageInfo::clear()

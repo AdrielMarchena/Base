@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include "gl/glew.h"
 #include "glm/glm.hpp"
+#include "utils/NameCaps.h"
 namespace en
 {
 namespace render
@@ -32,7 +33,7 @@ namespace render
 		int32_t  m_Wid = NULL;
 		int32_t  m_Hei = NULL;
 		int32_t  m_Bit = NULL;
-		bool copy = false; //Maybe is trash?
+		bool copy = false; //Maybe is trash code?
 	public:
 		Texture() = default;
 		Texture(const std::string& path);
@@ -102,7 +103,7 @@ namespace render
 		glm::vec2 GetSize() const { return { m_Wid ,m_Hei }; }
 
 		static ImageInfo GetImage(const char* path);
-		static std::unordered_map<std::string, Texture> LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, uint8_t batchLimit = 5);
+		static std::unordered_map<std::string, Texture> LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE ,uint8_t batchLimit = 5);
 
 		bool IsCopy() const { return copy; }
 

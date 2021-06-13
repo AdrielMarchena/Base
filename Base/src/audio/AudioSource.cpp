@@ -14,7 +14,7 @@
 #include "utils/threading.h"
 #include "SoundBuffer.h"
 #include "utils/Logs.h"
-
+#include "utils/Generic.h"
 #include <algorithm>
 
 //#include "Al_Error.h"
@@ -33,8 +33,9 @@ namespace en
 namespace aux
 {
 
-	static inline void CreateAudio(std::unordered_map<std::string, AudioSource>& tmp ,utils::ResourceLoads<std::string, ALuint>& loads)
+	static inline void CreateAudio(std::unordered_map<std::string, AudioSource>& tmp ,utils::ResourceLoads<std::string, ALuint>& loads, const utils::NameCaps& nameCaps)
 	{
+		using namespace utils;
 		while (!loads.isAllLoad())
 		{
 			for (auto& inf : loads.resources)
@@ -45,7 +46,15 @@ namespace aux
 					{
 						if (!inf.second)
 							throw std::exception("Buffer not created!");
-						tmp[inf.first] = AudioSource(inf.second);
+						std::string name = inf.first;
+						switch (nameCaps)
+						{
+						case NameCaps::NONE: break;
+						case NameCaps::ALL_LOWER: name = utils::ToLower(name); break;
+						case NameCaps::ALL_UPPER: name = utils::ToUpper(name); break;
+						default: break;
+						}
+						tmp[name] = AudioSource(inf.second);
 						inf.second = 0;
 						loads.futures.erase(inf.first);
 						loads.resources.erase(inf.first);
@@ -63,7 +72,7 @@ namespace aux
 	}
 
 	//TODO: It's probably better to store the source buffer on the map, either way, can still get the source buffer from the AudioSource
-	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, uint8_t batchLimit)
+	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, const utils::NameCaps& nameCaps, uint8_t batchLimit)
 	{
 		utils::ResourceLoads<std::string, ALuint> loads;
 		auto lamb = [&](const std::string& name, const std::string& path)
@@ -85,13 +94,13 @@ namespace aux
 			count++;
 			if (count >= batchLimit)
 			{
-				CreateAudio(tmp,loads);
+				CreateAudio(tmp,loads,nameCaps);
 				loads.resources.clear();
 				loads.futures.clear();
 				count = 0;
 			}
 		}
-		CreateAudio(tmp, loads);
+		CreateAudio(tmp, loads,nameCaps);
 		return tmp;
 	}
 

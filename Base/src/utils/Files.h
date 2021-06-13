@@ -14,7 +14,6 @@ namespace en
 {
 namespace utils
 {
-
 	namespace ex
 	{
 		/**
