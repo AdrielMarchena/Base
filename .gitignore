@@ -49,6 +49,11 @@
 *.[Mm][Pp]3
 *.[Mm][Pp]4
 
+#images
+*.[Pp][Nn][Gg]
+*.[Jj][Pp][Gg]
+*.[Jj][Pp][Ee][Gg]
+
 #Bin folder or something
 [Dd][Ee][Bb][Uu][Gg]/
 [Rr][Ee][Ll][Ee][Aa][Ss][Ee]/

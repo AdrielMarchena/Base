@@ -24,8 +24,10 @@ Game::Game(const char* title, float_t w, float_t h, bool resizeble)
 
 void Game::OnAttach(AttachArgs args)
 {
-	std::vector<InitActiveCell> actives;
+	LoadTextures("test_imgs");
+	//LoadSounds("test_audio");
 
+	std::vector<InitActiveCell> actives;
 	//actives.push_back({0,0});
 	actives.push_back({8,8});
 	actives.push_back({9,8});
@@ -41,7 +43,6 @@ void Game::OnAttach(AttachArgs args)
 		});
 	
 	m_Ambient.UpdateStaticLight(args.render.GetShader());
-
 	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetShader());
 	
 	Window::OnAttach(args);
@@ -57,6 +58,8 @@ void Game::OnUpdate(UpdateArgs args)
 void Game::OnRender(RenderArgs args)
 {
 	CellGame.DrawCells(args);
+
+	args.render.DrawQuad({ 0,0 }, { 500,500 }, m_Textures["Largarto"],2);
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);

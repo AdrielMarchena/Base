@@ -13,12 +13,12 @@ namespace en
 namespace utils
 {
 	//TODO: copy safe this entire thing, there's a mutex here
-	template<typename T, typename F>
+	template<typename _Key, typename _Res>
 	struct ResourceLoads
 	{
 	public:
-		std::unordered_map<T, F> resources;
-		std::unordered_map<T, std::future<void>> futures;
+		std::unordered_map<_Key, _Res> resources;
+		std::unordered_map<_Key, std::future<void>> futures;
 		std::mutex mutex;
 
 		ResourceLoads() = default;

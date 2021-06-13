@@ -107,7 +107,7 @@ namespace aux
 		/**
 		* Load audio files and Create Asynchronously a bunch of instances of this class
 		*/
-		static std::unordered_map<std::string, AudioSource> LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait = true);
+		static std::unordered_map<std::string, AudioSource> LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, uint8_t batchLimit = 5);
 		static std::unordered_map<std::string, AudioSource> LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait = true);
 	private:
 	   ALuint p_Source = NULL;

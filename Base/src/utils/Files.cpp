@@ -25,9 +25,38 @@ namespace en
 {
 namespace utils
 {
+	std::string ToUpper(const std::string& str)
+	{
+		std::string tmp = "";
+		for (auto& c : str)
+		{
+			if (c >= 'a' && c <= 'z')
+			{
+				tmp += c - 32;
+			}
+			else
+				tmp += c;
+		}
+		return tmp;
+	}
+	
+	std::string ToLower(const std::string& str)
+	{
+		std::string tmp = "";
+		for (auto& c : str)
+		{
+			if (c >= 'A' && c <= 'Z')
+			{
+				tmp += c + 32;
+			}
+			else
+				tmp += c;
+		}
+		return tmp;
+	}
 
 	/**
-	* Parse a string using a splt char (default is '#')
+	* Parse a string using a split char (default is '#')
 	*/
 	static inline std::vector<std::string> ParseThing(const std::string& thing, char split_char = '#')
 	{

@@ -32,30 +32,9 @@ namespace en
 {
 namespace aux
 {
-	//TODO: It's probably better to store the source buffer on the map, either way, can still get the source buffer from the AudioSource
-	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait)
+
+	static inline void CreateAudio(std::unordered_map<std::string, AudioSource>& tmp ,utils::ResourceLoads<std::string, ALuint>& loads)
 	{
-		utils::ResourceLoads<std::string, ALuint> loads;
-		auto lamb = [&](const std::string& name, const std::string& path)
-		{
-			auto info = LoadSoundEffect(path.c_str());
-			if (info)
-			{
-				//std::lock_guard<std::mutex> lock(loads.mutex); // Since the lock is here, there is not to much of a gain here
-				//loads.resources[name] = AudioSource(info);
-				loads.resources[name] = info;
-				LOG_NORMAL("sound: '" << name << "' Loaded!");
-			}
-			else
-				LOG_NORMAL("sound: '" << name << "' Can't be loaded");
-		};
-
-		for (auto& name : _NameFile)
-		{
-			loads.futures[name.first] = std::async(std::launch::async, lamb, name.first, name.second);
-		}
-
-		std::unordered_map<std::string, AudioSource> tmp;
 		while (!loads.isAllLoad())
 		{
 			for (auto& inf : loads.resources)
@@ -81,11 +60,39 @@ namespace aux
 				}
 			}
 		}
+	}
 
-		/*if (_Wait)
-			loads.waitAll();*/
-
-		return std::move(tmp);
+	//TODO: It's probably better to store the source buffer on the map, either way, can still get the source buffer from the AudioSource
+	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, uint8_t batchLimit)
+	{
+		utils::ResourceLoads<std::string, ALuint> loads;
+		auto lamb = [&](const std::string& name, const std::string& path)
+		{
+			auto info = LoadSoundEffect(path.c_str());
+			if (info)
+			{
+				loads.resources[name] = info;
+				LOG_NORMAL("sound: '" << name << "' Loaded!");
+			}
+			else
+				LOG_NORMAL("sound: '" << name << "' Can't be loaded");
+		};
+		uint8_t count = 0;
+		std::unordered_map<std::string, AudioSource> tmp;
+		for (auto& name : _NameFile)
+		{
+			loads.futures[name.first] = std::async(std::launch::async, lamb, name.first, name.second);
+			count++;
+			if (count >= batchLimit)
+			{
+				CreateAudio(tmp,loads);
+				loads.resources.clear();
+				loads.futures.clear();
+				count = 0;
+			}
+		}
+		CreateAudio(tmp, loads);
+		return tmp;
 	}
 
 	std::unordered_map<std::string, AudioSource> AudioSource::LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait)

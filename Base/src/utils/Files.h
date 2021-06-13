@@ -43,7 +43,7 @@ namespace utils
 	public:
 		Files(){}
 
-		static std::vector<std::pair<std::string, std::string>> GetPairText(const std::string& dir, const std::string& ext = ".jpg#.png#.jpeg");
+		static std::vector<std::pair<std::string, std::string>> GetPairText(const std::string& dir, const std::string& ext = ".jpg#.jpeg#.png#.PNG");
 	};
 }
 }

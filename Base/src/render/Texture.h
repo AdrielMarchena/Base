@@ -102,7 +102,7 @@ namespace render
 		glm::vec2 GetSize() const { return { m_Wid ,m_Hei }; }
 
 		static ImageInfo GetImage(const char* path);
-		static std::unordered_map<std::string, Texture> LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names);
+		static std::unordered_map<std::string, Texture> LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, uint8_t batchLimit = 5);
 
 		bool IsCopy() const { return copy; }
 
