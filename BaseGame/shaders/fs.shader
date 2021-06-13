@@ -28,6 +28,10 @@ void main()
 	vec4 tmp_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
 	/*if (tmp_Color.a < 1.0)
 		discard;*/
+
+	if (u_LightQtd < 1)
+		o_Color = tmp_Color;
+	else
 	for (int i = 0; i < u_LightQtd; i++)
 	{
 		float distance = distance(u_LightInfo[i].u_LightPos.xy, v_Pos.xy);

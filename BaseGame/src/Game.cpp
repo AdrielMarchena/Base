@@ -36,7 +36,7 @@ void Game::OnAttach(AttachArgs args)
 
 	CellGame.OnAttach(actives);
 
-	m_Ambient.AddStaticLightSource({
+	/*m_Ambient.AddStaticLightSource({
 		{0,0,0},
 		{0,0,0,0},
 		1
@@ -44,7 +44,7 @@ void Game::OnAttach(AttachArgs args)
 	
 	m_Ambient.UpdateStaticLight(args.render.GetShader());
 	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetShader());
-	
+	*/
 	Window::OnAttach(args);
 }
 
@@ -59,7 +59,7 @@ void Game::OnRender(RenderArgs args)
 {
 	CellGame.DrawCells(args);
 
-	args.render.DrawQuad({ 0,0 }, { 500,500 }, m_Textures["Largarto"],2);
+	args.render.DrawQuad({ 0,0 }, { 500,500 }, m_Textures["LARGARTO"],3);
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
@@ -89,7 +89,7 @@ void Game::LoadTextures(const char* directory)
 	//Texuture
 	try
 	{
-		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText(directory));
+		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText(directory),utils::NameCaps::ALL_UPPER);
 	}
 	catch (const utils::ex::directory_not_found& dex)
 	{
