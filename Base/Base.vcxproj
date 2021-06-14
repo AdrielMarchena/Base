@@ -230,6 +230,7 @@
     <ClInclude Include="src\render\ParticleSystem.h" />
     <ClInclude Include="src\render\SubTexture.h" />
     <ClInclude Include="src\args\UpdateArgs.h" />
+    <ClInclude Include="src\utils\base_exceptions.h" />
     <ClInclude Include="src\utils\Files.h" />
     <ClInclude Include="src\colision\Colisions.h" />
     <ClInclude Include="src\input\Keyboard.h" />
