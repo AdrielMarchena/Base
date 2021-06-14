@@ -4,6 +4,7 @@
 
 #include "Window.h"
 #include "render/ParticleSystem.h"
+#include "render/Texture.h"
 #include "amb/Ambient.h"
 #include "audio/AudioSource.h"
 #include "Cell.h"
