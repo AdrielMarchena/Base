@@ -34,31 +34,35 @@ namespace render
 	static const size_t MaxIndexCount = MaxQuadCount * 6;
 	static int32_t MaxTexture = MaxTexturesSlots();
 
+	static const size_t MaxLineCount = 3000;
+	static const size_t MaxLineVertexCount = MaxLineCount * 2;
+	static const size_t MaxLineIndexCount = MaxLineCount * 2;
+
 	render2D::render2D(const char* vs, const char* fs)
 		:m_data(vs,fs,MaxTexture)
 	{
-		m_data.Shader.Bind();
+		m_data.QuadShader.Bind();
 
-		m_data.QuadBuffer = new Vertex[MaxVertexCount];
+		m_data.QuadBuffer = new QuadVertex[MaxVertexCount];
 
 		glGenVertexArrays(1, &m_data.QuadVA);
 		glBindVertexArray(m_data.QuadVA);
 
 		glGenBuffers(1, &m_data.QuadVB);
 		glBindBuffer(GL_ARRAY_BUFFER, m_data.QuadVB);
-		glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(QuadVertex), nullptr, GL_DYNAMIC_DRAW);
 
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, Position));
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position));
 
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, Color));
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color));
 
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, TexCoords));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords));
 
 		glEnableVertexAttribArray(3);
-		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, TexIndex));
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex));
 
 		//To much memory for the stack, free below
 		uint32_t* indices = new uint32_t[MaxIndexCount]{};
@@ -99,13 +103,47 @@ namespace render
 		int32_t* samplers = new int32_t[MaxTexture];
 		for (int i = 0; i < MaxTexture; i++)
 			samplers[i] = i;
-		m_data.Shader.SetUniform1iv("u_Textures", MaxTexture, samplers);
+		m_data.QuadShader.SetUniform1iv("u_Textures", MaxTexture, samplers);
 		delete[] samplers;
 
 		m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
 		m_data.TextureSlots[0] = m_data.WhiteTexture;
 		for (size_t i = 1; i < MaxTexture; i++)
 			m_data.TextureSlots[i] = 0;
+
+		//Line Stuff
+		m_data.LineShader.Bind();
+
+		m_data.LineBuffer = new LineVertex[MaxLineVertexCount];
+
+		glGenVertexArrays(1, &m_data.LineVA);
+		glBindVertexArray(m_data.LineVA);
+
+		glGenBuffers(1, &m_data.LineVB);
+		glBindBuffer(GL_ARRAY_BUFFER, m_data.LineVB);
+		glBufferData(GL_ARRAY_BUFFER, MaxLineVertexCount * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position));
+
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));
+
+		//To much memory for the stack, free below
+		indices = new uint32_t[MaxLineIndexCount]{};
+		offset = 0;
+		for (int i = 0; i < MaxLineIndexCount; i += 2)
+		{
+			indices[i + 0] = 0 + offset;
+			indices[i + 1] = 1 + offset;
+
+			offset += 2;
+		}
+
+		glGenBuffers(1, &m_data.LineIB);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.LineIB);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW);
+		delete[] indices;
 
 	}
 
@@ -114,8 +152,12 @@ namespace render
 		glDeleteVertexArrays(1, &m_data.QuadVA);
 		glDeleteBuffers(1, &m_data.QuadVB);
 		glDeleteBuffers(1, &m_data.QuadIB);
+		glDeleteVertexArrays(1, &m_data.LineVA);
+		glDeleteBuffers(1, &m_data.LineVB);
+		glDeleteBuffers(1, &m_data.LineIB);
 		glDeleteTextures(1, &m_data.WhiteTexture);
 		delete[] m_data.QuadBuffer;
+		delete[] m_data.LineBuffer;
 	}
 	
 	void render2D::BeginBatch()
@@ -125,6 +167,7 @@ namespace render
 
 	void render2D::EndBatch()
 	{
+		m_data.QuadShader.Bind();
 		//Current position - first position
 		GLsizeiptr size = (uint8_t*)m_data.QuadBufferPtr - (uint8_t*)m_data.QuadBuffer;
 		glBindBuffer(GL_ARRAY_BUFFER, m_data.QuadVB);
@@ -133,6 +176,7 @@ namespace render
 
 	void render2D::Flush()
 	{
+		m_data.QuadShader.Bind();
 		for (size_t i = 0 ; i < m_data.TextureSlotIndex; i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
@@ -140,6 +184,8 @@ namespace render
 		}
 
 		glBindVertexArray(m_data.QuadVA);
+		//glBindBuffer(GL_ARRAY_BUFFER, m_data.QuadVB);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.QuadIB);
 		glDrawElements(GL_TRIANGLES, m_data.IndexCount, GL_UNSIGNED_INT, nullptr);
 		m_data.RenderStatus.DrawCount++;
 
@@ -147,9 +193,41 @@ namespace render
 		m_data.TextureSlotIndex = 1;
 	}
 
+	void render2D::LineBeginBatch()
+	{
+		m_data.LineBufferPtr = m_data.LineBuffer;
+	}
+
+	void render2D::LineEndBatch()
+	{
+		m_data.LineShader.Bind();
+		//Current position - first position
+		GLsizeiptr size = (uint8_t*)m_data.LineBufferPtr - (uint8_t*)m_data.LineBuffer;
+		glBindBuffer(GL_ARRAY_BUFFER, m_data.LineVB);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.LineBuffer);
+	}
+
+	void render2D::LineFlush()
+	{
+		m_data.LineShader.Bind();
+		glBindVertexArray(m_data.LineVA);
+		//glBindBuffer(GL_ARRAY_BUFFER, m_data.LineVB);
+		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.LineIB);
+		glDrawElements(GL_LINES, m_data.LineIndexCount, GL_UNSIGNED_INT, nullptr);
+		m_data.RenderStatus.DrawCount++;
+
+		m_data.LineCount = 0;
+		m_data.LineIndexCount = 0;
+	}
+
 	const Shader& render2D::GetShader()
 	{
-		return m_data.Shader;
+		return m_data.QuadShader;
+	}
+
+	const Shader& render2D::GetLineShader()
+	{
+		return m_data.LineShader;
 	}
 
 	void render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
@@ -256,16 +334,17 @@ namespace render
 	void render2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t thick,
 				   float_t layer, float_t rotation, const glm::vec3& axis)
 	{
-		//FIXME: Bottom and TOP are less thick than Right and Left lines
-		//Probably the bottom thick is to the wrong side, and the top as well
-		//Or, the Left and Right Lines are to thick
-		DrawQuad(position, { thick,size.y }, color,layer,rotation,axis);
-		DrawQuad({ position.x,position.y + size.y }, { size.x,thick }, color, layer, rotation, axis);
-		DrawQuad(position + size, { -thick,-size.y }, color, layer, rotation, axis);
-		DrawQuad({ position.x + size.x,position.y }, { -size.x,-thick }, color, layer, rotation, axis);
+		//Bottom Line
+		DrawLine(position, { position.x + size.x, position.y }, color ,layer);
+		//Left Line
+		DrawLine(position, { position.x, position.y + size.y }, color ,layer);
+		//Top Line
+		DrawLine({ position.x, position.y + size.y }, position + size, color, layer);
+		//Right Line
+		DrawLine({ position.x + position.x, position.y }, position + size, color, layer);
 	}
 
-	void render2D::DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t thick, float_t layer)
+	void render2D::DrawQuadLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t thick, float_t layer)
 	{
 		if (m_data.IndexCount >= MaxIndexCount)
 		{
@@ -334,6 +413,27 @@ namespace render
 
 			m_data.IndexCount += 6;
 		}
+	}
+
+	void render2D::DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer)
+	{
+		if (m_data.LineIndexCount >= MaxLineIndexCount)
+		{
+			LineEndBatch();
+			LineFlush();
+			LineBeginBatch();
+		}
+
+		m_data.LineBufferPtr->Position = { origin.x,origin.y,-layer };
+		m_data.LineBufferPtr->Color = color;
+		m_data.LineBufferPtr++;
+
+		m_data.LineBufferPtr->Position = { dest.x,dest.y,-layer };
+		m_data.LineBufferPtr->Color = color;
+		m_data.LineBufferPtr++;
+
+		m_data.LineCount++;
+		m_data.LineIndexCount += 2;
 	}
 
 	void render2D::rotate(glm::vec3 vertices[4], float rotation,const glm::vec3& rotationCenter,const glm::vec3& axis)

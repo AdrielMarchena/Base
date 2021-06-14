@@ -24,15 +24,18 @@ namespace render
 		uint32_t QuadCount = 0;
 	};
 
-	struct Vertex
+	struct QuadVertex
 	{
 		glm::vec3 Position;
 		glm::vec4 Color;
 		glm::vec2 TexCoords;
 		float_t TexIndex;
-		glm::vec3 LightPos;
-		glm::vec4 LightColor;
-		glm::vec2 LightNormal;
+	};
+
+	struct LineVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
 	};
 
 	struct RenderData
@@ -40,7 +43,8 @@ namespace render
 	public:
 		RenderData(){}
 		RenderData(const char* vs, const char* fs, int32_t MaxTexSlots)
-			:Shader(vs,fs,MaxTexSlots) 
+			:QuadShader(vs,fs,MaxTexSlots), 
+			 LineShader("shaders/line_vs.shader","shaders/line_fs.shader")
 		{
 		}
 
@@ -52,12 +56,21 @@ namespace render
 			QuadVA =			other.QuadVA;
 			QuadVB =			other.QuadVB;
 			QuadIB =			other.QuadIB;
-			Shader =  std::move(other.Shader);
+			QuadShader =  std::move(other.QuadShader);
 			WhiteTexture =	    other.WhiteTexture;
 			WhiteTextureSlot =  other.WhiteTextureSlot;
 			IndexCount =		other.IndexCount;
 			QuadBuffer =		other.QuadBuffer;
 			QuadBufferPtr =		other.QuadBufferPtr;
+
+			LineVA = other.LineVA;
+			LineVB = other.LineVB;
+			LineIB = other.LineIB;
+			LineShader = std::move(other.LineShader);
+			LineIndexCount = other.LineIndexCount;
+			LineBuffer = other.LineBuffer;
+			LineBufferPtr = other.LineBufferPtr;
+			LineCount = other.LineCount;
 
 			other.QuadVA = NULL;
 			other.QuadVB = NULL;
@@ -68,6 +81,14 @@ namespace render
 			other.QuadBuffer = nullptr;
 			other.QuadBufferPtr = nullptr;
 
+			other.LineVA = NULL;
+			other.LineVB = NULL;
+			other.LineIB = NULL;
+			other.LineIndexCount = NULL;
+			other.LineBuffer = nullptr;
+			other.LineBufferPtr = nullptr;
+			other.LineCount = NULL;
+
 			return *this;
 		}
 		~RenderData(){}
@@ -75,15 +96,25 @@ namespace render
 		uint32_t QuadVA = 0;
 		uint32_t QuadVB = 0;
 		uint32_t QuadIB = 0;
-		Shader   Shader;
+		Shader   QuadShader;
 		uint32_t WhiteTexture = 0;
 		uint8_t  WhiteTextureSlot = 0;
 		uint32_t IndexCount = 0;
-		Vertex*  QuadBuffer = nullptr;
-		Vertex*  QuadBufferPtr = nullptr;
+		QuadVertex*  QuadBuffer = nullptr;
+		QuadVertex*  QuadBufferPtr = nullptr;
 
 		std::vector<uint32_t> TextureSlots;
 		uint32_t TextureSlotIndex = 1;
+		
+		//Line Stuff
+		uint32_t LineVA = 0;
+		uint32_t LineVB = 0;
+		uint32_t LineIB = 0;
+		render::Shader   LineShader;
+		uint32_t LineIndexCount = 0;
+		LineVertex* LineBuffer = nullptr;
+		LineVertex* LineBufferPtr = nullptr;
+		uint64_t LineCount = 0;
 
 		Stats RenderStatus;
 	};
@@ -120,7 +151,13 @@ namespace render
 		void BeginBatch();
 		void EndBatch();
 		void Flush();
+
+		void LineBeginBatch();
+		void LineEndBatch();
+		void LineFlush();
+
 		const Shader& GetShader();
+		const Shader& GetLineShader();
 
 		void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
@@ -137,8 +174,11 @@ namespace render
 		void DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t thick,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
-		void DrawLine(const glm::vec2& origin, const glm::vec2& dest,const glm::vec4& color, float_t thick, 
-					  float_t layer=0.0f);
+		[[deprecated("Use DrawLine() instead")]]
+		void DrawTLine(const glm::vec2& origin, const glm::vec2& dest,const glm::vec4& color, float_t thick, 
+		    float_t layer=0.0f);
+
+		void DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer = 0);
 
 	private:
 		void rotate(glm::vec3 vertices[4], float rotation, const glm::vec3& rotationCenter, const glm::vec3& axis);
