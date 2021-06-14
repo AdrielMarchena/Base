@@ -128,8 +128,6 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 		return;
 	}
 
-	CopyHere(OldCells,NewCells);
-
 	iterate_matrix([&](int col, int row)
 	{
 		NewCells[col][row] = CheckNeighbours(col, row);
