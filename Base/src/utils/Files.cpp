@@ -62,7 +62,7 @@ namespace utils
 		{
 			
 			const std::string msg = "The directory " + dir + " does not exists"; //FIXME: Do i really need this temp std::string ?
-			throw ex::directory_not_found(msg.c_str(),dir.c_str());
+			throw baseException::directory_not_found(msg.c_str(),dir.c_str());
 		}
 #else
 		if (!fs::exists(dir))
