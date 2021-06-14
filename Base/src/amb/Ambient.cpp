@@ -57,5 +57,11 @@ namespace windowing
 		}
 	}
 
+	void Ambient::ZeroLight(const render::Shader& _Shader)
+	{
+		m_StaticLightSource.clear();
+		_Shader.SetUniform1f("u_LightQtd", 0);
+	}
+
 }
 }

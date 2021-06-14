@@ -60,6 +60,8 @@ namespace windowing
 
 		// Insert all data in the givin shader
 		void UpdateStaticLight(const render::Shader& _Shader, const uint8_t _LightSourceLimit = 20);
+	
+		void ZeroLight(const render::Shader& _Shader);
 	};
 }	
 }
