@@ -175,7 +175,7 @@ namespace render
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		[[deprecated("Use DrawLine() instead")]]
-		void DrawTLine(const glm::vec2& origin, const glm::vec2& dest,const glm::vec4& color, float_t thick, 
+		void DrawQuadLine(const glm::vec2& origin, const glm::vec2& dest,const glm::vec4& color, float_t thick, 
 		    float_t layer=0.0f);
 
 		void DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer = 0);
