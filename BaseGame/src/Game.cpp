@@ -24,7 +24,7 @@ Game::Game(const char* title, float_t w, float_t h, bool resizeble)
 
 void Game::OnAttach(AttachArgs args)
 {
-	LoadTextures("test_imgs");
+	//LoadTextures("test_imgs");
 	//LoadSounds("test_audio");
 
 	std::vector<InitActiveCell> actives;
@@ -44,22 +44,33 @@ void Game::OnAttach(AttachArgs args)
 	
 	m_Ambient.UpdateStaticLight(args.render.GetShader());
 	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetShader());
-	*/
+	
+	m_Ambient.UpdateStaticLight(args.render.GetLineShader());
+	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetLineShader());*/
+
+	m_Ambient.ZeroLight(args.render.GetShader());
+	m_Ambient.ZeroLight(args.render.GetLineShader());
 	Window::OnAttach(args);
 }
 
 void Game::OnUpdate(UpdateArgs args)
 {
-	CellGame.UpdateCells(args);
+	//CellGame.UpdateCells(args);
+
+	m_RenderThisPlease.push_back([&](RenderArgs& r_args)
+	{
+		r_args.render.DrawTLine({ 0,0 }, args.m_pos, { 1.0f,1.0f,1.0f,1.0f });
+		r_args.render.DrawTLine({ 0,0 }, {500,500}, { 1.0f,1.0f,1.0f,1.0f });
+	});
 
 	Window::OnUpdate(args);
 }
 
 void Game::OnRender(RenderArgs args)
 {
-	CellGame.DrawCells(args);
+	//CellGame.DrawCells(args);
 
-	args.render.DrawQuad({ 0,0 }, { 500,500 }, m_Textures["LARGARTO"],3);
+	args.render.DrawQuad({ 0,0 }, { 100,100 }, m_Textures["Largarto"]);
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
@@ -72,7 +83,7 @@ void Game::OnImGui(ImGuiArgs args)
 {
 	MainMenuBar(args);
 
-	CellGame.OnImGui(args);
+	//CellGame.OnImGui(args);
 
 	Window::OnImGui(args);
 }
@@ -89,9 +100,9 @@ void Game::LoadTextures(const char* directory)
 	//Texuture
 	try
 	{
-		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText(directory),utils::NameCaps::ALL_UPPER);
+		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText(directory));
 	}
-	catch (const utils::ex::directory_not_found& dex)
+	catch (const utils::baseException::directory_not_found& dex)
 	{
 		//TODO: Put a default texture on the u_map (do not rethrow)
 		LOG_NORMAL("Directory to Textures " << dex.path() << " not found!");
@@ -110,7 +121,7 @@ void Game::LoadSounds(const char* directory)
 	{
 		m_Audios = aux::AudioSource::LoadAudios(utils::Files::GetPairText(directory, ".mp3#.ogg#.wav"));
 	}
-	catch (const utils::ex::directory_not_found& dex)
+	catch (const utils::baseException::directory_not_found& dex)
 	{
 		//TODO: Put a default texture on the u_map (do not rethrow please)
 		LOG_NORMAL("Directory to Audios " << dex.path() << " not found!");
