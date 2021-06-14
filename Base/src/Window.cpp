@@ -65,7 +65,7 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
-			render = render::render2D("shaders/vs.shader", "shaders/fs.shader");
+			m_Render = std::make_unique<render::render2D>("shaders/vs.shader", "shaders/fs.shader");
 
 			//Set callback and pointer to this very window
 			myWindow = this;
@@ -91,8 +91,6 @@ namespace en
 			aux::LoadDevices();
 			p_ALCDevice = aux::GetDevicePtr();
 			p_ALCContext = aux::GetContextPtr();
-
-
 		}
 
 		Window::~Window()
@@ -109,11 +107,15 @@ namespace en
 		{
 			using namespace render;
 			using namespace utils;
-			render2D render("shaders/vs.shader", "shaders/fs.shader");
+			render2D& render = *m_Render;
 
 			render.GetShader().Bind();
 			render.GetShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
 			render.GetShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			render.GetLineShader().Bind();
+			render.GetLineShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+			render.GetLineShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 			float deltaTime = 0.0f;
@@ -128,22 +130,31 @@ namespace en
 				float currentTime = glfwGetTime();
 				deltaTime = currentTime - lastFrame;
 				lastFrame = currentTime;
-				UpdateArgs up_args = { deltaTime,mouse,keyboard };
+				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse) };
 				m_camera.OnUpdate(up_args);
+				render.GetShader().Bind();
 				render.GetShader().SetUniformMat4f(
 					"u_ViewProj",
 					m_camera.GetCamera().GetViewProjectionMatrix()
 				);
-				OnUpdate({ deltaTime,mouse,keyboard,m_pos(mouse) });
+				render.GetLineShader().Bind();
+				render.GetLineShader().SetUniformMat4f(
+					"u_ViewProj",
+					m_camera.GetCamera().GetViewProjectionMatrix()
+				);
+				OnUpdate(up_args);
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+				render.LineBeginBatch();
 				render.BeginBatch();
 
 				OnRender({ deltaTime,render,m_camera,m_camera.GetCamera() });
 
 				render.EndBatch();
+				render.LineEndBatch();
 				render.Flush();
+				render.LineFlush();
 
 				DEAR_NEW_FRAME();
 
@@ -183,7 +194,7 @@ namespace en
 			}
 			catch (const std::exception& ex)
 			{
-				
+				std::cout << "Could not delete devices! Error: " << ex.what();
 			}
 		}
 
@@ -270,11 +281,19 @@ namespace en
 			//CALLBACK_STATIC_CAST(Window, window)->m_camera.Resize(w, h);
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
-			render.GetShader().SetUniformMat4f(
+			m_Render->GetShader().Bind();
+			m_Render->GetShader().SetUniformMat4f(
 				"u_ViewProj",
 				m_camera.GetCamera().GetViewProjectionMatrix()
 			);
-			render.GetShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			m_Render->GetShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			
+			m_Render->GetLineShader().Bind();
+			m_Render->GetLineShader().SetUniformMat4f(
+				"u_ViewProj",
+				m_camera.GetCamera().GetViewProjectionMatrix()
+			);
+			m_Render->GetLineShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
 			glViewport(0, 0, m_Wid, m_Hei);
 		}
 
@@ -293,7 +312,11 @@ namespace en
 				case MouseAction::SCROLL:
 					mouse.on_mouse_scroll(this->m_Window, args.Xoffset, args.Yoffset);
 					m_camera.OnMouseScrolled(args.Yoffset);
-					render.GetShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+					m_Render->GetShader().Bind();
+					m_Render->GetShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+					
+					m_Render->GetLineShader().Bind();
+					m_Render->GetLineShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
 					break;
 				}
 
@@ -317,7 +340,7 @@ namespace en
 			m_Resizeble = other.m_Resizeble;
 			m_IO = other.m_IO;
 			m_Title = std::move(other.m_Title);
-			render = std::move(other.render);
+			m_Render = std::move(other.m_Render);
 			keyboard = other.keyboard;
 			mouse = other.mouse;
 			m_camera = other.m_camera;
@@ -347,7 +370,7 @@ namespace en
 			m_Hei = other.m_Hei;
 			m_Resizeble = other.m_Resizeble;
 			m_Title = std::move(other.m_Title);
-			render = std::move(other.render);
+			m_Render = std::move(other.m_Render);
 			keyboard = other.keyboard;
 			mouse = other.mouse;
 			m_camera = other.m_camera;

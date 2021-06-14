@@ -26,7 +26,7 @@
 #include "audio/AudioDevice.h"
 #include "AL/al.h"
 #include "AL/alc.h"
-
+#include <memory>
 #define DEAR_NEW_FRAME() ImGui_ImplOpenGL3_NewFrame();\
 						 ImGui_ImplGlfw_NewFrame();\
 						 ImGui::NewFrame()
@@ -48,7 +48,7 @@ namespace en
 			input::Keyboard keyboard;
 			Window* myWindow;
 			OrthographicCameraController m_camera;
-			render::render2D render;
+			std::unique_ptr<render::render2D> m_Render;
 		protected:
 			std::string m_Title;
 			float m_Wid;
