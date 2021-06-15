@@ -1,5 +1,5 @@
 /*
-*	@file render2D.cpp
+*	@file QuadRender2D.cpp
 *	
 *	The render it self it's here (cpp)
 *
@@ -14,8 +14,8 @@ namespace en
 {
 namespace render
 {
-	glm::vec3 render2D::m_default_axis = { 0.0f,0.0f,1.0f };
-	glm::vec2 render2D::m_default_tex_coords[] = {
+	glm::vec3 QuadRender2D::m_default_axis = { 0.0f,0.0f,1.0f };
+	glm::vec2 QuadRender2D::m_default_tex_coords[] = {
 		{0.0f,0.0f},
 		{1.0f,0.0f},
 		{1.0f,1.0f},
@@ -38,7 +38,7 @@ namespace render
 	static const size_t MaxLineVertexCount = MaxLineCount * 2;
 	static const size_t MaxLineIndexCount = MaxLineCount * 2;
 
-	render2D::render2D(const char* vs, const char* fs)
+	QuadRender2D::QuadRender2D(const char* vs, const char* fs)
 		:m_data(vs,fs,MaxTexture)
 	{
 		m_data.QuadShader.Bind();
@@ -147,7 +147,7 @@ namespace render
 
 	}
 
-	render2D::~render2D()
+	QuadRender2D::~QuadRender2D()
 	{
 		glDeleteVertexArrays(1, &m_data.QuadVA);
 		glDeleteBuffers(1, &m_data.QuadVB);
@@ -160,12 +160,12 @@ namespace render
 		delete[] m_data.LineBuffer;
 	}
 	
-	void render2D::BeginBatch()
+	void QuadRender2D::BeginBatch()
 	{
 		m_data.QuadBufferPtr = m_data.QuadBuffer;
 	}
 
-	void render2D::EndBatch()
+	void QuadRender2D::EndBatch()
 	{
 		m_data.QuadShader.Bind();
 		//Current position - first position
@@ -174,7 +174,7 @@ namespace render
 		glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.QuadBuffer);
 	}
 
-	void render2D::Flush()
+	void QuadRender2D::Flush()
 	{
 		m_data.QuadShader.Bind();
 		for (size_t i = 0 ; i < m_data.TextureSlotIndex; i++)
@@ -193,12 +193,12 @@ namespace render
 		m_data.TextureSlotIndex = 1;
 	}
 
-	void render2D::LineBeginBatch()
+	void QuadRender2D::LineBeginBatch()
 	{
 		m_data.LineBufferPtr = m_data.LineBuffer;
 	}
 
-	void render2D::LineEndBatch()
+	void QuadRender2D::LineEndBatch()
 	{
 		m_data.LineShader.Bind();
 		//Current position - first position
@@ -207,7 +207,7 @@ namespace render
 		glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.LineBuffer);
 	}
 
-	void render2D::LineFlush()
+	void QuadRender2D::LineFlush()
 	{
 		m_data.LineShader.Bind();
 		glBindVertexArray(m_data.LineVA);
@@ -220,17 +220,17 @@ namespace render
 		m_data.LineIndexCount = 0;
 	}
 
-	const Shader& render2D::GetShader()
+	const Shader& QuadRender2D::GetShader()
 	{
 		return m_data.QuadShader;
 	}
 
-	const Shader& render2D::GetLineShader()
+	const Shader& QuadRender2D::GetLineShader()
 	{
 		return m_data.LineShader;
 	}
 
-	void render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
+	void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		if (m_data.IndexCount >= MaxIndexCount)
 		{
@@ -245,7 +245,7 @@ namespace render
 		m_data.RenderStatus.QuadCount++;
 	}
 
-	void render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4], float_t layer, float_t rotation, const glm::vec3& axis)
+	void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4], float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		if (m_data.IndexCount >= MaxIndexCount)
 		{
@@ -260,7 +260,7 @@ namespace render
 		m_data.RenderStatus.QuadCount++;
 	}
 
-	void render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, float_t rotation, const glm::vec3& axis)
+	void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
 		{
@@ -296,7 +296,7 @@ namespace render
 		m_data.RenderStatus.QuadCount++;
 	}
 
-	void render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture, float_t layer, float_t rotation, const glm::vec3& axis)
+	void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
 		{
@@ -331,7 +331,7 @@ namespace render
 		m_data.RenderStatus.QuadCount++;
 	}
 
-	void render2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
+	void QuadRender2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
 				   float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 
@@ -360,7 +360,7 @@ namespace render
 		DrawLine(right_bottom, right_top, color, layer);
 	}
 
-	void render2D::DrawQuadLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t thick, float_t layer)
+	void QuadRender2D::DrawQuadLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t thick, float_t layer)
 	{
 		if (m_data.IndexCount >= MaxIndexCount)
 		{
@@ -431,7 +431,7 @@ namespace render
 		}
 	}
 
-	void render2D::DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer)
+	void QuadRender2D::DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer)
 	{
 		if (m_data.LineIndexCount >= MaxLineIndexCount)
 		{
@@ -452,7 +452,7 @@ namespace render
 		m_data.LineIndexCount += 2;
 	}
 
-	void render2D::rotate(glm::vec3 vertices[4], float rotation,const glm::vec3& rotationCenter,const glm::vec3& axis)
+	void QuadRender2D::rotate(glm::vec3 vertices[4], float rotation,const glm::vec3& rotationCenter,const glm::vec3& axis)
 	{
 		const glm::mat4 translationMatrix = glm::translate(glm::identity<glm::mat4>(), -rotationCenter);
 		const glm::mat4 rotationMatrix = glm::rotate(glm::identity<glm::mat4>(), rotation, axis);
@@ -464,7 +464,7 @@ namespace render
 		}
 	}
 
-	void render2D::FillV(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, const glm::vec2 tex_coords[4], float_t tex_index, float_t layer, float_t rotation, const glm::vec3& axis)
+	void QuadRender2D::FillV(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, const glm::vec2 tex_coords[4], float_t tex_index, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quads[4] = {
 			{position.x,position.y,-layer},
@@ -496,7 +496,7 @@ namespace render
 			m_data.QuadBufferPtr++;
 		}
 	}
-	void render2D::FillVC(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4], const glm::vec2 tex_coords[4], float_t tex_index, float_t layer, float_t rotation, const glm::vec3& axis)
+	void QuadRender2D::FillVC(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4], const glm::vec2 tex_coords[4], float_t tex_index, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quads[4] = {
 			{position.x,position.y,-layer},

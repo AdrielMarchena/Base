@@ -1,5 +1,5 @@
 /*
-*	@file render2D.h
+*	@file QuadRender2D.h
 *	
 *	The render it self it's here (header)
 */
@@ -119,7 +119,7 @@ namespace render
 		Stats RenderStatus;
 	};
 
-	class render2D
+	class QuadRender2D
 	{
 	private:
 		RenderData m_data;
@@ -128,16 +128,16 @@ namespace render
 		static glm::vec2 m_default_tex_coords[4];
 	public:
 
-		render2D(const char* vs, const char* fs);
-		render2D(){}
+		QuadRender2D(const char* vs, const char* fs);
+		QuadRender2D(){}
 
-		render2D(render2D&& other) noexcept
+		QuadRender2D(QuadRender2D&& other) noexcept
 		{
 			// =operator of RenderData already do the work
 			m_data = other.m_data;
 		}
 
-		render2D& operator=(render2D&& other) noexcept
+		QuadRender2D& operator=(QuadRender2D&& other) noexcept
 		{
 			if(this == &other)
 				return *this;
@@ -146,7 +146,7 @@ namespace render
 			return *this;
 		}
 
-		~render2D();
+		~QuadRender2D();
 
 		void BeginBatch();
 		void EndBatch();

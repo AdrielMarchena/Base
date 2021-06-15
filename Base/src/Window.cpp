@@ -65,7 +65,7 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
-			m_Render = std::make_unique<render::render2D>("shaders/vs.shader", "shaders/fs.shader");
+			m_Render = std::make_unique<render::QuadRender2D>("shaders/vs.shader", "shaders/fs.shader");
 
 			//Set callback and pointer to this very window
 			myWindow = this;
@@ -107,7 +107,7 @@ namespace en
 		{
 			using namespace render;
 			using namespace utils;
-			render2D& render = *m_Render;
+			QuadRender2D& render = *m_Render;
 
 			render.GetShader().Bind();
 			render.GetShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
