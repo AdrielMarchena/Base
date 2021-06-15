@@ -55,22 +55,16 @@ void Game::OnAttach(AttachArgs args)
 
 void Game::OnUpdate(UpdateArgs args)
 {
-	//CellGame.UpdateCells(args);
-
-	m_RenderThisPlease.push_back([&](RenderArgs& r_args)
-	{
-		r_args.render.DrawTLine({ 0,0 }, args.m_pos, { 1.0f,1.0f,1.0f,1.0f });
-		r_args.render.DrawTLine({ 0,0 }, {500,500}, { 1.0f,1.0f,1.0f,1.0f });
-	});
+	CellGame.UpdateCells(args);
 
 	Window::OnUpdate(args);
 }
 
 void Game::OnRender(RenderArgs args)
 {
-	//CellGame.DrawCells(args);
+	CellGame.DrawCells(args);
 
-	args.render.DrawQuad({ 0,0 }, { 100,100 }, m_Textures["Largarto"]);
+	//args.render.DrawOutLineQuad({ 0,0 }, { 100,100 }, {1.0f,1.0f,1.0f,1.0f});
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
@@ -83,7 +77,7 @@ void Game::OnImGui(ImGuiArgs args)
 {
 	MainMenuBar(args);
 
-	//CellGame.OnImGui(args);
+	CellGame.OnImGui(args);
 
 	Window::OnImGui(args);
 }

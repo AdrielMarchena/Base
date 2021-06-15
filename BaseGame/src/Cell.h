@@ -5,8 +5,8 @@
 #include "args/ImGuiArgs.h"
 #include <functional>
 
-#define TOTAL_COLUMNS 100
-#define TOTAL_ROWS 100
+#define TOTAL_COLUMNS 300
+#define TOTAL_ROWS 300
 
 struct InitActiveCell
 {

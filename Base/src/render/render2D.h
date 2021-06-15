@@ -171,7 +171,7 @@ namespace render
 		void DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
-		void DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t thick,
+		void DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		[[deprecated("Use DrawLine() instead")]]

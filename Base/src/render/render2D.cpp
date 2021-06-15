@@ -331,17 +331,33 @@ namespace render
 		m_data.RenderStatus.QuadCount++;
 	}
 
-	void render2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t thick,
+	void render2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
 				   float_t layer, float_t rotation, const glm::vec3& axis)
 	{
+
+		glm::vec3 quads[4] = {
+			{position.x,position.y,-layer},
+			{position.x + size.x, position.y,-layer},
+			{position.x + size.x,position.y + size.y,-layer},
+			{position.x,position.y + size.y,-layer}
+		};
+
+		if (rotation)
+			rotate(quads, rotation, { position.x + (size.x / 2), position.y + (size.y / 2), layer }, axis);
+
+		const glm::vec2 left_bottom  = { quads[0].x,quads[0].y };
+		const glm::vec2 right_bottom = { quads[1].x,quads[1].y };
+		const glm::vec2 right_top	 = { quads[2].x,quads[2].y };
+		const glm::vec2 left_top	 = { quads[3].x,quads[3].y };
+
 		//Bottom Line
-		DrawLine(position, { position.x + size.x, position.y }, color ,layer);
+		DrawLine(left_bottom, right_bottom, color, layer);
 		//Left Line
-		DrawLine(position, { position.x, position.y + size.y }, color ,layer);
+		DrawLine(left_bottom, left_top, color ,layer);
 		//Top Line
-		DrawLine({ position.x, position.y + size.y }, position + size, color, layer);
+		DrawLine(left_top, right_top, color, layer);
 		//Right Line
-		DrawLine({ position.x + position.x, position.y }, position + size, color, layer);
+		DrawLine(right_bottom, right_top, color, layer);
 	}
 
 	void render2D::DrawQuadLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t thick, float_t layer)

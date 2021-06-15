@@ -5,8 +5,8 @@
 #include "imgui.h"
 const glm::vec2 Size = { 25.0f,25.0f };
 const glm::vec4 Global_Live_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-const glm::vec4 Global_Dead_Color = { 0.1f, 0.1f, 0.1f, 1.0f };
-const glm::vec2 Default_Draw_Offset = { TOTAL_COLUMNS / 2,TOTAL_ROWS / 2 };
+const glm::vec4 Global_Dead_Color = { 0.3f, 0.3f, 0.3f, 1.0f };
+const glm::vec2 Default_Draw_Offset = { TOTAL_COLUMNS/2,TOTAL_ROWS/2 };
 
 static void iterate_matrix(const std::function<void(int col, int row)>& func)
 {
@@ -139,13 +139,21 @@ void Map::UpdateCells(const en::UpdateArgs& args)
 
 void Map::DrawCells(const en::RenderArgs& args)
 {
+	
 	iterate_matrix([&](int col, int row) {
 		const glm::vec4& quad_color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
-		const glm::vec4& grid_color = !OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
-		float cm = args.camera_ctr.GetZoomLevel();
-		args.render.DrawOutLineQuad(glm::vec2(col, row) * Size - Default_Draw_Offset, Size, grid_color, 1.5f);
+		
 		args.render.DrawQuad(glm::vec2(col, row) * Size - Default_Draw_Offset, Size, quad_color);
 	});
+
+	const int ColS = TOTAL_COLUMNS * Size.x;
+	const int RowS = TOTAL_ROWS * Size.y;
+
+	for(int i = 0; i < ColS; i += Size.x)
+		args.render.DrawLine((glm::vec2(i, 0)) - Default_Draw_Offset, glm::vec2(i, RowS) - Default_Draw_Offset, {0.0f,0.0f,0.0f,1.0f}, 1.0f);
+
+	for (int i = 0; i < RowS; i += Size.y)
+		args.render.DrawLine((glm::vec2(0, i)) - Default_Draw_Offset, glm::vec2(ColS, i) - Default_Draw_Offset, { 0.0f,0.0f,0.0f,1.0f }, 1.0f);
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
