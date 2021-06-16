@@ -199,6 +199,7 @@
     <ClCompile Include="src\camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\camera\OrthographicCameraController.cpp" />
     <ClCompile Include="src\args\RenderArgs.h" />
+    <ClCompile Include="src\render\geo_renders\CircleRender.cpp" />
     <ClCompile Include="src\render\geo_renders\LineRender.cpp" />
     <ClCompile Include="src\render\ParticleSystem.cpp" />
     <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
@@ -230,7 +231,9 @@
     <ClInclude Include="src\args\ResizeArgs.h" />
     <ClInclude Include="src\camera\OrthographicCamera.h" />
     <ClInclude Include="src\camera\OrthographicCameraController.h" />
+    <ClInclude Include="src\render\geo_renders\CircleRender.h" />
     <ClInclude Include="src\render\geo_renders\LineRender.h" />
+    <ClInclude Include="src\render\geo_renders\RenderDatas.h" />
     <ClInclude Include="src\render\geo_renders\RenderTemplate.h" />
     <ClInclude Include="src\render\ParticleSystem.h" />
     <ClInclude Include="src\render\SubTexture.h" />

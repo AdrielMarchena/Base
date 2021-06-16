@@ -8,6 +8,8 @@
 #include "amb/Ambient.h"
 #include "audio/AudioSource.h"
 #include "Cell.h"
+#include "colision/Colisions.h"
+
 using namespace en;
 
 struct ImGuiInfoPack
@@ -27,6 +29,9 @@ protected:
 
 	ImGuiInfoPack m_ImInfo;
 	Map CellGame;
+
+	Rect rect_a;
+
 public:
 
 	Game(const char* title, float_t w = 800, float_t h = 600, bool resizeble = true);

@@ -18,10 +18,6 @@ namespace en
 {
 	namespace render
 	{
-		struct LineVertex : Vertex
-		{
-		};
-
 		class LineRender2D : public Render
 		{
 		private:

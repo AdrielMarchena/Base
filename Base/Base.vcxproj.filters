@@ -91,6 +91,9 @@
     <ClCompile Include="src\render\geo_renders\QuadRender.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\geo_renders\CircleRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">
@@ -193,6 +196,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\geo_renders\RenderTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\geo_renders\CircleRender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\geo_renders\RenderDatas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

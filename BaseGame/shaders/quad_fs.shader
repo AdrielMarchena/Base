@@ -32,17 +32,17 @@ void main()
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else
-	for (int i = 0; i < u_LightQtd; i++)
-	{
-		float distance = distance(u_LightInfo[i].u_LightPos.xy, v_Pos.xy);
-		float diffuse = 0.0;
+		for (int i = 0; i < u_LightQtd; i++)
+		{
+			float distance = distance(u_LightInfo[i].u_LightPos.xy, v_Pos.xy);
+			float diffuse = 0.0;
 
-		if (distance <= u_LightInfo[i].u_LightIntencity)
-			diffuse = 1.0 - abs(distance / u_LightInfo[i].u_LightIntencity);
+			if (distance <= u_LightInfo[i].u_LightIntencity)
+				diffuse = 1.0 - abs(distance / u_LightInfo[i].u_LightIntencity);
 
-		vec4 new_color = vec4(min(tmp_Color.rgb * ((u_LightInfo[i].u_LightColor * diffuse) + u_Ambient), tmp_Color.rgb), tmp_Color.a);
+			vec4 new_color = vec4(min(tmp_Color.rgb * ((u_LightInfo[i].u_LightColor * diffuse) + u_Ambient), tmp_Color.rgb), tmp_Color.a);
 
-		o_Color = (o_Color + new_color) / 2;
-	}
+			o_Color = (o_Color + new_color) / 2;
+		}
 	//o_Color = tmp_Color;
 }

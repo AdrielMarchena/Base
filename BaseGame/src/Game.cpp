@@ -1,6 +1,7 @@
 #include "Game.h"
 #include <corecrt_math.h> //float_t is typedef here
 
+
 static inline void MainMenuBar(const ImGuiArgs& args)
 {
 	if (ImGui::BeginMainMenuBar())
@@ -34,7 +35,7 @@ void Game::OnAttach(AttachArgs args)
 	actives.push_back({10,8});
 	//actives.push_back({11,8});
 
-	CellGame.OnAttach(actives);
+	//CellGame.OnAttach(actives);
 
 	/*m_Ambient.AddStaticLightSource({
 		{0,0,0},
@@ -50,23 +51,49 @@ void Game::OnAttach(AttachArgs args)
 
 	m_Ambient.ZeroLight(args.render.GetQuadShader());
 	m_Ambient.ZeroLight(args.render.GetLineShader());
+
+	rect_a =
+	{
+		{400,400},
+		{50,50},
+		{0,0}
+	};
+
 	Window::OnAttach(args);
 }
 
 void Game::OnUpdate(UpdateArgs args)
 {
-	CellGame.UpdateCells(args);
+	//CellGame.UpdateCells(args);
+
+	const glm::vec2 ray_origin = { 0,0 };
+	glm::vec2 cp = { 0,0 };
+	glm::vec2 cn = { 0,0 };
+	float hit = 0;
+		m_RenderThisPlease.push_back([&](RenderArgs& r_args)
+		{
+			r_args.render.DrawLine(ray_origin, args.m_pos, { 0.2f,0.7f,0.9f,1.0f });
+			if (colision::Colide::RayVsRect(ray_origin, args.m_pos, rect_a, cp, cn, hit) && hit <= 1.0f)
+			{
+				r_args.render.DrawCircle(cp, 2 , { 1.0f,0.0f,0.0f,1.0f });
+				r_args.render.DrawLine(cp, cp + (cn * 5.0f) , { 1.0f,0.0f,0.0f,1.0f });
+			}
+		});
 
 	Window::OnUpdate(args);
 }
 
 void Game::OnRender(RenderArgs args)
 {
-	CellGame.DrawCells(args);
+	//CellGame.DrawCells(args);
 
 	//args.render.DrawOutLineQuad({ 0,0 }, { 100,100 }, {1.0f,1.0f,1.0f,1.0f});
+	//args.render.DrawLine({ 0,0 }, { -100,-100 }, { 1.0f,1.0f,1.0f,1.0f });
+	//args.render.DrawCircle({ 100,100 }, 500.0f, { 1.0f,1.0f,1.0f,1.0f });
+	//args.render.DrawCircle({ 100,100 }, 100.0f, { 0.0f,0.0f,1.0f,1.0f },1);
 
-	args.render.DrawLine({ 0,0 }, { -100,-100 }, { 1.0f,1.0f,1.0f,1.0f });
+	args.render.DrawQuad(rect_a.pos, rect_a.size, { 0.3f,0.5f,0.9f,1.0f });
+
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
@@ -79,7 +106,7 @@ void Game::OnImGui(ImGuiArgs args)
 {
 	MainMenuBar(args);
 
-	CellGame.OnImGui(args);
+	//CellGame.OnImGui(args);
 
 	Window::OnImGui(args);
 }

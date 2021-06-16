@@ -15,6 +15,7 @@
 
 #include "geo_renders/QuadRender.h"
 #include "geo_renders/LineRender.h"
+#include "geo_renders/CircleRender.h"
 
 namespace en
 {
@@ -25,13 +26,15 @@ namespace render
 	{
 	private:
 		QuadRender2D m_QuadRender;
+		CircleRender m_CircleRender;
 		LineRender2D m_LineRender;
 	public:
 
 		static glm::vec3 m_default_axis;
 
 		Render2D(const char* quad_vs, const char* quad_fs,
-				 const char* line_vs, const char* line_fs);
+				 const char* line_vs, const char* line_fs,
+				 const char* circle_vs, const char* circle_fs);
 		//Render2D(){}
 
 		~Render2D();
@@ -42,6 +45,7 @@ namespace render
 
 		const Shader& GetQuadShader();
 		const Shader& GetLineShader();
+		const Shader& GetCircleShader();
 
 		void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
@@ -60,11 +64,18 @@ namespace render
 
 		void DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer = 0);
 
+		void DrawCircle(const glm::vec2& position, float_t radius, const glm::vec4& color,
+			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
+
 	private:
 
 		void QuadBeginBatch();
 		void QuadEndBatch();
 		void QuadFlush();
+
+		void CircleBeginBatch();
+		void CircleEndBatch();
+		void CircleFlush();
 
 		void LineBeginBatch();
 		void LineEndBatch();

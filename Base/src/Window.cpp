@@ -65,8 +65,9 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
-			m_Render = std::make_unique<render::Render2D>("shaders/vs.shader", "shaders/fs.shader",
-														  "shaders/line_vs.shader", "shaders/line_fs.shader");
+			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader", "shaders/quad_fs.shader",
+														  "shaders/line_vs.shader", "shaders/line_fs.shader",
+														  "shaders/circle_vs.shader", "shaders/circle_fs.shader");
 
 			//m_Render = render::Render2D("shaders/vs.shader", "shaders/fs.shader",
 			//						  "shaders/line_vs.shader", "shaders/line_fs.shader");
@@ -121,6 +122,10 @@ namespace en
 			render.GetLineShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
 			render.GetLineShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
 			
+			render.GetCircleShader().Bind();
+			render.GetCircleShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+			render.GetCircleShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 			float deltaTime = 0.0f;
@@ -137,16 +142,25 @@ namespace en
 				lastFrame = currentTime;
 				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse) };
 				m_camera.OnUpdate(up_args);
+
 				render.GetQuadShader().Bind();
 				render.GetQuadShader().SetUniformMat4f(
 					"u_ViewProj",
 					m_camera.GetCamera().GetViewProjectionMatrix()
 				);
+
 				render.GetLineShader().Bind();
 				render.GetLineShader().SetUniformMat4f(
 					"u_ViewProj",
 					m_camera.GetCamera().GetViewProjectionMatrix()
 				);
+
+				render.GetCircleShader().Bind();
+				render.GetCircleShader().SetUniformMat4f(
+					"u_ViewProj",
+					m_camera.GetCamera().GetViewProjectionMatrix()
+				);
+
 				OnUpdate(up_args);
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -283,19 +297,29 @@ namespace en
 			//CALLBACK_STATIC_CAST(Window, window)->m_camera.Resize(w, h);
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
+			static const char* vp = "u_ViewProj";
+			static const char* tr = "u_Transform";
 			m_Render->GetQuadShader().Bind();
 			m_Render->GetQuadShader().SetUniformMat4f(
-				"u_ViewProj",
+				vp,
 				m_camera.GetCamera().GetViewProjectionMatrix()
 			);
-			m_Render->GetQuadShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			m_Render->GetQuadShader().SetUniformMat4f("tr", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
 			
 			m_Render->GetLineShader().Bind();
 			m_Render->GetLineShader().SetUniformMat4f(
-				"u_ViewProj",
+				vp,
 				m_camera.GetCamera().GetViewProjectionMatrix()
 			);
-			m_Render->GetLineShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			m_Render->GetLineShader().SetUniformMat4f("tr", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			
+			m_Render->GetCircleShader().Bind();
+			m_Render->GetCircleShader().SetUniformMat4f(
+				vp,
+				m_camera.GetCamera().GetViewProjectionMatrix()
+			);
+			m_Render->GetCircleShader().SetUniformMat4f("tr", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			
 			glViewport(0, 0, m_Wid, m_Hei);
 		}
 
@@ -314,11 +338,18 @@ namespace en
 				case MouseAction::SCROLL:
 					mouse.on_mouse_scroll(this->m_Window, args.Xoffset, args.Yoffset);
 					m_camera.OnMouseScrolled(args.Yoffset);
+
+					static const char* vp = "u_ViewProj";
+
 					m_Render->GetQuadShader().Bind();
-					m_Render->GetQuadShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+					m_Render->GetQuadShader().SetUniformMat4f(vp, m_camera.GetCamera().GetViewProjectionMatrix());
 					
 					m_Render->GetLineShader().Bind();
-					m_Render->GetLineShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+					m_Render->GetLineShader().SetUniformMat4f(vp, m_camera.GetCamera().GetViewProjectionMatrix());
+					
+					m_Render->GetCircleShader().Bind();
+					m_Render->GetCircleShader().SetUniformMat4f(vp, m_camera.GetCamera().GetViewProjectionMatrix());
+
 					break;
 				}
 

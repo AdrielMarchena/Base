@@ -16,62 +16,10 @@
 #include <memory>
 #include <math.h>
 
-
 namespace en
 {
 	namespace render
 	{
-		struct QuadVertex
-		{
-			glm::vec3 Position;
-			glm::vec4 Color;
-			glm::vec2 TexCoords;
-			float_t TexIndex;
-		};
-
-		struct QuadRenderData : RenderData
-		{
-		public:
-			QuadRenderData() {}
-			QuadRenderData(const char* vs, const char* fs, int32_t MaxTexSlots)
-				:RenderData(vs, fs, MaxTexSlots)
-			{
-			}
-
-			QuadRenderData& operator=(QuadRenderData& other)
-			{
-				if (this == &other)
-					return *this;
-				
-				RenderData::operator= (other);
-
-				WhiteTexture = other.WhiteTexture;
-				WhiteTextureSlot = other.WhiteTextureSlot;
-				TextureSlots = other.TextureSlots;
-				TextureSlotIndex = other.TextureSlotIndex;
-
-				other.WhiteTexture = NULL;
-				other.WhiteTextureSlot = NULL;
-				other.TextureSlots.clear();
-				other.TextureSlotIndex = 1;
-
-				return *this;
-			}
-			~QuadRenderData() {}
-
-			uint32_t WhiteTexture = 0;
-			uint8_t  WhiteTextureSlot = 0;
-
-			std::vector<uint32_t> TextureSlots;
-			uint32_t TextureSlotIndex = 1;
-
-			//Hide the Vertex* with the QuadVertex*
-			QuadVertex* Buffer = nullptr;
-			QuadVertex* BufferPtr = nullptr;
-
-			Stats RenderStatus;
-		};
-
 		class QuadRender2D : public Render
 		{
 		private:

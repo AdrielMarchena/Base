@@ -181,10 +181,12 @@
     <ClInclude Include="src\Game.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fs.shader" />
+    <None Include="shaders\circle_fs.shader" />
+    <None Include="shaders\circle_vs.shader" />
+    <None Include="shaders\quad_fs.shader" />
     <None Include="shaders\line_fs.shader" />
     <None Include="shaders\line_vs.shader" />
-    <None Include="shaders\vs.shader" />
+    <None Include="shaders\quad_vs.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

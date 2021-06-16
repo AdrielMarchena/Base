@@ -22,17 +22,10 @@ namespace en
 		{0.0f,1.0f}
 		};
 
-		static inline int32_t MaxTexturesSlots()
-		{
-			int32_t MaxT = 8;
-			glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MaxT);
-			return MaxT;
-		}
-
 		static const size_t MaxQuadCount = 3000;
 		static const size_t MaxVertexCount = MaxQuadCount * 4;
 		static const size_t MaxIndexCount = MaxQuadCount * 6;
-		static int32_t MaxTexture = MaxTexturesSlots();
+		static int32_t MaxTexture = Render::MaxTexturesSlots();
 
 		QuadRender2D::QuadRender2D(const char* vs, const char* fs)
 			:m_data(vs, fs, MaxTexture)
