@@ -12,7 +12,7 @@ namespace en{
 	struct RenderArgs
 	{
 		float dt;
-		render::render2D& render;
+		render::Render2D& render;
 		OrthographicCameraController& camera_ctr;
 		OrthographicCamera& camera;
 	}; 

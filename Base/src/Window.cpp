@@ -65,7 +65,11 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
-			m_Render = std::make_unique<render::QuadRender2D>("shaders/vs.shader", "shaders/fs.shader");
+			m_Render = std::make_unique<render::Render2D>("shaders/vs.shader", "shaders/fs.shader",
+														  "shaders/line_vs.shader", "shaders/line_fs.shader");
+
+			//m_Render = render::Render2D("shaders/vs.shader", "shaders/fs.shader",
+			//						  "shaders/line_vs.shader", "shaders/line_fs.shader");
 
 			//Set callback and pointer to this very window
 			myWindow = this;
@@ -107,11 +111,12 @@ namespace en
 		{
 			using namespace render;
 			using namespace utils;
-			QuadRender2D& render = *m_Render;
+			Render2D& render = *m_Render;
 
-			render.GetShader().Bind();
-			render.GetShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
-			render.GetShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			render.GetQuadShader().Bind();
+			render.GetQuadShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+			render.GetQuadShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			
 			render.GetLineShader().Bind();
 			render.GetLineShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
 			render.GetLineShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
@@ -132,8 +137,8 @@ namespace en
 				lastFrame = currentTime;
 				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse) };
 				m_camera.OnUpdate(up_args);
-				render.GetShader().Bind();
-				render.GetShader().SetUniformMat4f(
+				render.GetQuadShader().Bind();
+				render.GetQuadShader().SetUniformMat4f(
 					"u_ViewProj",
 					m_camera.GetCamera().GetViewProjectionMatrix()
 				);
@@ -146,15 +151,12 @@ namespace en
 
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				render.LineBeginBatch();
 				render.BeginBatch();
 
 				OnRender({ deltaTime,render,m_camera,m_camera.GetCamera() });
 
 				render.EndBatch();
-				render.LineEndBatch();
 				render.Flush();
-				render.LineFlush();
 
 				DEAR_NEW_FRAME();
 
@@ -281,12 +283,12 @@ namespace en
 			//CALLBACK_STATIC_CAST(Window, window)->m_camera.Resize(w, h);
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
-			m_Render->GetShader().Bind();
-			m_Render->GetShader().SetUniformMat4f(
+			m_Render->GetQuadShader().Bind();
+			m_Render->GetQuadShader().SetUniformMat4f(
 				"u_ViewProj",
 				m_camera.GetCamera().GetViewProjectionMatrix()
 			);
-			m_Render->GetShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			m_Render->GetQuadShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
 			
 			m_Render->GetLineShader().Bind();
 			m_Render->GetLineShader().SetUniformMat4f(
@@ -312,8 +314,8 @@ namespace en
 				case MouseAction::SCROLL:
 					mouse.on_mouse_scroll(this->m_Window, args.Xoffset, args.Yoffset);
 					m_camera.OnMouseScrolled(args.Yoffset);
-					m_Render->GetShader().Bind();
-					m_Render->GetShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
+					m_Render->GetQuadShader().Bind();
+					m_Render->GetQuadShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
 					
 					m_Render->GetLineShader().Bind();
 					m_Render->GetLineShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());

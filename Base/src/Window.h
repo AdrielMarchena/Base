@@ -48,7 +48,8 @@ namespace en
 			input::Keyboard keyboard;
 			Window* myWindow;
 			OrthographicCameraController m_camera;
-			std::unique_ptr<render::render2D> m_Render;
+			std::unique_ptr<render::Render2D> m_Render;
+			//render::Render2D m_Render;
 		protected:
 			std::string m_Title;
 			float m_Wid;

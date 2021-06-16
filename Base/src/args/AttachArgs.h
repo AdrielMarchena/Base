@@ -12,7 +12,7 @@ namespace en
 {
 	struct AttachArgs
 	{
-		render::render2D& render;
+		render::Render2D& render; //Why this is here?
 		OrthographicCameraController& camera;
 	};
 }

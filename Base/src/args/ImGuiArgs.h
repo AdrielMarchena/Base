@@ -12,6 +12,6 @@ namespace en
 {
 	struct ImGuiArgs
 	{
-		render::render2D& render;
+		render::Render2D& render;
 	};
 }
