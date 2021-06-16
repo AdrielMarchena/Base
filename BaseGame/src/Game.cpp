@@ -48,7 +48,7 @@ void Game::OnAttach(AttachArgs args)
 	m_Ambient.UpdateStaticLight(args.render.GetLineShader());
 	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetLineShader());*/
 
-	m_Ambient.ZeroLight(args.render.GetShader());
+	m_Ambient.ZeroLight(args.render.GetQuadShader());
 	m_Ambient.ZeroLight(args.render.GetLineShader());
 	Window::OnAttach(args);
 }
@@ -65,6 +65,8 @@ void Game::OnRender(RenderArgs args)
 	CellGame.DrawCells(args);
 
 	//args.render.DrawOutLineQuad({ 0,0 }, { 100,100 }, {1.0f,1.0f,1.0f,1.0f});
+
+	args.render.DrawLine({ 0,0 }, { -100,-100 }, { 1.0f,1.0f,1.0f,1.0f });
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
