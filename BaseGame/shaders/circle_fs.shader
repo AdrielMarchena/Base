@@ -9,6 +9,8 @@ in float v_TexIndex;
 in vec3 v_Pos;
 in vec2 v_MiddlePoint;
 in float v_Radius;
+in float v_Fill;
+in vec3 v_Rad_Fill_Th;
 
 uniform sampler2D u_Textures[MAX_TEXTURES_SLOTS];
 
@@ -31,18 +33,18 @@ float DistancePvP(vec2 a, vec2 b)
 void main()
 {
 	o_Color = vec4(0.0);
-	int index = int(v_TexIndex);
+	int index = int(v_TexIndex);;
 	vec4 tmp_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
 	/*if (tmp_Color.a < 1.0)
 		discard;*/
 
 	float dist_pvp = DistancePvP(v_MiddlePoint, v_Pos.xy);
-	if (dist_pvp > v_Radius) // Outside
+	//if (dist_pvp == v_Radius) //Circunference
+
+	if (dist_pvp > v_Rad_Fill_Th.x) // Outside
 		discard;
-	// if (dist_pvp == v_Radius) //Circunference
-	//
-	// if (dist_pvp < v_Radius) //Inside
-	//
+	if (dist_pvp < v_Rad_Fill_Th.x - v_Rad_Fill_Th.z && v_Rad_Fill_Th.y == 0) //Inside
+		discard;
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else

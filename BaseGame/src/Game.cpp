@@ -75,7 +75,7 @@ void Game::OnUpdate(UpdateArgs args)
 			r_args.render.DrawLine(ray_origin, args.m_pos, { 0.2f,0.7f,0.9f,1.0f });
 			if (colision::Colide::RayVsRect(ray_origin, args.m_pos, rect_a, cp, cn, hit) && hit <= 1.0f)
 			{
-				r_args.render.DrawCircle(cp, 2 , { 1.0f,0.0f,0.0f,1.0f });
+				r_args.render.DrawCircle(cp, 50 , { 1.0f,0.0f,0.0f,1.0f }, false);
 				r_args.render.DrawLine(cp, cp + (cn * 5.0f) , { 1.0f,0.0f,0.0f,1.0f });
 			}
 		});

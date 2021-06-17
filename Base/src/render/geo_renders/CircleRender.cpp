@@ -46,7 +46,7 @@ namespace render
 		glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint));
 
 		glEnableVertexAttribArray(5);
-		glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Radius));
+		glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th));
 
 		//To much memory for the stack, free below
 		uint32_t* indices = new uint32_t[MaxIndexCount]{};
@@ -143,17 +143,17 @@ namespace render
 		return m_data.mShader;
 	}
 
-	void CircleRender::DrawCircle(const glm::vec2& position, float_t radius, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
+	void CircleRender::DrawCircle(const glm::vec2& position, float_t radius, bool fill, float thick, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		float fullSize = radius * 2;
 
 		glm::vec2 quad_position = {position.x - radius, position.y - radius};
 		glm::vec2 quad_size = { position.x + fullSize, position.y + fullSize };
 
-		FillV(quad_position, quad_size, position, radius, color, m_default_tex_coords, 0, layer, rotation, axis);
+		FillV(quad_position, quad_size, position, radius, fill, thick ,color, m_default_tex_coords, 0, layer, rotation, axis);
 		m_data.IndexCount += 6;
 	}
-	void CircleRender::FillV(const glm::vec2& position, const glm::vec2& size, const glm::vec2& middle_point, float_t radius,
+	void CircleRender::FillV(const glm::vec2& position, const glm::vec2& size, const glm::vec2& middle_point, float_t radius, bool fill,float thick,
 							 const glm::vec4& color, const glm::vec2 tex_coords[4], float_t tex_index, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quads[4] = {
@@ -184,7 +184,7 @@ namespace render
 			m_data.BufferPtr->TexCoords = tex_coords[i];
 			m_data.BufferPtr->TexIndex = tex_index;
 			m_data.BufferPtr->MiddlePoint = middle_point;
-			m_data.BufferPtr->Radius = radius;
+			m_data.BufferPtr->Rad_Fill_Th = { radius,fill,thick };
 			m_data.BufferPtr++;
 		}
 	}

@@ -32,7 +32,9 @@ namespace render
 	struct CircleVertex : public QuadVertex
 	{
 		glm::vec2 MiddlePoint;
-		float Radius;
+		glm::vec3 Rad_Fill_Th;
+		//float Radius;
+		//float Fill;
 	};
 
 	struct RenderData

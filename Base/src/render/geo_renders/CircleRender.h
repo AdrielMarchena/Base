@@ -24,7 +24,7 @@ namespace render
 
 		const Shader& GetShader();
 
-		void DrawCircle(const glm::vec2& position, float_t radius, const glm::vec4& color,
+		void DrawCircle(const glm::vec2& position, float_t radius, bool fill, float thick, const glm::vec4& color,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
 	
 	private:
@@ -32,6 +32,8 @@ namespace render
 				   const glm::vec2& size ,
 				   const glm::vec2& middle_point,
 				   float_t radius,
+				   bool fill,
+				   float thick,
 				   const glm::vec4& color,
 				   const glm::vec2 tex_coords[4], float_t tex_index,
 				   float_t layer, float_t rotation, const glm::vec3& axis);
