@@ -32,6 +32,12 @@ witch is, loading images, and loading and create audio and audio buffer or whate
 <li class="has-line-data" data-line-start="34" data-line-end="35">Improve colisions (maybe)</li>
 <li class="has-line-data" data-line-start="35" data-line-end="36">Add some Tile Map system</li>
 <li class="has-line-data" data-line-start="36" data-line-end="37">Add other geometrys to the 2d render</li>
-<li class="has-line-data" data-line-start="37" data-line-end="38">In text render (using the same 2d render)</li>
+<li class="has-line-data" data-line-start="37" data-line-end="38">Add text render</li>
 <li class="has-line-data" data-line-start="38" data-line-end="39">Add some the text shenanigans (like break line and those things)</li>
+</ul>
+
+<h2 class="code-line" data-line-start=29 data-line-end=30 ><a id="ToDo_29"></a>DoNe:</h2>
+<ul>
+<li class="has-line-data" data-line-start="38" data-line-end="39">Add Line render</li>
+<li class="has-line-data" data-line-start="38" data-line-end="39">Add Circle render</li>
 </ul>
