@@ -16,10 +16,10 @@ namespace windowing
 {
 
 	//Static members Init
-	const glm::vec3 Ambient::Night = { 30.0f,30.0f,30.0f };
-	const glm::vec3 Ambient::Day = { 1000.0f,1000.0f,1000.0f };
+	const glm::vec3 Ambient::Night = { 0.1f,0.1f,0.1f };
+	const glm::vec3 Ambient::Day = { 1.0f,1.0f,1.0f };
 
-	void Ambient::UpdateAmbient(glm::vec3 value, const render::Shader& _Shader, bool UpdateShader)
+	void Ambient::UpdateAmbient(const glm::vec3& value, const render::Shader& _Shader, bool UpdateShader)
 	{
 		//TODO: maybe add some validation to value here
 		m_Ambient = value;

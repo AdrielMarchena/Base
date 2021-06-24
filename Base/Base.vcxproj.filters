@@ -34,9 +34,6 @@
     <ClCompile Include="src\render\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vendor\definer_Stb.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\input\Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,6 +89,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\geo_renders\CircleRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\definer_Stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

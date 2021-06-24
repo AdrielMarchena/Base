@@ -49,6 +49,7 @@ namespace en
 			Window* myWindow;
 			OrthographicCameraController m_camera;
 			std::unique_ptr<render::Render2D> m_Render;
+			std::vector<const render::Shader*> render_shaders;
 			//render::Render2D m_Render;
 		protected:
 			std::string m_Title;
@@ -97,6 +98,11 @@ namespace en
 				glm::vec2 mpos = correct_mouse(mouse);
 				return mpos += glm::vec2(m_camera.GetCamera().GetPosition().x, m_camera.GetCamera().GetPosition().y) * (glm::vec2(m_Wid, m_Hei) / 2.0f);
 			}
+			void inline SetPerpectiveInShaders();
+			void inline SetViewInShaders();
+			void inline SetTransformInShaders();
+
+			const inline std::vector<const render::Shader*>& GetVecShaders() { return render_shaders; }
 		protected:
 			//Event functions
 			void OnResize(ResizeArgs args);

@@ -30,8 +30,46 @@ namespace en
 	{
 		using namespace utils;
 
+		static inline void SetView(const render::Shader& m_Shader, const OrthographicCameraController& m_Camera)
+		{
+			m_Shader.SetUniformMat4f("u_ViewProj", m_Camera.GetCamera().GetViewProjectionMatrix());
+		}
+
+		static inline void SetTransform(const render::Shader& m_Shader, float wid, float hei)
+		{
+			m_Shader.SetUniformMat4f("u_Transform", glm::ortho(0.0f, wid, 0.0f, hei, -1.0f, 10.0f));
+		}
+
+		void Window::SetPerpectiveInShaders()
+		{
+			for (auto& a : render_shaders)
+			{
+				a->Bind();
+				SetView(*a, m_camera);
+				SetTransform(*a, m_Wid, m_Hei);
+			}
+		}
+
+		void inline Window::SetViewInShaders()
+		{
+			for (auto& a : render_shaders)
+			{
+				a->Bind();
+				SetView(*a, m_camera);
+			}
+		}
+
+		void inline Window::SetTransformInShaders()
+		{
+			for (auto& a : render_shaders)
+			{
+				a->Bind();
+				SetTransform(*a, m_Wid, m_Hei);
+			}
+		}
+
 		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
-			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, false)
+			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, false),myWindow(nullptr)
 		{
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
@@ -49,6 +87,8 @@ namespace en
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 			m_Window = glfwCreateWindow(m_Wid, m_Hei, title, nullptr, nullptr);
+
+			glEnable(GL_MULTISAMPLE);
 
 			if (!m_Window)
 			{
@@ -68,6 +108,10 @@ namespace en
 			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader", "shaders/quad_fs.shader",
 														  "shaders/line_vs.shader", "shaders/line_fs.shader",
 														  "shaders/circle_vs.shader", "shaders/circle_fs.shader");
+
+			render_shaders.push_back(&m_Render->GetQuadShader());
+			render_shaders.push_back(&m_Render->GetLineShader());
+			render_shaders.push_back(&m_Render->GetCircleShader());
 
 			//m_Render = render::Render2D("shaders/vs.shader", "shaders/fs.shader",
 			//						  "shaders/line_vs.shader", "shaders/line_fs.shader");
@@ -114,17 +158,7 @@ namespace en
 			using namespace utils;
 			Render2D& render = *m_Render;
 
-			render.GetQuadShader().Bind();
-			render.GetQuadShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
-			render.GetQuadShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
-			
-			render.GetLineShader().Bind();
-			render.GetLineShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
-			render.GetLineShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
-			
-			render.GetCircleShader().Bind();
-			render.GetCircleShader().SetUniformMat4f("u_ViewProj", m_camera.GetCamera().GetViewProjectionMatrix());
-			render.GetCircleShader().SetUniformMat4f("u_Transform", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			SetPerpectiveInShaders();
 
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -143,23 +177,7 @@ namespace en
 				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse) };
 				m_camera.OnUpdate(up_args);
 
-				render.GetQuadShader().Bind();
-				render.GetQuadShader().SetUniformMat4f(
-					"u_ViewProj",
-					m_camera.GetCamera().GetViewProjectionMatrix()
-				);
-
-				render.GetLineShader().Bind();
-				render.GetLineShader().SetUniformMat4f(
-					"u_ViewProj",
-					m_camera.GetCamera().GetViewProjectionMatrix()
-				);
-
-				render.GetCircleShader().Bind();
-				render.GetCircleShader().SetUniformMat4f(
-					"u_ViewProj",
-					m_camera.GetCamera().GetViewProjectionMatrix()
-				);
+				SetViewInShaders();
 
 				OnUpdate(up_args);
 
@@ -184,9 +202,9 @@ namespace en
 		}
 		void Window::OnUpdate(UpdateArgs args)
 		{
+			static bool multiEnable = true;
 			if (args.keyboard.isPress(GLFW_KEY_LEFT_CONTROL) && args.keyboard.isPress(GLFW_KEY_Q))
 				exit(0);
-
 		}
 
 		void Window::OnAttach(AttachArgs args)
@@ -297,28 +315,7 @@ namespace en
 			//CALLBACK_STATIC_CAST(Window, window)->m_camera.Resize(w, h);
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
-			static const char* vp = "u_ViewProj";
-			static const char* tr = "u_Transform";
-			m_Render->GetQuadShader().Bind();
-			m_Render->GetQuadShader().SetUniformMat4f(
-				vp,
-				m_camera.GetCamera().GetViewProjectionMatrix()
-			);
-			m_Render->GetQuadShader().SetUniformMat4f("tr", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
-			
-			m_Render->GetLineShader().Bind();
-			m_Render->GetLineShader().SetUniformMat4f(
-				vp,
-				m_camera.GetCamera().GetViewProjectionMatrix()
-			);
-			m_Render->GetLineShader().SetUniformMat4f("tr", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
-			
-			m_Render->GetCircleShader().Bind();
-			m_Render->GetCircleShader().SetUniformMat4f(
-				vp,
-				m_camera.GetCamera().GetViewProjectionMatrix()
-			);
-			m_Render->GetCircleShader().SetUniformMat4f("tr", glm::ortho(0.0f, m_Wid, 0.0f, m_Hei, -1.0f, 10.0f));
+			SetPerpectiveInShaders();
 			
 			glViewport(0, 0, m_Wid, m_Hei);
 		}
@@ -339,16 +336,7 @@ namespace en
 					mouse.on_mouse_scroll(this->m_Window, args.Xoffset, args.Yoffset);
 					m_camera.OnMouseScrolled(args.Yoffset);
 
-					static const char* vp = "u_ViewProj";
-
-					m_Render->GetQuadShader().Bind();
-					m_Render->GetQuadShader().SetUniformMat4f(vp, m_camera.GetCamera().GetViewProjectionMatrix());
-					
-					m_Render->GetLineShader().Bind();
-					m_Render->GetLineShader().SetUniformMat4f(vp, m_camera.GetCamera().GetViewProjectionMatrix());
-					
-					m_Render->GetCircleShader().Bind();
-					m_Render->GetCircleShader().SetUniformMat4f(vp, m_camera.GetCamera().GetViewProjectionMatrix());
+					SetViewInShaders();
 
 					break;
 				}

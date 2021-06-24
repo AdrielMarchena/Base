@@ -54,7 +54,7 @@ namespace windowing
 		/**
 		* update the Ambient Light
 		*/
-		void UpdateAmbient(glm::vec3 value, const render::Shader& _Shader, bool UpdateShader = true);
+		void UpdateAmbient(const glm::vec3& value, const render::Shader& _Shader, bool UpdateShader = true);
 
 		void AddStaticLightSource(const LightSource& source);
 

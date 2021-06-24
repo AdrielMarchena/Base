@@ -19,7 +19,7 @@ static inline void MainMenuBar(const ImGuiArgs& args)
 }
 
 Game::Game(const char* title, float_t w, float_t h, bool resizeble)
-	:Window(title, w, h, resizeble),CellGame(Map())
+	:Window(title, w, h, resizeble),CellGame(Map()), rect_a()
 {
 }
 
@@ -37,20 +37,31 @@ void Game::OnAttach(AttachArgs args)
 
 	//CellGame.OnAttach(actives);
 
-	/*m_Ambient.AddStaticLightSource({
-		{0,0,0},
-		{0,0,0,0},
-		1
-		});
 	
-	m_Ambient.UpdateStaticLight(args.render.GetShader());
-	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetShader());
+	m_Ambient.AddStaticLightSource({
+		{50.0f,50.0f,0.0f},
+		{1.0f,1.0f,1.0f,1.0f},
+		1.0f
+		});
+
+	m_Ambient.AddStaticLightSource({
+		{550.0f,550.0f,0.0f},
+		{1.0f,1.0f,1.0f,1.0f},
+		1.0f
+		});
+
+	m_Ambient.UpdateStaticLight(args.render.GetQuadShader());
+	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetQuadShader());
 	
 	m_Ambient.UpdateStaticLight(args.render.GetLineShader());
-	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetLineShader());*/
+	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetLineShader());
 
-	m_Ambient.ZeroLight(args.render.GetQuadShader());
-	m_Ambient.ZeroLight(args.render.GetLineShader());
+	m_Ambient.UpdateStaticLight(args.render.GetCircleShader());
+	m_Ambient.UpdateAmbient(windowing::Ambient::Day, args.render.GetCircleShader());
+
+	//m_Ambient.ZeroLight(args.render.GetQuadShader());
+	//m_Ambient.ZeroLight(args.render.GetLineShader());
+	//m_Ambient.ZeroLight(args.render.GetCircleShader());
 
 	rect_a =
 	{
@@ -78,6 +89,11 @@ void Game::OnUpdate(UpdateArgs args)
 				r_args.render.DrawCircle(cp, 50 , { 1.0f,0.0f,0.0f,1.0f }, false);
 				r_args.render.DrawLine(cp, cp + (cn * 5.0f) , { 1.0f,0.0f,0.0f,1.0f });
 			}
+			if (args.mouse.isPress(GLFW_MOUSE_BUTTON_1))
+			{
+				r_args.render.DrawCircle(args.m_pos, 50, { 0.0f,0.0f,1.0f,1.0f });
+				r_args.render.DrawCircle(args.m_pos, 75, { 1.0f,0.0f,0.0f,1.0f }, false);
+			}
 		});
 
 	Window::OnUpdate(args);
@@ -92,8 +108,7 @@ void Game::OnRender(RenderArgs args)
 	//args.render.DrawCircle({ 100,100 }, 500.0f, { 1.0f,1.0f,1.0f,1.0f });
 	//args.render.DrawCircle({ 100,100 }, 100.0f, { 0.0f,0.0f,1.0f,1.0f },1);
 
-	args.render.DrawQuad(rect_a.pos, rect_a.size, { 0.3f,0.5f,0.9f,1.0f });
-
+	args.render.DrawQuad(rect_a.pos, rect_a.size, { 1.0f,0.0f,0.0f,1.0f });
 
 	for (auto& lamb : m_RenderThisPlease)
 		lamb(args);
@@ -107,6 +122,24 @@ void Game::OnImGui(ImGuiArgs args)
 	MainMenuBar(args);
 
 	//CellGame.OnImGui(args);
+
+	ImGui::SliderFloat("Ambient Light", &m_ImInfo.LightAmbient.x, 0.0f, 1.0f);
+	ImGui::SliderFloat("Light source Force", &m_ImInfo.LightForce, 0.0f, 1000.0f);
+	ImGui::SliderFloat("Light source Force 2", &m_ImInfo.LightForce2, 0.0f, 1000.0f);
+
+	m_ImInfo.LightAmbient = { m_ImInfo.LightAmbient.x ,m_ImInfo.LightAmbient.x ,m_ImInfo.LightAmbient.x };
+
+	m_Ambient[0].m_LightIntencity = m_ImInfo.LightForce;
+	m_Ambient[1].m_LightIntencity = m_ImInfo.LightForce2;
+
+	m_Ambient.UpdateStaticLight(args.render.GetCircleShader());
+	m_Ambient.UpdateAmbient(m_ImInfo.LightAmbient, args.render.GetCircleShader());
+
+	m_Ambient.UpdateStaticLight(args.render.GetLineShader());
+	m_Ambient.UpdateAmbient(m_ImInfo.LightAmbient, args.render.GetLineShader());
+
+	m_Ambient.UpdateStaticLight(args.render.GetQuadShader());
+	m_Ambient.UpdateAmbient(m_ImInfo.LightAmbient, args.render.GetQuadShader());
 
 	Window::OnImGui(args);
 }

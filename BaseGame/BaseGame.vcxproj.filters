@@ -21,10 +21,10 @@
     <ClCompile Include="src\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vendor\definer_Stb.cpp">
+    <ClCompile Include="src\Cell.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Cell.cpp">
+    <ClCompile Include="vendor\definer_Stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

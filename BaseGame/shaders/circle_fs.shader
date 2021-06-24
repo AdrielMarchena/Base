@@ -8,9 +8,11 @@ in vec2 v_TexCoord;
 in float v_TexIndex;
 in vec3 v_Pos;
 in vec2 v_MiddlePoint;
+//in vec3 v_Rad_Fill_Th;
+
 in float v_Radius;
 in float v_Fill;
-in vec3 v_Rad_Fill_Th;
+in float v_Thick;
 
 uniform sampler2D u_Textures[MAX_TEXTURES_SLOTS];
 
@@ -32,19 +34,19 @@ float DistancePvP(vec2 a, vec2 b)
 
 void main()
 {
-	o_Color = vec4(0.0);
 	int index = int(v_TexIndex);;
 	vec4 tmp_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
 	/*if (tmp_Color.a < 1.0)
 		discard;*/
-
+	o_Color = vec4(tmp_Color.rgb * u_Ambient.rgb, tmp_Color.a);
 	float dist_pvp = DistancePvP(v_MiddlePoint, v_Pos.xy);
 	//if (dist_pvp == v_Radius) //Circunference
 
-	if (dist_pvp > v_Rad_Fill_Th.x) // Outside
+	if (dist_pvp > v_Radius) // Outside
 		discard;
-	if (dist_pvp < v_Rad_Fill_Th.x - v_Rad_Fill_Th.z && v_Rad_Fill_Th.y == 0) //Inside
+	if (dist_pvp < v_Radius - v_Thick && v_Fill == 0) //Inside
 		discard;
+
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else
@@ -56,9 +58,8 @@ void main()
 			if (distance <= u_LightInfo[i].u_LightIntencity)
 				diffuse = 1.0 - abs(distance / u_LightInfo[i].u_LightIntencity);
 
-			vec4 new_color = vec4(min(tmp_Color.rgb * ((u_LightInfo[i].u_LightColor * diffuse) + u_Ambient), tmp_Color.rgb), tmp_Color.a);
+			vec4 new_color = vec4(min(tmp_Color.rgb * (u_LightInfo[i].u_LightColor.rgb * diffuse), tmp_Color.rgb), tmp_Color.a);
 
-			o_Color = (o_Color + new_color) / 2;
+			o_Color = max(o_Color, new_color);
 		}
-	//o_Color = tmp_Color;
 }

@@ -36,7 +36,7 @@ namespace ett
 		AnimationSpecs m_Specs;
 		float_t m_CurrentThreshold = 0.0f;
 		float_t m_CurrentTimeStamp = 0.0f;
-		uint32_t m_CurrentTexIndex = 0.0f;
+		uint32_t m_CurrentTexIndex = 0;
 		std::vector<render::SubTexture> m_CroppedTexture;
 
 		static constexpr float_t default_threshold = 350.0f;

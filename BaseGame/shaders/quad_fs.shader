@@ -28,7 +28,7 @@ void main()
 	vec4 tmp_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
 	/*if (tmp_Color.a < 1.0)
 		discard;*/
-
+	o_Color = vec4(tmp_Color.rgb * u_Ambient.rgb, tmp_Color.a);
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else
@@ -40,9 +40,9 @@ void main()
 			if (distance <= u_LightInfo[i].u_LightIntencity)
 				diffuse = 1.0 - abs(distance / u_LightInfo[i].u_LightIntencity);
 
-			vec4 new_color = vec4(min(tmp_Color.rgb * ((u_LightInfo[i].u_LightColor * diffuse) + u_Ambient), tmp_Color.rgb), tmp_Color.a);
+			vec4 new_color = vec4(min(tmp_Color.rgb * ((u_LightInfo[i].u_LightColor * diffuse)), tmp_Color.rgb), tmp_Color.a);
 
-			o_Color = (o_Color + new_color) / 2;
+			o_Color = max(o_Color, new_color);
 		}
 	//o_Color = tmp_Color;
 }

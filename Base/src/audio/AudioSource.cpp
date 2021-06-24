@@ -130,7 +130,7 @@ namespace aux
 				LOG_WARNING(f.first << " could not be used to create AudioSorce\nError: " + error_what);
 			}
 		}
-		return std::move(tmp);
+		return tmp;
 	}
 
 	AudioSource::AudioSource(ALuint Buffer, float gain)

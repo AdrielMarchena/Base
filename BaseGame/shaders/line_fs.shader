@@ -21,7 +21,7 @@ void main()
 	//vec4 tmp_Color = v_Color;
 	//if (v_Color.a < 1.0)
 		//discard;
-
+	o_Color = vec4(v_Color.rgb * u_Ambient.rgb, v_Color.a);
 	if (u_LightQtd < 1)
 		o_Color = v_Color;
 	else
@@ -33,9 +33,8 @@ void main()
 			if (distance <= u_LightInfo[i].u_LightIntencity)
 				diffuse = 1.0 - abs(distance / u_LightInfo[i].u_LightIntencity);
 
-			vec4 new_color = vec4(min(v_Color.rgb * ((u_LightInfo[i].u_LightColor * diffuse) + u_Ambient), v_Color.rgb), v_Color.a);
+			vec4 new_color = vec4(min(v_Color.rgb * ((u_LightInfo[i].u_LightColor.rgb * diffuse)), v_Color.rgb), v_Color.a);
 
-			o_Color = (o_Color + new_color) / 2;
+			o_Color = max(o_Color, new_color);
 		}
-	//o_Color = v_Color;
 }

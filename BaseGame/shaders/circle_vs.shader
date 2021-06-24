@@ -14,7 +14,10 @@ out vec2 v_TexCoord;
 out float v_TexIndex;
 out vec3 v_Pos;
 out vec2 v_MiddlePoint;
-out vec3 v_Rad_Fill_Th;
+//out vec3 v_Rad_Fill_Th;
+out float v_Radius;
+out float v_Fill;
+out float v_Thick;
 
 void main()
 {
@@ -23,7 +26,11 @@ void main()
 	v_TexIndex = a_TexIndex;
 	v_Pos = a_Position;
 	v_MiddlePoint = a_MiddlePoint;
-	v_Rad_Fill_Th = a_Rad_Fill_Th;
+	//v_Rad_Fill_Th = a_Rad_Fill_Th;
+
+	v_Radius = a_Rad_Fill_Th.x;
+	v_Fill = a_Rad_Fill_Th.y;
+	v_Thick = a_Rad_Fill_Th.z;
 
 	gl_Position = u_ViewProj * u_Transform * vec4(a_Position, 1.0);
 }

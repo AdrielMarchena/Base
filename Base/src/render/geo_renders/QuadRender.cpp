@@ -128,7 +128,7 @@ namespace en
 		void QuadRender2D::Flush()
 		{
 			m_data.mShader.Bind();
-			for (size_t i = 0; i < m_data.TextureSlotIndex; i++)
+			for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 			{
 				glActiveTexture(GL_TEXTURE0 + i);
 				glBindTexture(GL_TEXTURE_2D, m_data.TextureSlots[i]);
@@ -157,7 +157,7 @@ namespace en
 				Flush();
 				BeginBatch();
 			}
-			int32_t texture_index = 0.0f;
+			int8_t texture_index = 0;
 
 			FillV(position, size, color, m_default_tex_coords, texture_index, layer, rotation, axis);
 			m_data.IndexCount += 6;
@@ -172,7 +172,7 @@ namespace en
 				Flush();
 				BeginBatch();
 			}
-			int32_t texture_index = 0.0f;
+			int8_t texture_index = 0;
 
 			FillVC(position, size, color, m_default_tex_coords, texture_index, layer, rotation, axis);
 			m_data.IndexCount += 6;
@@ -190,13 +190,13 @@ namespace en
 
 			constexpr glm::vec4 color = { 1.0f,1.0f ,1.0f ,1.0f };
 
-			int32_t texture_index = 0.0f;
+			int8_t texture_index = 0;
 			if (texture.GetId())
-				for (uint32_t i = 1; i < m_data.TextureSlotIndex; i++)
+				for (int8_t i = 1; i < m_data.TextureSlotIndex; i++)
 				{
 					if (m_data.TextureSlots[i] == texture.GetId())
 					{
-						texture_index = (float)i;
+						texture_index = i;
 						break;
 					}
 				}
@@ -204,7 +204,7 @@ namespace en
 			if (texture.GetId())
 				if (!texture_index)
 				{
-					texture_index = (float)m_data.TextureSlotIndex;
+					texture_index = m_data.TextureSlotIndex;
 					m_data.TextureSlots[m_data.TextureSlotIndex] = texture.GetId();
 					m_data.TextureSlotIndex++;
 				}
@@ -226,7 +226,7 @@ namespace en
 
 			constexpr glm::vec4 color = { 1.0f,1.0f ,1.0f ,1.0f };
 
-			int32_t texture_index = 0.0f;
+			int32_t texture_index = 0;
 			if (sub_texture.GetId())
 				for (uint32_t i = 1; i < m_data.TextureSlotIndex; i++)
 				{
@@ -332,17 +332,6 @@ namespace en
 
 			if (rotation)
 				Render::rotate(quads, rotation, { position.x + (size.x / 2), position.y + (size.y / 2), layer }, axis);
-
-			constexpr glm::vec3 LightPos = { 400.0f,300.0f,0.0f };
-			constexpr glm::vec4 LightColor = { 1.0f,1.0f,1.0f,1.0f };
-
-			constexpr glm::vec2 LightNormals[4] =
-			{
-				{1.0f,1.0f},
-				{1.0f,1.0f},
-				{1.0f,1.0f},
-				{1.0f,1.0f},
-			};
 
 			for (uint8_t i = 0; i < 4; i++)
 			{

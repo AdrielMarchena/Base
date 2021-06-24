@@ -122,7 +122,7 @@ namespace render
 	void CircleRender::Flush()
 	{
 		m_data.mShader.Bind();
-		for (size_t i = 0; i < m_data.TextureSlotIndex; i++)
+		for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 		{
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, m_data.TextureSlots[i]);

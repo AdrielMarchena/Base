@@ -14,6 +14,9 @@ using namespace en;
 
 struct ImGuiInfoPack
 {
+	glm::vec3 LightAmbient = windowing::Ambient::Day;
+	float LightForce = 50.0f;
+	float LightForce2 = 50.0f;
 };
 
 class Game: public windowing::Window
