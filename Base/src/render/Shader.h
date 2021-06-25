@@ -19,7 +19,6 @@ namespace render
 	{
 	private:
 		uint32_t m_Id = NULL;
-		//TODO: Maybe remove this mutable keyword
 		mutable std::unordered_map<std::string, int32_t> m_Locations;
 		bool copy = false;
 	public:

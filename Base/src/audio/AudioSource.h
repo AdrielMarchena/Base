@@ -58,9 +58,13 @@ namespace aux
 			if (this == &other)
 				return *this;
 
-			alSourceStop(p_Source);
-			alDeleteSources(1, &p_Source);
-			alDeleteBuffers(1, &p_Buffer);
+			if (p_Source)
+			{
+				alSourceStop(p_Source);
+				alDeleteSources(1, &p_Source);
+			}
+			if(p_Buffer)
+				alDeleteBuffers(1, &p_Buffer);
 
 			p_Source = other.p_Source;
 			p_Pitch = other.p_Pitch;

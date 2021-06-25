@@ -159,14 +159,19 @@ namespace aux
 
 	AudioSource::~AudioSource()
 	{
-		alSourceStop(p_Source);
-		alDeleteSources(1, &p_Source);
-		alDeleteBuffers(1, &p_Buffer);
+		if (p_Source)
+		{
+			alSourceStop(p_Source);
+			alDeleteSources(1, &p_Source);
+		}
+		if(p_Buffer)
+			alDeleteBuffers(1, &p_Buffer);
 	}
 
 	void AudioSource::Play()
 	{
-		alSourcePlay(p_Source);
+		if (p_Source)
+			alSourcePlay(p_Source);
 
 		/*ALint state = AL_PLAYING;
 		std::cout << "playing sound\n";
@@ -181,25 +186,29 @@ namespace aux
 	void AudioSource::Loop(bool loop)
 	{
 		p_LoopSound = loop;
-		alSourcei(p_Source, AL_LOOPING, p_LoopSound);
+		if (p_Source)
+			alSourcei(p_Source, AL_LOOPING, p_LoopSound);
 	}
 
 	void AudioSource::SetGain(float gain)
 	{
 		p_Gain = std::clamp(gain, gMin_gain, gMax_gain);
-		alSourcef(p_Source, AL_GAIN, p_Gain);
+		if (p_Source)
+			alSourcef(p_Source, AL_GAIN, p_Gain);
 	}
 
 	void AudioSource::SetPitch(float pitch)
 	{
 		p_Pitch = std::clamp(pitch,gMin_pitch,gMax_pitch);
-		alSourcef(p_Source, AL_PITCH, p_Pitch);
+		if (p_Source)
+			alSourcef(p_Source, AL_PITCH, p_Pitch);
 	}
 
 	bool AudioSource::IsPlaying()
 	{
 		ALint state;
-		alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
+		if (p_Source)
+			alGetSourcei(p_Source, AL_SOURCE_STATE, &state);
 		if (state == AL_PLAYING)
 			return true;
 		return false;

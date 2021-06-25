@@ -79,6 +79,9 @@ namespace aux
 		 */
 		buffer = 0;
 		alGenBuffers(1, &buffer);
+		err = alGetError();
+		if(!buffer || err != AL_NO_ERROR)
+			throw std::exception("Could not generate buffer");
 		alBufferData(buffer, format, membuf, num_bytes, sfinfo.samplerate);
 
 		free(membuf);

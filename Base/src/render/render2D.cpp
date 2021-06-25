@@ -130,10 +130,6 @@ namespace render
 		m_LineRender.DrawCurveLine(origin, p1, dest, color, precision, layer);
 	}
 
-	void Render2D::DrawCurveLine(const glm::vec2& origin, const std::vector<glm::vec2>& control_points, const glm::vec2& dest, const glm::vec4& color, float_t precision, float_t layer)
-	{
-	}
-
 	void Render2D::DrawCircle(const glm::vec2& position, float_t radius, const glm::vec4& color, bool fill, float thick,float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		m_CircleRender.DrawCircle(position, radius, fill, thick ,color, layer, rotation, axis);
