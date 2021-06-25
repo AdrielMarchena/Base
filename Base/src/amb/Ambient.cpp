@@ -21,7 +21,6 @@ namespace windowing
 
 	void Ambient::UpdateAmbient(const glm::vec3& value, const render::Shader& _Shader, bool UpdateShader)
 	{
-		//TODO: maybe add some validation to value here
 		m_Ambient = value;
 		if (UpdateShader)
 			_Shader.SetUniform3f("u_Ambient", m_Ambient.x, m_Ambient.y, m_Ambient.z);

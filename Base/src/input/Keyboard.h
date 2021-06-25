@@ -20,7 +20,6 @@ namespace input
 	{
 	private:
 		std::array<bool, EN_KEYBOARD_NUMBER_KEYS> keysPressed;
-		//TODO: maybe remove this mutable
 		mutable std::array<bool, EN_KEYBOARD_NUMBER_KEYS> singleClickControl;
 
 	public:

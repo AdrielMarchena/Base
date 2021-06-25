@@ -18,7 +18,6 @@ class Map
 {
 private:
 	std::vector<std::function<void(const en::RenderArgs& r_args)>> m_RenderThisPlease;
-	//TODO: Pass this matrix to Heap memory
 	bool** OldCells;
 	bool** NewCells;
 	bool pause = true;

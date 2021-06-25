@@ -4,7 +4,6 @@
 #include "GLFW/glfw3.h"
 #include "Game.h"
 #include "amb/Ambient.h"
-//TODO: Link Engine lib to all platform and configurations
 
 int main()
 {

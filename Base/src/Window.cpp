@@ -354,7 +354,6 @@ namespace en
 		Window::Window(Window&& other) noexcept
 			:m_IO(nullptr), m_camera(1)
 		{
-			//TODO: add mouse, kyeboard, render ,camera here
 			m_Window = other.m_Window;
 			m_Wid = other.m_Wid;
 			m_Hei = other.m_Hei;

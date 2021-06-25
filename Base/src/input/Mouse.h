@@ -22,7 +22,6 @@ namespace input
 	{
 	private:
 		std::array<bool, EN_MOUSE_NUMBER_KEYS> keysPressed;
-		//TODO: Maybe remove this mutable
 		mutable std::array<bool, EN_MOUSE_NUMBER_KEYS> singleClickControl;
 
 		glm::vec2 pos		= { 0.0f,0.0f };

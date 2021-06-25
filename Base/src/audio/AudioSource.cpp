@@ -71,7 +71,6 @@ namespace aux
 		}
 	}
 
-	//TODO: It's probably better to store the source buffer on the map, either way, can still get the source buffer from the AudioSource
 	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, const utils::NameCaps& nameCaps, uint8_t batchLimit)
 	{
 		utils::ResourceLoads<std::string, ALuint> loads;

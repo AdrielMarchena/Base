@@ -20,11 +20,15 @@ namespace render
 	Texture::Texture(const std::string& path)
 	{
 		ImageInfo info = GetImage(path.c_str());
+		if (!info.m_Pixels)
+			throw std::exception("The image data is empty");
 		m_Wid = info.m_Wid;
 		m_Hei = info.m_Hei;
-		//TODO: handle empty m_Pixels
+
 		glGenTextures(1, &m_Id);
-		assert(m_Id >= 0);
+		if (!m_Id)
+			throw std::exception("The image OpenGL_ID is empty");
+
 		glBindTexture(GL_TEXTURE_2D, m_Id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -39,11 +43,15 @@ namespace render
 
 	Texture::Texture(const ImageInfo& info)
 	{
+		if (!info.m_Pixels)
+			throw std::exception("The image data is empty");
+	
 		m_Wid = info.m_Wid;
 		m_Hei = info.m_Hei;
-		//TODO: handle empty m_Pixels
+	
 		glGenTextures(1, &m_Id);
-		assert(m_Id >= 0);
+		if (!m_Id)
+			throw std::exception("The image OpenGL_ID is empty");
 		glBindTexture(GL_TEXTURE_2D, m_Id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
