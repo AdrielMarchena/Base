@@ -126,5 +126,58 @@ namespace en
 			m_data.Count++;
 			m_data.IndexCount += 2;
 		}
+
+		//Find this here
+		//https://www.programmersought.com/article/74894584653/
+		static inline glm::vec2 bezier_3order_mix(const glm::vec2& p0, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, float_t t)
+		{
+			const glm::vec2 q0 = glm::mix(p0, p1, t);
+			const glm::vec2 q1 = glm::mix(p1, p2, t);
+			const glm::vec2 q2 = glm::mix(p2, p3, t);
+			
+			const glm::vec2 r0 = glm::mix(q0, q1, t);
+			const glm::vec2 r1 = glm::mix(q1, q2, t);
+
+			return glm::mix(r0, r1, t);
+		}
+
+		static inline glm::vec2 bezier_2order_mix(const glm::vec2& p0, const glm::vec2& p1, const glm::vec2& p2, float_t t)
+		{
+			const glm::vec2 q0 = glm::mix(p0, p1, t);
+			const glm::vec2 q1 = glm::mix(p1, p2, t);
+
+			return glm::mix(q0, q1, t);
+		}
+
+		void LineRender2D::DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& dest, const glm::vec4& color,float_t precision ,float_t layer)
+		{
+			std::vector<glm::vec2> points;
+			for (float i = 0; i < 1; i+= precision)
+			{
+				//Remove this loop
+				points.push_back(bezier_3order_mix(origin, p1, p2, dest,i));
+			}
+
+			for (int i = 0; i < points.size()-1; i++)
+			{
+				DrawLine(points[i], points[i+1], color, layer);
+			}
+			DrawLine(points.back(), dest,color,layer); // Connect the last line with the destination
+		}
+		void LineRender2D::DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& dest, const glm::vec4& color, float_t precision, float_t layer)
+		{
+			std::vector<glm::vec2> points;
+			for (float i = 0; i < 1; i += precision)
+			{
+				//Remove this loop
+				points.push_back(bezier_2order_mix(origin, p1, dest, i));
+			}
+
+			for (int i = 0; i < points.size() - 1; i++)
+			{
+				DrawLine(points[i], points[i + 1], color, layer);
+			}
+			DrawLine(points.back(), dest, color, layer); // Connect the last line with the destination
+		}
 	}
 }

@@ -64,6 +64,10 @@ namespace render
 
 		void DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer = 0);
 
+		void DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& dest, const glm::vec4& color, float_t precision = 0.01f ,float_t layer = 0);
+
+		void DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& dest, const glm::vec4& color, float_t precision = 0.01f, float_t layer = 0);
+
 		void DrawCircle(const glm::vec2& position, float_t radius, const glm::vec4& color, bool fill = true, float thick = 1.0f,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
 

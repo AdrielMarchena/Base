@@ -8,8 +8,6 @@
 #include <array>
 #include "glm/glm.hpp"
 #include "../Shader.h"
-#include "../Texture.h"
-#include "../SubTexture.h"
 #include <memory>
 #include <math.h>
 #include "RenderTemplate.h"
@@ -51,6 +49,9 @@ namespace en
 			const Shader& GetShader();
 
 			void DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer = 0);
+			void DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& dest, const glm::vec4& color, float_t precision ,float_t layer = 0);
+			void DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& dest, const glm::vec4& color, float_t precision, float_t layer = 0);
+
 		};
 	}
 }
