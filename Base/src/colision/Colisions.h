@@ -23,7 +23,7 @@ namespace colision
 	class Colide
 	{
 	public:
-		static bool RectVsRect(const Rect& t,const Rect& f)
+		_NODISCARD static bool RectVsRect(const Rect& t,const Rect& f)
 		{
 			if (t.pos.x < f.pos.x + f.size.x &&
 				t.pos.x + t.size.x > f.pos.x &&
@@ -35,7 +35,7 @@ namespace colision
 			return false;
 		}
 
-		static bool PointVsRect(const glm::vec2& p,const Rect& r)
+		_NODISCARD static bool PointVsRect(const glm::vec2& p,const Rect& r)
 		{
 			return (p.x >= r.pos.x && p.y >= r.pos.y && p.x < r.pos.x + r.size.x && p.y < r.pos.y + r.size.y);
 		}

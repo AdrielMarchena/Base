@@ -21,41 +21,36 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{43078f13-347a-4c70-8f4a-ce54cea8b41e}</ProjectGuid>
-    <RootNamespace>Base</RootNamespace>
+    <ProjectGuid>{3edfc4d2-8e4a-44a9-9d67-4e048c3f2c4f}</ProjectGuid>
+    <RootNamespace>PiriquitoAbano</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -77,45 +72,24 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
+    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\Intermediates\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
+    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\Intermediates\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnabled>true</VcpkgEnabled>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-  </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -124,13 +98,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dev\B\Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Engine.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Base\$(Configuration)\$(Platform)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,15 +117,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Dev\B\Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Engine.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -158,13 +134,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Dev\B\Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Engine.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Base\$(Configuration)\$(Platform)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,88 +153,39 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Dev\B\Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Engine.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="shaders\fs.shader" />
-    <None Include="shaders\vs.shader" />
+    <None Include="shaders\circle_fs.shader" />
+    <None Include="shaders\circle_vs.shader" />
+    <None Include="shaders\line_fs.shader" />
+    <None Include="shaders\line_vs.shader" />
+    <None Include="shaders\quad_fs.shader" />
+    <None Include="shaders\quad_vs.shader" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\audio\AudioSource.cpp" />
-    <ClCompile Include="src\audio\AudioDevice.cpp" />
-    <ClCompile Include="src\audio\SoundBuffer.cpp" />
-    <ClCompile Include="src\ent\Animator.cpp" />
-    <ClCompile Include="src\amb\Ambient.cpp" />
-    <ClCompile Include="src\camera\OrthographicCamera.cpp" />
-    <ClCompile Include="src\camera\OrthographicCameraController.cpp" />
-    <ClCompile Include="src\args\RenderArgs.h" />
-    <ClCompile Include="src\render\geo_renders\CircleRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\LineRender.cpp" />
-    <ClCompile Include="src\render\ParticleSystem.cpp" />
-    <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\QuadRender.h" />
-    <ClCompile Include="src\render\SubTexture.cpp" />
-    <ClCompile Include="src\utils\Files.cpp" />
-    <ClCompile Include="src\input\Keyboard.cpp" />
-    <ClCompile Include="src\input\Mouse.cpp" />
-    <ClCompile Include="src\render\Shader.cpp" />
-    <ClCompile Include="src\render\render2D.cpp" />
+    <ClCompile Include="src\Pipe.cpp" />
+    <ClCompile Include="src\Piriquito.cpp" />
+    <ClCompile Include="src\PiriquitoAbano.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\utils\Generic.cpp" />
-    <ClCompile Include="src\utils\RandomList.cpp" />
-    <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="src\render\Texture.cpp" />
     <ClCompile Include="vendor\definer_Stb.cpp" />
-    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\audio\Al_Error.h" />
-    <ClInclude Include="src\audio\AudioSource.h" />
-    <ClInclude Include="src\audio\AudioDevice.h" />
-    <ClInclude Include="src\audio\SoundBuffer.h" />
-    <ClInclude Include="src\ent\Animator.h" />
-    <ClInclude Include="src\amb\Ambient.h" />
-    <ClInclude Include="src\args\AttachArgs.h" />
-    <ClInclude Include="src\args\ImGuiArgs.h" />
-    <ClInclude Include="src\args\KeyboardArgs.h" />
-    <ClInclude Include="src\args\MouseArgs.h" />
-    <ClInclude Include="src\args\ResizeArgs.h" />
-    <ClInclude Include="src\camera\OrthographicCamera.h" />
-    <ClInclude Include="src\camera\OrthographicCameraController.h" />
-    <ClInclude Include="src\render\geo_renders\CircleRender.h" />
-    <ClInclude Include="src\render\geo_renders\LineRender.h" />
-    <ClInclude Include="src\render\geo_renders\RenderDatas.h" />
-    <ClInclude Include="src\render\geo_renders\RenderTemplate.h" />
-    <ClInclude Include="src\render\ParticleSystem.h" />
-    <ClInclude Include="src\render\SubTexture.h" />
-    <ClInclude Include="src\args\UpdateArgs.h" />
-    <ClInclude Include="src\utils\base_exceptions.h" />
-    <ClInclude Include="src\utils\Files.h" />
-    <ClInclude Include="src\colision\Colisions.h" />
-    <ClInclude Include="src\input\Keyboard.h" />
-    <ClInclude Include="src\input\Mouse.h" />
-    <ClInclude Include="src\render\Shader.h" />
-    <ClInclude Include="src\render\render2D.h" />
-    <ClInclude Include="src\callbacks_glfw.h" />
-    <ClInclude Include="src\utils\Generic.h" />
-    <ClInclude Include="src\utils\Logs.h" />
-    <ClInclude Include="src\utils\NameCaps.h" />
-    <ClInclude Include="src\utils\RandomList.h" />
-    <ClInclude Include="src\utils\threading.h" />
-    <ClInclude Include="src\args\VirtualArgs.h" />
-    <ClInclude Include="src\Window.h" />
-    <ClInclude Include="src\render\Texture.h" />
-    <ClInclude Include="vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\Pipe.h" />
+    <ClInclude Include="src\Piper.h" />
+    <ClInclude Include="src\Piriquito.h" />
+    <ClInclude Include="src\PiriquitoAbano.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

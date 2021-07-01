@@ -31,6 +31,30 @@ namespace baseException
 	private:
 		const char* _Path;
 	};
+
+	/**
+	* Exception throw when a stb_image return no SOI error
+	*/
+	class no_soi : public std::exception
+	{
+	public:
+		no_soi()
+			:exception(), _Path("")
+		{}
+		no_soi(const char* _What)
+			:exception(_What), _Path("")
+		{}
+		no_soi(const char* _What, const char* _Path)
+			:exception(_What), _Path(_Path)
+		{}
+
+		_NODISCARD virtual char const* path() const
+		{
+			return _Path ? _Path : "Unknown path";
+		}
+	private:
+		const char* _Path;
+	};
 }
 }
 }

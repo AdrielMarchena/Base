@@ -22,7 +22,7 @@ namespace render
 		int32_t  m_Hei = NULL;
 		int32_t  m_Bit = NULL;
 		uint8_t* m_Pixels = nullptr;
-
+		bool png = false;
 		void clear();
 	};
 
@@ -66,6 +66,7 @@ namespace render
 			other.m_Wid = NULL;
 			other.m_Hei = NULL;
 			other.m_Bit = NULL;
+			other.copy = false;
 		}
 		Texture& operator=(Texture& other) noexcept
 		{
@@ -96,14 +97,22 @@ namespace render
 			other.m_Wid = NULL;
 			other.m_Hei = NULL;
 			other.m_Bit = NULL;
+			other.copy = false;
 
+			this->copy = false;
 			return *this;
 		}
 		uint32_t GetId() const { return m_Id; };
 		glm::vec2 GetSize() const { return { m_Wid ,m_Hei }; }
 
 		static ImageInfo GetImage(const char* path);
+		static ImageInfo GetPNGImage(const char* path);
 		static std::unordered_map<std::string, Texture> LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE ,uint8_t batchLimit = 5);
+		static Texture& GetBlanckTexture()
+		{
+			static Texture tmp;
+			return tmp;
+		}
 
 		bool IsCopy() const { return copy; }
 

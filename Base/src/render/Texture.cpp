@@ -8,7 +8,9 @@
 
 #include "Texture.h"
 #include "stb_image/stb_image.h"
+#include "lodepng.h"
 #include "utils/threading.h"
+#include "utils/base_exceptions.h"
 #include <future>
 #include <mutex>
 #include "utils/Logs.h"
@@ -25,6 +27,8 @@ namespace render
 		m_Wid = info.m_Wid;
 		m_Hei = info.m_Hei;
 
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
 		glGenTextures(1, &m_Id);
 		if (!m_Id)
 			throw std::exception("The image OpenGL_ID is empty");
@@ -37,8 +41,7 @@ namespace render
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Wid, m_Hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, info.m_Pixels);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		if (info.m_Pixels)
-			stbi_image_free(info.m_Pixels);
+		info.clear();
 	}
 
 	Texture::Texture(const ImageInfo& info)
@@ -48,10 +51,12 @@ namespace render
 	
 		m_Wid = info.m_Wid;
 		m_Hei = info.m_Hei;
-	
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
 		glGenTextures(1, &m_Id);
 		if (!m_Id)
-			throw std::exception("The image OpenGL_ID is empty");
+			throw std::exception("OpenGL_ID is empty");
 		glBindTexture(GL_TEXTURE_2D, m_Id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -66,44 +71,88 @@ namespace render
 	{
 		ImageInfo info;
 		stbi_set_flip_vertically_on_load(1);
-		
-		info.m_Pixels = stbi_load(path, &info.m_Wid, &info.m_Hei, &info.m_Bit, 4);
+
+		auto px = stbi_load(path, &info.m_Wid, &info.m_Hei, &info.m_Bit, STBI_rgb_alpha);
+	
+		if (!px)
+			throw std::exception("The pixels tried to be loaded are empty");
+		info.m_Pixels = px;
 		//TODO: Add er to exception message
-		auto er = stbi_failure_reason();
-		if (!info.m_Pixels || !er)
+		const char* er = stbi_failure_reason();
+		if (er)
 		{
-			const std::string msg = "Could not load texture '" + std::string(path);
-			throw std::exception(msg.c_str());
+			if (er == "no SOI")
+				return GetPNGImage(path);
+			throw std::exception(er);
 		}
 		return info;
 	}
-	
-	static inline void CreateTexture(std::unordered_map<std::string, Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
+
+	ImageInfo Texture::GetPNGImage(const char* path)
 	{
-		using namespace utils;
-		while (!info.isAllLoad())
+		ImageInfo info;
+		info.png = true;
+		unsigned w, h;
+		std::vector<unsigned char> image;
+
+		unsigned error = lodepng::decode(image, w, h, path);
+
+		if(error)
+			throw std::exception(lodepng_error_text(error));
+
+		info.m_Wid = w;
+		info.m_Hei = h;
+		//If i could steal the buffer inside the vector this would be much easy
+		info.m_Pixels = new uint8_t[image.size()];
+		std::copy(image.begin(),image.end(),info.m_Pixels);
+		image.clear();
+		return info;
+	}
+
+	static inline void TryCreate(std::unordered_map<std::string, Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
+	{
+		for (auto& inf : info.resources)
 		{
-			for (auto& inf : info.resources)
+			if (info.futures[inf.first]._Is_ready())
 			{
-				if (info.futures[inf.first]._Is_ready())
+				std::string name = inf.first;
+				switch (nameCaps)
 				{
-					std::string name = inf.first;
-					switch (nameCaps)
-					{
-						case NameCaps::NONE: break;
-						case NameCaps::ALL_LOWER: name = utils::ToLower(name); break;
-						case NameCaps::ALL_UPPER: name = utils::ToUpper(name); break;
-						default: break;
-					}
-					map[name] = Texture(inf.second);
-					D_LOG("TEXTURE CREATED image: '" << inf.first << "' Loaded!");
+				case utils::NameCaps::NONE: break;
+				case utils::NameCaps::ALL_LOWER: name = utils::ToLower(name); break;
+				case utils::NameCaps::ALL_UPPER: name = utils::ToUpper(name); break;
+				default: break;
+				}
+				try
+				{
+					map[name] = std::move(Texture(inf.second));
+					D_LOG("TEXTURE CREATED image: '" << inf.first);
 					inf.second.clear();
 					info.futures.erase(inf.first);
 					info.resources.erase(inf.first);
 					break;
 				}
+				catch (const std::exception& ex)
+				{
+					std::cout << "Can't Create Texture '" << inf.first << "' , error: " << ex.what() << std::endl;
+					break;
+				}
 			}
 		}
+	}
+
+	static inline void CreateTexture(std::unordered_map<std::string, Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
+	{
+		using namespace utils;
+		while (!info.isAllLoad())
+		{
+			std::lock_guard<std::mutex> lock(info.mutex);
+			TryCreate(map, info, nameCaps);
+		}
+			std::lock_guard<std::mutex> lock(info.mutex);
+			TryCreate(map, info, nameCaps);
+			info.futures.clear();
+			info.resources.clear();
 	}
 
 	std::unordered_map<std::string, Texture> Texture::LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps, uint8_t batchLimit)
@@ -112,41 +161,52 @@ namespace render
 		auto lamb = [&](const std::string& name, const std::string& path) {
 			try 
 			{
-				auto info = Texture::GetImage(path.c_str());
+				ImageInfo info;
+				info = Texture::GetImage(path.c_str());
 				if (info.m_Pixels != NULL)
 				{
-					D_LOG("image: '" << name << "' Loaded!");
 					std::lock_guard<std::mutex> lock(loads.mutex);
+					D_LOG("image: '" << name << "' Loaded!");
 					loads.resources[name] = info;
 				}
 			}
 			catch (const std::exception& e)
 			{
 				std::lock_guard<std::mutex> lock(loads.mutex);
-				std::cout << e.what() << std::endl;
+				std::cout << "Can't Load Image '" << name << "' , error: " << e.what() << std::endl;
 			}
 		};
 
 		uint8_t count = 0;
 		std::unordered_map<std::string, Texture> mm;
+		//TODO: something wrong here
 		for (auto& name : names)
 		{
-			loads.futures[name.first] = std::async(std::launch::async, lamb, name.first, name.second);
-			count++;
-			if (count >= batchLimit)
+			if (count > batchLimit)
 			{
-				CreateTexture(mm, loads,nameCaps);
+				CreateTexture(mm, loads, nameCaps);
 				loads.resources.clear();
 				loads.futures.clear();
 				count = 0;
 			}
+			loads.futures[name.first] = std::async(std::launch::async, lamb, name.first, name.second);
+			//lamb(name.first, name.second);
+			count++;
 		}
-		CreateTexture(mm, loads,nameCaps);
-		return mm; //Move because texture is there
+		
+		CreateTexture(mm, loads, nameCaps);
+		return mm;
 	}
 	void ImageInfo::clear()
 	{
-		if (m_Pixels) delete[] m_Pixels;
+		if (png)
+		{
+			if (m_Pixels)
+				delete[] m_Pixels;
+		}
+		else	
+			if (m_Pixels)
+				stbi_image_free(m_Pixels);
 	}
 }
 }

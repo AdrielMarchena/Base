@@ -21,7 +21,7 @@ namespace input
 	private:
 		std::array<bool, EN_KEYBOARD_NUMBER_KEYS> keysPressed;
 		mutable std::array<bool, EN_KEYBOARD_NUMBER_KEYS> singleClickControl;
-
+		bool AnyKey = false;
 	public:
 		Keyboard()
 		:keysPressed(std::array<bool, EN_KEYBOARD_NUMBER_KEYS>()),
@@ -30,6 +30,8 @@ namespace input
 
 		bool isClicked(int32_t key)const;
 		bool isPress(int32_t key)const;
+
+		bool isAnyKey() const;
 
 		void on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
 	};

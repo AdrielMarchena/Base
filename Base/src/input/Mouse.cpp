@@ -31,6 +31,11 @@ namespace input
 		return keysPressed[key];
 	}
 
+	bool Mouse::isAnyKey() const
+	{
+		return AnyKey;
+	}
+
 	void Mouse::on_mouse_scroll(GLFWwindow* window, double_t xOffSet, double_t yOffSet)
 	{
 		auto n = glm::vec2(xOffSet, yOffSet);
@@ -49,10 +54,12 @@ namespace input
 		case GLFW_PRESS:
 
 			keysPressed[key] = true;
+			AnyKey = true;
 			break;
 		case GLFW_RELEASE:
 			keysPressed[key] = false;
 			singleClickControl[key] = false;
+			AnyKey = false;
 			break;
 		case GLFW_REPEAT:
 			break;

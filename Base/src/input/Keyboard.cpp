@@ -25,6 +25,12 @@ namespace input
 		singleClickControl[key] = true;
 		return keysPressed[key];
 	}
+
+	bool Keyboard::isAnyKey() const
+	{
+		return AnyKey;
+	}
+
 	void Keyboard::on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
 	{
 		key -= 32;
@@ -32,10 +38,12 @@ namespace input
 		{
 		case GLFW_PRESS:
 			keysPressed[key] = true;
+			AnyKey = true;
 			break;
 		case GLFW_RELEASE:
 			keysPressed[key] = false;
 			singleClickControl[key] = false;
+			AnyKey = false;
 			break;
 		case GLFW_REPEAT:
 			break;

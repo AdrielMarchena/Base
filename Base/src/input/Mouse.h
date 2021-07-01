@@ -28,7 +28,7 @@ namespace input
 		glm::vec2 prevPos	= { 0.0f,0.0f };
 		mutable glm::vec2 OffValue	= { 0.0f,0.0f };
 		glm::vec2 PrevOff	= { 0.0f,0.0f };
-
+		bool AnyKey = false;
 	public:
 		Mouse()
 		: keysPressed(std::array<bool, EN_MOUSE_NUMBER_KEYS>()),
@@ -40,6 +40,8 @@ namespace input
 		bool isClicked(int32_t key)const;
 		bool isPress(int32_t key)const;
 		
+		bool isAnyKey() const;
+
 		void on_mouse_button(GLFWwindow* window, int32_t key, int32_t action, int32_t mods);
 		void on_mouse_scroll(GLFWwindow* window, double_t xOffSet, double_t yOffSet);
 		void on_mouse_cursor(GLFWwindow* window, double_t xPos, double_t yPos);
