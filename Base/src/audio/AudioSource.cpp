@@ -33,42 +33,50 @@ namespace en
 namespace aux
 {
 
+	static inline void TryCreateAudio(std::unordered_map<std::string, AudioSource>& tmp, utils::ResourceLoads<std::string, ALuint>& loads, const utils::NameCaps& nameCaps)
+	{
+		for (auto& inf : loads.resources)
+		{
+			if (loads.futures[inf.first]._Is_ready())
+			{
+				try
+				{
+					if (!inf.second)
+						throw std::exception("Buffer not created!");
+					std::string name = inf.first;
+					switch (nameCaps)
+					{
+					case utils::NameCaps::NONE: break;
+					case utils::NameCaps::ALL_LOWER: name = utils::ToLower(name); break;
+					case utils::NameCaps::ALL_UPPER: name = utils::ToUpper(name); break;
+					default: break;
+					}
+					tmp[name] = AudioSource(inf.second);
+					inf.second = 0;
+					loads.futures.erase(inf.first);
+					loads.resources.erase(inf.first);
+					LOG_NORMAL(inf.first + " AudioSource created!");
+				}
+				catch (const std::exception& ex)
+				{
+					const std::string error_what = ex.what();
+					LOG_WARNING(inf.first << " could not be used to create AudioSorce\nError: " + error_what);
+				}
+				break;
+			}
+		}
+	}
+
 	static inline void CreateAudio(std::unordered_map<std::string, AudioSource>& tmp ,utils::ResourceLoads<std::string, ALuint>& loads, const utils::NameCaps& nameCaps)
 	{
 		using namespace utils;
 		while (!loads.isAllLoad())
 		{
-			for (auto& inf : loads.resources)
-			{
-				if (loads.futures[inf.first]._Is_ready())
-				{
-					try
-					{
-						if (!inf.second)
-							throw std::exception("Buffer not created!");
-						std::string name = inf.first;
-						switch (nameCaps)
-						{
-						case NameCaps::NONE: break;
-						case NameCaps::ALL_LOWER: name = utils::ToLower(name); break;
-						case NameCaps::ALL_UPPER: name = utils::ToUpper(name); break;
-						default: break;
-						}
-						tmp[name] = AudioSource(inf.second);
-						inf.second = 0;
-						loads.futures.erase(inf.first);
-						loads.resources.erase(inf.first);
-						LOG_NORMAL(inf.first + " AudioSource created!");
-					}
-					catch (const std::exception& ex)
-					{
-						const std::string error_what = ex.what();
-						LOG_WARNING(inf.first << " could not be used to create AudioSorce\nError: " + error_what);
-					}
-					break;
-				}
-			}
+			std::lock_guard<std::mutex> lock(loads.mutex);
+			TryCreateAudio(tmp, loads, nameCaps);
 		}
+		std::lock_guard<std::mutex> lock(loads.mutex);
+		TryCreateAudio(tmp, loads, nameCaps);
 	}
 
 	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, const utils::NameCaps& nameCaps, uint8_t batchLimit)
@@ -79,11 +87,15 @@ namespace aux
 			auto info = LoadSoundEffect(path.c_str());
 			if (info)
 			{
+				std::lock_guard<std::mutex> lock(loads.mutex);
 				loads.resources[name] = info;
 				LOG_NORMAL("sound: '" << name << "' Loaded!");
 			}
 			else
+			{
+				std::lock_guard<std::mutex> lock(loads.mutex);
 				LOG_NORMAL("sound: '" << name << "' Can't be loaded");
+			}
 		};
 		uint8_t count = 0;
 		std::unordered_map<std::string, AudioSource> tmp;
