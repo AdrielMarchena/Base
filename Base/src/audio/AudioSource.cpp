@@ -77,6 +77,8 @@ namespace aux
 		}
 		std::lock_guard<std::mutex> lock(loads.mutex);
 		TryCreateAudio(tmp, loads, nameCaps);
+		loads.futures.clear();
+		loads.resources.clear();
 	}
 
 	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, const utils::NameCaps& nameCaps, uint8_t batchLimit)
