@@ -21,6 +21,7 @@
     <None Include="shaders\line_vs.shader" />
     <None Include="shaders\quad_fs.shader" />
     <None Include="shaders\quad_vs.shader" />
+    <None Include="shaders\text_fs.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="vendor\definer_Stb.cpp">

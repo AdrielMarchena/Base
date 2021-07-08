@@ -12,8 +12,10 @@ private:
 	en::render::Texture& m_Texture;
 	//Also to see if need to check colision
 	bool m_SRender = true;
+	bool m_Alive = false;
 public:
 	bool invert = false;
+	bool pointPipe = false;
 	Pipe(en::render::Texture& texture);
 	~Pipe();
 	void OnAttach(const en::AttachArgs& args);
@@ -26,6 +28,10 @@ public:
 	void SetTexture(en::render::Texture& texture);
 
 	bool IsRender()const { return m_SRender; }
+	void SetRender(bool r){ m_SRender = r; }
+
+	bool IsAlive()const { return m_Alive; }
+	void SetAlive(bool a){ m_Alive = a; }
 
 	void Spawn(const en::Rect& pos);
 	void Despawn();
