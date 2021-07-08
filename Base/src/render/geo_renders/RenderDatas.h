@@ -37,6 +37,10 @@ namespace render
 		//float Fill;
 	};
 
+
+	struct TextVertex : public QuadVertex
+	{};
+
 	struct RenderData
 	{
 	public:

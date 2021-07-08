@@ -13,9 +13,19 @@ namespace en
 namespace render
 {
 
+	namespace Color
+	{
+		const glm::vec4 White = { 1.0f,1.0f,1.0f,1.0f };
+		const glm::vec4 Red =	{ 1.0f,0.0f,0.0f,1.0f };
+		const glm::vec4 Green = { 0.0f,1.0f,0.0f,1.0f };
+		const glm::vec4 Blue =	{ 0.0f,0.0f,1.0f,1.0f };
+		const glm::vec4 Black = { 0.0f,0.0f,0.0f,1.0f };
+	};
+
 	class Render
 	{
 	public:
+
 		virtual void BeginBatch() = 0;
 		virtual void EndBatch() = 0;
 		virtual void Flush() = 0;

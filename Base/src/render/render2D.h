@@ -28,13 +28,15 @@ namespace render
 		QuadRender2D m_QuadRender;
 		CircleRender m_CircleRender;
 		LineRender2D m_LineRender;
+		QuadRender2D m_TextRender;
 	public:
 
 		static glm::vec3 m_default_axis;
 
 		Render2D(const char* quad_vs, const char* quad_fs,
 				 const char* line_vs, const char* line_fs,
-				 const char* circle_vs, const char* circle_fs);
+				 const char* circle_vs, const char* circle_fs,
+				 const char* text_vs, const char* text_fs);
 		//Render2D(){}
 
 		~Render2D();
@@ -46,6 +48,7 @@ namespace render
 		const Shader& GetQuadShader();
 		const Shader& GetLineShader();
 		const Shader& GetCircleShader();
+		const Shader& GetTextShader();
 
 		void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
@@ -54,10 +57,13 @@ namespace render
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture,
-			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
+			float_t layer = 0, const glm::vec4& color = Color::White,float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		void DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
+
+		void DrawText(const glm::vec2& position, const glm::vec2& size, const Texture& texture,
+			float_t layer = 0, const glm::vec4& color = Color::White, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		void DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
 			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
@@ -84,6 +90,10 @@ namespace render
 		void LineBeginBatch();
 		void LineEndBatch();
 		void LineFlush();
+
+		void TextBeginBatch();
+		void TextEndBatch();
+		void TextFlush();
 
 	public: //deprecated
 		[[deprecated("Use DrawLine() instead")]]

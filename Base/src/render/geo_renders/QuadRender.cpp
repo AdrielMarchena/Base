@@ -179,7 +179,7 @@ namespace en
 			m_data.RenderStatus.QuadCount++;
 		}
 
-		void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, float_t rotation, const glm::vec3& axis)
+		void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, const glm::vec4 & color, float_t layer, float_t rotation, const glm::vec3& axis)
 		{
 			if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
 			{
@@ -187,8 +187,6 @@ namespace en
 				Flush();
 				BeginBatch();
 			}
-
-			constexpr glm::vec4 color = { 1.0f,1.0f ,1.0f ,1.0f };
 
 			int8_t texture_index = 0;
 			if (texture.GetId())

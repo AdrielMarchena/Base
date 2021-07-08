@@ -20,10 +20,12 @@ namespace render
 
 	Render2D::Render2D(const char* quad_vs, const char* quad_fs,
 		const char* line_vs, const char* line_fs,
-		const char* circle_vs, const char* circle_fs)
+		const char* circle_vs, const char* circle_fs, 
+		const char* text_vs, const char* text_fs)
 		:m_QuadRender(quad_vs,quad_fs), 
 		m_LineRender(line_vs,line_fs),
-		m_CircleRender(circle_vs,circle_fs)
+		m_CircleRender(circle_vs,circle_fs),
+		m_TextRender(text_vs,text_fs)
 	{
 	}
 
@@ -36,6 +38,7 @@ namespace render
 		m_LineRender.BeginBatch();
 		m_QuadRender.BeginBatch();
 		m_CircleRender.BeginBatch();
+		m_TextRender.BeginBatch();
 	}
 
 	void Render2D::EndBatch()
@@ -43,6 +46,7 @@ namespace render
 		m_LineRender.EndBatch();
 		m_QuadRender.EndBatch();
 		m_CircleRender.EndBatch();
+		m_TextRender.EndBatch();
 	}
 
 	void Render2D::Flush()
@@ -50,6 +54,7 @@ namespace render
 		m_LineRender.Flush();
 		m_QuadRender.Flush();
 		m_CircleRender.Flush();
+		m_TextRender.Flush();
 	}
 
 	const Shader& Render2D::GetQuadShader()
@@ -67,6 +72,11 @@ namespace render
 		return m_CircleRender.GetShader();
 	}
 
+	const Shader& Render2D::GetTextShader()
+	{
+		return m_TextRender.GetShader();
+	}
+
 	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		m_QuadRender.DrawQuad(position, size, color, layer, rotation, axis);
@@ -77,14 +87,19 @@ namespace render
 		m_QuadRender.DrawQuad(position, size, color, layer, rotation, axis);
 	}
 
-	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, const glm::vec4& color,float_t rotation, const glm::vec3& axis)
 	{
-		m_QuadRender.DrawQuad(position, size, texture, layer, rotation, axis);
+		m_QuadRender.DrawQuad(position, size, texture, color, layer, rotation, axis);
 	}
 
 	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture, float_t layer, float_t rotation, const glm::vec3& axis)
 	{
 		m_QuadRender.DrawQuad(position, size, sub_texture, layer, rotation, axis);
+	}
+
+	void Render2D::DrawText(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_TextRender.DrawQuad(position, size, texture, color, layer, rotation, axis);
 	}
 
 	void Render2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
@@ -178,6 +193,21 @@ namespace render
 	void Render2D::CircleFlush()
 	{
 		m_CircleRender.Flush();
+	}
+
+	void Render2D::TextBeginBatch()
+	{
+		m_TextRender.BeginBatch();
+	}
+
+	void Render2D::TextEndBatch()
+	{
+		m_TextRender.EndBatch();
+	}
+
+	void Render2D::TextFlush()
+	{
+		m_TextRender.Flush();
 	}
 
 	//Deprecated

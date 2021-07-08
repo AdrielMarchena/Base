@@ -59,8 +59,8 @@ namespace en
 			void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4],
 				float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
 
-			void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture,
-				float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
+			void DrawQuad(const glm::vec2& position, const glm::vec2& size,
+				const Texture& texture, const glm::vec4& color = { 1.0f,1.0f,1.0f,1.0f }, float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
 
 			void DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture,
 				float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
