@@ -134,6 +134,9 @@ namespace render
 				}
 				catch (const std::exception& ex)
 				{
+					inf.second.clear();
+					info.futures.erase(inf.first);
+					info.resources.erase(inf.first);
 					std::cout << "Can't Create Texture '" << inf.first << "' , error: " << ex.what() << std::endl;
 					break;
 				}
@@ -179,7 +182,6 @@ namespace render
 
 		uint8_t count = 0;
 		std::unordered_map<std::string, Texture> mm;
-		//TODO: something wrong here
 		for (auto& name : names)
 		{
 			if (count > batchLimit)

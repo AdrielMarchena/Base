@@ -116,6 +116,9 @@ namespace render
 
 		bool IsCopy() const { return copy; }
 
+		//Used only for draw Text
+		void SetID(GLuint new_id) { m_Id = new_id; }
+
 	private:
 		inline bool deletable() const
 		{
