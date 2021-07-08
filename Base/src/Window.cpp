@@ -107,11 +107,13 @@ namespace en
 
 			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader", "shaders/quad_fs.shader",
 														  "shaders/line_vs.shader", "shaders/line_fs.shader",
-														  "shaders/circle_vs.shader", "shaders/circle_fs.shader");
+														  "shaders/circle_vs.shader", "shaders/circle_fs.shader",
+														  "shaders/quad_vs.shader","shaders/text_fs.shader");
 
 			render_shaders.push_back(&m_Render->GetQuadShader());
 			render_shaders.push_back(&m_Render->GetLineShader());
 			render_shaders.push_back(&m_Render->GetCircleShader());
+			render_shaders.push_back(&m_Render->GetTextShader());
 
 			//m_Render = render::Render2D("shaders/vs.shader", "shaders/fs.shader",
 			//						  "shaders/line_vs.shader", "shaders/line_fs.shader");
