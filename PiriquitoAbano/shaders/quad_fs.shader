@@ -28,10 +28,11 @@ void main()
 	vec4 tmp_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
 	if (tmp_Color.a <= 0.0)
 		discard;
-	o_Color = vec4(tmp_Color.rgb * u_Ambient.rgb, tmp_Color.a);
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else
+	{
+		o_Color = vec4(tmp_Color.rgb * u_Ambient.rgb, tmp_Color.a);
 		for (int i = 0; i < u_LightQtd; i++)
 		{
 			float distance = distance(u_LightInfo[i].u_LightPos.xy, v_Pos.xy);
@@ -44,5 +45,6 @@ void main()
 
 			o_Color = max(o_Color, new_color);
 		}
+	}
 	//o_Color = tmp_Color;
 }
