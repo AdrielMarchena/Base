@@ -55,6 +55,7 @@ namespace en
 			std::string m_Title;
 			float m_Wid;
 			float m_Hei;
+			float m_AspectRatio = 1.0f;
 			bool m_Resizeble;
 
 			ALCdevice* p_ALCDevice = nullptr;
@@ -86,7 +87,7 @@ namespace en
 			static void on_cursor_move(GLFWwindow* window, double_t xPos, double_t yPos);
 			static void on_mouse_button(GLFWwindow* window, int32_t key, int32_t action, int32_t mods);
 			static void on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
-
+			static void on_mouse_enter(GLFWwindow* window, int32_t entered);
 		protected:
 			glm::vec2 correct_mouse(input::Mouse& mouse)
 			{
@@ -102,12 +103,22 @@ namespace en
 			void inline SetViewInShaders();
 			void inline SetTransformInShaders();
 
+			void HideCursor();
+			void UnhideCursor();
+
+			//Return true if the mouse is hovering the window
+			bool CursorHoveredWindow();
+
 			const inline std::vector<const render::Shader*>& GetVecShaders() { return render_shaders; }
 		protected:
 			//Event functions
-			void OnResize(ResizeArgs args);
-			void OnMouseAction(MouseArgs args);
-			void OnKeyboardAction(KeyboardArgs args);
+			
+			//Call super first
+			virtual void OnResize(ResizeArgs args);
+			//Call super first
+			virtual void OnMouseAction(MouseArgs args);
+			//Call super first
+			virtual void OnKeyboardAction(KeyboardArgs args);
 
 		};
 	}

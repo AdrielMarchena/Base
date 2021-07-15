@@ -68,8 +68,25 @@ namespace en
 			}
 		}
 
+		void Window::HideCursor()
+		{
+			ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+
+		void Window::UnhideCursor()
+		{
+			ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+
+		bool Window::CursorHoveredWindow()
+		{
+			return glfwGetWindowAttrib(m_Window,GLFW_HOVERED);
+		}
+
 		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
-			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, false),myWindow(nullptr)
+			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, false ,false),myWindow(nullptr)
 		{
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
@@ -88,8 +105,6 @@ namespace en
 
 			m_Window = glfwCreateWindow(m_Wid, m_Hei, title, nullptr, nullptr);
 
-			glEnable(GL_MULTISAMPLE);
-
 			if (!m_Window)
 			{
 				glfwTerminate();
@@ -105,15 +120,17 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
-			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader", "shaders/quad_fs.shader",
-														  "shaders/line_vs.shader", "shaders/line_fs.shader",
+			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader",   "shaders/quad_fs.shader",
+														  "shaders/line_vs.shader",	  "shaders/line_fs.shader",
 														  "shaders/circle_vs.shader", "shaders/circle_fs.shader",
-														  "shaders/quad_vs.shader","shaders/text_fs.shader");
+														  "shaders/quad_vs.shader",	  "shaders/text_fs.shader",
+														  "shaders/quad_vs.shader", "shaders/quad_fs.shader");
 
 			render_shaders.push_back(&m_Render->GetQuadShader());
 			render_shaders.push_back(&m_Render->GetLineShader());
 			render_shaders.push_back(&m_Render->GetCircleShader());
 			render_shaders.push_back(&m_Render->GetTextShader());
+			render_shaders.push_back(&m_Render->GetTriShader());
 
 			//m_Render = render::Render2D("shaders/vs.shader", "shaders/fs.shader",
 			//						  "shaders/line_vs.shader", "shaders/line_fs.shader");
@@ -127,6 +144,7 @@ namespace en
 			glfwSetCursorPosCallback(m_Window, on_cursor_move);
 			glfwSetMouseButtonCallback(m_Window, on_mouse_button);
 			glfwSetKeyCallback(m_Window, on_keyboard_button);
+			glfwSetCursorEnterCallback(m_Window, on_mouse_enter);
 
 			//ImGui
 			IMGUI_CHECKVERSION();
@@ -160,6 +178,7 @@ namespace en
 			using namespace utils;
 			Render2D& render = *m_Render;
 
+			SetResizeble(false);
 			SetPerpectiveInShaders();
 
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -285,6 +304,7 @@ namespace en
 		}
 		void Window::on_mouse_button(GLFWwindow* window, int32_t key, int32_t action, int32_t mods)
 		{
+			
 			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
 			MouseArgs args
 			{
@@ -312,11 +332,31 @@ namespace en
 			ptr->OnKeyboardAction(args);
 		}
 
+		void Window::on_mouse_enter(GLFWwindow* window, int32_t entered)
+		{
+			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			MouseArgs args
+			{
+				MouseAction::LEAVE,
+				ptr->mouse,
+				0.0,0.0,0.0,0.0,
+				0,
+				0,
+				0
+			};
+			if (entered)
+				args.m_action = MouseAction::ENTER;
+			ptr->OnMouseAction(args);
+		}
+
 		void Window::OnResize(ResizeArgs args)
 		{
 			//CALLBACK_STATIC_CAST(Window, window)->m_camera.Resize(w, h);
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
+			m_AspectRatio = m_Wid / m_Hei;
+			//m_camera.Resize(m_Wid, m_Hei);
+			//m_camera.Resize(m_Hei, m_Wid);
 			SetPerpectiveInShaders();
 			
 			glViewport(0, 0, m_Wid, m_Hei);
@@ -342,15 +382,12 @@ namespace en
 
 					break;
 				}
-
-
 		}
 		void Window::OnKeyboardAction(KeyboardArgs args)
 		{
 			if (args.k_action != KeyboardAction::INVALID)
 				keyboard.on_keyboard_button(this->m_Window, args.key, args.scancode, args.action, args.mods);
 		}
-
 
 		//Copy things and Bizarre Contructors
 		Window::Window(Window&& other) noexcept
