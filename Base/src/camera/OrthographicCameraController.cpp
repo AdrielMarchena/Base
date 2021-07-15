@@ -11,36 +11,42 @@
 #include "input/Keyboard.h"
 namespace en {
 
-	OrthographicCameraController::OrthographicCameraController(float_t aspectRatio, bool rotation)
-		: m_AspectRatio(aspectRatio), m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), m_Rotation(rotation)
+	OrthographicCameraController::OrthographicCameraController(float_t aspectRatio, bool move, bool scroll,bool rotation)
+		: m_AspectRatio(aspectRatio), 
+		m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel), 
+		m_Move(move),
+		m_Scroll(scroll),
+		m_Rotation(rotation)
 	{
 	}
 
 	void OrthographicCameraController::OnUpdate(UpdateArgs args)
 	{
 		auto& keyboard = args.keyboard;
-		if (keyboard.isPress(GLFW_KEY_LEFT))
+		if (m_Move)
 		{
-			m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
-			m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
-		}
-		else if (keyboard.isPress(GLFW_KEY_RIGHT))
-		{
-			m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
-			m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
-		}
+			if (keyboard.isPress(GLFW_KEY_LEFT))
+			{
+				m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+				m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+			}
+			else if (keyboard.isPress(GLFW_KEY_RIGHT))
+			{
+				m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+				m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+			}
 
-		if (keyboard.isPress(GLFW_KEY_UP))
-		{
-			m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
-			m_CameraPosition.y += cos(glm::radians(m_CameraRotation))  * m_CameraTranslationSpeed *  args.dt;
+			if (keyboard.isPress(GLFW_KEY_UP))
+			{
+				m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+				m_CameraPosition.y += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+			}
+			else if (keyboard.isPress(GLFW_KEY_DOWN))
+			{
+				m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+				m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
+			}
 		}
-		else if (keyboard.isPress(GLFW_KEY_DOWN))
-		{
-			m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
-			m_CameraPosition.y -= cos(glm::radians(m_CameraRotation))  * m_CameraTranslationSpeed *  args.dt;
-		}
-
 		if (m_Rotation)
 		{
 			if (keyboard.isPress(GLFW_KEY_Q))
@@ -57,15 +63,17 @@ namespace en {
 		}
 
 		m_Camera.SetPosition(m_CameraPosition);
-
 		m_CameraTranslationSpeed = m_ZoomLevel;
 	}
 
 	bool OrthographicCameraController::OnMouseScrolled(double_t yoffset, float_t m_value)
 	{
-		m_ZoomLevel -= yoffset * m_value;
-		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		if (m_Scroll)
+		{
+			m_ZoomLevel -= yoffset * m_value;
+			m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
+			m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		}
 		return false;
 	}
 
