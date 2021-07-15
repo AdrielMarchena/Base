@@ -84,11 +84,6 @@ namespace en
 			uint32_t color = 0xffffffff;
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
 
-			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_BLEND);
-			glEnable(GL_MULTISAMPLE);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 			int32_t* samplers = new int32_t[MaxTexture];
 			for (int i = 0; i < MaxTexture; i++)
 				samplers[i] = i;

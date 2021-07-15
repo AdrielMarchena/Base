@@ -21,12 +21,18 @@ namespace render
 	Render2D::Render2D(const char* quad_vs, const char* quad_fs,
 		const char* line_vs, const char* line_fs,
 		const char* circle_vs, const char* circle_fs, 
-		const char* text_vs, const char* text_fs)
+		const char* text_vs, const char* text_fs,
+		const char* tri_vs, const char* tri_fs)
 		:m_QuadRender(quad_vs,quad_fs), 
 		m_LineRender(line_vs,line_fs),
 		m_CircleRender(circle_vs,circle_fs),
-		m_TextRender(text_vs,text_fs)
+		m_TextRender(text_vs,text_fs),
+		m_TriRender(tri_vs,tri_fs)
 	{
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glEnable(GL_MULTISAMPLE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	Render2D::~Render2D()
@@ -39,6 +45,7 @@ namespace render
 		m_QuadRender.BeginBatch();
 		m_CircleRender.BeginBatch();
 		m_TextRender.BeginBatch();
+		m_TriRender.BeginBatch();
 	}
 
 	void Render2D::EndBatch()
@@ -47,6 +54,7 @@ namespace render
 		m_QuadRender.EndBatch();
 		m_CircleRender.EndBatch();
 		m_TextRender.EndBatch();
+		m_TriRender.EndBatch();
 	}
 
 	void Render2D::Flush()
@@ -55,6 +63,7 @@ namespace render
 		m_QuadRender.Flush();
 		m_CircleRender.Flush();
 		m_TextRender.Flush();
+		m_TriRender.Flush();
 	}
 
 	const Shader& Render2D::GetQuadShader()
@@ -75,6 +84,11 @@ namespace render
 	const Shader& Render2D::GetTextShader()
 	{
 		return m_TextRender.GetShader();
+	}
+
+	const Shader& Render2D::GetTriShader()
+	{
+		return m_TriRender.GetShader();
 	}
 
 	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
@@ -150,6 +164,16 @@ namespace render
 		m_CircleRender.DrawCircle(position, radius, fill, thick ,color, layer, rotation, axis);
 	}
 
+	void Render2D::DrawTriangle(const glm::vec2 points[3], const glm::vec4& color, float_t layer)
+	{
+		m_TriRender.DrawTriangle(points, color, layer);
+	}
+
+	void Render2D::DrawTriangle(const glm::vec2 points[3], const glm::vec4 color[3], float_t layer)
+	{
+		m_TriRender.DrawTriangle(points, color, layer);
+	}
+
 	void Render2D::LineBeginBatch()
 	{
 		m_LineRender.BeginBatch();
@@ -208,6 +232,21 @@ namespace render
 	void Render2D::TextFlush()
 	{
 		m_TextRender.Flush();
+	}
+
+	void Render2D::TriBeginBatch()
+	{
+		m_TriRender.BeginBatch();
+	}
+
+	void Render2D::TriEndBatch()
+	{
+		m_TriRender.EndBatch();
+	}
+
+	void Render2D::TriFlush()
+	{
+		m_TriRender.Flush();
 	}
 
 	//Deprecated

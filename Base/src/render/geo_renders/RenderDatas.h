@@ -23,20 +23,21 @@ namespace render
 	{
 	};
 
-	struct QuadVertex : public Vertex
+	struct TriangleVertex : public Vertex
 	{
 		glm::vec2 TexCoords;
 		float_t TexIndex;
+	};
+
+	struct QuadVertex : public TriangleVertex
+	{
 	};
 
 	struct CircleVertex : public QuadVertex
 	{
 		glm::vec2 MiddlePoint;
 		glm::vec3 Rad_Fill_Th;
-		//float Radius;
-		//float Fill;
 	};
-
 
 	struct TextVertex : public QuadVertex
 	{};
@@ -67,6 +68,7 @@ namespace render
 			Buffer = other.Buffer;
 			BufferPtr = other.BufferPtr;
 			Count = other.Count;
+			RenderStatus = other.RenderStatus;
 
 			other.VA = NULL;
 			other.VB = NULL;
@@ -92,16 +94,16 @@ namespace render
 		Stats RenderStatus;
 	};
 
-	struct QuadRenderData : RenderData
+	struct TriRenderData : public RenderData
 	{
 	public:
-		QuadRenderData() {}
-		QuadRenderData(const char* vs, const char* fs, int32_t MaxTexSlots)
+		TriRenderData() {}
+		TriRenderData(const char* vs, const char* fs, int32_t MaxTexSlots)
 			:RenderData(vs, fs, MaxTexSlots)
 		{
 		}
 
-		QuadRenderData& operator=(QuadRenderData& other)
+		virtual TriRenderData& operator=(TriRenderData& other) 
 		{
 			if (this == &other)
 				return *this;
@@ -120,7 +122,7 @@ namespace render
 
 			return *this;
 		}
-		~QuadRenderData() {}
+		~TriRenderData() {}
 
 		uint32_t WhiteTexture = 0;
 		uint8_t  WhiteTextureSlot = 0;
@@ -128,12 +130,37 @@ namespace render
 		std::vector<uint32_t> TextureSlots;
 		uint8_t TextureSlotIndex = 1;
 
-		//Hide the Vertex* with the QuadVertex*
+		//Hide the Vertex* with the TriVertex*
+		TriangleVertex* Buffer = nullptr;
+		TriangleVertex* BufferPtr = nullptr;
+	};
+
+	struct QuadRenderData : public TriRenderData
+	{
+		QuadRenderData() {}
+		QuadRenderData(const char* vs, const char* fs, int32_t MaxTexSlots)
+			:TriRenderData(vs, fs, MaxTexSlots)
+		{
+		}
+
+		QuadRenderData& operator=(QuadRenderData& other)
+		{
+			if (this == &other)
+				return *this;
+
+			TriRenderData::operator= (other);
+
+			return *this;
+		}
+
+		~QuadRenderData() {}
+
+		//Hide the TriVertex* with the QuadVertex*
 		QuadVertex* Buffer = nullptr;
 		QuadVertex* BufferPtr = nullptr;
-
-		Stats RenderStatus;
 	};
+
+
 
 	struct CircleRenderData : public QuadRenderData
 	{
@@ -156,7 +183,6 @@ namespace render
 
 		CircleVertex* Buffer = nullptr;
 		CircleVertex* BufferPtr = nullptr;
-
 	};
 
 }
