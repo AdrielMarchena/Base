@@ -15,6 +15,9 @@ class Piper
 private:
 	std::vector<Pipe> Pipes;
 	float PipeGap = 225.0f;
+	float threshold = 900.0f;
+	float dec_velocity = 200.0f;
+	float pipe_velocity = 300.0f;
 	Random rando;
 	en::render::Texture& DownPipe;
 	en::render::Texture& UpPipe;
@@ -26,8 +29,8 @@ public:
 	{
 		//Blank Texture
 		static en::render::Texture blank;
-		Pipes.reserve(15);
-		for (int i = 0; i < 15; i++)
+		Pipes.reserve(35);
+		for (int i = 0; i < 35; i++)
 		{
 			Pipes.emplace_back(blank);
 		}
@@ -49,10 +52,10 @@ public:
 
 	void SpawnPairPipe(float dt)
 	{
-		static float threshold = 900.0f;
-		if (threshold >= 400.0f)
+		static float ac_threshold = threshold;
+		if (ac_threshold >= 0.0f)
 		{
-			threshold -= 200.0f * dt;
+			ac_threshold -= dec_velocity * dt;
 			return;
 		}
 
@@ -66,7 +69,7 @@ public:
    		SpawnUpPipe(a_h);
 		PointPipe();
 		SpawnDownPipe(b_h);
-		threshold = 900.0f;
+		ac_threshold = threshold;
 	}
 
 	void UpdatePipes(const en::UpdateArgs& args)
@@ -90,6 +93,13 @@ public:
 		});
 	}
 
+	void SetPipesBodyTexture(en::render::Texture& texture)
+	{
+		MapMe([&](Pipe& pipe) {
+			pipe.SetBodyTexture(texture);
+		});
+	}
+
 	void SetDownPipesTexture(en::render::Texture& texture)
 	{
 		DownPipe = texture;
@@ -98,6 +108,18 @@ public:
 	void SetUpPipesTexture(en::render::Texture& texture)
 	{
 		UpPipe = texture;
+	}
+
+	void OnImGui(const en::ImGuiArgs& args)
+	{
+		MapMe([&](Pipe& pipe) {
+			pipe.OnImGui(args);
+		});
+
+		ImGui::Text("Piper constrol");
+		ImGui::SliderFloat("Pipe Gap", &PipeGap, 50.0f, 300.0f);
+		ImGui::SliderFloat("Pipe velocity", &pipe_velocity, 50.0f, 1000.0f);
+		ImGui::SliderFloat("Threshold", &threshold, 200.0f, 1500.0f);
 	}
 
 private:
@@ -110,7 +132,8 @@ private:
 		{
 			if (pipe.IsAlive())
 				continue;
-			pipe.Spawn({ new_pos,new_size,{0.0f,0.0f} });
+			pipe.Spawn({ new_pos,new_size,{pipe_velocity,0.0f} });
+			pipe.invert = true;
 			break;
 		}
 	}
@@ -124,8 +147,7 @@ private:
 		{
 			if (pipe.IsAlive())
 				continue;
-			pipe.Spawn({ new_pos,new_size,{0.0f,0.0f} });
-			pipe.invert = true;
+			pipe.Spawn({ new_pos,new_size,{pipe_velocity,0.0f} });
 			break;
 		}
 	}
@@ -139,7 +161,7 @@ private:
 		{
 			if (pipe.IsAlive())
 				continue;
-			pipe.Spawn({ new_pos,new_size,{0.0f,0.0f} });
+			pipe.Spawn({ new_pos,new_size,{pipe_velocity,0.0f} });
 			pipe.SetRender(false);
 			pipe.pointPipe = true;
 			break;

@@ -216,8 +216,8 @@
     <ClCompile Include="src\utils\RandomList.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\render\Texture.cpp" />
+    <ClCompile Include="src\render\geo_renders\TriRender.cpp" />
     <ClCompile Include="vendor\definer_Stb.cpp" />
-    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\audio\Al_Error.h" />
@@ -257,7 +257,7 @@
     <ClInclude Include="src\args\VirtualArgs.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\render\Texture.h" />
-    <ClInclude Include="vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\render\geo_renders\TriRender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

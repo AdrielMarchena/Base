@@ -2,10 +2,18 @@
 
 #include <algorithm>
 
+#include "ent/Animator.h"
+#include "imgui.h"
+
+static en::ett::Animator m_Animation;
+
+float anim_vel = 35.0f;
+
 Piriquito::Piriquito(en::render::Texture& texture)
 	:m_Texture(texture), 
 	 m_ColisionBox({ {0.0f,0.0f}, {texture.GetSize()}, {0.0f,0.0f} })
 {
+	
 }
 Piriquito::~Piriquito()
 {
@@ -17,7 +25,7 @@ void Piriquito::OnAttach(const en::AttachArgs& args)
 	{
 		{50.0f,300.0f}, //Position
 		{64.0f,64.0f},  //Size
-		{0.0f,0.0f}	//Velocity
+		{0.0f,0.0f}		//Velocity
 	};
 	m_Rotation = -90.0f;
 }
@@ -50,12 +58,16 @@ void Piriquito::OnRender(const en::RenderArgs& args)
 	glm::vec2 rotate_size = m_ColisionBox.size;
 	rotate_pos.y += m_ColisionBox.size.y;
 	rotate_size.y = -rotate_size.y;
-	args.render.DrawQuad(rotate_pos, rotate_size, m_Texture, 2.0f, en::render::Color::White ,glm::radians(m_Rotation));
+	auto& current_subt = m_Animation.Run(args.dt);
+	args.render.DrawQuad(rotate_pos, rotate_size, current_subt, 2.0f ,glm::radians(m_Rotation));
 	//args.render.DrawOutLineQuad(rotate_pos, rotate_size, { 1.0f,0.0f,0.0f,1.0f }, 3.0f);
 }
 
 void Piriquito::OnImGui(const en::ImGuiArgs& args)
 {
+	ImGui::Text("Piriquito");
+	if (ImGui::SliderFloat("Animation Velocity", &anim_vel,0.5f,50.0f))
+		m_Animation.SetDecrement(anim_vel);
 }
 
 void Piriquito::Live()
@@ -73,7 +85,15 @@ void Piriquito::Die()
 void Piriquito::SetTexture(en::render::Texture& new_texture)
 {
 	if (new_texture.GetId())
+	{
 		m_Texture = new_texture;
+		en::ett::AnimationSpecs specs;
+		specs.atlas = new_texture;
+		specs.threshold = 25.0f;
+		m_Animation.SetNewTexture(specs);
+		m_Animation.SetDecrement(anim_vel);
+		m_Animation.loop = true;
+	}
 }
 
 void Piriquito::SetRotation(float new_rotation)

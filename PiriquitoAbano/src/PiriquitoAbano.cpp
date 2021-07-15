@@ -15,27 +15,50 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 	LoadText("fonts");
 	LoadSounds("audio");
 
-	m_Piriquito.SetTexture(m_Textures["priquito"]);
+	m_Piriquito.SetTexture(m_Textures["priquito_atlas"]);
 	m_Piriquito.OnAttach(args);
 
 	m_Piper.OnAttach(args);
 
 	m_Piper.SetPipesTexture(m_Textures["pipe"]);
+	m_Piper.SetPipesTexture(m_Textures["Pipe_body"]);
 
 	m_State = PiriquitoState::PAUSE;
+	
+	GameOverBox =
+	{
+		{ // Outer Box
+			{800/2,600/2},{300,200},{0,0}
+		},
+		{// Button
+			{},{100,50},{}
+		},
+		"Game Over",
+		"Try Again",
+		{1.0f,1.0f,1.0f},
+		{1.0f,1.0f,1.0f},
+		{1.0f,0.0f,0.0f}
+	};
+	
+	//m_State = PiriquitoState::GAMEOVER;
+
+	HideCursor();
+
 	Window::OnAttach(args);
 }
 
-static inline void SwitchPause(PiriquitoState& state)
+void PiriquitoAbano::SwitchPause()
 {
-	if (state == PiriquitoState::PLAYING)
+	if (m_State == PiriquitoState::PLAYING)
 	{
-		state = PiriquitoState::PAUSE;
+		m_State = PiriquitoState::PAUSE;
+		UnhideCursor();
 		return;
 	}
-	if (state == PiriquitoState::PAUSE)
+	if (m_State == PiriquitoState::PAUSE)
 	{
-		state = PiriquitoState::PLAYING;
+		m_State = PiriquitoState::PLAYING;
+		HideCursor();
 		return;
 	}
 }
@@ -49,7 +72,7 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 		{0,0}
 	};
 	if (args.keyboard.isClicked(GLFW_KEY_P))
-		SwitchPause(m_State);
+		SwitchPause();
 	if (args.keyboard.isClicked(GLFW_KEY_R))
 		Restart(args);
 	//Update Piriquito
@@ -60,6 +83,8 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 		m_Piper.UpdatePipes(args);
 		for (auto& pipe : m_Piper.GetPipes())
 		{
+			if (!pipe.IsAlive())
+				continue;
 			//tmpPipe.size.y = std::fabs(tmpPipe.size.y);
 			if (en::colision::Colide::RectVsRect(m_Piriquito.GetRect(), pipe.GetRect()))
 			{
@@ -84,29 +109,56 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 	{
 		if (m_State == PiriquitoState::GAMEOVER)
 		{
-			Restart(args);
+			if (en::colision::Colide::PointVsRect(args.m_pos, GameOverBox.button))
+			{
+				GameOverBox.actual_button_text_color = &GameOverBox.hover_button_text_color;
+				if (args.mouse.isPress(GLFW_MOUSE_BUTTON_1))
+				{
+					Restart(args);
+				}
+			}
+			else
+			{
+				GameOverBox.actual_button_text_color = &GameOverBox.button_text_color;
+			}
 		}
 	}
+
+	m_Pointer[0] = args.m_pos;
+	m_Pointer[1] = args.m_pos - glm::vec2(-15.0f,7.5f);
+	m_Pointer[2] = args.m_pos - glm::vec2(-7.5f,15.0f);
 
 	Window::OnUpdate(args);
 }
 
 void PiriquitoAbano::OnRender(en::RenderArgs args)
 {
-	//Draw Piriquito
 	args.render.DrawQuad({ 0,0 }, { 800,600 }, m_Textures["back"], 0.0f);
+	//Draw Piriquito
+	if (m_State == PiriquitoState::GAMEOVER)
+		GameOverBox.OnRender(args, m_Text["arial"]);
+	
 	m_Piriquito.OnRender(args);
 	m_Piper.RenderPipes(args);
 	const std::string pts = "Points: " + std::to_string(points);
 	m_Text["arial"].RenderText(args, pts, 25.0f, 550.0f, 1.0f, {0.1f,0.1f,0.1f});
+
+	static const glm::vec4 colors[3]
+	{
+		{1.0f,0.0f,0.0f,0.9f},
+		{0.0f,1.0f,0.0f,0.9f},
+		{0.0f,0.0f,1.0f,0.9f}
+	};
+
+	args.render.DrawTriangle(m_Pointer, colors, 10.0f);
 
 	Window::OnRender(args);
 }
 
 void PiriquitoAbano::OnImGui(en::ImGuiArgs args)
 {
-	
 	m_Piriquito.OnImGui(args);
+	m_Piper.OnImGui(args);
 
 	Window::OnImGui(args);
 }
@@ -117,10 +169,25 @@ void PiriquitoAbano::Dispose()
 	Window::Dispose();
 }
 
+void PiriquitoAbano::OnMouseAction(en::MouseArgs args)
+{
+	Window::OnMouseAction(args);
+
+	switch (args.m_action)
+	{
+	case en::MouseAction::ENTER :
+		HideCursor();
+		break;
+	case en::MouseAction::LEAVE:
+		UnhideCursor();
+		break;
+	default:
+		break;
+	}
+}
+
 void PiriquitoAbano::Restart(en::UpdateArgs args)
 {
-	//if (args.keyboard.isClicked(GLFW_KEY_R))
-	//{
 		m_Piriquito.GetRect().pos.y = 300.0f;
 		for (auto& pipe : m_Piper.GetPipes())
 		{
@@ -128,7 +195,6 @@ void PiriquitoAbano::Restart(en::UpdateArgs args)
 			points = 0;
 		}
 		m_State = PiriquitoState::PAUSE;
-	//}
 }
 
 void PiriquitoAbano::LoadTextures(const char* directory)

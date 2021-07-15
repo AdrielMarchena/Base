@@ -128,7 +128,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -166,7 +166,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -188,7 +188,6 @@
     <ClCompile Include="src\Piriquito.cpp" />
     <ClCompile Include="src\PiriquitoAbano.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pipe.h" />

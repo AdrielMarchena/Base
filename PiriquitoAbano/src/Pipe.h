@@ -9,7 +9,8 @@ class Pipe
 {
 private:
 	en::Rect m_ColisionBox;
-	en::render::Texture& m_Texture;
+	en::render::Texture& m_HeadTexture;
+	en::render::Texture& m_BodyTexture;
 	//Also to see if need to check colision
 	bool m_SRender = true;
 	bool m_Alive = false;
@@ -26,6 +27,7 @@ public:
 	en::Rect GetRect() const { return m_ColisionBox; }
 
 	void SetTexture(en::render::Texture& texture);
+	void SetBodyTexture(en::render::Texture& texture);
 
 	bool IsRender()const { return m_SRender; }
 	void SetRender(bool r){ m_SRender = r; }

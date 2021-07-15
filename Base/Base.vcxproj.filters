@@ -94,10 +94,10 @@
     <ClCompile Include="vendor\definer_Stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+    <ClCompile Include="src\render\Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\Text.cpp">
+    <ClCompile Include="src\render\geo_renders\TriRender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -210,10 +210,10 @@
     <ClInclude Include="src\render\geo_renders\RenderDatas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vendor\stb_image\stb_image.h">
+    <ClInclude Include="src\render\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\Text.h">
+    <ClInclude Include="src\render\geo_renders\TriRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

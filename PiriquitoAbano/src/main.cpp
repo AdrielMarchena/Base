@@ -1,17 +1,17 @@
 #include <iostream>
 #include "PiriquitoAbano.h"
 
-/*#ifdef _DEBUG
+#ifdef _DEBUG
 
 #else // DEBUG
 
 #define _WINDOWS
 #undef _CONSOLE
 	
-#endif // RELEASE*/
+#endif // RELEASE
 
 
-//#ifdef _CONSOLE
+#ifdef _CONSOLE
 int main()
 {
 	try //Try Catch to get any unhandled exceptions
@@ -26,9 +26,8 @@ int main()
 	}
 	return 0;
 }
-//#endif
+#endif
 
-/*
 #ifdef _WINDOWS
 
 int WinMain()
@@ -45,6 +44,4 @@ int WinMain()
 	}
 	return 0;
 }
-
 #endif // _WINDOWS
-*/
