@@ -130,14 +130,16 @@ namespace render
             glDeleteTextures(1, &c.second.TextureID);
     }
 
-    void Text::RenderText(const en::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color)
+    void Text::RenderText(const en::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const
     {
         static Texture TmpTexture;
-
         for (auto c : text)
         {
-            Character& ch = m_Characters[c];
-
+            Character ch;
+            auto it = m_Characters.find(c);
+            if (it == m_Characters.end())
+                continue;
+            ch = it->second;
             float xpos = x + ch.Bearing.x * scale;
             float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
 
@@ -145,9 +147,25 @@ namespace render
             float h = ch.Size.y * scale;
             //Draw here
             TmpTexture.SetID(ch.TextureID);
-            args.render.DrawText({ xpos,ypos + h }, { w,-h }, TmpTexture,5.0f,glm::vec4(color,1.0f));
+            args.render.DrawText({ xpos,ypos + h }, { w,-h }, TmpTexture,m_Layer,glm::vec4(color,1.0f));
             x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
         }
+    }
+
+    float Text::PreviewWid(const std::string& text, float scale) const
+    {
+        float x = 0.0f, y = 0.0f;
+        for (auto c : text)
+        {
+            Character ch;
+            auto it = m_Characters.find(c);
+            if (it == m_Characters.end())
+                continue;
+            ch = it->second;
+            //Draw here
+            x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+        }
+        return x;
     }
 
     static inline void TryCreate(std::unordered_map<std::string, Text>& map, utils::ResourceLoads<std::string, loadCharacter>& info, const utils::NameCaps& nameCaps)
