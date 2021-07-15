@@ -62,7 +62,14 @@ namespace ett
 		* Set a new Animation specs, includin new Texture to Crop
 		*/
 		void SetNewTexture(const AnimationSpecs& _Specs);
-
+		/**
+		* Set a new Threshold to the animation
+		*/
+		inline void SetThreshold(float threshold) { m_Specs.threshold = threshold; }
+		/**
+		* Set a new decrement value to the threshold
+		*/
+		inline void SetDecrement(float decrement) { m_Specs.decrement = decrement; }
 	};
 }
 }
