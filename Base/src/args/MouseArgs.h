@@ -15,7 +15,9 @@ namespace en
 		MOVE,
 		PRESS,
 		RELEASE,
-		SCROLL
+		SCROLL,
+		ENTER,
+		LEAVE
 	};
 	/**
 	* Some info about mouse events
