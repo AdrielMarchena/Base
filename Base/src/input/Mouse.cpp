@@ -75,5 +75,13 @@ namespace input
 		prevPos = pos;
 		pos = n;
 	}
+
+	void Mouse::clamp_cursor(GLFWwindow* window,float_t min_x, float_t max_x, float_t min_y, float_t max_y)
+	{
+		pos.x = std::clamp(pos.x, min_x, max_x);
+		pos.y = std::clamp(pos.y, min_y, max_y);
+		if (window)
+			glfwSetCursorPos(window, pos.x, pos.y);
+	}
 }
 }

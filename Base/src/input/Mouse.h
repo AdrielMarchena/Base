@@ -13,6 +13,8 @@
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 
+#include <algorithm>
+
 constexpr unsigned char EN_MOUSE_NUMBER_KEYS = 32;
 namespace en
 {
@@ -55,6 +57,8 @@ namespace input
 			return aux;
 		}
 		glm::vec2 gprevOffValue() const { return PrevOff; }
+
+		void clamp_cursor(GLFWwindow* window, float_t min_x, float_t max_x, float_t min_y, float_t max_y);
 	};
 }
 }

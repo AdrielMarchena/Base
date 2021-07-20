@@ -72,12 +72,14 @@ namespace en
 		{
 			ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			m_ClampMouse = true;
 		}
 
 		void Window::UnhideCursor()
 		{
 			ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			m_ClampMouse = false;
 		}
 
 		bool Window::CursorHoveredWindow()

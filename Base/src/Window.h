@@ -59,6 +59,8 @@ namespace en
 			float m_AspectRatio = 1.0f;
 			bool m_Resizeble;
 
+			bool m_ClampMouse = true;
+
 			ALCdevice* p_ALCDevice = nullptr;
 			ALCcontext* p_ALCContext = nullptr;
 
@@ -100,10 +102,17 @@ namespace en
 			static void on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
 			//Used as callback in glfw
 			static void on_mouse_enter(GLFWwindow* window, int32_t entered);
+
+			inline GLFWwindow* GetWindowOrNot()
+			{
+				return m_ClampMouse ? m_Window : nullptr;
+			}
 		protected:
 			// Return the mouse position with the y axis inverted
+
 			glm::vec2 correct_mouse(input::Mouse& mouse)
 			{
+				mouse.clamp_cursor(GetWindowOrNot(),0.0f, m_Wid, 0.0f, m_Hei);
 				return { mouse.gpos().x, -(mouse.gpos().y - m_Hei) };
 			}
 
@@ -112,8 +121,6 @@ namespace en
 			{
 				glm::vec2 mpos = correct_mouse(mouse);
 				mpos += glm::vec2(m_camera.GetCamera().GetPosition().x, m_camera.GetCamera().GetPosition().y) * (glm::vec2(m_Wid, m_Hei) / 2.0f);
-				//mpos.x = std::clamp(mpos.x,0.0f,m_Wid);
-				//mpos.y = std::clamp(mpos.y,0.0f,m_Hei);
 				return mpos;
 			}
 			void inline SetPerpectiveInShaders();
