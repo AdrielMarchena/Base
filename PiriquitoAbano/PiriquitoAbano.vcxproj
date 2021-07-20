@@ -184,12 +184,16 @@
     <None Include="shaders\text_fs.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Background.cpp" />
+    <ClCompile Include="src\Menu.cpp" />
     <ClCompile Include="src\Pipe.cpp" />
     <ClCompile Include="src\Piriquito.cpp" />
     <ClCompile Include="src\PiriquitoAbano.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Background.h" />
+    <ClInclude Include="src\Menu.h" />
     <ClInclude Include="src\Pipe.h" />
     <ClInclude Include="src\Piper.h" />
     <ClInclude Include="src\Piriquito.h" />
