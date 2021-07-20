@@ -17,6 +17,12 @@ namespace en
 		glm::vec2 pos;
 		glm::vec2 size;
 		glm::vec2 velocity;
+
+		Rect& operator<<(const Rect& right)
+		{
+			this->pos = (right.pos + (right.size / 2.0f) - (this->size / 2.0f));
+			return *this;
+		}
 	};
 namespace colision
 {
