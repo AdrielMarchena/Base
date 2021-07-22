@@ -27,7 +27,7 @@ void main()
 	int index = int(v_TexIndex);
 	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(u_Textures[index], v_TexCoord).r);
 	vec4 tmp_Color = sampled * v_Color;
-	if (tmp_Color.a < 0.5)
+	if (tmp_Color.a < 1.0)
 		discard;
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
