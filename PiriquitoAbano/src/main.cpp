@@ -1,6 +1,8 @@
 #include <iostream>
 #include "PiriquitoAbano.h"
 
+#include "utils/RandomList.h"
+
 #ifdef _DEBUG
 
 #else // DEBUG

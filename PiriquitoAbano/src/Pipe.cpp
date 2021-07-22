@@ -1,8 +1,8 @@
 #include "Pipe.h"
 
 Pipe::Pipe(en::render::Texture& texture)
-	:m_HeadTexture(texture),
-	 m_BodyTexture(texture),
+	:m_HeadTexture(&texture),
+	 m_BodyTexture(&texture),
 	 m_ColisionBox({ {0.0f,0.0f}, {0.0f,0.0f}, {450.0f,0.0f} })
 {
 	m_SRender = false;
@@ -20,7 +20,6 @@ void Pipe::OnAttach(const en::AttachArgs& args)
 
 void Pipe::OnUpdate(const en::UpdateArgs& args)
 {
-	constexpr glm::vec2 pipe_velocity = { 450.0f,0.0f };
 	if (m_Alive)
 	{
 		m_ColisionBox.pos -= m_ColisionBox.velocity * args.dt;
@@ -38,26 +37,26 @@ void Pipe::OnRender(const en::RenderArgs& args)
 	if (m_SRender)
 	{
  		glm::vec2 current_pos = {m_ColisionBox.pos.x,m_ColisionBox.size.y};
-		if (!invert)
+		if (!invert) // Down Pipe
 		{
-			current_pos.y = m_ColisionBox.pos.y;
-			args.render.DrawQuad(m_ColisionBox.pos, size, m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
-			current_pos.y += 64.0f;
-			for (int i = 1; i < h; i++)
+			current_pos.y -= 64.0f;
+			args.render.DrawQuad(current_pos, size, *m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+			for (int i = 1; i < h * 1.25f; i++)
 			{
-				args.render.DrawQuad(current_pos, size, m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
-				current_pos.y += 64.0f;
+				args.render.DrawQuad(current_pos, size, *m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+				current_pos.y -= 64.0f;
 			}
 		}
-		else
+		else // Up Pipe
 		{
+			current_pos.y = m_ColisionBox.pos.y;
 			rotation = 180.0f;
-			args.render.DrawQuad(m_ColisionBox.pos, size, m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
-			current_pos.y -= 64.0f*2;
-			for (int i = 1; i < h; i++)
+			args.render.DrawQuad(current_pos, size, *m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+			current_pos.y += 64.0f;
+			for (int i = 1; i < h*1.25f; i++)
 			{
-				args.render.DrawQuad(current_pos, size, m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
-				current_pos.y -= 64.0f*2;
+				args.render.DrawQuad(current_pos, size, *m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+				current_pos.y += 64.0f;
 			}
 		}
 			
@@ -71,12 +70,12 @@ void Pipe::OnImGui(const en::ImGuiArgs& args)
 
 void Pipe::SetTexture(en::render::Texture& texture)
 {
-	m_HeadTexture = texture;
+	m_HeadTexture = &texture;
 }
 
 void Pipe::SetBodyTexture(en::render::Texture& texture)
 {
-	m_BodyTexture = texture;
+	m_BodyTexture = &texture;
 }
 
 void Pipe::Spawn(const en::Rect& pos)

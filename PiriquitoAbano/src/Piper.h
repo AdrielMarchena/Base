@@ -42,7 +42,7 @@ public:
 		return Pipes;
 	}
 
-	void MapMe(const std::function<void(Pipe&)>& function)
+	inline void MapMe(const std::function<void(Pipe&)>& function)
 	{
 		for (auto& pipe : Pipes)
 		{
@@ -62,7 +62,7 @@ public:
 		constexpr float bottom_min = 50.0f;
 		constexpr float up_min = 50.0f;
 
-		float a_h = std::clamp(RandFloat(600.0f), up_min, 600.0f - (bottom_min + PipeGap) );
+		float a_h = std::clamp(Random::Float() * 600.0f, up_min, 600.0f - (bottom_min + PipeGap) );
 		float b_h = std::fabs(a_h - 600.0f) - PipeGap;
 		//float b_h = a_h - PipeGap;
 
@@ -132,8 +132,7 @@ private:
 		{
 			if (pipe.IsAlive())
 				continue;
-			pipe.Spawn({ new_pos,new_size,{pipe_velocity,0.0f} });
-			pipe.invert = true;
+ 			pipe.Spawn({ new_pos,new_size,{pipe_velocity,0.0f} });
 			break;
 		}
 	}
@@ -148,6 +147,7 @@ private:
 			if (pipe.IsAlive())
 				continue;
 			pipe.Spawn({ new_pos,new_size,{pipe_velocity,0.0f} });
+			pipe.invert = true;
 			break;
 		}
 	}

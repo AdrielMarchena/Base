@@ -9,8 +9,10 @@ class Pipe
 {
 private:
 	en::Rect m_ColisionBox;
-	en::render::Texture& m_HeadTexture;
-	en::render::Texture& m_BodyTexture;
+	//TODO: Make Texture more flexibe, like making a CoýTexture class, then i dont need pointer or anything like that
+	//If i'm going to use references, i will need a blank one each time a can't initialize it from the begining
+	en::render::Texture* m_HeadTexture;
+	en::render::Texture* m_BodyTexture;
 	//Also to see if need to check colision
 	bool m_SRender = true;
 	bool m_Alive = false;

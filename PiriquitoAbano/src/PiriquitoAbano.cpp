@@ -1,11 +1,12 @@
 #include "PiriquitoAbano.h"
 
 //Blank Texture
-en::render::Texture BlankTexture;
+static en::render::Text VeryDumbStupidTemporaryText;
 
 PiriquitoAbano::PiriquitoAbano()
 	:en::windowing::Window("Piriquito Abano"),
-	 m_Piriquito(BlankTexture)
+	 m_Piriquito(en::render::Texture::GetBlanckTexture()),
+	m_TextFont(VeryDumbStupidTemporaryText)
 {
 }
 
@@ -20,27 +21,40 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 
 	m_Piper.OnAttach(args);
 
+	m_TextFont = m_Text["consolab"];
+
+	//TODO: I need to improve the way i delivery the resources throw out the program
 	m_Piper.SetPipesTexture(m_Textures["pipe"]);
-	m_Piper.SetPipesTexture(m_Textures["Pipe_body"]);
+	m_Piper.SetPipesBodyTexture(m_Textures["Pipe_body"]);
 
 	m_State = PiriquitoState::PAUSE;
 	
-	GameOverBox =
+	GameOverBox.out_box = { {800 / 2,600 / 2},{300,200},{0,0} };
+	GameOverBox.button = { {},{100,50},{} };
+	GameOverBox.out_text = "Game Over";
+	GameOverBox.button_text = "Try Again";
+	GameOverBox.out_text_color = { 1.0f,1.0f,1.0f };
+	GameOverBox.button_text_color = { 1.0f,1.0f,1.0f };
+	GameOverBox.hover_button_text_color = { 1.0f,0.0f,0.0f };
+	GameOverBox.button_action = [&](const en::UpdateArgs& args)
 	{
-		{ // Outer Box
-			{800/2,600/2},{300,200},{0,0}
-		},
-		{// Button
-			{},{100,50},{}
-		},
-		"Game Over",
-		"Try Again",
-		{1.0f,1.0f,1.0f},
-		{1.0f,1.0f,1.0f},
-		{1.0f,0.0f,0.0f}
+		Restart(args);
+	};
+
+	StartBox.out_box = { {800 / 2,600 / 2},{300,200},{0,0} };
+	StartBox.button = { {},{100,50},{} };
+	StartBox.out_text = "Press P To start";
+	StartBox.button_text = "Start";
+	StartBox.out_text_color = { 1.0f,1.0f,1.0f };
+	StartBox.button_text_color = { 1.0f,1.0f,1.0f };
+	StartBox.hover_button_text_color = { 1.0f,0.0f,0.0f };
+	StartBox.button_action = [&](const en::UpdateArgs& args)
+	{
+		SwitchPause();
 	};
 	
-	//m_State = PiriquitoState::GAMEOVER;
+	GameOverBox.AdjustPositions(m_TextFont);
+	StartBox.AdjustPositions(m_TextFont);
 
 	HideCursor();
 
@@ -71,6 +85,12 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 		{800.0f,600.0f},
 		{0,0}
 	};
+
+	m_Pointer[0].x = std::clamp(args.m_pos.x, 0.0f,800.0f);
+	m_Pointer[0].y = std::clamp(args.m_pos.y, 0.0f, 600.0f);
+	m_Pointer[1] = m_Pointer[0] - (glm::vec2(-15.0f, 7.5f) * 1.50f);
+	m_Pointer[2] = m_Pointer[0] - (glm::vec2(-7.5f, 15.0f) * 1.50f);
+
 	if (args.keyboard.isClicked(GLFW_KEY_P))
 		SwitchPause();
 	if (args.keyboard.isClicked(GLFW_KEY_R))
@@ -108,25 +128,10 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 	else
 	{
 		if (m_State == PiriquitoState::GAMEOVER)
-		{
-			if (en::colision::Colide::PointVsRect(args.m_pos, GameOverBox.button))
-			{
-				GameOverBox.actual_button_text_color = &GameOverBox.hover_button_text_color;
-				if (args.mouse.isPress(GLFW_MOUSE_BUTTON_1))
-				{
-					Restart(args);
-				}
-			}
-			else
-			{
-				GameOverBox.actual_button_text_color = &GameOverBox.button_text_color;
-			}
-		}
+			GameOverBox.OnUpdate(args);
+		if (m_State == PiriquitoState::PAUSE)
+			StartBox.OnUpdate(args);
 	}
-
-	m_Pointer[0] = args.m_pos;
-	m_Pointer[1] = args.m_pos - glm::vec2(-15.0f,7.5f);
-	m_Pointer[2] = args.m_pos - glm::vec2(-7.5f,15.0f);
 
 	Window::OnUpdate(args);
 }
@@ -136,12 +141,14 @@ void PiriquitoAbano::OnRender(en::RenderArgs args)
 	args.render.DrawQuad({ 0,0 }, { 800,600 }, m_Textures["back"], 0.0f);
 	//Draw Piriquito
 	if (m_State == PiriquitoState::GAMEOVER)
-		GameOverBox.OnRender(args, m_Text["arial"]);
+		GameOverBox.OnRender(args, m_TextFont);
+	if (m_State == PiriquitoState::PAUSE)
+		StartBox.OnRender(args, m_TextFont);
 	
 	m_Piriquito.OnRender(args);
 	m_Piper.RenderPipes(args);
-	const std::string pts = "Points: " + std::to_string(points);
-	m_Text["arial"].RenderText(args, pts, 25.0f, 550.0f, 1.0f, {0.1f,0.1f,0.1f});
+	const std::string pts = "Points:" + std::to_string(points);
+	m_TextFont.RenderText(args, pts, 25.0f, 550.0f, 1.0f, {0.1f,0.1f,0.1f});
 
 	static const glm::vec4 colors[3]
 	{
