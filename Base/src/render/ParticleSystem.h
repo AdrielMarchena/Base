@@ -17,6 +17,7 @@ namespace en{
 			glm::vec2 Position = {0.0f,0.0f};
 			glm::vec2 Velocity, VelocityVariation = { 0.0f,0.0f };
 			glm::vec4 ColorBegin = { 0.0f,0.0f, 0.0f, 0.0f }, ColorEnd = { 0.0f, 0.0f, 0.0f, 0.0f };
+			Texture* TexturePtr = nullptr;
 			float SizeBegin = 0.0f, SizeEnd = 0.0f, SizeVariation = 0.0f;
 			float LifeTime = 1.0f;
 			float Gravity = 0.0f;
@@ -29,8 +30,9 @@ namespace en{
 		public:
 			ParticleSystem(uint32_t count = 200);
 
-			void OnUpdate(UpdateArgs args);
-			void OnRender(RenderArgs args);
+			void OnUpdate(const UpdateArgs& args);
+			void OnUpdate(float dt);
+			void OnRender(const RenderArgs& args);
 
 			void Emit(const ParticleProps& particleProps);
 		private:
@@ -41,6 +43,8 @@ namespace en{
 				glm::vec4 ColorBegin, ColorEnd;
 				float Rotation = 0.0f;
 				float SizeBegin, SizeEnd;
+
+				Texture* TexturePtr = nullptr;
 
 				float LifeTime = 1.0f;
 				float LifeRemaining = 0.0f;

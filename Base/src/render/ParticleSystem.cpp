@@ -28,11 +28,12 @@ namespace en {
 				{200,200}, //Velocity Variation
 				{1.0f, 1.0f, 1.0f, 1.0f}, //Color Begin
 				{0.0f, 0.0f, 0.0f, 1.0f}, //Color End
-				 50.0f, //Size Begin
+				nullptr,// Texture pointer
+				 50.0f, // Size Begin
 				 2.0f,  // Size End
-				 3.0f,	//Size Variation
-				 1.0f, // Life Time
-				 0.0f, // Gravity
+				 3.0f,	// Size Variation
+				 1.0f,  // Life Time
+				 0.0f,  // Gravity
 			}  // Effect 0
 		};
 
@@ -42,7 +43,12 @@ namespace en {
 			m_PoolIndex = count-1;
 		}
 
-		void ParticleSystem::OnUpdate(UpdateArgs args)
+		void ParticleSystem::OnUpdate(const UpdateArgs& args)
+		{
+			OnUpdate(args.dt);
+		}
+
+		void ParticleSystem::OnUpdate(float dt)
 		{
 			for (auto& particle : m_ParticlePool)
 			{
@@ -55,14 +61,14 @@ namespace en {
 					continue;
 				}
 
-				particle.LifeRemaining -= args.dt;
-				particle.Position += particle.Velocity * args.dt;
-				particle.Position.y -= particle.Gravity * args.dt;
-				particle.Rotation += 1.0f * args.dt;
+				particle.LifeRemaining -= dt;
+				particle.Position += particle.Velocity * dt;
+				particle.Position.y -= particle.Gravity * dt;
+				particle.Rotation += 1.0f * dt;
 			}
 		}
 
-		void ParticleSystem::OnRender(RenderArgs args)
+		void ParticleSystem::OnRender(const RenderArgs& args)
 		{
 			for (auto& particle : m_ParticlePool)
 			{	
@@ -73,11 +79,16 @@ namespace en {
 
 				// Fade away particles
 				float life = particle.LifeRemaining / particle.LifeTime;
-				glm::vec4 color = glm::lerp(particle.ColorEnd, particle.ColorBegin, life);
-				color.a = color.a * life;
-
 				float size = glm::lerp(particle.SizeEnd, particle.SizeBegin, life);
-				args.render.DrawQuad(particle.Position, { size,size }, color, 2.0f, particle.Rotation, {0.0f,1.0f,1.0f});
+
+				if (particle.TexturePtr == nullptr)
+				{
+					glm::vec4 color = glm::lerp(particle.ColorEnd, particle.ColorBegin, life);
+					color.a = color.a * life;
+					args.render.DrawQuad(particle.Position, { size,size }, color, 2.0f, particle.Rotation, { 0.0f,1.0f,1.0f });
+				}
+				else
+					args.render.DrawQuad(particle.Position, { size,size }, *particle.TexturePtr, 2.0f, Color::White ,particle.Rotation, { 0.0f,1.0f,1.0f });
 			}
 		}
 
@@ -101,6 +112,8 @@ namespace en {
 			particle.LifeRemaining = particleProps.LifeTime;
 			particle.SizeBegin = particleProps.SizeBegin + particleProps.SizeVariation * (Random::Float() - 0.5f);
 			particle.SizeEnd = particleProps.SizeEnd;
+
+			particle.TexturePtr = particleProps.TexturePtr;
 
 			m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();
 		}
