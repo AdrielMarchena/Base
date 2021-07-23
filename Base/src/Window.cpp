@@ -225,9 +225,8 @@ namespace en
 		}
 		void Window::OnUpdate(UpdateArgs args)
 		{
-			static bool multiEnable = true;
 			if (args.keyboard.isPress(GLFW_KEY_LEFT_CONTROL) && args.keyboard.isPress(GLFW_KEY_Q))
-				exit(0);
+				glfwSetWindowShouldClose(m_Window,GLFW_TRUE);
 		}
 
 		void Window::OnAttach(AttachArgs args)
