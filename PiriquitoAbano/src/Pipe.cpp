@@ -91,5 +91,6 @@ void Pipe::Despawn()
 	m_SRender = false;
 	m_Alive = false;
 	pointPipe = false;
+	invert = false;
 	m_ColisionBox.pos = { -5000.0f,-5000.0f };
 }

@@ -14,25 +14,34 @@ class Piper
 {
 private:
 	std::vector<Pipe> Pipes;
-	float PipeGap = 225.0f;
-	float threshold = 900.0f;
 	float dec_velocity = 200.0f;
-	float pipe_velocity = 300.0f;
 	Random rando;
-	en::render::Texture& DownPipe;
-	en::render::Texture& UpPipe;
+	
 public:
-	Piper():DownPipe(en::render::Texture::GetBlanckTexture()),UpPipe(en::render::Texture::GetBlanckTexture()) {}
+	float threshold = 565.0f;
+	float pipe_velocity = 300.0f;
+	float PipeGap = 225.0f;
+
+	Piper(){}
 	~Piper(){}
+
+	void Reset()
+	{
+		threshold = 565.0f;
+		pipe_velocity = 300.0f;
+		PipeGap = 225.0f;
+		MapMe([&](Pipe& pipe) 
+		{
+				pipe.Despawn();
+		});
+	}
 
 	void OnAttach(const en::AttachArgs& args)
 	{
-		//Blank Texture
-		static en::render::Texture blank;
-		Pipes.reserve(35);
-		for (int i = 0; i < 35; i++)
+		Pipes.reserve(10);
+		for (int i = 0; i < 10; i++)
 		{
-			Pipes.emplace_back(blank);
+			Pipes.emplace_back(en::render::Texture::GetBlanckTexture());
 		}
 		rando.Init();
 	}
@@ -98,16 +107,6 @@ public:
 		MapMe([&](Pipe& pipe) {
 			pipe.SetBodyTexture(texture);
 		});
-	}
-
-	void SetDownPipesTexture(en::render::Texture& texture)
-	{
-		DownPipe = texture;
-	}
-
-	void SetUpPipesTexture(en::render::Texture& texture)
-	{
-		UpPipe = texture;
 	}
 
 	void OnImGui(const en::ImGuiArgs& args)
