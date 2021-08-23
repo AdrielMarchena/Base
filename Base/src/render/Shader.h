@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include "glm/glm.hpp"
 #include "gl/glew.h"
+#include "utils/gl_error_macro_db.h"
 
 namespace en
 {
@@ -37,7 +38,7 @@ namespace render
 				return *this;
 
 			if(m_Id)
-				glDeleteProgram(m_Id);
+				GLCall(glDeleteProgram(m_Id));
 			m_Locations.clear();
 
 			m_Id = other.m_Id;

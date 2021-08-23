@@ -26,10 +26,10 @@ namespace en {
 		float_t GetZoomLevel() const { return m_ZoomLevel; }
 
 		bool GetMove() const { return m_Move; }
-		bool SetMove(bool move) { m_Move = move; }
+		void SetMove(bool move) { m_Move = move; }
 
 		bool GetScroll() const { return m_Scroll; }
-		bool SetScroll(bool move) {	m_Scroll = move; }
+		void SetScroll(bool move) {	m_Scroll = move; }
 
 		void SetZoomLevel(float_t level) { m_ZoomLevel = level; }
 		bool OnMouseScrolled(double_t yoffset, float_t m_value = 0.15f);

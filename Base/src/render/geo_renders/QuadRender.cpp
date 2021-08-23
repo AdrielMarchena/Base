@@ -34,24 +34,24 @@ namespace en
 
 			m_data.Buffer = new QuadVertex[MaxVertexCount];
 
-			glGenVertexArrays(1, &m_data.VA);
-			glBindVertexArray(m_data.VA);
-
-			glGenBuffers(1, &m_data.VB);
-			glBindBuffer(GL_ARRAY_BUFFER, m_data.VB);
-			glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(QuadVertex), nullptr, GL_DYNAMIC_DRAW);
-
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position));
-
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color));
-
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords));
-
-			glEnableVertexAttribArray(3);
-			glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex));
+			GLCall(glGenVertexArrays(1, &m_data.VA));
+			GLCall(glBindVertexArray(m_data.VA));
+			
+			GLCall(glGenBuffers(1, &m_data.VB));
+			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
+			GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(QuadVertex), nullptr, GL_DYNAMIC_DRAW));
+			
+			GLCall(glEnableVertexAttribArray(0));
+			GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position)));
+			
+			GLCall(glEnableVertexAttribArray(1));
+			GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color)));
+			
+			GLCall(glEnableVertexAttribArray(2));
+			GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords)));
+			
+			GLCall(glEnableVertexAttribArray(3));
+			GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex)));
 
 			//To much memory for the stack, free below
 			uint32_t* indices = new uint32_t[MaxIndexCount]{};
@@ -69,20 +69,20 @@ namespace en
 				offset += 4;
 			}
 
-			glGenBuffers(1, &m_data.IB);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW);
+			GLCall(glGenBuffers(1, &m_data.IB));
+			GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
+			GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
 			delete[] indices;
 
 			//1x1 white Texture
-			glGenTextures(1, &m_data.WhiteTexture);
-			glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_data.WhiteTexture);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			GLCall(glGenTextures(1, &m_data.WhiteTexture));
+			GLCall(glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_data.WhiteTexture));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 			uint32_t color = 0xffffffff;
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color);
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color));
 
 			int32_t* samplers = new int32_t[MaxTexture];
 			for (int i = 0; i < MaxTexture; i++)
@@ -99,10 +99,10 @@ namespace en
 
 		QuadRender2D::~QuadRender2D()
 		{
-			glDeleteVertexArrays(1, &m_data.VA);
-			glDeleteBuffers(1, &m_data.VB);
-			glDeleteBuffers(1, &m_data.IB);
-			glDeleteTextures(1, &m_data.WhiteTexture);
+			GLCall(glDeleteVertexArrays(1, &m_data.VA));
+			GLCall(glDeleteBuffers(1, &m_data.VB));
+			GLCall(glDeleteBuffers(1, &m_data.IB));
+			GLCall(glDeleteTextures(1, &m_data.WhiteTexture));
 			delete[] m_data.Buffer;
 		}
 
@@ -116,8 +116,8 @@ namespace en
 			m_data.mShader.Bind();
 			//Current position - first position
 			GLsizeiptr size = (uint8_t*)m_data.BufferPtr - (uint8_t*)m_data.Buffer;
-			glBindBuffer(GL_ARRAY_BUFFER, m_data.VB);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.Buffer);
+			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
+			GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.Buffer));
 		}
 
 		void QuadRender2D::Flush()
@@ -125,14 +125,12 @@ namespace en
 			m_data.mShader.Bind();
 			for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 			{
-				glActiveTexture(GL_TEXTURE0 + i);
-				glBindTexture(GL_TEXTURE_2D, m_data.TextureSlots[i]);
+				GLCall(glActiveTexture(GL_TEXTURE0 + i));
+				GLCall(glBindTexture(GL_TEXTURE_2D, m_data.TextureSlots[i]));
 			}
 
-			glBindVertexArray(m_data.VA);
-			//glBindBuffer(GL_ARRAY_BUFFER, m_data.QuadVB);
-			//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.QuadIB);
-			glDrawElements(GL_TRIANGLES, m_data.IndexCount, GL_UNSIGNED_INT, nullptr);
+			GLCall(glBindVertexArray(m_data.VA));
+			GLCall(glDrawElements(GL_TRIANGLES, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
 			m_data.RenderStatus.DrawCount++;
 
 			m_data.IndexCount = 0;

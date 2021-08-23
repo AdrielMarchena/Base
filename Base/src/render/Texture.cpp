@@ -27,20 +27,20 @@ namespace render
 		m_Wid = info.m_Wid;
 		m_Hei = info.m_Hei;
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
-		glGenTextures(1, &m_Id);
+		GLCall(glGenTextures(1, &m_Id));
 		if (!m_Id)
 			throw std::exception("The image OpenGL_ID is empty");
 
-		glBindTexture(GL_TEXTURE_2D, m_Id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Wid, m_Hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, info.m_Pixels);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Wid, m_Hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, info.m_Pixels));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 		info.clear();
 	}
 
@@ -52,19 +52,19 @@ namespace render
 		m_Wid = info.m_Wid;
 		m_Hei = info.m_Hei;
 
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
 
-		glGenTextures(1, &m_Id);
+		GLCall(glGenTextures(1, &m_Id));
 		if (!m_Id)
 			throw std::exception("OpenGL_ID is empty");
-		glBindTexture(GL_TEXTURE_2D, m_Id);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Wid, m_Hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, info.m_Pixels);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Wid, m_Hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, info.m_Pixels));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
 	ImageInfo Texture::GetImage(const char* path)

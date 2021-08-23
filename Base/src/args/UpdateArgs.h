@@ -18,5 +18,9 @@ namespace en
 		input::Mouse& mouse;
 		input::Keyboard& keyboard;
 		glm::vec2 m_pos;
+		float width;
+		float height;
+		float res_w;
+		float res_h;
 	};
 }

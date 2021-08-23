@@ -15,5 +15,9 @@ namespace en{
 		render::Render2D& render;
 		OrthographicCameraController& camera_ctr;
 		OrthographicCamera& camera;
+		float width;
+		float height;
+		float res_w;
+		float res_h;
 	}; 
 }

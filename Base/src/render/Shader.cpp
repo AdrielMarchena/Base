@@ -60,81 +60,81 @@ namespace render
 		// 2. compile shaders
 		unsigned int vertex, fragment;
 		// vertex shader
-		vertex = glCreateShader(GL_VERTEX_SHADER);
+		GLCall(vertex = glCreateShader(GL_VERTEX_SHADER));
 		assert(vertex > 0);
-		glShaderSource(vertex, 1, &vShaderCode, NULL);
-		glCompileShader(vertex);
+		GLCall(glShaderSource(vertex, 1, &vShaderCode, NULL));
+		GLCall(glCompileShader(vertex));
 		checkCompileErrors(vertex, "VERTEX");
 		// fragment Shader
-		fragment = glCreateShader(GL_FRAGMENT_SHADER);
+		GLCall(fragment = glCreateShader(GL_FRAGMENT_SHADER));
 		assert(fragment > 0);
-		glShaderSource(fragment, 1, &fShaderCode, NULL);
-		glCompileShader(fragment);
+		GLCall(glShaderSource(fragment, 1, &fShaderCode, NULL));
+		GLCall(glCompileShader(fragment));
 		checkCompileErrors(fragment, "FRAGMENT");
 		// shader Program
-		m_Id = glCreateProgram();
+		GLCall(m_Id = glCreateProgram());
 		assert(m_Id > 0);
-		glAttachShader(m_Id, vertex);
-		glAttachShader(m_Id, fragment);
-		glLinkProgram(m_Id);
+		GLCall(glAttachShader(m_Id, vertex));
+		GLCall(glAttachShader(m_Id, fragment));
+		GLCall(glLinkProgram(m_Id));
 		checkCompileErrors(m_Id, "PROGRAM");
 		// delete the shaders as they're linked into our program now and no longer necessary
-		glDeleteShader(vertex);
-		glDeleteShader(fragment);
+		GLCall(glDeleteShader(vertex));
+		GLCall(glDeleteShader(fragment));
 	}
 
 	Shader::~Shader()
 	{
 		if (m_Id && !copy)
 		{
-			glDeleteProgram(m_Id);
+			GLCall(glDeleteProgram(m_Id));
 			m_Id = NULL;
 		}
 	}
 
 	void Shader::Bind() const
 	{
-		glUseProgram(m_Id);
+		GLCall(glUseProgram(m_Id));
 	}
 
 	void Shader::Unbind() const
 	{
-		glUseProgram(0);
+		GLCall(glUseProgram(0));
 	}
 
 	void Shader::SetUniform1i(const std::string& name, int32_t value) const
 	{
-		glUniform1i(GetUniformLocation(name), value);
+		GLCall(glUniform1i(GetUniformLocation(name), value));
 	}
 
 	void Shader::SetUniform1iv(const std::string& name, int32_t size, int32_t* value) const
 	{
-		glUniform1iv(GetUniformLocation(name), size ,value);
+		GLCall(glUniform1iv(GetUniformLocation(name), size ,value));
 	}
 
 	void Shader::SetUniform1f(const std::string& name, float_t value) const
 	{
-		glUniform1f(GetUniformLocation(name), value);
+		GLCall(glUniform1f(GetUniformLocation(name), value));
 	}
 
 	void Shader::SetUniform2f(const std::string& name, float_t v0, float_t v1) const
 	{
-		glUniform2f(GetUniformLocation(name), v0, v1);
+		GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
 	}
 
 	void Shader::SetUniform3f(const std::string& name, float_t v0, float_t v1, float_t v2) const
 	{
-		glUniform3f(GetUniformLocation(name), v0, v1, v2);
+		GLCall(glUniform3f(GetUniformLocation(name), v0, v1, v2));
 	}
 
 	void Shader::SetUniform4f(const std::string& name, float_t v0, float_t v1, float_t v2, float_t v3) const
 	{
-		glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+		GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
 	}
 
 	void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix) const
 	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+		GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 	}
 
 	int32_t Shader::GetUniformLocation(const std::string& name) const
@@ -142,7 +142,7 @@ namespace render
 		if (m_Locations.find(name) != m_Locations.end())
 			return m_Locations[name];
 
-		int32_t location = glGetUniformLocation(m_Id, name.c_str());
+		GLCall(int32_t location = glGetUniformLocation(m_Id, name.c_str()));
 		if(location == -1)
 			std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
 		m_Locations[name] = location;
@@ -156,19 +156,19 @@ namespace render
 		char infoLog[1024];
 		if (type != "PROGRAM")
 		{
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+			GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &success));
 			if (!success)
 			{
-				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+				GLCall(glGetShaderInfoLog(shader, 1024, NULL, infoLog));
 				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
 		}
 		else
 		{
-			glGetProgramiv(shader, GL_LINK_STATUS, &success);
+			GLCall(glGetProgramiv(shader, GL_LINK_STATUS, &success));
 			if (!success)
 			{
-				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+				GLCall(glGetProgramInfoLog(shader, 1024, NULL, infoLog));
 				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
 		}

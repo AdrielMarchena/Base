@@ -56,6 +56,7 @@ namespace en
 			std::string m_Title;
 			float m_Wid;
 			float m_Hei;
+			glm::vec2 m_Resolution = { 800.0f,600.0f };
 			float m_AspectRatio = 1.0f;
 			bool m_Resizeble;
 

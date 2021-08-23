@@ -12,6 +12,8 @@
 #include "gl/glew.h"
 #include "glm/glm.hpp"
 #include "utils/NameCaps.h"
+#include "utils/gl_error_macro_db.h"
+
 namespace en
 {
 namespace render
@@ -42,7 +44,7 @@ namespace render
 		{ 
 			if (deletable())
 			{ 
-				glDeleteTextures(1, &m_Id); 
+				glDeleteTextures(1, &m_Id);
 				m_Id = NULL; 
 			} 
 		};
@@ -85,7 +87,7 @@ namespace render
 				return *this;
 
 			if(deletable())
-				glDeleteTextures(1, &m_Id);
+				GLCall(glDeleteTextures(1, &m_Id));
 			//Delete any heap alocated here
 
 			m_Id = other.m_Id;

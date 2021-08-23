@@ -8,6 +8,8 @@
 
 #include "gl/glew.h"
 
+#include "utils/gl_error_macro_db.h"
+
 namespace en
 {
 namespace render
@@ -35,7 +37,7 @@ namespace render
 		static int32_t MaxTexturesSlots()
 		{
 			static int32_t MaxT = 8;
-			glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MaxT);
+			GLCall(glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MaxT));
 			return MaxT;
 		}
 

@@ -60,7 +60,9 @@ namespace ett
 		if (m_CurrentTimeStamp <= 0)
 		{
 			//Go to next texture
-			m_CurrentTexIndex = std::min((m_CurrentTexIndex + 1) % int(m_CroppedTexture.size()), unsigned int(std::numeric_limits<uint32_t>::max()));
+			size_t s = m_CroppedTexture.size();
+			if(s)
+				m_CurrentTexIndex = std::min((m_CurrentTexIndex + 1) % int(s), unsigned int(std::numeric_limits<uint32_t>::max()));
 			//I think this black magic prevent overfloat
 			m_CurrentTimeStamp = m_Specs.timestamp;
 		}

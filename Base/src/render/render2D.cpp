@@ -18,6 +18,21 @@ namespace render
 	glm::vec3 Render2D::m_default_axis = { 0.0f,0.0f,1.0f };
 	
 
+	void Render2D::SetClearColor(const glm::vec4& color)
+	{
+		GLCall(glClearColor(color.r,color.g,color.b,color.a));
+	}
+
+	void Render2D::ClearColor()
+	{
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));
+	}
+
+	void Render2D::ClearColorDepth()
+	{
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	}
+
 	Render2D::Render2D(const char* quad_vs, const char* quad_fs,
 		const char* line_vs, const char* line_fs,
 		const char* circle_vs, const char* circle_fs, 
@@ -29,10 +44,10 @@ namespace render
 		m_TextRender(text_vs,text_fs),
 		m_TriRender(tri_vs,tri_fs)
 	{
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_BLEND);
-		glEnable(GL_MULTISAMPLE);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		GLCall(glEnable(GL_DEPTH_TEST));
+		GLCall(glEnable(GL_BLEND));
+		GLCall(glEnable(GL_MULTISAMPLE));
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	}
 
 	Render2D::~Render2D()

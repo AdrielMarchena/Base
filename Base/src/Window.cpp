@@ -37,6 +37,7 @@ namespace en
 
 		static inline void SetTransform(const render::Shader& m_Shader, float wid, float hei)
 		{
+			float ratio = wid / hei;
 			m_Shader.SetUniformMat4f("u_Transform", glm::ortho(0.0f, wid, 0.0f, hei, -1.0f, 10.0f));
 		}
 
@@ -46,7 +47,7 @@ namespace en
 			{
 				a->Bind();
 				SetView(*a, m_camera);
-				SetTransform(*a, m_Wid, m_Hei);
+				SetTransform(*a, m_Resolution.x, m_Resolution.y);
 			}
 		}
 
@@ -183,7 +184,7 @@ namespace en
 			SetResizeble(false);
 			SetPerpectiveInShaders();
 
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			render.SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 
 			float deltaTime = 0.0f;
 			float lastFrame = 0.0f;
@@ -197,18 +198,18 @@ namespace en
 				float currentTime = glfwGetTime();
 				deltaTime = currentTime - lastFrame;
 				lastFrame = currentTime;
-				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse) };
+				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse),m_Wid,m_Hei,m_Resolution.x,m_Resolution.y };
 				m_camera.OnUpdate(up_args);
 
 				SetViewInShaders();
 
 				OnUpdate(up_args);
 
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				render.ClearColorDepth();
 
 				render.BeginBatch();
 
-				OnRender({ deltaTime,render,m_camera,m_camera.GetCamera() });
+				OnRender({ deltaTime,render,m_camera,m_camera.GetCamera(),m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
 
 				render.EndBatch();
 				render.Flush();
