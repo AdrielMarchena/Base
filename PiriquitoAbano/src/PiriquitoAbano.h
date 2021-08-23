@@ -14,6 +14,7 @@
 #include "colision/Colisions.h"
 
 #include "Menu.h"
+#include "Background.h"
 
 enum class PiriquitoState : uint8_t
 {
@@ -48,6 +49,7 @@ private:
 	en::GUI::Menu StartBox;
 
 	Piper m_Piper;
+	Background m_Back;
 public:
 	PiriquitoAbano();
 	~PiriquitoAbano(){}

@@ -63,7 +63,7 @@ void Piriquito::OnRender(const en::RenderArgs& args)
 	auto& current_subt = m_Animation.Run(args.dt);
 	args.render.DrawQuad(rotate_pos, rotate_size, current_subt, 2.0f ,glm::radians(m_Rotation));
 	const auto b = GetColision();
-	args.render.DrawOutLineQuad(b.pos, b.size, { 1.0f,0.0f,0.0f,1.0f }, 3.0f);
+	//args.render.DrawOutLineQuad(b.pos, b.size, { 1.0f,0.0f,0.0f,1.0f }, 3.0f);
 	m_Particles.OnRender(args);
 }
 

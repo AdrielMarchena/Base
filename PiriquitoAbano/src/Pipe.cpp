@@ -60,7 +60,7 @@ void Pipe::OnRender(const en::RenderArgs& args)
 			}
 		}
 			
-		args.render.DrawOutLineQuad(m_ColisionBox.pos, m_ColisionBox.size, {1.0f,0.0f,0.0f,1.0f}, 3.0f, glm::radians(rotation));
+		//args.render.DrawOutLineQuad(m_ColisionBox.pos, m_ColisionBox.size, {1.0f,0.0f,0.0f,1.0f}, 3.0f, glm::radians(rotation));
 	}
 }
 

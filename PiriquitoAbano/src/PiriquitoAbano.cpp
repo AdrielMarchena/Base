@@ -58,6 +58,11 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 	StartBox.AdjustPositions(m_TextFont);
 
 	HideCursor();
+	Window::m_ClampMouse = false;
+
+	m_Back.OnAttach(args);
+
+	args.camera.SetScroll(true);
 
 	Window::OnAttach(args);
 }
@@ -94,6 +99,7 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 	//Update Piriquito
 	if (m_State == PiriquitoState::PLAYING)
 	{
+		m_Back.OnUpdate(args);
 		m_Piriquito.OnUpdate(args, { m_Gravity });
 		m_Piper.SpawnPairPipe(args.dt);
 		m_Piper.UpdatePipes(args);
@@ -151,6 +157,7 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 void PiriquitoAbano::OnRender(en::RenderArgs args)
 {
 	args.render.DrawQuad({ 0,0 }, { 800,600 }, m_Textures["back"], 0.0f);
+	//m_Back.OnRender(args);
 	//Draw Piriquito
 	if (m_State == PiriquitoState::GAMEOVER)
 		GameOverBox.OnRender(args, m_TextFont);
@@ -170,7 +177,6 @@ void PiriquitoAbano::OnRender(en::RenderArgs args)
 	};
 
 	args.render.DrawTriangle(m_Pointer, pointer_colors, 10.0f);
-
 	Window::OnRender(args);
 }
 
