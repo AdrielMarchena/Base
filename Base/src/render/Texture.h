@@ -86,7 +86,7 @@ namespace render
 			if (this == &other)
 				return *this;
 
-			if(deletable())
+			if(deletable() && m_Id)
 				GLCall(glDeleteTextures(1, &m_Id));
 			//Delete any heap alocated here
 

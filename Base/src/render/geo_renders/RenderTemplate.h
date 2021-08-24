@@ -37,7 +37,7 @@ namespace render
 		static int32_t MaxTexturesSlots()
 		{
 			static int32_t MaxT = 8;
-			GLCall(glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MaxT));
+			//GLCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS , &MaxT));
 			return MaxT;
 		}
 

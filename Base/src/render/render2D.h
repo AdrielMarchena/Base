@@ -35,9 +35,9 @@ namespace render
 
 		static glm::vec3 m_default_axis;
 
-		static inline void SetClearColor(const glm::vec4& color);
-		static inline void ClearColor();
-		static inline void ClearColorDepth();
+		static void SetClearColor(const glm::vec4& color);
+		static void ClearColor();
+		static void ClearColorDepth();
 
 		Render2D(const char* quad_vs, const char* quad_fs,
 				 const char* line_vs, const char* line_fs,

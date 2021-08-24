@@ -11,7 +11,7 @@ namespace render
 			{0.0f,1.0f}
 	};
 
-	static const size_t MaxCircleCount = 3000;
+	static const size_t MaxCircleCount = 1000;
 	static const size_t MaxVertexCount = MaxCircleCount * 3;
 	static const size_t MaxIndexCount = MaxCircleCount * 3;
 	static int32_t MaxTexture = Render::MaxTexturesSlots();

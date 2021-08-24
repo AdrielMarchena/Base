@@ -15,16 +15,9 @@ namespace en
 {
 	namespace render
 	{
-		static inline int32_t MaxTexturesSlots()
-		{
-			int32_t MaxT = 8;
-			GLCall(glGetIntegerv(GL_MAX_TEXTURE_UNITS, &MaxT));
-			return MaxT;
-		}
 
-		static int32_t MaxTexture = MaxTexturesSlots();
-
-		static const size_t MaxLineCount = 3000;
+		static int32_t MaxTexture = Render::MaxTexturesSlots();
+		static const size_t MaxLineCount = 1000;
 		static const size_t MaxLineVertexCount = MaxLineCount * 2;
 		static const size_t MaxLineIndexCount = MaxLineCount * 2;
 

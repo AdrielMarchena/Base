@@ -52,7 +52,7 @@ namespace ett
 		:m_Specs()
 	{
 		m_Specs.atlas = default_white_texture;
-		default_white_texture = render::Texture(); //This is trash
+		//default_white_texture = render::Texture(); //This is trash
 	}
 
 	render::SubTexture& Animator::Run(float_t dt)

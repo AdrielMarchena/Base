@@ -216,5 +216,8 @@
     <ClInclude Include="src\render\geo_renders\TriRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\gl_error_macro_db.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -51,7 +51,11 @@ static char const* gl_error_string(GLenum const err) noexcept
 
 static void GLClearError()
 {
-    while (glGetError() != GL_NO_ERROR);
+    static GLenum err;
+    uint8_t wd = 255;
+    while ((err = glGetError()) != GL_NO_ERROR && wd--) 
+    {
+    }
 }
 
 static bool GLLogCall(const char* function, const char* file, int line)

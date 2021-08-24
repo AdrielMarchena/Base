@@ -32,7 +32,7 @@ int main()
 
 #ifdef _WINDOWS
 
-int WinMain()
+int _stdcall WinMain()
 {
 	try //Try Catch to get any unhandled exceptions
 	{
