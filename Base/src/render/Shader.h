@@ -22,6 +22,7 @@ namespace render
 		uint32_t m_Id = NULL;
 		mutable std::unordered_map<std::string, int32_t> m_Locations;
 		bool copy = false;
+		bool disposed = false;
 	public:
 
 		Shader() = default;
@@ -52,6 +53,8 @@ namespace render
 
 		void Bind() const;
 		void Unbind() const;
+
+		void Dispose();
 
 		void SetUniform1i(const std::string& name, int32_t value) const;
 		void SetUniform1iv(const std::string& name, int32_t size, int32_t* value) const;

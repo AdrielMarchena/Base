@@ -50,6 +50,7 @@ namespace en
 			void BeginBatch();
 			void EndBatch();
 			void Flush();
+			void Dispose();
 
 			const Shader& GetShader();
 

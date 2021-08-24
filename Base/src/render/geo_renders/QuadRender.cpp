@@ -76,7 +76,7 @@ namespace en
 
 			//1x1 white Texture
 			GLCall(glGenTextures(1, &m_data.WhiteTexture));
-			GLCall(glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_data.WhiteTexture));
+			GLCall(glBindTexture(GL_TEXTURE_2D, m_data.WhiteTexture));
 			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
@@ -99,11 +99,8 @@ namespace en
 
 		QuadRender2D::~QuadRender2D()
 		{
-			GLCall(glDeleteVertexArrays(1, &m_data.VA));
-			GLCall(glDeleteBuffers(1, &m_data.VB));
-			GLCall(glDeleteBuffers(1, &m_data.IB));
-			GLCall(glDeleteTextures(1, &m_data.WhiteTexture));
-			delete[] m_data.Buffer;
+			if (!disposed)
+				Dispose();
 		}
 
 		void QuadRender2D::BeginBatch()
@@ -135,6 +132,17 @@ namespace en
 
 			m_data.IndexCount = 0;
 			m_data.TextureSlotIndex = 1;
+		}
+
+		void QuadRender2D::Dispose()
+		{
+			m_data.mShader.Dispose();
+			GLCall(glDeleteVertexArrays(1, &m_data.VA));
+			GLCall(glDeleteBuffers(1, &m_data.VB));
+			GLCall(glDeleteBuffers(1, &m_data.IB));
+			GLCall(glDeleteTextures(1, &m_data.WhiteTexture));
+			delete[] m_data.Buffer;
+			disposed = true;
 		}
 
 		const Shader& QuadRender2D::GetShader()

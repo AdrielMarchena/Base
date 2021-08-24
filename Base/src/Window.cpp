@@ -244,6 +244,7 @@ namespace en
 
 		void Window::Dispose()
 		{
+			m_Render->Dispose();
 			glfwTerminate();
 			try
 			{

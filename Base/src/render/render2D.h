@@ -51,6 +51,7 @@ namespace render
 		void BeginBatch();
 		void EndBatch();
 		void Flush();
+		void Dispose();
 
 		const Shader& GetQuadShader();
 		const Shader& GetLineShader();

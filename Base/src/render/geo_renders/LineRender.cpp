@@ -62,10 +62,8 @@ namespace en
 
 		LineRender2D::~LineRender2D()
 		{
-			GLCall(glDeleteVertexArrays(1, &m_data.VA));
-			GLCall(glDeleteBuffers(1, &m_data.VB));
-			GLCall(glDeleteBuffers(1, &m_data.IB));
-			delete[] m_data.Buffer;
+			if (!disposed)
+				Dispose();
 		}
 
 		void LineRender2D::BeginBatch()
@@ -91,6 +89,16 @@ namespace en
 
 			m_data.Count = 0;
 			m_data.IndexCount = 0;
+		}
+
+		void LineRender2D::Dispose()
+		{
+			m_data.mShader.Dispose();
+			GLCall(glDeleteVertexArrays(1, &m_data.VA));
+			GLCall(glDeleteBuffers(1, &m_data.VB));
+			GLCall(glDeleteBuffers(1, &m_data.IB));
+			delete[] m_data.Buffer;
+			disposed = true;
 		}
 
 		const Shader& LineRender2D::GetShader()

@@ -81,6 +81,15 @@ namespace render
 		m_TriRender.Flush();
 	}
 
+	void Render2D::Dispose()
+	{
+		m_QuadRender.Dispose();
+		m_CircleRender.Dispose();
+		m_LineRender.Dispose();
+		m_TextRender.Dispose();
+		m_TriRender.Dispose();
+	}
+
 	const Shader& Render2D::GetQuadShader()
 	{
 		return m_QuadRender.GetShader();

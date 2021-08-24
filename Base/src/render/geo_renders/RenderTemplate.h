@@ -31,7 +31,7 @@ namespace render
 		virtual void BeginBatch() = 0;
 		virtual void EndBatch() = 0;
 		virtual void Flush() = 0;
-
+		virtual void Dispose() = 0;
 		virtual const Shader& GetShader() = 0;
 
 		static int32_t MaxTexturesSlots()
@@ -52,6 +52,8 @@ namespace render
 					reverseTranslationMatrix * rotationMatrix * translationMatrix * glm::vec4(vertices[i], 1.0f));
 			}
 		}
+	protected:
+		bool disposed = false;
 	};
 
 }

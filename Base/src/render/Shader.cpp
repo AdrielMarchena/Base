@@ -85,11 +85,8 @@ namespace render
 
 	Shader::~Shader()
 	{
-		if (m_Id && !copy)
-		{
-			GLCall(glDeleteProgram(m_Id));
-			m_Id = NULL;
-		}
+		if(!disposed)
+			Dispose();
 	}
 
 	void Shader::Bind() const
@@ -100,6 +97,16 @@ namespace render
 	void Shader::Unbind() const
 	{
 		GLCall(glUseProgram(0));
+	}
+
+	void Shader::Dispose()
+	{
+		if (m_Id)
+		{
+			GLCall(glDeleteProgram(m_Id));
+			m_Id = NULL;
+			disposed = true;
+		}
 	}
 
 	void Shader::SetUniform1i(const std::string& name, int32_t value) const
