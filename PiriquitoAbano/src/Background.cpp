@@ -11,13 +11,13 @@ void Background::OnAttach(const en::AttachArgs& args)
 	front_pos.resize(20);
 
 	back_pos.emplace_back();
-	back_pos[0].MountMointain(m_Specs.b_height, m_Specs.b_thick, BACK_MOUNTAIN);
+	back_pos[0].MountMointain(m_Specs.b_height, m_Specs.b_thick, BACK_MOUNTAIN, m_Specs);
 
 	middle_pos.emplace_back();
-	middle_pos[0].MountMointain(m_Specs.m_height, m_Specs.m_thick, MIDDLE_MOUNTAIN);
+	middle_pos[0].MountMointain(m_Specs.m_height, m_Specs.m_thick, MIDDLE_MOUNTAIN, m_Specs);
 
 	front_pos.emplace_back();
-	front_pos[0].MountMointain(m_Specs.f_height, m_Specs.f_thick, FRONT_MOUNTAIN);
+	front_pos[0].MountMointain(m_Specs.f_height, m_Specs.f_thick, FRONT_MOUNTAIN, m_Specs);
 }
 
 void Background::OnUpdate(const en::UpdateArgs& args)
@@ -32,8 +32,10 @@ void Background::OnUpdate(const en::UpdateArgs& args)
 		{
 			if (!m.alive)
 			{
+				if (P_random() < 200) // Chance to ignore the spawn
+					return true;
 				m.alive = true;
-				m.MountMointain(m_Specs.b_height, m_Specs.b_thick, BACK_MOUNTAIN);
+				m.MountMointain(m_Specs.b_height, m_Specs.b_thick, BACK_MOUNTAIN, m_Specs);
 				m.Color[0] = {0.1f,0.9f,0.4f,1.0f };
 				m.Color[1] = {0.6f,0.6f,0.6f,1.0f };
 				m.Color[2] = m.Color[0];
@@ -51,7 +53,7 @@ void Background::OnUpdate(const en::UpdateArgs& args)
 			if (!m.alive)
 			{
 				m.alive = true;
-				m.MountMointain(m_Specs.m_height, m_Specs.m_thick, MIDDLE_MOUNTAIN);
+				m.MountMointain(m_Specs.m_height, m_Specs.m_thick, MIDDLE_MOUNTAIN, m_Specs);
 				m.Color[0] = { 0.2f,0.8f,0.5f,1.0f };
 				m.Color[1] = { 0.7f,0.7f,0.7f,1.0f };
 				m.Color[2] = m.Color[0];
@@ -68,7 +70,7 @@ void Background::OnUpdate(const en::UpdateArgs& args)
 			if (!m.alive)
 			{
 				m.alive = true;
-				m.MountMointain(m_Specs.f_height, m_Specs.f_thick, FRONT_MOUNTAIN);
+				m.MountMointain(m_Specs.f_height, m_Specs.f_thick, FRONT_MOUNTAIN, m_Specs);
 				m.Color[0] = { 0.3f,0.8f,0.6f,1.0f };
 				m.Color[1] = { 0.8f,0.8f,0.8f,1.0f };
 				m.Color[2] = m.Color[0];
@@ -85,20 +87,20 @@ void Background::OnUpdate(const en::UpdateArgs& args)
 			return false;
 
 		float v = 0.0f;
-		if(m.Mountain_type == BACK_MOUNTAIN)
+		if (m.Mountain_type == BACK_MOUNTAIN)
 			v = m_Specs.b_velocity;
 			
-		if(m.Mountain_type == MIDDLE_MOUNTAIN)
+		if (m.Mountain_type == MIDDLE_MOUNTAIN)
 			v = m_Specs.m_velocity;
 		
-		if(m.Mountain_type == FRONT_MOUNTAIN)
+		if (m.Mountain_type == FRONT_MOUNTAIN)
 			v = m_Specs.f_velocity;
 
 		m.Points[0].x -= v * args.dt;
 		m.Points[1].x -= v * args.dt;
 		m.Points[2].x -= v * args.dt;
 
-		if (m.Points[2].x <= -50.0f)
+		if (m.Points[2].x <= -300.0f)
 			m.Die();
 
 		return false; 
@@ -108,13 +110,19 @@ void Background::OnUpdate(const en::UpdateArgs& args)
 void Background::OnRender(const en::RenderArgs& args)
 {
 	static glm::vec4 b_color;
+	static glm::vec4 sun_color;
+	static glm::vec2 sun_pos;
 	static bool once = [&]()
 	{
 		float n = 1.0f / 256.0f;
 		b_color = { n * 95.0f,n * 197.0f,n * 228.0f,1.0f };
+		sun_pos.x = glm::lerp(0.0f, args.res_h, 0.99f);
+		sun_pos.y = glm::lerp(0.0f, args.res_w, 0.50f);
+		sun_color = { n * 247.0f,n * 202.0f,n * 24.0f, 1.0f };
 		return true;
 	}();
 
+	args.render.DrawCircle(sun_pos, 150.0f, sun_color, true, 1.0f, 1.01f);
 	args.render.DrawQuad({ 0.0f,0.0f }, { args.res_w ,args.res_h }, b_color, -0.0f);
 	MapM([&](Mountain& m)
 	{
@@ -167,7 +175,7 @@ void Background::MapM(std::function<bool(Mountain&)> lamb, uint8_t mountain_type
 		break;
 	default:
 	case ALL:
-		for (auto& m : back_pos)
+		for (auto& m : front_pos)
 		{
 			if (lamb(m))
 				break;
@@ -177,7 +185,7 @@ void Background::MapM(std::function<bool(Mountain&)> lamb, uint8_t mountain_type
 			if (lamb(m))
 				break;
 		}
-		for (auto& m : front_pos)
+		for (auto& m : back_pos)
 		{
 			if (lamb(m))
 				break;

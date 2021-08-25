@@ -7,56 +7,10 @@
 #include <functional>
 #include "glm/gtx/compatibility.hpp"
 
+#include "utils/RandomList.h"
+
 static constexpr float init_w_pos = 900.0f;
 static constexpr float init_h_pos = 0.0f;
-class Mountain
-{
-public:
-	glm::vec2 Points[3];
-	glm::vec4 Color[3];
-	bool alive = false;
-	uint8_t Mountain_type;
-private:
-	static float b_layer;
-	static float m_layer;
-	static float f_layer;
-public:
-
-	Mountain()
-	{
-		static bool once = [&]()
-		{
-			b_layer = glm::lerp(0.0f, 1.0f, 0.2f);
-			m_layer = glm::lerp(0.0f, 1.0f, 0.5f);
-			f_layer = glm::lerp(0.0f, 1.0f, 0.5f);
-			return true;
-		}();
-	}
-
-	void MountMointain(float_t w, float_t h,uint8_t mountain_type)
-	{
-		alive = true;
-		Points[0] = { init_w_pos, init_h_pos };
-		Points[1] = { init_w_pos + (w/2), h };
-		Points[2] = { init_w_pos + w, init_h_pos};
-		Mountain_type = mountain_type;
-	}
-
-	void Die()
-	{
-		alive = false;
-		Points[0] = { -5000,-5000 };
-		Points[1] = { -5000,-5000 };
-		Points[2] = { -5000,-5000 };
-	}
-
-	void OnRender(const en::RenderArgs& args) const
-	{
-		//args.render.DrawCurveLine()
-		if(alive)
-			args.render.DrawTriangle(Points, Color ,(1-(1/Mountain_type)));
-	}
-};
 
 struct Back_Spec
 {
@@ -75,6 +29,77 @@ struct Back_Spec
 	float_t f_height = 100.0f;
 	float_t f_thick = 200.0f;
 };
+
+class Mountain
+{
+public:
+	glm::vec2 Points[3];
+	glm::vec4 Color[3];
+	bool alive = false;
+	uint8_t Mountain_type;
+private:
+	static float b_layer;
+	static float m_layer;
+	static float f_layer;
+	float& m_mylayer = b_layer;
+	float m_myvel = 0;
+public:
+
+	Mountain()
+	{
+		static bool once = [&]()
+		{
+			b_layer = 0.2f;
+			m_layer = 0.3f;
+			f_layer = 0.4f;
+			return true;
+		}();
+	}
+
+	void MountMointain(float_t w, float_t h,uint8_t mountain_type,const Back_Spec& specs)
+	{
+		char pos_neg = 1;
+		if (P_random() > 256 / 2)
+			pos_neg = -1;
+		alive = true;
+		Points[0] = { init_w_pos, init_h_pos};
+		Points[1] = { init_w_pos + (w / 2) + ((P_random() % 100) * pos_neg), h + ((P_random()) * pos_neg) };
+		Points[2] = { init_w_pos + w + (P_random()), init_h_pos};
+		Mountain_type = mountain_type;
+		if (Mountain_type == 1u)
+		{
+			m_mylayer = b_layer;
+			m_myvel = specs.b_velocity + (P_random() << 1);
+		}
+		if (Mountain_type == 2u)
+		{
+			m_mylayer = m_layer;
+			m_myvel = specs.m_velocity + (P_random() << 1);
+		}
+		if (Mountain_type == 3u)
+		{
+			m_mylayer = f_layer;
+			m_myvel = specs.f_velocity + (P_random() << 1);
+		}
+	}
+
+	void Die()
+	{
+		alive = false;
+		Points[0] = { -5000,-5000 };
+		Points[1] = { -5000,-5000 };
+		Points[2] = { -5000,-5000 };
+	}
+
+	void OnRender(const en::RenderArgs& args) const
+	{
+		//args.render.DrawCurveLine()
+		if(alive)
+			args.render.DrawTriangle(Points, Color ,(1 + m_mylayer));
+	}
+};
+
+
 class Background
 {
 private:

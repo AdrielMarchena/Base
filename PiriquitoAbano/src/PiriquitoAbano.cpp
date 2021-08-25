@@ -1,5 +1,7 @@
 #include "PiriquitoAbano.h"
 
+#include "glm/gtx/compatibility.hpp"
+
 //Blank Texture
 static en::render::Text VeryDumbStupidTemporaryText;
 
@@ -15,6 +17,24 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 	LoadTextures("imgs");
 	LoadText("fonts");
 	LoadSounds("audio");
+
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetQuadShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetCircleShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetTriShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetLineShader(), false);
+
+	en::windowing::LightSource source;
+	source.m_LightIntencity = 1500.0f;
+	source.u_LightColor = { 0.9f,0.8f,0.2f,1.0f };
+	source.u_LightPos.x = glm::lerp(0.0f, args.res_h, 0.99f);
+	source.u_LightPos.y = glm::lerp(0.0f, args.res_w, 0.50f);
+
+	m_Lights.AddStaticLightSource(source);
+
+	m_Lights.UpdateStaticLight(args.render.GetQuadShader());
+	m_Lights.UpdateStaticLight(args.render.GetCircleShader());
+	m_Lights.UpdateStaticLight(args.render.GetLineShader());
+	m_Lights.UpdateStaticLight(args.render.GetTriShader());
 
 	m_Piriquito.SetTexture(m_Textures["priquito_atlas"]);
 	m_Piriquito.OnAttach(args);
@@ -57,7 +77,7 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 	GameOverBox.AdjustPositions(m_TextFont);
 	StartBox.AdjustPositions(m_TextFont);
 
-	HideCursor();
+	//HideCursor();
 	Window::m_ClampMouse = false;
 
 	m_Back.OnAttach(args);
@@ -72,13 +92,13 @@ void PiriquitoAbano::SwitchPause()
 	if (m_State == PiriquitoState::PLAYING)
 	{
 		m_State = PiriquitoState::PAUSE;
-		UnhideCursor();
+		//UnhideCursor();
 		return;
 	}
 	if (m_State == PiriquitoState::PAUSE)
 	{
 		m_State = PiriquitoState::PLAYING;
-		HideCursor();
+		//HideCursor();
 		return;
 	}
 }
@@ -156,8 +176,8 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 
 void PiriquitoAbano::OnRender(en::RenderArgs args)
 {
-	args.render.DrawQuad({ 0,0 }, { 800,600 }, m_Textures["back"], 0.0f);
-	//m_Back.OnRender(args);
+	//args.render.DrawQuad({ 0,0 }, { 800,600 }, m_Textures["back"], 0.0f);
+	m_Back.OnRender(args);
 	//Draw Piriquito
 	if (m_State == PiriquitoState::GAMEOVER)
 		GameOverBox.OnRender(args, m_TextFont);
@@ -201,7 +221,7 @@ void PiriquitoAbano::OnMouseAction(en::MouseArgs args)
 	switch (args.m_action)
 	{
 	case en::MouseAction::ENTER :
-		HideCursor();
+		//HideCursor();
 		break;
 	case en::MouseAction::LEAVE:
 		UnhideCursor();

@@ -41,7 +41,7 @@ void Pipe::OnRender(const en::RenderArgs& args)
 		{
 			current_pos.y -= 64.0f;
 			args.render.DrawQuad(current_pos, size, *m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
-			for (int i = 1; i < h * 1.25f; i++)
+			for (int i = 1; i < h * 2; i++)
 			{
 				args.render.DrawQuad(current_pos, size, *m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
 				current_pos.y -= 64.0f;
@@ -53,7 +53,7 @@ void Pipe::OnRender(const en::RenderArgs& args)
 			rotation = 180.0f;
 			args.render.DrawQuad(current_pos, size, *m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
 			current_pos.y += 64.0f;
-			for (int i = 1; i < h*1.25f; i++)
+			for (int i = 1; i < h*2; i++)
 			{
 				args.render.DrawQuad(current_pos, size, *m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
 				current_pos.y += 64.0f;

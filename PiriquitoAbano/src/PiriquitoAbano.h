@@ -13,6 +13,8 @@
 
 #include "colision/Colisions.h"
 
+#include "amb/Ambient.h"
+
 #include "Menu.h"
 #include "Background.h"
 
@@ -34,6 +36,8 @@ private:
 	std::unordered_map<std::string, en::render::Texture> m_Textures;
 	std::unordered_map<std::string, en::render::Text> m_Text;
 	std::unordered_map<std::string, en::aux::AudioSource> m_Audios;
+
+	en::windowing::Ambient m_Lights;
 
 	Piriquito m_Piriquito;
 	float_t m_Gravity = 9.8f;
