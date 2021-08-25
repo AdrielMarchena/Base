@@ -18,6 +18,7 @@ namespace windowing
 	//Static members Init
 	const glm::vec3 Ambient::Night = { 0.1f,0.1f,0.1f };
 	const glm::vec3 Ambient::Day = { 1.0f,1.0f,1.0f };
+	const glm::vec3 Ambient::Middle = { 0.5f,0.5f,0.5f };
 
 	void Ambient::UpdateAmbient(const glm::vec3& value, const render::Shader& _Shader, bool UpdateShader)
 	{

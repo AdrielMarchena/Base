@@ -189,7 +189,7 @@ namespace en
 			float deltaTime = 0.0f;
 			float lastFrame = 0.0f;
 
-			OnAttach({ render, m_camera });
+			OnAttach({ render, m_camera,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
 
 			while (!glfwWindowShouldClose(m_Window))
 			{

@@ -33,6 +33,7 @@ namespace windowing
 	public:
 		const static glm::vec3 Night;
 		const static glm::vec3 Day;
+		const static glm::vec3 Middle;
 
 		Ambient():m_Ambient(Day)
 		{
