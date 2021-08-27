@@ -1,7 +1,7 @@
 #include "PiriquitoAbano.h"
 
 #include "glm/gtx/compatibility.hpp"
-
+#include "Log.h"
 //Blank Texture
 static en::render::Text VeryDumbStupidTemporaryText;
 
@@ -18,10 +18,12 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 	LoadText("fonts");
 	LoadSounds("audio");
 
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetQuadShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetCircleShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetTriShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle, args.render.GetLineShader(), false);
+	args.camera.SetScroll(false);
+
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetQuadShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetCircleShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetTriShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetLineShader(), false);
 
 	en::windowing::LightSource source;
 	source.m_LightIntencity = 1500.0f;
@@ -82,8 +84,6 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 
 	m_Back.OnAttach(args);
 
-	args.camera.SetScroll(true);
-
 	Window::OnAttach(args);
 }
 
@@ -137,6 +137,9 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 					m_Piper.threshold = m_Piper.threshold - (points * 0.10f);
 					m_Piper.PipeGap = m_Piper.PipeGap - (points * 0.001f);
 					m_Piriquito.SetAnimVel(m_Piriquito.GetAnimVel() + (points * 0.15f));
+					m_Back.m_Specs.b_velocity += (points * 0.15f);
+					m_Back.m_Specs.m_velocity += (points * 0.15f);
+					m_Back.m_Specs.f_velocity += (points * 0.15f);
 					break;
 				}
 				m_Piriquito.Die();
@@ -176,7 +179,6 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 
 void PiriquitoAbano::OnRender(en::RenderArgs args)
 {
-	//args.render.DrawQuad({ 0,0 }, { 800,600 }, m_Textures["back"], 0.0f);
 	m_Back.OnRender(args);
 	//Draw Piriquito
 	if (m_State == PiriquitoState::GAMEOVER)
@@ -253,12 +255,13 @@ void PiriquitoAbano::LoadTextures(const char* directory)
 	catch (const utils::baseException::directory_not_found& dex)
 	{
 		//TODO: Put a default texture on the u_map (do not rethrow)
-		LOG_NORMAL("Directory to Textures " << dex.path() << " not found!");
+		APP_ERROR("Directory to Textures ({0}) not found!", dex.path());
 	}
 	catch (const std::exception& ex)
 	{
 		//TODO: Put a default texture on the u_map or maybe throw this again
-		LOG_NORMAL("Can't create Textures, Error: " << ex.what());
+		APP_ERROR("Can't create Texture(s), Error: {0}", ex.what());
+		//LOG_NORMAL("Can't create Texture(s), Error: " << ex.what());
 	}
 }
 
@@ -273,12 +276,12 @@ void PiriquitoAbano::LoadSounds(const char* directory)
 	catch (const utils::baseException::directory_not_found& dex)
 	{
 		//TODO: Put a default texture on the u_map (do not rethrow please)
-		LOG_NORMAL("Directory to Audios " << dex.path() << " not found!");
+		APP_ERROR("Directory to Audios ({0}) not found!", dex.path());
 	}
 	catch (const std::exception& ex)
 	{
 		//TODO: Put a default audio on the u_map or maybe throw this again
-		LOG_NORMAL("Can't create Audios, Error: " << ex.what());
+		APP_ERROR("Can't create Audio(s), Error: {0}", ex.what());
 	}
 }
 
@@ -293,11 +296,11 @@ void PiriquitoAbano::LoadText(const char* directory)
 	catch (const utils::baseException::directory_not_found& dex)
 	{
 		//TODO: Put a default texture on the u_map (do not rethrow please)
-		LOG_NORMAL("Directory to Text " << dex.path() << " not found!");
+		APP_ERROR("Directory to Fonts ({0}) not found!", dex.path());
 	}
 	catch (const std::exception& ex)
 	{
 		//TODO: Put a default audio on the u_map or maybe throw this again
-		LOG_NORMAL("Can't create Fonts, Error: " << ex.what());
+		APP_ERROR("Can't create Font(s), Error: {0}", ex.what());
 	}
 }

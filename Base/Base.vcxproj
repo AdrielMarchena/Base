@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\spdlog\include;$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\spdlog\include;$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -159,7 +159,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\spdlog\include;$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -176,7 +176,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\spdlog\include;$(ProjectDir)vendor;$(ProjectDir)src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -191,6 +191,7 @@
     <None Include="shaders\vs.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\audio\AudioSource.cpp" />
     <ClCompile Include="src\audio\AudioDevice.cpp" />
     <ClCompile Include="src\audio\SoundBuffer.cpp" />
@@ -220,6 +221,7 @@
     <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\audio\Al_Error.h" />
     <ClInclude Include="src\audio\AudioSource.h" />
     <ClInclude Include="src\audio\AudioDevice.h" />
@@ -233,6 +235,7 @@
     <ClInclude Include="src\args\ResizeArgs.h" />
     <ClInclude Include="src\camera\OrthographicCamera.h" />
     <ClInclude Include="src\camera\OrthographicCameraController.h" />
+    <ClInclude Include="src\no_console_release.h" />
     <ClInclude Include="src\render\geo_renders\CircleRender.h" />
     <ClInclude Include="src\render\geo_renders\LineRender.h" />
     <ClInclude Include="src\render\geo_renders\RenderDatas.h" />
@@ -241,6 +244,7 @@
     <ClInclude Include="src\render\SubTexture.h" />
     <ClInclude Include="src\args\UpdateArgs.h" />
     <ClInclude Include="src\render\Text.h" />
+    <ClInclude Include="src\utils\al_error_marcro_db.h" />
     <ClInclude Include="src\utils\base_exceptions.h" />
     <ClInclude Include="src\utils\Files.h" />
     <ClInclude Include="src\colision\Colisions.h" />

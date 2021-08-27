@@ -1,7 +1,6 @@
 #include "Piriquito.h"
 
 #include <algorithm>
-
 #include "imgui.h"
 
 Piriquito::Piriquito(en::render::Texture& texture)
@@ -51,6 +50,9 @@ void Piriquito::OnUpdate(const en::UpdateArgs& args, const MoreArgs& more_args)
 	m_ColisionBox.pos += m_ColisionBox.velocity * args.dt;
 	m_Rotation += (m_ColisionBox.velocity.y * args.dt) / 2;
 	m_Rotation = std::clamp(m_Rotation, -100.0f, -20.0f);
+
+	//TODO: remove this logic
+	m_Animation.BeginUpdate();
 }
 
 void Piriquito::OnRender(const en::RenderArgs& args)
@@ -63,8 +65,10 @@ void Piriquito::OnRender(const en::RenderArgs& args)
 	auto& current_subt = m_Animation.Run(args.dt);
 	args.render.DrawQuad(rotate_pos, rotate_size, current_subt, 2.0f ,glm::radians(m_Rotation));
 	const auto b = GetColision();
-	//args.render.DrawOutLineQuad(b.pos, b.size, { 1.0f,0.0f,0.0f,1.0f }, 3.0f);
 	m_Particles.OnRender(args);
+
+	//TODO: remove this logic
+	m_Animation.StopUpdate();
 }
 
 void Piriquito::OnImGui(const en::ImGuiArgs& args)
@@ -77,6 +81,7 @@ void Piriquito::OnImGui(const en::ImGuiArgs& args)
 void Piriquito::Live()
 {
 	m_Alive = true;
+	m_Animation.BeginUpdate();
 }
 
 void Piriquito::Die()
@@ -86,9 +91,10 @@ void Piriquito::Die()
 	//Animation for death maybe?
 	for (int i = 0; i < 50; i++)
 		m_Particles.Emit(Props);
-
+	m_Animation.StopUpdate();
 	Props.LifeTime = t;
 	SetAnimVel(35.0f);
+	m_Animation.Reset();
 	m_Alive = false;
 }
 
