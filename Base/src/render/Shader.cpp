@@ -12,6 +12,9 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+
+#include "Log.h"
+
 namespace en
 {
 namespace render
@@ -64,20 +67,20 @@ namespace render
 		assert(vertex > 0);
 		GLCall(glShaderSource(vertex, 1, &vShaderCode, NULL));
 		GLCall(glCompileShader(vertex));
-		checkCompileErrors(vertex, "VERTEX");
+		checkCompileErrors(vertex, "VERTEX",vs);
 		// fragment Shader
 		GLCall(fragment = glCreateShader(GL_FRAGMENT_SHADER));
 		assert(fragment > 0);
 		GLCall(glShaderSource(fragment, 1, &fShaderCode, NULL));
 		GLCall(glCompileShader(fragment));
-		checkCompileErrors(fragment, "FRAGMENT");
+		checkCompileErrors(fragment, "FRAGMENT",fs);
 		// shader Program
 		GLCall(m_Id = glCreateProgram());
 		assert(m_Id > 0);
 		GLCall(glAttachShader(m_Id, vertex));
 		GLCall(glAttachShader(m_Id, fragment));
 		GLCall(glLinkProgram(m_Id));
-		checkCompileErrors(m_Id, "PROGRAM");
+		checkCompileErrors(m_Id, "PROGRAM","");
 		// delete the shaders as they're linked into our program now and no longer necessary
 		GLCall(glDeleteShader(vertex));
 		GLCall(glDeleteShader(fragment));
@@ -157,7 +160,7 @@ namespace render
 	}
 
 
-	void Shader::checkCompileErrors(uint32_t shader, const char* type)
+	void Shader::checkCompileErrors(uint32_t shader, const char* type,const char* path)
 	{
 		int32_t success;
 		char infoLog[1024];
@@ -167,7 +170,8 @@ namespace render
 			if (!success)
 			{
 				GLCall(glGetShaderInfoLog(shader, 1024, NULL, infoLog));
-				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				BASE_ERROR("Shader Compilation error: Type={0} | Path={1} | Error={2}",type,path,infoLog);
+				//std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
 		}
 		else
@@ -176,7 +180,8 @@ namespace render
 			if (!success)
 			{
 				GLCall(glGetProgramInfoLog(shader, 1024, NULL, infoLog));
-				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				BASE_ERROR("Shader Linking error: Type={0} | Error={2}", type, infoLog);
+				//std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
 		}
 	}

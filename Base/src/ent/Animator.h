@@ -25,7 +25,6 @@ namespace ett
 		uint32_t texture_offset = 0; // default to 0
 		glm::vec2 sprite_size = {64.0f,64.0f}; //if 0, default to 64x64
 		render::Texture& atlas; // Atlas Texture
-
 		AnimationSpecs();
 		AnimationSpecs(render::Texture& texture);
 		AnimationSpecs& operator=(AnimationSpecs& other);
@@ -38,6 +37,7 @@ namespace ett
 		float_t m_CurrentTimeStamp = 0.0f;
 		uint32_t m_CurrentTexIndex = 0;
 		std::vector<render::SubTexture> m_CroppedTexture;
+		bool m_Stop = false;
 
 		static constexpr float_t default_threshold = 350.0f;
 		static constexpr float_t default_decrement = 5.0f;
@@ -70,6 +70,9 @@ namespace ett
 		* Set a new decrement value to the threshold
 		*/
 		inline void SetDecrement(float decrement) { m_Specs.decrement = decrement; }
+
+		inline void StopUpdate() { m_Stop = true; }
+		inline void BeginUpdate() { m_Stop = false; }
 	};
 }
 }

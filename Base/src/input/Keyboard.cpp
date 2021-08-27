@@ -7,6 +7,7 @@
 
 #include "Keyboard.h"
 #include <iostream>
+#include "Log.h"
 namespace en
 {
 namespace input
@@ -48,7 +49,8 @@ namespace input
 		case GLFW_REPEAT:
 			break;
 		default:
-			std::cout << "Unknow Keyboard Action '" << action << "'!" << std::endl;
+			BASE_WARN("Unknow Keyboard Action '{0}'!", action);
+			//std::cout << "Unknow Keyboard Action '" << action << "'!" << std::endl;
 		}
 	}
 }

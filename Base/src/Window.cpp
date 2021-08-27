@@ -91,12 +91,18 @@ namespace en
 		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
 			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, false ,false),myWindow(nullptr)
 		{
+
+			//Initialize Log system (spdlog)
+			Log::Init();
+
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
 			{
 				std::cout << "Error on glfw initialization" << std::endl;
 				return;
 			}
+
+			BASE_INFO("GLFW Initialized!");
 
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -114,6 +120,8 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
+			BASE_INFO("Window created!");
+
 			glfwMakeContextCurrent(m_Window);
 			glfwSwapInterval(1);
 
@@ -122,6 +130,8 @@ namespace en
 				glfwTerminate();
 				exit(EXIT_FAILURE);
 			}
+
+			BASE_INFO("Glew Init");
 
 			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader",   "shaders/quad_fs.shader",
 														  "shaders/line_vs.shader",	  "shaders/line_fs.shader",
@@ -135,9 +145,8 @@ namespace en
 			render_shaders.push_back(&m_Render->GetTextShader());
 			render_shaders.push_back(&m_Render->GetTriShader());
 
-			//m_Render = render::Render2D("shaders/vs.shader", "shaders/fs.shader",
-			//						  "shaders/line_vs.shader", "shaders/line_fs.shader");
-
+			BASE_INFO("2D Render created!");
+			
 			//Set callback and pointer to this very window
 			myWindow = this;
 			glfwSetWindowUserPointer(m_Window, myWindow);
@@ -159,10 +168,13 @@ namespace en
 			// Setup Dear ImGui style
 			ImGui::StyleColorsDark();
 
+			BASE_INFO("ImGUI Initialized!");
+
 			//Audio
 			aux::LoadDevices();
 			p_ALCDevice = aux::GetDevicePtr();
 			p_ALCContext = aux::GetContextPtr();
+			
 		}
 
 		Window::~Window()
@@ -190,7 +202,9 @@ namespace en
 			float lastFrame = 0.0f;
 
 			OnAttach({ render, m_camera,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
-
+			
+			BASE_INFO("Game loop starting!");
+			
 			while (!glfwWindowShouldClose(m_Window))
 			{
 				glfwPollEvents();
@@ -222,6 +236,7 @@ namespace en
 
 				glfwSwapBuffers(m_Window);
 			}
+			BASE_INFO("Game loop Ended!");
 			Dispose();
 		}
 		void Window::OnUpdate(UpdateArgs args)
@@ -252,8 +267,9 @@ namespace en
 			}
 			catch (const std::exception& ex)
 			{
-				std::cout << "Could not delete devices! Error: " << ex.what();
+				Log::GetCoreLogger()->error(ex.what());
 			}
+			BASE_INFO("Dispose completed!");
 		}
 
 		void Window::SetResizeble(bool resizeble)

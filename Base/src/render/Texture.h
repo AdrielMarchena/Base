@@ -26,6 +26,7 @@ namespace render
 		uint8_t* m_Pixels = nullptr;
 		bool png = false;
 		void clear();
+		//~ImageInfo() { clear(); }
 	};
 
 	class Texture

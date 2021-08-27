@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include "AL/al.h"
 #include "AL/alc.h"
+#include "Log.h"
 namespace en
 {
 namespace aux
@@ -39,7 +40,9 @@ namespace aux
 			name = alcGetString(p_ALCDevice, ALC_ALL_DEVICES_SPECIFIER);
 		if (!name || alcGetError(p_ALCDevice) != AL_NO_ERROR)
 			name = alcGetString(p_ALCDevice, ALC_DEVICE_SPECIFIER);
-		printf("Opened \"%s\"\n", name);
+
+		BASE_INFO("Opened {0}\n", name);
+		//printf("Opened \"%s\"\n", name);
 	}
 
 	ALCdevice* GetDevicePtr()

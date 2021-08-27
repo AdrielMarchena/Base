@@ -2,6 +2,7 @@
 #include <iostream>
 #include <gl/glew.h>
 #include <assert.h>
+#include "Log.h"
 #ifndef GL_DEBUG_STUFF
 #define GL_DEBUG_STUFF
 
@@ -42,7 +43,7 @@ static char const* gl_error_string(GLenum const err) noexcept
 
         // gles 2, 3 and gl 4 error are handled by the switch above
     default:
-        assert(!"unknown error");
+        BASE_WARN("unknown error");
         return nullptr;
     }
 }
@@ -62,8 +63,9 @@ static bool GLLogCall(const char* function, const char* file, int line)
 {
     while (GLenum error = glGetError())
     {
-        std::cerr << "[OpenGL error] (" << error << ", " << gl_error_string(error) << "): " << function <<
-            " " << file << ": " << line << std::endl;
+        BASE_ERROR("[OpenGL error]: {0}, {1}): {2} {3}: {4}", error, gl_error_string(error), function, file, line);
+        /*std::cerr << "[OpenGL error] (" << error << ", " << gl_error_string(error) << "): " << function <<
+            " " << file << ": " << line << std::endl;*/
         return false;
     }
     return true;

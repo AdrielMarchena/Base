@@ -5,7 +5,7 @@
 #include <future>
 #include "utils/threading.h"
 #include "utils/Generic.h"
-#include "utils/Logs.h"
+#include "Log.h"
 namespace en
 {
 namespace render
@@ -31,9 +31,12 @@ namespace render
         for (unsigned char c = 0; c < 255; c++)
         {
             // load character glyph 
-            if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+            FT_Error er = FT_Load_Char(face, c, FT_LOAD_RENDER);
+            if (er)
             {
-                std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+                const std::string msg = FT_Error_String(er);
+                BASE_ERROR("[FreeType]: Failed to load Glyph, error={0}", msg);
+                //std::cout << "ERROR::FREETYTPE: Failed to load Glyph: "<< msg << std::endl;
                 continue;
             }
             // generate texture
@@ -82,7 +85,8 @@ namespace render
             if (er)
             {
                 const std::string msg = FT_Error_String(er);
-                std::cout << "ERROR::FREETYTPE: Failed to load Glyph: "<< msg << std::endl;
+                BASE_ERROR("[FreeType]: Failed to load Glyph, error={0}", msg);
+                //std::cout << "ERROR::FREETYTPE: Failed to load Glyph: "<< msg << std::endl;
                 continue;
             }
             
@@ -185,7 +189,8 @@ namespace render
                 try
                 {
                     map.emplace(name, inf.second);
-                    D_LOG("FONT CREATED: '" << inf.first << "'");
+                    BASE_DEBUG("Font '{0}' Created", inf.first);
+                    //D_LOG("FONT CREATED: '" << inf.first << "'");
                     info.futures.erase(inf.first);
                     info.resources.erase(inf.first);
                     break;
@@ -194,14 +199,15 @@ namespace render
                 {
                     info.futures.erase(inf.first);
                     info.resources.erase(inf.first);
-                    std::cout << "Can't Create Font '" << inf.first << "' , error: " << ex.what() << std::endl;
+                    BASE_ERROR("Can't Create Font: '{0}', error={1}", inf.first, ex.what());
+                    //std::cout << "Can't Create Font '" << inf.first << "' , error: " << ex.what() << std::endl;
                     break;
                 }
             }
         }
     }
 
-    static inline void CreateFont(std::unordered_map<std::string, Text>& map, utils::ResourceLoads<std::string, loadCharacter>& info, const utils::NameCaps& nameCaps)
+    static inline void Base_CreateFont(std::unordered_map<std::string, Text>& map, utils::ResourceLoads<std::string, loadCharacter>& info, const utils::NameCaps& nameCaps)
     {
         using namespace utils;
         while (!info.isAllLoad())
@@ -229,12 +235,14 @@ namespace render
                 auto load = GetText(path.c_str(), loads.mutex);
                 std::lock_guard<std::mutex> lock(loads.mutex);
                 loads.resources[name] = load;
-                D_LOG("Font Loaded!:  '" << name << "'");
+                BASE_INFO("Font '{0}' Loaded:", name);
+                //D_LOG("Font Loaded!:  '" << name << "'");
             }
-            catch (const std::exception& e)
+            catch (const std::exception& ex)
             {
                 std::lock_guard<std::mutex> lock(loads.mutex);
-                std::cout << "Error trying to create Font '" << name << "', error:\n\t" << e.what() << std::endl;
+                BASE_ERROR("Error trying to create Font '{0}', error={1}", name, ex.what());
+                //std::cout << "Error trying to create Font '" << name << "', error:\n\t" << e.what() << std::endl;
             }
         };
 
@@ -244,7 +252,7 @@ namespace render
         {
             if (count > batchLimit)
             {
-                CreateFont(mm, loads, nameCaps);
+                Base_CreateFont(mm, loads, nameCaps);
                 loads.resources.clear();
                 loads.futures.clear();
                 count = 0;
@@ -253,7 +261,7 @@ namespace render
             count++;
         }
 
-        CreateFont(mm, loads, nameCaps);
+        Base_CreateFont(mm, loads, nameCaps);
         FT_Done_FreeType(fft);
         return mm;
     }
@@ -274,11 +282,11 @@ namespace render
             try
             {
                 mm.emplace(name, te.second.c_str());
-                D_LOG("FONT CREATED: '" << te.first << "'");
+                BASE_DEBUG("Font '{0}' Created:", te.first);
             }
             catch (const std::exception& ex)
             {
-                std::cout << "Can't Create Font '" << te.first << "' , error: " << ex.what() << std::endl;
+                BASE_ERROR("Can't Create Font: '{0}', error={1}", te.first, ex.what());
                 break;
             }
         }

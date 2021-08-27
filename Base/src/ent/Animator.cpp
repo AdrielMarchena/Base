@@ -57,6 +57,9 @@ namespace ett
 
 	render::SubTexture& Animator::Run(float_t dt)
 	{
+		if (m_Stop)
+			return m_CroppedTexture[m_CurrentTexIndex];
+
 		if (m_CurrentTimeStamp <= 0)
 		{
 			//Go to next texture

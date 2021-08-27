@@ -13,7 +13,7 @@
 #include "utils/base_exceptions.h"
 #include <future>
 #include <mutex>
-#include "utils/Logs.h"
+#include "Log.h"
 #include "utils/Generic.h"
 namespace en
 {
@@ -69,7 +69,10 @@ namespace render
 
 	ImageInfo Texture::GetImage(const char* path)
 	{
+		//TODO: If the stbi_load can't load the PNG, pngloader will
+		//      But i think this is "loading twice"
 		ImageInfo info;
+
 		stbi_set_flip_vertically_on_load(1);
 
 		auto px = stbi_load(path, &info.m_Wid, &info.m_Hei, &info.m_Bit, STBI_rgb_alpha);
@@ -126,18 +129,20 @@ namespace render
 				try
 				{
 					map[name] = std::move(Texture(inf.second));
-					D_LOG("TEXTURE CREATED image: '" << inf.first);
-					inf.second.clear();
+					BASE_DEBUG("TEXTURE CREATED image: {0}", inf.first);
+					info.futures[inf.first].~future();
 					info.futures.erase(inf.first);
+					info.resources[inf.first].clear();
 					info.resources.erase(inf.first);
 					break;
 				}
 				catch (const std::exception& ex)
 				{
-					inf.second.clear();
+					info.resources[inf.first].clear();
 					info.futures.erase(inf.first);
 					info.resources.erase(inf.first);
-					std::cout << "Can't Create Texture '" << inf.first << "' , error: " << ex.what() << std::endl;
+					BASE_ERROR("Can't Create Texture: '{0}', error: {1}", inf.first, ex.what());
+					//std::cout << "Can't Create Texture '" << inf.first << "' , error: " << ex.what() << std::endl;
 					break;
 				}
 			}
@@ -169,14 +174,16 @@ namespace render
 				if (info.m_Pixels != NULL)
 				{
 					std::lock_guard<std::mutex> lock(loads.mutex);
-					D_LOG("image: '" << name << "' Loaded!");
+					BASE_INFO("Image: '{0}' Loaded!", name);
+					//D_LOG("image: '" << name << "' Loaded!");
 					loads.resources[name] = info;
 				}
 			}
-			catch (const std::exception& e)
+			catch (const std::exception& ex)
 			{
 				std::lock_guard<std::mutex> lock(loads.mutex);
-				std::cout << "Can't Load Image '" << name << "' , error: " << e.what() << std::endl;
+				BASE_ERROR("Can't Load Image '{0}', error: {1}", name, ex.what());
+				//std::cout << "Can't Load Image '" << name << "' , error: " << ex.what() << std::endl;
 			}
 		};
 
@@ -197,6 +204,7 @@ namespace render
 		}
 		
 		CreateTexture(mm, loads, nameCaps);
+		
 		return mm;
 	}
 	void ImageInfo::clear()

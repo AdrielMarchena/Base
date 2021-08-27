@@ -67,7 +67,7 @@ namespace render
 		int32_t GetUniformLocation(const std::string& name) const;
 
 	private:
-		void checkCompileErrors(uint32_t shader, const char* type);
+		void checkCompileErrors(uint32_t shader, const char* type, const char* path);
 		std::string GetShaderFile(const char* path, int32_t MaxTexSlots = 8);
 	};
 }

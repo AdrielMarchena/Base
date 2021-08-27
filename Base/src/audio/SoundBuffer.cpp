@@ -10,6 +10,9 @@
 #include "sndfile.h"
 #include <inttypes.h>
 
+#include "utils/al_error_marcro_db.h"
+#include "Log.h"
+
 namespace en
 {
 namespace aux
@@ -28,12 +31,14 @@ namespace aux
 		sndfile = sf_open(filename, SFM_READ, &sfinfo);
 		if (!sndfile)
 		{
-			fprintf(stderr, "Could not open audio in %s: %s\n", filename, sf_strerror(sndfile));
+			BASE_ERROR("Could not open audio in {0}: {1}\n", filename, sf_strerror(sndfile));
+			//fprintf(stderr, "Could not open audio in %s: %s\n", filename, sf_strerror(sndfile));
 			return 0;
 		}
 		if (sfinfo.frames < 1 || sfinfo.frames >(sf_count_t)(INT_MAX / sizeof(short)) / sfinfo.channels)
 		{
-			fprintf(stderr, "Bad sample count in %s (%" PRId64 ")\n", filename, sfinfo.frames);
+			BASE_ERROR("Bad sample count in {0} ({1})\n", filename, sfinfo.frames);
+			//fprintf(stderr, "Bad sample count in %s (%" PRId64 ")\n", filename, sfinfo.frames);
 			sf_close(sndfile);
 			return 0;
 		}
@@ -56,7 +61,8 @@ namespace aux
 		}
 		if (!format)
 		{
-			fprintf(stderr, "Unsupported channel count: %d\n", sfinfo.channels);
+			BASE_ERROR("Unsupported channel count: {0}\n", sfinfo.channels);
+			//fprintf(stderr, "Unsupported channel count: %d\n", sfinfo.channels);
 			sf_close(sndfile);
 			return 0;
 		}
@@ -69,7 +75,8 @@ namespace aux
 		{
 			free(membuf);
 			sf_close(sndfile);
-			fprintf(stderr, "Failed to read samples in %s (%" PRId64 ")\n", filename, num_frames);
+			BASE_ERROR("Failed to read samples in {0} ({1})", filename, num_frames);
+			//fprintf(stderr, "Failed to read samples in %s (%" PRId64 ")\n", filename, num_frames);
 			return 0;
 		}
 		num_bytes = (ALsizei)(num_frames * sfinfo.channels) * (ALsizei)sizeof(short);
@@ -78,11 +85,11 @@ namespace aux
 		 * close the file.
 		 */
 		buffer = 0;
-		alGenBuffers(1, &buffer);
+		ALCall(alGenBuffers(1, &buffer));
 		err = alGetError();
 		if(!buffer || err != AL_NO_ERROR)
 			throw std::exception("Could not generate buffer");
-		alBufferData(buffer, format, membuf, num_bytes, sfinfo.samplerate);
+		ALCall(alBufferData(buffer, format, membuf, num_bytes, sfinfo.samplerate));
 
 		free(membuf);
 		sf_close(sndfile);
@@ -91,9 +98,9 @@ namespace aux
 		err = alGetError();
 		if (err != AL_NO_ERROR)
 		{
-			fprintf(stderr, "OpenAL Error: %s\n", alGetString(err));
+			ALCall(fprintf(stderr, "OpenAL Error: %s\n", alGetString(err)));
 			if (buffer && alIsBuffer(buffer))
-				alDeleteBuffers(1, &buffer);
+				ALCall(alDeleteBuffers(1, &buffer));
 			return 0;
 		}
 

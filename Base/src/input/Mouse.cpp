@@ -9,6 +9,7 @@
 
 #include "Mouse.h"
 #include <iostream>
+#include "Log.h"
 namespace en
 {
 namespace input
@@ -64,7 +65,8 @@ namespace input
 		case GLFW_REPEAT:
 			break;
 		default:
-			std::cout << "Unknow Mouse Action '" << action << "'!" << std::endl;
+			BASE_WARN("Unknow Keyboard Action '{0}'!", action);
+			//std::cout << "Unknow Mouse Action '" << action << "'!" << std::endl;
 		}
 	}
 	void Mouse::on_mouse_cursor(GLFWwindow* window, double_t xPos, double_t yPos)

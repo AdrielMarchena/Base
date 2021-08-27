@@ -28,6 +28,8 @@
 #include "AL/al.h"
 #include "AL/alc.h"
 #include <memory>
+#include "Log.h"
+
 #define DEAR_NEW_FRAME() ImGui_ImplOpenGL3_NewFrame();\
 						 ImGui_ImplGlfw_NewFrame();\
 						 ImGui::NewFrame()
@@ -51,6 +53,7 @@ namespace en
 			OrthographicCameraController m_camera;
 			std::unique_ptr<render::Render2D> m_Render;
 			std::vector<const render::Shader*> render_shaders;
+
 			//render::Render2D m_Render;
 		protected:
 			std::string m_Title;
@@ -65,9 +68,13 @@ namespace en
 			ALCdevice* p_ALCDevice = nullptr;
 			ALCcontext* p_ALCContext = nullptr;
 
+
 		public:
+			
+			inline std::shared_ptr<spdlog::logger>& GetLog() { return Log::GetClientLogger(); }
+			
 			Window(const char* title, float_t w = 800, float_t h = 600, bool resizeble = true);
-			~Window();
+			virtual ~Window();
 
 			Window(Window&) = delete; //No copies here
 			Window(Window&& other) noexcept;
