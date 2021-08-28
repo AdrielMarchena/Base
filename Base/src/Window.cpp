@@ -102,7 +102,7 @@ namespace en
 				return;
 			}
 
-			BASE_INFO("GLFW Initialized!");
+			BASE_TRACE("GLFW Initialized!");
 
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -120,7 +120,7 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
-			BASE_INFO("Window created!");
+			BASE_TRACE("Window created!");
 
 			glfwMakeContextCurrent(m_Window);
 			glfwSwapInterval(1);
@@ -131,7 +131,7 @@ namespace en
 				exit(EXIT_FAILURE);
 			}
 
-			BASE_INFO("Glew Init");
+			BASE_TRACE("Glew Init");
 
 			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader",   "shaders/quad_fs.shader",
 														  "shaders/line_vs.shader",	  "shaders/line_fs.shader",
@@ -145,7 +145,7 @@ namespace en
 			render_shaders.push_back(&m_Render->GetTextShader());
 			render_shaders.push_back(&m_Render->GetTriShader());
 
-			BASE_INFO("2D Render created!");
+			BASE_TRACE("2D Render created!");
 			
 			//Set callback and pointer to this very window
 			myWindow = this;
@@ -168,7 +168,7 @@ namespace en
 			// Setup Dear ImGui style
 			ImGui::StyleColorsDark();
 
-			BASE_INFO("ImGUI Initialized!");
+			BASE_TRACE("ImGUI Initialized!");
 
 			//Audio
 			aux::LoadDevices();
@@ -200,27 +200,42 @@ namespace en
 
 			float deltaTime = 0.0f;
 			float lastFrame = 0.0f;
-
 			OnAttach({ render, m_camera,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
 			
-			BASE_INFO("Game loop starting!");
+			std::string fps_title = m_Title + " | FPS: " + std::to_string(nbFrame);
+			glfwSetWindowTitle(m_Window, fps_title.c_str());
+
+			BASE_TRACE("Game loop starting!");
 			
 			while (!glfwWindowShouldClose(m_Window))
 			{
 				glfwPollEvents();
 
+				// Delta Time and FPS things
 				float currentTime = glfwGetTime();
 				deltaTime = currentTime - lastFrame;
 				lastFrame = currentTime;
+				nbFrame++;
+				double fps = double(nbFrame) / deltaTime;
+				
+				//Camera Update
 				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse),m_Wid,m_Hei,m_Resolution.x,m_Resolution.y };
 				m_camera.OnUpdate(up_args);
 
+				//Update shader things
 				SetViewInShaders();
 
+				//Game Update
 				OnUpdate(up_args);
 
+				//Set FPS on window title
+				fps_title = m_Title + " | FPS: " + std::to_string(fps);
+				glfwSetWindowTitle(m_Window, fps_title.c_str());
+
+				//Clear screen
 				render.ClearColorDepth();
 
+				//Render things
 				render.BeginBatch();
 
 				OnRender({ deltaTime,render,m_camera,m_camera.GetCamera(),m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
@@ -228,19 +243,23 @@ namespace en
 				render.EndBatch();
 				render.Flush();
 
+				//ImGui things
 				DEAR_NEW_FRAME();
 
 				OnImGui({ render });
 
 				DEAR_END_FRAME();
 
+				nbFrame = 0;
+				//Swap buffer
 				glfwSwapBuffers(m_Window);
 			}
-			BASE_INFO("Game loop Ended!");
+			BASE_TRACE("Game loop Ended!");
 			Dispose();
 		}
 		void Window::OnUpdate(UpdateArgs args)
 		{
+
 			if (args.keyboard.isPress(GLFW_KEY_LEFT_CONTROL) && args.keyboard.isPress(GLFW_KEY_Q))
 				glfwSetWindowShouldClose(m_Window,GLFW_TRUE);
 		}
@@ -269,7 +288,8 @@ namespace en
 			{
 				Log::GetCoreLogger()->error(ex.what());
 			}
-			BASE_INFO("Dispose completed!");
+			BASE_TRACE("Dispose completed!");
+			
 		}
 
 		void Window::SetResizeble(bool resizeble)

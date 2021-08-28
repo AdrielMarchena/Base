@@ -129,7 +129,7 @@ namespace render
 				try
 				{
 					map[name] = std::move(Texture(inf.second));
-					BASE_DEBUG("TEXTURE CREATED image: {0}", inf.first);
+					BASE_TRACE("TEXTURE CREATED image: {0}", inf.first);
 					info.futures[inf.first].~future();
 					info.futures.erase(inf.first);
 					info.resources[inf.first].clear();
@@ -174,7 +174,7 @@ namespace render
 				if (info.m_Pixels != NULL)
 				{
 					std::lock_guard<std::mutex> lock(loads.mutex);
-					BASE_INFO("Image: '{0}' Loaded!", name);
+					BASE_TRACE("Image: '{0}' Loaded!", name);
 					//D_LOG("image: '" << name << "' Loaded!");
 					loads.resources[name] = info;
 				}

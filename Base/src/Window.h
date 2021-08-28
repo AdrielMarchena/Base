@@ -53,7 +53,7 @@ namespace en
 			OrthographicCameraController m_camera;
 			std::unique_ptr<render::Render2D> m_Render;
 			std::vector<const render::Shader*> render_shaders;
-
+			uint64_t nbFrame = 0;
 			//render::Render2D m_Render;
 		protected:
 			std::string m_Title;

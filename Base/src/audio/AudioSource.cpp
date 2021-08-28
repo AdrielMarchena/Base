@@ -46,7 +46,7 @@ namespace aux
 					inf.second = 0;
 					loads.futures.erase(inf.first);
 					loads.resources.erase(inf.first);
-					BASE_INFO("{0} AudioSource created!", inf.first);
+					BASE_TRACE("{0} AudioSource created!", inf.first);
 				}
 				catch (const std::exception& ex)
 				{
@@ -83,7 +83,7 @@ namespace aux
 			{
 				std::lock_guard<std::mutex> lock(loads.mutex);
 				loads.resources[name] = info;
-				BASE_INFO("sound: '{0}' Loaded!",name);
+				BASE_TRACE("sound: '{0}' Loaded!",name);
 			}
 			else
 			{
@@ -117,14 +117,14 @@ namespace aux
 			auto info = LoadSoundEffect(f.second.c_str());
 			if (info)
 			{
-				BASE_INFO("sound: '{0}' Loaded!", f.first);
+				BASE_TRACE("sound: '{0}' Loaded!", f.first);
 			}
 			else
 			{
 				BASE_ERROR("sound: '{0}' Could not be loaded!", f.first);
 			}
 			tmp[f.first] = AudioSource(info);
-			BASE_INFO("Audio: '{0}' Created!", f.first);
+			BASE_TRACE("Audio: '{0}' Created!", f.first);
 			
 		}
 		return tmp;

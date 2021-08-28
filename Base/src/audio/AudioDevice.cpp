@@ -41,7 +41,7 @@ namespace aux
 		if (!name || alcGetError(p_ALCDevice) != AL_NO_ERROR)
 			name = alcGetString(p_ALCDevice, ALC_DEVICE_SPECIFIER);
 
-		BASE_INFO("Opened {0}\n", name);
+		BASE_TRACE("Opened {0}\n", name);
 		//printf("Opened \"%s\"\n", name);
 	}
 

@@ -235,7 +235,7 @@ namespace render
                 auto load = GetText(path.c_str(), loads.mutex);
                 std::lock_guard<std::mutex> lock(loads.mutex);
                 loads.resources[name] = load;
-                BASE_INFO("Font '{0}' Loaded:", name);
+                BASE_TRACE("Font '{0}' Loaded:", name);
                 //D_LOG("Font Loaded!:  '" << name << "'");
             }
             catch (const std::exception& ex)

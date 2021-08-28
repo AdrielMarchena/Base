@@ -98,7 +98,7 @@ namespace aux
 		err = alGetError();
 		if (err != AL_NO_ERROR)
 		{
-			ALCall(fprintf(stderr, "OpenAL Error: %s\n", alGetString(err)));
+			ALCall(BASE_ERROR("OpenAL Error: {0}\n", alGetString(err)));
 			if (buffer && alIsBuffer(buffer))
 				ALCall(alDeleteBuffers(1, &buffer));
 			return 0;
