@@ -3,6 +3,7 @@
 
 //#define NO_CONSOLE_RELEASE
 #include "no_console_release.h"
+
 int main()
 {
 	PiriquitoAbano* piriquito = nullptr;

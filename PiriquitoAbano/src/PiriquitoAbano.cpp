@@ -85,6 +85,7 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 	m_Back.OnAttach(args);
 
 	Window::OnAttach(args);
+	SetResizeble(false);
 }
 
 void PiriquitoAbano::SwitchPause()
@@ -240,6 +241,7 @@ void PiriquitoAbano::Restart(en::UpdateArgs args)
 {
 		m_Piriquito.GetRect().pos.y = 300.0f;
 		m_Piper.Reset();
+		m_Back.m_Specs = Back_Spec();
 		points = 0;
 		m_State = PiriquitoState::PAUSE;
 }
