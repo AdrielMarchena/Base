@@ -39,6 +39,9 @@
 *.ilk
 *.pdb
 
+#glew Lib
+*/vendor/glew-2.1.0/*
+
 #audio files
 *.[Mm]4[Aa]
 *.[Aa][Aa][Cc]
