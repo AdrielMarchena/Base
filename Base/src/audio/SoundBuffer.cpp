@@ -7,7 +7,7 @@
 */
 
 #include "SoundBuffer.h"
-#include "sndfile.h"
+#include <sndfile.h>
 #include <inttypes.h>
 
 #include "utils/al_error_marcro_db.h"
