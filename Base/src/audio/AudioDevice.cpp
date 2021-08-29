@@ -15,6 +15,7 @@
 #include "AL/al.h"
 #include "AL/alc.h"
 #include "Log.h"
+#include "utils/alc_error_macro_db.h"
 namespace en
 {
 namespace aux
@@ -28,18 +29,21 @@ namespace aux
 		if (!p_ALCDevice)
 			throw("failed to get sound device");
 
-		p_ALCContext = alcCreateContext(p_ALCDevice, nullptr);  // create context
+		ALCCall(p_ALCContext = alcCreateContext(p_ALCDevice, nullptr), p_ALCDevice);  // create context
 		if (!p_ALCContext)
 			throw("Failed to set sound context");
 
-		if (!alcMakeContextCurrent(p_ALCContext))   // make context current
+		ALCCall(if (!alcMakeContextCurrent(p_ALCContext))   // make context current
 			throw("failed to make context current");
+		, p_ALCDevice);
 
 		const ALCchar* name = nullptr;
-		if (alcIsExtensionPresent(p_ALCDevice, "ALC_ENUMERATE_ALL_EXT"))
+		ALCCall(if (alcIsExtensionPresent(p_ALCDevice, "ALC_ENUMERATE_ALL_EXT"))
 			name = alcGetString(p_ALCDevice, ALC_ALL_DEVICES_SPECIFIER);
-		if (!name || alcGetError(p_ALCDevice) != AL_NO_ERROR)
+		, p_ALCDevice);
+		ALCCall(if (!name || alcGetError(p_ALCDevice) != AL_NO_ERROR)
 			name = alcGetString(p_ALCDevice, ALC_DEVICE_SPECIFIER);
+		, p_ALCDevice);
 
 		BASE_TRACE("Opened {0}\n", name);
 		//printf("Opened \"%s\"\n", name);
@@ -56,15 +60,17 @@ namespace aux
 
 	void DeleteDevices()
 	{
-		if (!alcMakeContextCurrent(nullptr))
+		ALCCall(if (!alcMakeContextCurrent(nullptr))
 			throw std::exception("failed to set context to nullptr");
 
-		alcDestroyContext(p_ALCContext);
+		alcMakeContextCurrent(nullptr);
+		ALCCall(alcDestroyContext(p_ALCContext),p_ALCDevice);
 		if (p_ALCContext)
 			throw std::exception("failed to unset during close");
-
-		if (!alcCloseDevice(p_ALCDevice))
+		, p_ALCDevice)
+		ALCCall(if (!alcCloseDevice(p_ALCDevice))
 			throw std::exception("failed to close sound device");
+		, p_ALCDevice)
 	}
 }
 }
