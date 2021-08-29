@@ -1,5 +1,5 @@
 /*
-*	@file Animator.h
+*	@file Animator.cpp
 *	@author Adriel Marchena Santos
 *	
 *	Animation System
@@ -20,6 +20,7 @@ namespace ett
 	static constexpr float_t default_x_sprite_size = 64.0f;
 	static constexpr float_t default_y_sprite_size = 64.0f;
 	static render::Texture default_white_texture = render::Texture();
+	static render::SubTexture default_sub_white_texture = render::SubTexture::CreateFromCoords(default_white_texture, { 1,1 }, { 0,0 }, { 1,1 });;
 	
 	AnimationSpecs::AnimationSpecs()
 		:atlas(default_white_texture)
@@ -57,19 +58,19 @@ namespace ett
 
 	render::SubTexture& Animator::Run(float_t dt)
 	{
+		size_t s = m_CroppedTexture.size();
+		if (!s)
+			return default_sub_white_texture;
 		if (m_Stop)
 			return m_CroppedTexture[m_CurrentTexIndex];
 
 		if (m_CurrentTimeStamp <= 0)
 		{
 			//Go to next texture
-			size_t s = m_CroppedTexture.size();
 			if(s)
 				m_CurrentTexIndex = std::min((m_CurrentTexIndex + 1) % int(s), unsigned int(std::numeric_limits<uint32_t>::max()));
-			//I think this black magic prevent overfloat
 			m_CurrentTimeStamp = m_Specs.timestamp;
 		}
-
 		if (loop && m_CurrentThreshold <= 0 && m_CurrentTimeStamp <= 0)
 		{
 			Reset();
@@ -102,7 +103,6 @@ namespace ett
 		if (m_Specs.decrement <= 0.0f)
 			m_Specs.decrement = default_decrement;
 
-
 		//Create SubTextures
 		float_t calc_size = atlas_size.x / m_Specs.sprite_size.x;
 
@@ -122,8 +122,6 @@ namespace ett
 		if (m_Specs.timestamp <= 0)
 			m_Specs.timestamp = m_Specs.threshold / m_CroppedTexture.size();
 
-		if (m_Specs.texture_offset < 0) //Kinda redundant, this is unsigned
-			m_Specs.texture_offset = 0;
 		if (m_Specs.texture_offset >= m_CroppedTexture.size())
 			m_Specs.texture_offset = m_CroppedTexture.size() - 1;
 
