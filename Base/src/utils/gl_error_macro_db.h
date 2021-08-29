@@ -3,9 +3,11 @@
 #include <gl/glew.h>
 #include <assert.h>
 #include "Log.h"
+
 #ifndef GL_DEBUG_STUFF
 #define GL_DEBUG_STUFF
 
+#include "base_assert.h"
 /* this function can be found here:
     https://stackoverflow.com/questions/18319338/opengl-es-error-to-string
 */
@@ -70,8 +72,6 @@ static bool GLLogCall(const char* function, const char* file, int line)
     }
     return true;
 }
-
-#define BASE_ASSERT(x) if (!(x)) __debugbreak(); 
 
 #if defined(_DEBUG) || defined(DEBUG)
 #define GLCall(x) GLClearError();\
