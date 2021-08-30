@@ -118,14 +118,13 @@ namespace aux
 			if (info)
 			{
 				BASE_TRACE("sound: '{0}' Loaded!", f.first);
+				tmp[f.first] = AudioSource(info);
+				BASE_TRACE("Audio: '{0}' Created!", f.first);
 			}
 			else
 			{
 				BASE_ERROR("sound: '{0}' Could not be loaded!", f.first);
 			}
-			tmp[f.first] = AudioSource(info);
-			BASE_TRACE("Audio: '{0}' Created!", f.first);
-			
 		}
 		return tmp;
 	}
@@ -153,13 +152,8 @@ namespace aux
 
 	AudioSource::~AudioSource()
 	{
-		if (p_Source)
-		{
-			ALCall(alSourceStop(p_Source));
-			ALCall(alDeleteSources(1, &p_Source));
-		}
-		if(p_Buffer)
-			ALCall(alDeleteBuffers(1, &p_Buffer));
+		if (!disposed)
+			Dispose();
 	}
 
 	void AudioSource::Play()
@@ -215,6 +209,18 @@ namespace aux
 	ALuint AudioSource::GetSource()
 	{
 		return p_Source;
+	}
+	void AudioSource::Dispose()
+	{
+		if (p_Source)
+		{
+			ALCall(alSourceStop(p_Source));
+			ALCall(alDeleteSources(1, &p_Source));
+		}
+		if (p_Buffer)
+			ALCall(alDeleteBuffers(1, &p_Buffer));
+
+		disposed = true;
 	}
 }
 }

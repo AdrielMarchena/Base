@@ -7,3 +7,6 @@
 [submodule "Base/vendor/libsndfile"]
 	path = Base/vendor/libsndfile
 	url = https://github.com/libsndfile/libsndfile
+[submodule "Base/vendor/entt"]
+	path = Base/vendor/entt
+	url = https://github.com/skypjack/entt

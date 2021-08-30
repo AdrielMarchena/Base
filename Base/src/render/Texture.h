@@ -37,17 +37,14 @@ namespace render
 		int32_t  m_Hei = NULL;
 		int32_t  m_Bit = NULL;
 		bool copy = false; //Maybe is trash code?
+		bool disposed = false;
 	public:
 		Texture() = default;
 		Texture(const std::string& path);
 		Texture(const ImageInfo& info);
 		~Texture() 
 		{ 
-			if (deletable())
-			{ 
-				glDeleteTextures(1, &m_Id);
-				m_Id = NULL; 
-			} 
+			Dispose();
 		};
 		
 		Texture(Texture& other) noexcept
@@ -121,7 +118,18 @@ namespace render
 
 		//Used only for draw Text
 		void SetID(GLuint new_id) { m_Id = new_id; }
-
+		void Dispose()
+		{
+			if(!disposed)
+			{
+				if (m_Id)
+				{
+					glDeleteTextures(1, &m_Id);
+					m_Id = NULL;
+					disposed = true;
+				}
+			}
+		}
 	private:
 		inline bool deletable() const
 		{

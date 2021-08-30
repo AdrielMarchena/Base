@@ -84,8 +84,11 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 
 	m_Back.OnAttach(args);
 
+	m_Audios["alexander-nakarada-the-great-battle"].Loop(true);
+
 	Window::OnAttach(args);
 	SetResizeble(false);
+	m_Audios["alexander-nakarada-the-great-battle"].Play();
 }
 
 void PiriquitoAbano::SwitchPause()
@@ -213,7 +216,10 @@ void PiriquitoAbano::OnImGui(en::ImGuiArgs args)
 
 void PiriquitoAbano::Dispose()
 {
-
+	for (auto& audio : m_Audios)
+		audio.second.Dispose();
+	for (auto& texture : m_Textures)
+		texture.second.Dispose();
 	Window::Dispose();
 }
 
