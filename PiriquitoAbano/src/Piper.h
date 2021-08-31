@@ -39,10 +39,6 @@ public:
 	void OnAttach(const en::AttachArgs& args)
 	{
 		Pipes.reserve(10);
-		for (int i = 0; i < 10; i++)
-		{
-			Pipes.emplace_back(en::render::Texture::GetBlanckTexture());
-		}
 		rando.Init();
 	}
 
@@ -95,16 +91,16 @@ public:
 		});
 	}
 
-	void SetPipesTexture(en::render::Texture& texture)
+	void SetPipesTexture(std::shared_ptr<en::render::Texture> texture)
 	{
-		MapMe([&](Pipe& pipe) {
+		MapMe([=](Pipe& pipe) {
 			pipe.SetTexture(texture);
 		});
 	}
 
-	void SetPipesBodyTexture(en::render::Texture& texture)
+	void SetPipesBodyTexture(std::shared_ptr<en::render::Texture> texture)
 	{
-		MapMe([&](Pipe& pipe) {
+		MapMe([=](Pipe& pipe) {
 			pipe.SetBodyTexture(texture);
 		});
 	}

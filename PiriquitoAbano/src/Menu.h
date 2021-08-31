@@ -31,9 +31,9 @@ namespace en
 		public:
 
 			void OnUpdate(const UpdateArgs& args);
-			void OnRender(const RenderArgs& args, const render::Text& font);
+			void OnRender(const RenderArgs& args, std::shared_ptr<en::render::Text> font);
 			
-			void AdjustPositions(const render::Text& font);
+			void AdjustPositions(std::shared_ptr<en::render::Text> font);
 
 			//Return position so you draw a box in the middle of other box in a nice way
 			static glm::vec2 middle_box_in_box(const Rect& outer_box, const Rect& inter_box);

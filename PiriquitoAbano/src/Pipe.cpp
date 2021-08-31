@@ -1,9 +1,9 @@
 #include "Pipe.h"
 
-Pipe::Pipe(en::render::Texture& texture)
-	:m_HeadTexture(&texture),
-	 m_BodyTexture(&texture),
-	 m_ColisionBox({ {0.0f,0.0f}, {0.0f,0.0f}, {450.0f,0.0f} })
+Pipe::Pipe()
+	:m_ColisionBox({ {0.0f,0.0f}, {0.0f,0.0f}, {450.0f,0.0f} }),
+	m_HeadTexture(),
+	m_BodyTexture()
 {
 	m_SRender = false;
 	m_Alive = false;
@@ -68,14 +68,14 @@ void Pipe::OnImGui(const en::ImGuiArgs& args)
 {
 }
 
-void Pipe::SetTexture(en::render::Texture& texture)
+void Pipe::SetTexture(std::shared_ptr<en::render::Texture> texture)
 {
-	m_HeadTexture = &texture;
+	m_HeadTexture = texture;
 }
 
-void Pipe::SetBodyTexture(en::render::Texture& texture)
+void Pipe::SetBodyTexture(std::shared_ptr<en::render::Texture> texture)
 {
-	m_BodyTexture = &texture;
+	m_BodyTexture = texture;
 }
 
 void Pipe::Spawn(const en::Rect& pos)

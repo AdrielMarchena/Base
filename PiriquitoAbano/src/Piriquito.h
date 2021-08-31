@@ -12,8 +12,9 @@ struct MoreArgs
 
 class Piriquito
 {
-private: 
-	en::render::Texture& m_Texture;
+private:
+	std::shared_ptr<en::render::Texture> m_Texture;
+	//en::render::Texture& m_Texture;
 	en::Rect m_ColisionBox;
 	bool m_Alive = false;
 	float m_Rotation = 0.0f;
@@ -22,7 +23,8 @@ private:
 	en::render::ParticleProps Props;
 	en::render::ParticleSystem m_Particles;
 public:
-	Piriquito(en::render::Texture& texture);
+	Piriquito(std::shared_ptr<en::render::Texture> texture);
+	Piriquito() = default;
 	~Piriquito();
 
 	void OnAttach(const en::AttachArgs& args);
@@ -33,8 +35,8 @@ public:
 	void Live();
 	void Die();
 
-	void SetTexture(en::render::Texture& new_texture);
-	void SetFeatherTexture(en::render::Texture& new_texture);
+	void SetTexture(std::shared_ptr<en::render::Texture> new_texture);
+	void SetFeatherTexture(std::shared_ptr<en::render::Texture> new_texture);
 	void SetRotation(float new_rotation);
 	void SetAnimVel(float value)
 	{

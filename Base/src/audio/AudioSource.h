@@ -11,6 +11,7 @@
 #include <unordered_map>
 #include "AL/al.h"
 #include "utils/NameCaps.h"
+#include "ResourceManager.h"
 namespace en
 {
 namespace aux
@@ -114,8 +115,8 @@ namespace aux
 		/**
 		* Load audio files and Create Asynchronously a bunch of instances of this class
 		*/
-		static std::unordered_map<std::string, AudioSource> LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile,const utils::NameCaps& nameCaps = utils::NameCaps::NONE ,uint8_t batchLimit = 5);
-		static std::unordered_map<std::string, AudioSource> LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait = true);
+		static ResourceManager<AudioSource> LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile,const utils::NameCaps& nameCaps = utils::NameCaps::NONE ,uint8_t batchLimit = 5);
+		static ResourceManager<AudioSource> LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait = true);
 	private:
 	   ALuint p_Source = NULL;
 		float p_Pitch = 1.f;

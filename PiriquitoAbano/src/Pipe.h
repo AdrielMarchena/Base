@@ -9,17 +9,16 @@ class Pipe
 {
 private:
 	en::Rect m_ColisionBox;
-	//TODO: Make Texture more flexibe, like making a CoýTexture class, then i dont need pointer or anything like that
-	//If i'm going to use references, i will need a blank one each time a can't initialize it from the begining
-	en::render::Texture* m_HeadTexture;
-	en::render::Texture* m_BodyTexture;
+	
+	std::shared_ptr<en::render::Texture> m_HeadTexture;
+	std::shared_ptr<en::render::Texture> m_BodyTexture;
 	//Also to see if need to check colision
 	bool m_SRender = true;
 	bool m_Alive = false;
 public:
 	bool invert = false;
 	bool pointPipe = false;
-	Pipe(en::render::Texture& texture);
+	Pipe();
 	~Pipe();
 	void OnAttach(const en::AttachArgs& args);
 	void OnUpdate(const en::UpdateArgs& args);
@@ -28,8 +27,8 @@ public:
 
 	en::Rect GetRect() const { return m_ColisionBox; }
 
-	void SetTexture(en::render::Texture& texture);
-	void SetBodyTexture(en::render::Texture& texture);
+	void SetTexture(std::shared_ptr<en::render::Texture> texture);
+	void SetBodyTexture(std::shared_ptr<en::render::Texture> texture);
 
 	bool IsRender()const { return m_SRender; }
 	void SetRender(bool r){ m_SRender = r; }

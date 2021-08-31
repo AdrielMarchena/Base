@@ -17,6 +17,7 @@
 
 #include "Menu.h"
 #include "Background.h"
+#include "ResourceManager.h"
 
 enum class PiriquitoState : uint8_t
 {
@@ -33,9 +34,10 @@ struct ImGuiT
 class PiriquitoAbano : public en::windowing::Window
 {
 private:
-	std::unordered_map<std::string, en::render::Texture> m_Textures;
-	std::unordered_map<std::string, en::render::Text> m_Text;
-	std::unordered_map<std::string, en::aux::AudioSource> m_Audios;
+	//std::unordered_map<std::string, en::render::Texture> m_Textures;
+	ResourceManager<en::render::Texture> m_Textures;
+	ResourceManager<en::render::Text> m_Text;
+	ResourceManager<en::aux::AudioSource> m_Audios;
 
 	en::windowing::Ambient m_Lights;
 
@@ -45,7 +47,7 @@ private:
 
 	glm::vec2 m_Pointer[3];
 
-	en::render::Text& m_TextFont;
+	std::shared_ptr<en::render::Text> m_TextFont;
 
 	PiriquitoState m_State = PiriquitoState::NONE;
 

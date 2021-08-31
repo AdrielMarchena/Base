@@ -172,7 +172,7 @@ namespace render
         return x;
     }
 
-    static inline void TryCreate(std::unordered_map<std::string, Text>& map, utils::ResourceLoads<std::string, loadCharacter>& info, const utils::NameCaps& nameCaps)
+    static inline void TryCreate(ResourceManager<Text>& map, utils::ResourceLoads<std::string, loadCharacter>& info, const utils::NameCaps& nameCaps)
     {
         for (auto& inf : info.resources)
         {
@@ -188,7 +188,8 @@ namespace render
                 }
                 try
                 {
-                    map.emplace(name, inf.second);
+                    map.AddResource(name, inf.second);
+                    //map.emplace(name, inf.second);
                     BASE_DEBUG("Font '{0}' Created", inf.first);
                     //D_LOG("FONT CREATED: '" << inf.first << "'");
                     info.futures.erase(inf.first);
@@ -207,7 +208,7 @@ namespace render
         }
     }
 
-    static inline void Base_CreateFont(std::unordered_map<std::string, Text>& map, utils::ResourceLoads<std::string, loadCharacter>& info, const utils::NameCaps& nameCaps)
+    static inline void Base_CreateFont(ResourceManager<Text>& map, utils::ResourceLoads<std::string, loadCharacter>& info, const utils::NameCaps& nameCaps)
     {
         using namespace utils;
         while (!info.isAllLoad())
@@ -221,7 +222,7 @@ namespace render
         info.resources.clear();
     }
 
-    std::unordered_map<std::string, Text> Text::LoadFontsAsync(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps, uint8_t batchLimit)
+    ResourceManager<Text> Text::LoadFontsAsync(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps, uint8_t batchLimit)
     {
         if (FT_Init_FreeType(&fft))
             throw std::exception("ERROR::FREETYPE: Could not init FreeType Library");
@@ -247,7 +248,7 @@ namespace render
         };
 
         uint8_t count = 0;
-        std::unordered_map<std::string, Text> mm;
+        ResourceManager<Text> mm;
         for (auto& name : names)
         {
             if (count > batchLimit)
@@ -266,9 +267,9 @@ namespace render
         return mm;
     }
 
-    std::unordered_map<std::string, Text> Text::LoadFonts(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps)
+    ResourceManager<Text> Text::LoadFonts(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps)
     {
-        std::unordered_map<std::string, Text>mm;
+        ResourceManager<Text> mm;
         for (auto& te : names)
         {
             std::string name = te.first;
@@ -281,7 +282,8 @@ namespace render
             }
             try
             {
-                mm.emplace(name, te.second.c_str());
+                mm.AddResource(name, te.second.c_str());
+                //mm.emplace(name, te.second.c_str());
                 BASE_DEBUG("Font '{0}' Created:", te.first);
             }
             catch (const std::exception& ex)

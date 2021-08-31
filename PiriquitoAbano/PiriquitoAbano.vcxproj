@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -127,7 +127,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -148,7 +148,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -167,7 +167,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm;$(SolutionDir)Base\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>

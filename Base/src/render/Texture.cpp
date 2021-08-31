@@ -112,7 +112,7 @@ namespace render
 		return info;
 	}
 
-	static inline void TryCreate(std::unordered_map<std::string, Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
+	static inline void TryCreate(ResourceManager<Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
 	{
 		for (auto& inf : info.resources)
 		{
@@ -128,8 +128,9 @@ namespace render
 				}
 				try
 				{
-					map[name] = std::move(Texture(inf.second));
-					BASE_TRACE("TEXTURE CREATED image: {0}", inf.first);
+					map.AddResource(name, inf.second);
+					//map[name] = std::move(Texture(inf.second));
+					BASE_DEBUG("TEXTURE CREATED image: {0}", inf.first);
 					info.futures[inf.first].~future();
 					info.futures.erase(inf.first);
 					info.resources[inf.first].clear();
@@ -149,7 +150,7 @@ namespace render
 		}
 	}
 
-	static inline void CreateTexture(std::unordered_map<std::string, Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
+	static inline void CreateTexture(ResourceManager<Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
 	{
 		using namespace utils;
 		while (!info.isAllLoad())
@@ -157,17 +158,17 @@ namespace render
 			std::lock_guard<std::mutex> lock(info.mutex);
 			TryCreate(map, info, nameCaps);
 		}
-			std::lock_guard<std::mutex> lock(info.mutex);
-			TryCreate(map, info, nameCaps);
-			info.futures.clear();
-			info.resources.clear();
+		std::lock_guard<std::mutex> lock(info.mutex);
+		TryCreate(map, info, nameCaps);
+		info.futures.clear();
+		info.resources.clear();
 	}
 
-	std::unordered_map<std::string, Texture> Texture::LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps, uint8_t batchLimit)
+	ResourceManager<Texture> Texture::LoadAsyncTexture(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps, uint8_t batchLimit)
 	{
 		utils::ResourceLoads<std::string, ImageInfo> loads;
 		auto lamb = [&](const std::string& name, const std::string& path) {
-			try 
+			try
 			{
 				ImageInfo info;
 				info = Texture::GetImage(path.c_str());
@@ -188,7 +189,7 @@ namespace render
 		};
 
 		uint8_t count = 0;
-		std::unordered_map<std::string, Texture> mm;
+		ResourceManager<Texture> mm;
 		for (auto& name : names)
 		{
 			if (count > batchLimit)
@@ -202,11 +203,11 @@ namespace render
 			//lamb(name.first, name.second);
 			count++;
 		}
-		
+
 		CreateTexture(mm, loads, nameCaps);
-		
 		return mm;
 	}
+
 	void ImageInfo::clear()
 	{
 		if (png)

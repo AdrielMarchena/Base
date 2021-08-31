@@ -7,6 +7,7 @@
 #include "ft2build.h"
 #include "args/RenderArgs.h"
 #include <algorithm>
+#include "ResourceManager.h"
 #include FT_FREETYPE_H
 namespace en
 {
@@ -44,8 +45,8 @@ namespace en
 			void RenderText(const en::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const;
 			float PreviewWid(const std::string& text, float scale) const;
 
-			static std::unordered_map<std::string, Text> LoadFontsAsync(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE, uint8_t batchLimit = 10);
-			static std::unordered_map<std::string, Text> LoadFonts(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE);
+			static ResourceManager<Text> LoadFontsAsync(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE, uint8_t batchLimit = 10);
+			static ResourceManager<Text> LoadFonts(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE);
 
 			//Defauted to 5.0f, and clamp in -1.0f to 10.0f interval
 			inline void SetLayer(float layer)

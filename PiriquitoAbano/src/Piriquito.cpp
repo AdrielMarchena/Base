@@ -3,9 +3,9 @@
 #include <algorithm>
 #include "imgui.h"
 
-Piriquito::Piriquito(en::render::Texture& texture)
+Piriquito::Piriquito(std::shared_ptr<en::render::Texture> texture)
 	:m_Texture(texture), 
-	 m_ColisionBox({ {0.0f,0.0f}, {texture.GetSize()}, {0.0f,0.0f} })
+	 m_ColisionBox({ {0.0f,0.0f}, {texture->GetSize()}, {0.0f,0.0f} })
 {
 	
 }
@@ -98,11 +98,12 @@ void Piriquito::Die()
 	m_Alive = false;
 }
 
-void Piriquito::SetTexture(en::render::Texture& new_texture)
+void Piriquito::SetTexture(std::shared_ptr<en::render::Texture> new_texture)
 {
-	if (new_texture.GetId())
+	if (new_texture->GetId())
 	{
 		m_Texture = new_texture;
+		m_ColisionBox.size = new_texture->GetSize();
 		en::ett::AnimationSpecs specs;
 		specs.atlas = new_texture;
 		specs.threshold = 25.0f;
@@ -112,9 +113,9 @@ void Piriquito::SetTexture(en::render::Texture& new_texture)
 	}
 }
 
-void Piriquito::SetFeatherTexture(en::render::Texture& new_texture)
+void Piriquito::SetFeatherTexture(std::shared_ptr<en::render::Texture> new_texture)
 {
-	Props.TexturePtr = &new_texture;
+	Props.TexturePtr = new_texture;
 }
 
 void Piriquito::SetRotation(float new_rotation)

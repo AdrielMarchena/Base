@@ -24,9 +24,9 @@ namespace ett
 		float_t decrement = 5.0f; // if 0, default to 5
 		uint32_t texture_offset = 0; // default to 0
 		glm::vec2 sprite_size = {64.0f,64.0f}; //if 0, default to 64x64
-		render::Texture& atlas; // Atlas Texture
+		std::shared_ptr<en::render::Texture> atlas; // Atlas Texture
 		AnimationSpecs();
-		AnimationSpecs(render::Texture& texture);
+		AnimationSpecs(std::shared_ptr<en::render::Texture> texture);
 		AnimationSpecs& operator=(AnimationSpecs& other);
 	};
 	class Animator

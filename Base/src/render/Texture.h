@@ -13,7 +13,7 @@
 #include "glm/glm.hpp"
 #include "utils/NameCaps.h"
 #include "utils/gl_error_macro_db.h"
-
+#include "ResourceManager.h"
 namespace en
 {
 namespace render
@@ -84,8 +84,8 @@ namespace render
 			if (this == &other)
 				return *this;
 
-			if(deletable() && m_Id)
-				GLCall(glDeleteTextures(1, &m_Id));
+			if (deletable() && m_Id)
+				Dispose();
 			//Delete any heap alocated here
 
 			m_Id = other.m_Id;
@@ -107,7 +107,7 @@ namespace render
 
 		static ImageInfo GetImage(const char* path);
 		static ImageInfo GetPNGImage(const char* path);
-		static std::unordered_map<std::string, Texture> LoadAsyncTextures(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE ,uint8_t batchLimit = 5);
+		static ResourceManager<Texture> LoadAsyncTexture(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE, uint8_t batchLimit = 5);
 		static Texture& GetBlanckTexture()
 		{
 			static Texture tmp;
@@ -124,7 +124,7 @@ namespace render
 			{
 				if (m_Id)
 				{
-					glDeleteTextures(1, &m_Id);
+					GLCall(glDeleteTextures(1, &m_Id));
 					m_Id = NULL;
 					disposed = true;
 				}

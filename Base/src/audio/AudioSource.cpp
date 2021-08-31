@@ -24,7 +24,7 @@ namespace en
 namespace aux
 {
 
-	static inline void TryCreateAudio(std::unordered_map<std::string, AudioSource>& tmp, utils::ResourceLoads<std::string, ALuint>& loads, const utils::NameCaps& nameCaps)
+	static inline void TryCreateAudio(ResourceManager<AudioSource>& tmp, utils::ResourceLoads<std::string, ALuint>& loads, const utils::NameCaps& nameCaps)
 	{
 		for (auto& inf : loads.resources)
 		{
@@ -42,7 +42,8 @@ namespace aux
 					case utils::NameCaps::ALL_UPPER: name = utils::ToUpper(name); break;
 					default: break;
 					}
-					tmp[name] = AudioSource(inf.second);
+					tmp.AddResource(name, inf.second);
+					//tmp[name] = AudioSource(inf.second);
 					inf.second = 0;
 					loads.futures.erase(inf.first);
 					loads.resources.erase(inf.first);
@@ -59,7 +60,7 @@ namespace aux
 		}
 	}
 
-	static inline void CreateAudio(std::unordered_map<std::string, AudioSource>& tmp ,utils::ResourceLoads<std::string, ALuint>& loads, const utils::NameCaps& nameCaps)
+	static inline void CreateAudio(ResourceManager<AudioSource>& tmp ,utils::ResourceLoads<std::string, ALuint>& loads, const utils::NameCaps& nameCaps)
 	{
 		using namespace utils;
 		while (!loads.isAllLoad())
@@ -73,7 +74,7 @@ namespace aux
 		loads.resources.clear();
 	}
 
-	std::unordered_map<std::string, AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, const utils::NameCaps& nameCaps, uint8_t batchLimit)
+	ResourceManager<AudioSource> AudioSource::LoadAsyncAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, const utils::NameCaps& nameCaps, uint8_t batchLimit)
 	{
 		utils::ResourceLoads<std::string, ALuint> loads;
 		auto lamb = [&](const std::string& name, const std::string& path)
@@ -92,7 +93,7 @@ namespace aux
 			}
 		};
 		uint8_t count = 0;
-		std::unordered_map<std::string, AudioSource> tmp;
+		ResourceManager<AudioSource> tmp;
 		for (auto& name : _NameFile)
 		{
 			loads.futures[name.first] = std::async(std::launch::async, lamb, name.first, name.second);
@@ -109,16 +110,17 @@ namespace aux
 		return tmp;
 	}
 
-	std::unordered_map<std::string, AudioSource> AudioSource::LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait)
+	ResourceManager<AudioSource> AudioSource::LoadAudios(const std::vector<std::pair<std::string, std::string>>& _NameFile, bool _Wait)
 	{
-		std::unordered_map<std::string, AudioSource> tmp;
+		ResourceManager<AudioSource> tmp;
 		for (auto& f : _NameFile)
 		{
 			auto info = LoadSoundEffect(f.second.c_str());
 			if (info)
 			{
 				BASE_TRACE("sound: '{0}' Loaded!", f.first);
-				tmp[f.first] = AudioSource(info);
+				tmp.AddResource(f.first, info);
+				//tmp[f.first] = AudioSource(info);
 				BASE_TRACE("Audio: '{0}' Created!", f.first);
 			}
 			else

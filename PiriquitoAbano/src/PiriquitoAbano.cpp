@@ -2,13 +2,12 @@
 
 #include "glm/gtx/compatibility.hpp"
 #include "Log.h"
-//Blank Texture
-static en::render::Text VeryDumbStupidTemporaryText;
 
 PiriquitoAbano::PiriquitoAbano()
 	:en::windowing::Window("Piriquito Abano"),
-	 m_Piriquito(en::render::Texture::GetBlanckTexture()),
-	m_TextFont(VeryDumbStupidTemporaryText)
+	 m_Piriquito(),
+	 m_Piper(),
+	m_TextFont()
 {
 }
 
@@ -49,7 +48,7 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 	//TODO: I need to improve the way i delivery the resources throw out the program
 	m_Piper.SetPipesTexture(m_Textures["pipe"]);
 	m_Piper.SetPipesBodyTexture(m_Textures["Pipe_body"]);
-
+	
 	m_State = PiriquitoState::PAUSE;
 	
 	GameOverBox.out_box = { {800 / 2,600 / 2},{300,200},{0,0} };
@@ -84,11 +83,11 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 
 	m_Back.OnAttach(args);
 
-	m_Audios["alexander-nakarada-the-great-battle"].Loop(true);
+	//m_Audios["alexander-nakarada-the-great-battle"].Loop(true);
 
 	Window::OnAttach(args);
 	SetResizeble(false);
-	m_Audios["alexander-nakarada-the-great-battle"].Play();
+	//m_Audios["alexander-nakarada-the-great-battle"].Play();
 }
 
 void PiriquitoAbano::SwitchPause()
@@ -193,7 +192,7 @@ void PiriquitoAbano::OnRender(en::RenderArgs args)
 	m_Piriquito.OnRender(args);
 	m_Piper.RenderPipes(args);
 	const std::string pts = "Points:" + std::to_string(points);
-	m_TextFont.RenderText(args, pts, 25.0f, 550.0f, 1.0f, {0.1f,0.1f,0.1f});
+	m_TextFont->RenderText(args, pts, 25.0f, 550.0f, 1.0f, {0.1f,0.1f,0.1f});
 
 	static const glm::vec4 pointer_colors[3]
 	{
@@ -216,10 +215,11 @@ void PiriquitoAbano::OnImGui(en::ImGuiArgs args)
 
 void PiriquitoAbano::Dispose()
 {
-	for (auto& audio : m_Audios)
-		audio.second.Dispose();
-	for (auto& texture : m_Textures)
-		texture.second.Dispose();
+	/*for (auto& audio : m_Audios)
+		audio.second.Dispose();*/
+	m_Textures.Map([&](std::shared_ptr<en::render::Texture> texture_sptr) {
+		texture_sptr->Dispose();
+	});
 	Window::Dispose();
 }
 
@@ -258,7 +258,7 @@ void PiriquitoAbano::LoadTextures(const char* directory)
 	//Texuture
 	try
 	{
-		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText(directory));
+		m_Textures = render::Texture::LoadAsyncTexture(utils::Files::GetPairText(directory));
 	}
 	catch (const utils::baseException::directory_not_found& dex)
 	{
