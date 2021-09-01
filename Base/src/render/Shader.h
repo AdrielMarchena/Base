@@ -44,10 +44,11 @@ namespace render
 
 			m_Id = other.m_Id;
 			m_Locations = other.m_Locations;
+			disposed = other.disposed;
 
 			other.m_Id = NULL;
 			other.m_Locations.clear();
-
+			other.disposed = true;
 			return *this;
 		}
 
