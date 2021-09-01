@@ -20,7 +20,7 @@ namespace ett
 	static constexpr float_t default_x_sprite_size = 64.0f;
 	static constexpr float_t default_y_sprite_size = 64.0f;
 	static std::shared_ptr<en::render::Texture> default_white_texture = std::make_shared<render::Texture>();
-	static render::SubTexture default_sub_white_texture = render::SubTexture::CreateFromCoords(*default_white_texture, { 1,1 }, { 0,0 }, { 1,1 });;
+	static render::SubTexture default_sub_white_texture = render::SubTexture::CreateFromCoords(default_white_texture, { 1,1 }, { 0,0 }, { 1,1 });;
 	
 	AnimationSpecs::AnimationSpecs()
 		:atlas(default_white_texture)
@@ -115,7 +115,7 @@ namespace ett
 		for (int i = 0; i < calc_size; i++)
 		{
 			m_CroppedTexture.push_back(render::SubTexture::CreateFromCoords(
-				*m_Specs.atlas, atlas_size, { i,0.0f }, m_Specs.sprite_size)
+				m_Specs.atlas, atlas_size, { i,0.0f }, m_Specs.sprite_size)
 			);
 		}
 
