@@ -68,8 +68,11 @@ namespace aux
 			std::lock_guard<std::mutex> lock(loads.mutex);
 			TryCreateAudio(tmp, loads, nameCaps);
 		}
-		std::lock_guard<std::mutex> lock(loads.mutex);
-		TryCreateAudio(tmp, loads, nameCaps);
+		while (!loads.resources.empty())
+		{
+			std::lock_guard<std::mutex> lock(loads.mutex);
+			TryCreateAudio(tmp, loads, nameCaps);
+		}
 		loads.futures.clear();
 		loads.resources.clear();
 	}
@@ -154,8 +157,6 @@ namespace aux
 
 	AudioSource::~AudioSource()
 	{
-		if (!disposed)
-			Dispose();
 	}
 
 	void AudioSource::Play()

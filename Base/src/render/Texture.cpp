@@ -93,6 +93,7 @@ namespace render
 
 	ImageInfo Texture::GetPNGImage(const char* path)
 	{
+		//TODO: Flip vertically
 		ImageInfo info;
 		info.png = true;
 		unsigned w, h;
@@ -139,10 +140,10 @@ namespace render
 				}
 				catch (const std::exception& ex)
 				{
+					BASE_ERROR("Can't Create Texture: '{0}', error: {1}", inf.first, ex.what());
 					info.resources[inf.first].clear();
 					info.futures.erase(inf.first);
 					info.resources.erase(inf.first);
-					BASE_ERROR("Can't Create Texture: '{0}', error: {1}", inf.first, ex.what());
 					//std::cout << "Can't Create Texture '" << inf.first << "' , error: " << ex.what() << std::endl;
 					break;
 				}
@@ -158,8 +159,11 @@ namespace render
 			std::lock_guard<std::mutex> lock(info.mutex);
 			TryCreate(map, info, nameCaps);
 		}
-		std::lock_guard<std::mutex> lock(info.mutex);
-		TryCreate(map, info, nameCaps);
+		while (!info.resources.empty())
+		{
+			std::lock_guard<std::mutex> lock(info.mutex);
+			TryCreate(map, info, nameCaps);
+		}
 		info.futures.clear();
 		info.resources.clear();
 	}
@@ -204,6 +208,7 @@ namespace render
 			count++;
 		}
 
+		loads.waitAll();
 		CreateTexture(mm, loads, nameCaps);
 		return mm;
 	}

@@ -44,43 +44,33 @@ namespace render
 		Texture(const ImageInfo& info);
 		~Texture() 
 		{ 
-			Dispose();
 		};
 		
 		Texture(Texture& other) noexcept
 		{
-			m_Id = other.m_Id;
-			m_Wid = other.m_Wid;
-			m_Hei = other.m_Hei;
-			m_Bit = other.m_Bit;
+			BASE_DEBUG("Texture& other");
+			StealFrom(other);
 			this->copy = true;
 		}
 		Texture(Texture&& other) noexcept :copy(false)
 		{
-			m_Id =  other.m_Id;
-			m_Wid = other.m_Wid;
-			m_Hei = other.m_Hei;
-			m_Bit = other.m_Bit;
-
-			other.m_Id =  NULL;
-			other.m_Wid = NULL;
-			other.m_Hei = NULL;
-			other.m_Bit = NULL;
-			other.copy = false;
+			BASE_DEBUG("Texture&& other");
+			StealFrom(other);
+			DeleteFrom(std::move(other));
+			copy = false;
 		}
 		Texture& operator=(Texture& other) noexcept
 		{
+			BASE_DEBUG("=Texture& other");
 			if (this == &other)
 				return *this;
-			m_Id = other.m_Id;
-			m_Wid = other.m_Wid;
-			m_Hei = other.m_Hei;
-			m_Bit = other.m_Bit;
+			StealFrom(other);
 			this->copy = true;
 			return *this;
 		}
 		Texture& operator=(Texture&& other) noexcept
 		{
+			BASE_DEBUG("=Texture&& other");
 			if (this == &other)
 				return *this;
 
@@ -88,16 +78,8 @@ namespace render
 				Dispose();
 			//Delete any heap alocated here
 
-			m_Id = other.m_Id;
-			m_Wid = other.m_Wid;
-			m_Hei = other.m_Hei;
-			m_Bit = other.m_Bit;
-
-			other.m_Id =  NULL;
-			other.m_Wid = NULL;
-			other.m_Hei = NULL;
-			other.m_Bit = NULL;
-			other.copy = false;
+			StealFrom(other);
+			DeleteFrom(std::move(other));
 
 			this->copy = false;
 			return *this;
@@ -134,6 +116,25 @@ namespace render
 		inline bool deletable() const
 		{
 			return (m_Id && !copy);
+		}
+
+		inline void StealFrom(Texture& other)
+		{
+			m_Id = other.m_Id;
+			m_Wid = other.m_Wid;
+			m_Hei = other.m_Hei;
+			m_Bit = other.m_Bit;
+			disposed = other.disposed;
+		}
+		//void DeleteFrom(Texture& other) { DeleteFrom((Texture&&)other); }
+		inline void DeleteFrom(Texture&& other)
+		{
+			other.m_Id = NULL;
+			other.m_Wid = NULL;
+			other.m_Hei = NULL;
+			other.m_Bit = NULL;
+			other.copy = false;
+			other.disposed = false;
 		}
 	};
 }

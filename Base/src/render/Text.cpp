@@ -130,6 +130,10 @@ namespace render
 
     Text::~Text()
     {
+    }
+
+    void Text::Dispose()
+    {
         for (auto& c : m_Characters)
             glDeleteTextures(1, &c.second.TextureID);
     }
@@ -216,8 +220,11 @@ namespace render
             std::lock_guard<std::mutex> lock(info.mutex);
             TryCreate(map, info, nameCaps);
         }
-        TryCreate(map, info, nameCaps);
-        std::lock_guard<std::mutex> lock(info.mutex);
+        while (!info.resources.empty())
+        {
+            std::lock_guard<std::mutex> lock(info.mutex);
+            TryCreate(map, info, nameCaps);
+        }
         info.futures.clear();
         info.resources.clear();
     }

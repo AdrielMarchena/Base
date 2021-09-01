@@ -42,6 +42,7 @@ namespace en
 			Text(const char* font);
 			Text(loadCharacter faces);
 			~Text();
+			void Dispose();
 			void RenderText(const en::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const;
 			float PreviewWid(const std::string& text, float scale) const;
 
