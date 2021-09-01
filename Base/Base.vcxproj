@@ -247,6 +247,7 @@
     <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\render\Colors.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\scene\Components.h" />
     <ClInclude Include="src\scene\Scene.h" />
