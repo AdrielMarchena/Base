@@ -33,9 +33,20 @@ void Piriquito::OnUpdate(const en::UpdateArgs& args, const MoreArgs& more_args)
 {
 	static const glm::vec2 terminal_neg_velocity = { 0.0f,-350.0f };
 	static const glm::vec2 up_velocity = { 0.0f,250.0f };
-	m_ColisionBox.velocity.y -= more_args.Gravity;
-	if (m_ColisionBox.velocity.y <= terminal_neg_velocity.y)
-		m_ColisionBox.velocity.y = terminal_neg_velocity.y;
+		
+	if (m_Rotation < -99.0f) // Add some extra gravity if the bird is turn down
+	{
+		m_ColisionBox.velocity.y -= more_args.Gravity * 1.15f;
+		if (m_ColisionBox.velocity.y <= terminal_neg_velocity.y * 1.15f)
+			m_ColisionBox.velocity.y = terminal_neg_velocity.y * 1.15f;
+	}
+	else
+	{
+		m_ColisionBox.velocity.y -= more_args.Gravity;
+		if (m_ColisionBox.velocity.y <= terminal_neg_velocity.y)
+			m_ColisionBox.velocity.y = terminal_neg_velocity.y;
+	}
+		
 	//else
 		//m_ColisionBox.velocity += dec_velocity * args.dt;
 
@@ -46,7 +57,6 @@ void Piriquito::OnUpdate(const en::UpdateArgs& args, const MoreArgs& more_args)
 		for(int i = 0; i < 4; i++)
 			m_Particles.Emit(Props);
 	}
-
 	m_ColisionBox.pos += m_ColisionBox.velocity * args.dt;
 	m_Rotation += (m_ColisionBox.velocity.y * args.dt) / 2;
 	m_Rotation = std::clamp(m_Rotation, -100.0f, -20.0f);

@@ -38,7 +38,7 @@ public:
 
 	void OnAttach(const en::AttachArgs& args)
 	{
-		Pipes.reserve(10);
+		Pipes.resize(10);
 		rando.Init();
 	}
 

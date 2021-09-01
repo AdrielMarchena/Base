@@ -3,6 +3,8 @@
 #include "glm/gtx/compatibility.hpp"
 #include "Log.h"
 
+#include "scene/Scene.h"
+#include "scene/Components.h"
 PiriquitoAbano::PiriquitoAbano()
 	:en::windowing::Window("Piriquito Abano"),
 	 m_Piriquito(),
@@ -19,13 +21,13 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 
 	args.camera.SetScroll(false);
 
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetQuadShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetCircleShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetTriShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.5f, args.render.GetLineShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetQuadShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetCircleShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetTriShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetLineShader(), false);
 
 	en::windowing::LightSource source;
-	source.m_LightIntencity = 1500.0f;
+	source.m_LightIntencity = 500.0f;
 	source.u_LightColor = { 0.9f,0.8f,0.2f,1.0f };
 	source.u_LightPos.x = glm::lerp(0.0f, args.res_h, 0.99f);
 	source.u_LightPos.y = glm::lerp(0.0f, args.res_w, 0.50f);
@@ -176,7 +178,6 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 				StartBox.OnUpdate(args);
 		}
 	}
-
 	Window::OnUpdate(args);
 }
 
@@ -215,10 +216,14 @@ void PiriquitoAbano::OnImGui(en::ImGuiArgs args)
 
 void PiriquitoAbano::Dispose()
 {
-	/*for (auto& audio : m_Audios)
-		audio.second.Dispose();*/
+	m_Audios.Map([&](std::shared_ptr<en::aux::AudioSource> audio_sptr) {
+		audio_sptr->Dispose();
+		});
 	m_Textures.Map([&](std::shared_ptr<en::render::Texture> texture_sptr) {
 		texture_sptr->Dispose();
+	});
+	m_Text.Map([&](std::shared_ptr<en::render::Text> text_sptr) {
+		text_sptr->Dispose();
 	});
 	Window::Dispose();
 }
@@ -258,7 +263,7 @@ void PiriquitoAbano::LoadTextures(const char* directory)
 	//Texuture
 	try
 	{
-		m_Textures = render::Texture::LoadAsyncTexture(utils::Files::GetPairText(directory));
+		m_Textures = render::Texture::LoadAsyncTexture(utils::Files::GetPairText(directory), utils::NameCaps::NONE,15u);
 	}
 	catch (const utils::baseException::directory_not_found& dex)
 	{
