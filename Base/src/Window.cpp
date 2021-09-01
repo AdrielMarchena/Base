@@ -133,17 +133,17 @@ namespace en
 
 			BASE_TRACE("Glew Init");
 
-			m_Render = std::make_unique<render::Render2D>("shaders/quad_vs.shader",   "shaders/quad_fs.shader",
-														  "shaders/line_vs.shader",	  "shaders/line_fs.shader",
-														  "shaders/circle_vs.shader", "shaders/circle_fs.shader",
-														  "shaders/quad_vs.shader",	  "shaders/text_fs.shader",
-														  "shaders/quad_vs.shader", "shaders/quad_fs.shader");
+			render::Render2D::Init("shaders/quad_vs.shader",   "shaders/quad_fs.shader",
+									"shaders/line_vs.shader",	  "shaders/line_fs.shader",
+									"shaders/circle_vs.shader", "shaders/circle_fs.shader",
+									"shaders/quad_vs.shader",	  "shaders/text_fs.shader",
+									"shaders/quad_vs.shader", "shaders/quad_fs.shader");
 
-			render_shaders.push_back(&m_Render->GetQuadShader());
-			render_shaders.push_back(&m_Render->GetLineShader());
-			render_shaders.push_back(&m_Render->GetCircleShader());
-			render_shaders.push_back(&m_Render->GetTextShader());
-			render_shaders.push_back(&m_Render->GetTriShader());
+			render_shaders.push_back(&render::Render2D::GetQuadShader());
+			render_shaders.push_back(&render::Render2D::GetLineShader());
+			render_shaders.push_back(&render::Render2D::GetCircleShader());
+			render_shaders.push_back(&render::Render2D::GetTextShader());
+			render_shaders.push_back(&render::Render2D::GetTriShader());
 
 			BASE_TRACE("2D Render created!");
 			
@@ -191,7 +191,7 @@ namespace en
 		{
 			using namespace render;
 			using namespace utils;
-			Render2D& render = *m_Render;
+			auto render = render::Render2D(); //Temp
 
 			SetResizeble(false);
 			SetPerpectiveInShaders();
@@ -225,6 +225,12 @@ namespace en
 				//Update shader things
 				SetViewInShaders();
 
+				//Clear screen
+				render.ClearColorDepth();
+
+				//Start render batch
+				render.BeginBatch();
+
 				//Game Update
 				OnUpdate(up_args);
 
@@ -232,14 +238,10 @@ namespace en
 				fps_title = m_Title + " | FPS: " + std::to_string(fps);
 				glfwSetWindowTitle(m_Window, fps_title.c_str());
 
-				//Clear screen
-				render.ClearColorDepth();
-
-				//Render things
-				render.BeginBatch();
-
+				//Call render method
 				OnRender({ deltaTime,render,m_camera,m_camera.GetCamera(),m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
 
+				//Finish the rendering
 				render.EndBatch();
 				render.Flush();
 
@@ -278,14 +280,14 @@ namespace en
 
 		void Window::Dispose()
 		{
-			m_Render->Dispose();
+			render::Render2D::Dispose();
 			try
 			{
 				aux::DeleteDevices();
 			}
 			catch (const std::exception& ex)
 			{
-				Log::GetCoreLogger()->error(ex.what());
+				BASE_ERROR(ex.what());
 			}
 			BASE_TRACE("Dispose completed!");
 			
@@ -437,7 +439,6 @@ namespace en
 			m_Resizeble = other.m_Resizeble;
 			m_IO = other.m_IO;
 			m_Title = std::move(other.m_Title);
-			m_Render = std::move(other.m_Render);
 			keyboard = other.keyboard;
 			mouse = other.mouse;
 			m_camera = other.m_camera;
@@ -467,7 +468,6 @@ namespace en
 			m_Hei = other.m_Hei;
 			m_Resizeble = other.m_Resizeble;
 			m_Title = std::move(other.m_Title);
-			m_Render = std::move(other.m_Render);
 			keyboard = other.keyboard;
 			mouse = other.mouse;
 			m_camera = other.m_camera;
