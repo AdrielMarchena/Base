@@ -10,23 +10,18 @@
 #include "geo_renders/RenderTemplate.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "gl/glew.h"
-#include <iostream>
-
-#include "geo_renders/QuadRender.h"
-#include "geo_renders/LineRender.h"
-#include "geo_renders/CircleRender.h"
-#include "geo_renders/TriRender.h"
 
 namespace en
 {
 namespace render
 {
 	glm::vec3 Render2D::m_default_axis = { 0.0f,0.0f,1.0f };
-	static std::shared_ptr<QuadRender2D> m_QuadRender;
-	static std::shared_ptr<CircleRender> m_CircleRender;
-	static std::shared_ptr<LineRender2D> m_LineRender;
-	static std::shared_ptr<QuadRender2D> m_TextRender;
-	static std::shared_ptr<TriRender> m_TriRender;
+	glm::mat4 Render2D::m_Transform = glm::ortho(0, 800, 0, 600);
+	std::shared_ptr<QuadRender2D> Render2D::m_QuadRender;
+	std::shared_ptr<CircleRender> Render2D::m_CircleRender;
+	std::shared_ptr<LineRender2D> Render2D::m_LineRender;
+	std::shared_ptr<QuadRender2D> Render2D::m_TextRender;
+	std::shared_ptr<TriRender> Render2D::m_TriRender;
 
 	void Render2D::SetClearColor(const glm::vec4& color)
 	{
@@ -66,6 +61,17 @@ namespace render
 		m_TriRender->BeginBatch();
 	}
 
+	void Render2D::BeginScene(const Camera& camera, const glm::mat4& transform)
+	{
+		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+			
+		m_LineRender->BeginScene(viewProj, m_Transform);
+		m_QuadRender->BeginScene(viewProj, m_Transform);
+		m_CircleRender->BeginScene(viewProj, m_Transform);
+		m_TextRender->BeginScene(viewProj, m_Transform);
+		m_TriRender->BeginScene(viewProj, m_Transform);
+	}
+
 	void Render2D::EndBatch()
 	{
 		m_LineRender->EndBatch();
@@ -93,112 +99,132 @@ namespace render
 		m_TriRender->Dispose();
 	}
 
-	const Shader& Render2D::GetQuadShader()
+	const std::shared_ptr<Shader> Render2D::GetQuadShader()
 	{
 		return m_QuadRender->GetShader();
 	}
 
-	const Shader& Render2D::GetLineShader()
+	const std::shared_ptr<Shader> Render2D::GetLineShader()
 	{
 		return m_LineRender->GetShader();
 	}
 
-	const Shader& Render2D::GetCircleShader()
+	const std::shared_ptr<Shader> Render2D::GetCircleShader()
 	{
 		return m_CircleRender->GetShader();
 	}
 
-	const Shader& Render2D::GetTextShader()
+	const std::shared_ptr<Shader> Render2D::GetTextShader()
 	{
 		return m_TextRender->GetShader();
 	}
 
-	const Shader& Render2D::GetTriShader()
+	const std::shared_ptr<Shader> Render2D::GetTriShader()
 	{
 		return m_TriRender->GetShader();
 	}
 
-	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_QuadRender->DrawQuad(position, size, color, layer, rotation, axis);
+		m_QuadRender->DrawQuad(position, size, color, rotation, axis);
 	}
 
-	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4], float_t layer, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4], float_t rotation, const glm::vec3& axis)
 	{
-		m_QuadRender->DrawQuad(position, size, color, layer, rotation, axis);
+		m_QuadRender->DrawQuad(position, size, color, rotation, axis);
 	}
 
-	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, const glm::vec4& color,float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Texture& texture, const glm::vec4& color,float_t rotation, const glm::vec3& axis)
 	{
-		m_QuadRender->DrawQuad(position, size, texture, color, layer, rotation, axis);
+		m_QuadRender->DrawQuad(position, size, texture, color, rotation, axis);
 	}
 
-	void Render2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture, float_t layer, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture, const glm::vec4& color,float_t rotation, const glm::vec3& axis)
 	{
-		m_QuadRender->DrawQuad(position, size, sub_texture, layer, rotation, axis);
+		m_QuadRender->DrawQuad(position, size, sub_texture, color,rotation, axis);
 	}
 
-	void Render2D::DrawText(const glm::vec2& position, const glm::vec2& size, const Texture& texture, float_t layer, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_TextRender->DrawQuad(position, size, texture, color, layer, rotation, axis);
+		m_QuadRender->DrawQuad(transform, color, rotation, axis);
 	}
 
-	void Render2D::DrawOutLineQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color,
-				   float_t layer, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4 color[4], float_t rotation, const glm::vec3& axis)
+	{
+		m_QuadRender->DrawQuad(transform, color, rotation, axis);
+	}
+
+	void Render2D::DrawQuad(const glm::mat4& transform, const Texture& texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_QuadRender->DrawQuad(transform, texture, color, rotation, axis);
+	}
+
+	void Render2D::DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_QuadRender->DrawQuad(transform, sub_texture, color, rotation, axis);
+	}
+
+	void Render2D::DrawText(const glm::vec3& position, const glm::vec2& size, const Texture& texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_TextRender->DrawQuad(position, size, texture, color, rotation, axis);
+	}
+
+	void Render2D::DrawOutLineQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
+				   float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quads[4] = {
-			{position.x,position.y,-layer},
-			{position.x + size.x, position.y,-layer},
-			{position.x + size.x,position.y + size.y,-layer},
-			{position.x,position.y + size.y,-layer}
+			{position.x,position.y, position.z},
+			{position.x + size.x, position.y, position.z},
+			{position.x + size.x,position.y + size.y, position.z},
+			{position.x,position.y + size.y, position.z}
 		};
 
 		if (rotation)
-			Render::rotate(quads, rotation, { position.x + (size.x / 2), position.y + (size.y / 2), layer }, axis);
+			rotate(quads, rotation, { position.x + (size.x / 2), position.y + (size.y / 2), position.z }, axis);
 
-		const glm::vec2 left_bottom  = { quads[0].x,quads[0].y };
-		const glm::vec2 right_bottom = { quads[1].x,quads[1].y };
-		const glm::vec2 right_top	 = { quads[2].x,quads[2].y };
-		const glm::vec2 left_top	 = { quads[3].x,quads[3].y };
+		const glm::vec3& left_bottom  = quads[0];
+		const glm::vec3& right_bottom = quads[1];
+		const glm::vec3& right_top	 =  quads[2];
+		const glm::vec3& left_top	 =  quads[3];
 
 		//Bottom Line
-		DrawLine(left_bottom, right_bottom, color, layer);
+		DrawLine(left_bottom, right_bottom, color);
 		//Left Line
-		DrawLine(left_bottom, left_top, color ,layer);
+		DrawLine(left_bottom, left_top, color);
 		//Top Line
-		DrawLine(left_top, right_top, color, layer);
+		DrawLine(left_top, right_top, color);
 		//Right Line
-		DrawLine(right_bottom, right_top, color, layer);
+		DrawLine(right_bottom, right_top, color);
 	}
 
-	void Render2D::DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer)
+	void Render2D::DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color)
 	{
-		m_LineRender->DrawLine(origin, dest, color, layer);
+		m_LineRender->DrawLine(origin, dest, color);
 	}
 
-	void Render2D::DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& dest, const glm::vec4& color, float_t precision ,float_t layer)
+	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& dest, const glm::vec4& color, float_t precision)
 	{
-		m_LineRender->DrawCurveLine(origin, p1, p2, dest,color,precision,layer);
+		m_LineRender->DrawCurveLine(origin, p1, p2, dest,color,precision);
 	}
 
-	void Render2D::DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& dest, const glm::vec4& color, float_t precision, float_t layer)
+	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, float_t precision)
 	{
-		m_LineRender->DrawCurveLine(origin, p1, dest, color, precision, layer);
+		m_LineRender->DrawCurveLine(origin, p1, dest, color, precision);
 	}
 
-	void Render2D::DrawCircle(const glm::vec2& position, float_t radius, const glm::vec4& color, bool fill, float thick,float_t layer, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, const glm::vec4& color, bool fill, float thick,float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(position, radius, fill, thick ,color, layer, rotation, axis);
+		m_CircleRender->DrawCircle(position, radius, fill, thick ,color, rotation, axis);
 	}
 
-	void Render2D::DrawTriangle(const glm::vec2 points[3], const glm::vec4& color, float_t layer)
+	void Render2D::DrawTriangle(const glm::vec3 points[3], const glm::vec4& color)
 	{
-		m_TriRender->DrawTriangle(points, color, layer);
+		m_TriRender->DrawTriangle(points, color);
 	}
 
-	void Render2D::DrawTriangle(const glm::vec2 points[3], const glm::vec4 color[3], float_t layer)
+	void Render2D::DrawTriangle(const glm::vec3 points[3], const glm::vec4 color[3])
 	{
-		m_TriRender->DrawTriangle(points, color, layer);
+		m_TriRender->DrawTriangle(points, color);
 	}
 
 	void Render2D::LineBeginBatch()

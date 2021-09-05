@@ -14,12 +14,12 @@ namespace render
 	static const size_t MaxCircleCount = 1000;
 	static const size_t MaxVertexCount = MaxCircleCount * 3;
 	static const size_t MaxIndexCount = MaxCircleCount * 3;
-	static int32_t MaxTexture = Render::MaxTexturesSlots();
+	static int32_t MaxTexture = MaxTexturesSlots();
 
 	TriRender::TriRender(const char* vs, const char* fs)
-		:m_data(vs, fs, MaxTexture)
 	{
-		m_data.mShader.Bind();
+		mShader = std::make_shared<Shader>(vs, fs, MaxTexturesSlots());
+		mShader->Bind();
 
 		m_data.Buffer = new TriangleVertex[MaxVertexCount];
 
@@ -72,7 +72,7 @@ namespace render
 		int32_t* samplers = new int32_t[MaxTexture];
 		for (int i = 0; i < MaxTexture; i++)
 			samplers[i] = i;
-		m_data.mShader.SetUniform1iv("u_Textures", MaxTexture, samplers);
+		mShader->SetUniform1iv("u_Textures", MaxTexture, samplers);
 		delete[] samplers;
 
 		m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
@@ -81,94 +81,38 @@ namespace render
 			m_data.TextureSlots[i] = 0;
 	}
 
-	TriRender::~TriRender()
-	{
-		if (!disposed)
-			Dispose();
-	}
-
-	void TriRender::BeginBatch()
-	{
-		m_data.BufferPtr = m_data.Buffer;
-	}
-
-	void TriRender::EndBatch()
-	{
-		m_data.mShader.Bind();
-		//Current position - first position
-		GLsizeiptr size = (uint8_t*)m_data.BufferPtr - (uint8_t*)m_data.Buffer;
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-		GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.Buffer));
-	}
-
 	void TriRender::Flush()
 	{
-		m_data.mShader.Bind();
+		mShader->Bind();
 		for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 		{
 			GLCall(glActiveTexture(GL_TEXTURE0 + i));
 			GLCall(glBindTexture(GL_TEXTURE_2D, m_data.TextureSlots[i]));
 		}
 
-		GLCall(glBindVertexArray(m_data.VA));
-		GLCall(glDrawElements(GL_TRIANGLES, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
-		m_data.RenderStatus.DrawCount++;
-
-		m_data.IndexCount = 0;
+		Render::Flush();
 		m_data.TextureSlotIndex = 1;
 	}
 
-	void TriRender::Dispose()
+	void TriRender::DrawTriangle(const glm::vec3 points[3], const glm::vec4& color)
 	{
-		m_data.mShader.Dispose();
-		GLCall(glDeleteVertexArrays(1, &m_data.VA));
-		GLCall(glDeleteBuffers(1, &m_data.VB));
-		GLCall(glDeleteBuffers(1, &m_data.IB));
-		GLCall(glDeleteTextures(1, &m_data.WhiteTexture));
-		delete[] m_data.Buffer;
-		disposed = true;
+		glm::vec4 colors[3]{};
+		for (uint8_t i = 0; i < 3; i++)
+			colors[i] = color;
+		DrawTriangle(points, colors);
 	}
 
-	const Shader& TriRender::GetShader()
-	{
-		return m_data.mShader;
-	}
-
-	void TriRender::DrawTriangle(const glm::vec2 points[3], const glm::vec4& color, float_t layer)
-	{
-		FillV(points, color, m_default_tex_coords, 0, layer);
-		m_data.IndexCount += 3;
-	}
-
-	void TriRender::DrawTriangle(const glm::vec2 points[3], const glm::vec4 color[3], float_t layer)
-	{
-		FillVC(points, color, m_default_tex_coords, 0, layer);
-		m_data.IndexCount += 3;
-	}
-
-	void TriRender::FillV(const glm::vec2 position[3], const glm::vec4& color, const glm::vec2 tex_coords[4], float_t tex_index, float_t layer)
+	void TriRender::DrawTriangle(const glm::vec3 points[3], const glm::vec4 color[3])
 	{
 		for (uint8_t i = 0; i < 3; i++)
 		{
-			m_data.BufferPtr->Position = { position[i].x,position[i].y,-layer };
-			m_data.BufferPtr->Color = color;
-			m_data.BufferPtr->TexCoords = tex_coords[i];
-			m_data.BufferPtr->TexIndex = tex_index;
-			m_data.BufferPtr++;
-		}
-	}
-
-	void TriRender::FillVC(const glm::vec2 position[3], const glm::vec4 color[3],
-		const glm::vec2 tex_coords[4], float_t tex_index, float_t layer)
-	{
-		for (uint8_t i = 0; i < 3; i++)
-		{
-			m_data.BufferPtr->Position = { position[i].x,position[i].y,-layer };
+			m_data.BufferPtr->Position = { points[i].x,points[i].y,points[i].z };
 			m_data.BufferPtr->Color = color[i];
-			m_data.BufferPtr->TexCoords = tex_coords[i];
-			m_data.BufferPtr->TexIndex = tex_index;
+			m_data.BufferPtr->TexCoords = m_default_tex_coords[i];
+			m_data.BufferPtr->TexIndex = 0;
 			m_data.BufferPtr++;
 		}
+		m_data.IndexCount += 3;
 	}
 }
 }

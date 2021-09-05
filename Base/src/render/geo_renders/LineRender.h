@@ -16,42 +16,17 @@ namespace en
 {
 	namespace render
 	{
-		class LineRender2D : public Render
+		class LineRender2D : public Render<RenderData>
 		{
 		private:
-			RenderData m_data;
 		public:
 
 			LineRender2D(const char* vs, const char* fs);
 			//LineRender2D() {}
 
-			LineRender2D(LineRender2D&& other) noexcept
-			{
-				// =operator of RenderData already do the work
-				m_data = other.m_data;
-			}
-
-			LineRender2D& operator=(LineRender2D&& other) noexcept
-			{
-				if (this == &other)
-					return *this;
-				// =operator of RenderData already do the work
-				m_data = other.m_data;
-				return *this;
-			}
-
-			~LineRender2D();
-
-			void BeginBatch();
-			void EndBatch();
-			void Flush();
-			void Dispose();
-
-			const Shader& GetShader();
-
-			void DrawLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t layer = 0);
-			void DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& dest, const glm::vec4& color, float_t precision ,float_t layer = 0);
-			void DrawCurveLine(const glm::vec2& origin, const glm::vec2& p1, const glm::vec2& dest, const glm::vec4& color, float_t precision, float_t layer = 0);
+			void DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color);
+			void DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& dest, const glm::vec4& color, float_t precision);
+			void DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, float_t precision);
 
 		};
 	}

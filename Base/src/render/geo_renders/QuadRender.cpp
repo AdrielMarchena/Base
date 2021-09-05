@@ -25,12 +25,12 @@ namespace en
 		static const size_t MaxQuadCount = 1000;
 		static const size_t MaxVertexCount = MaxQuadCount * 4;
 		static const size_t MaxIndexCount = MaxQuadCount * 6;
-		static int32_t MaxTexture = Render::MaxTexturesSlots();
+		static int32_t MaxTexture = MaxTexturesSlots();
 
 		QuadRender2D::QuadRender2D(const char* vs, const char* fs)
-			:m_data(vs, fs, MaxTexture)
 		{
-			m_data.mShader.Bind();
+			mShader = std::make_shared<Shader>(vs, fs, MaxTexturesSlots());
+			mShader->Bind();
 
 			m_data.Buffer = new QuadVertex[MaxVertexCount];
 
@@ -87,7 +87,7 @@ namespace en
 			int32_t* samplers = new int32_t[MaxTexture];
 			for (int i = 0; i < MaxTexture; i++)
 				samplers[i] = i;
-			m_data.mShader.SetUniform1iv("u_Textures", MaxTexture, samplers);
+			mShader->SetUniform1iv("u_Textures", MaxTexture, samplers);
 			delete[] samplers;
 
 			m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
@@ -95,77 +95,54 @@ namespace en
 			for (size_t i = 1; i < MaxTexture; i++)
 				m_data.TextureSlots[i] = 0;
 
-		}
+			m_data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
+			m_data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
+			m_data.QuadVertexPositions[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
+			m_data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 
-		QuadRender2D::~QuadRender2D()
-		{
-			if (!disposed)
-				Dispose();
-		}
-
-		void QuadRender2D::BeginBatch()
-		{
-			m_data.BufferPtr = m_data.Buffer;
-		}
-
-		void QuadRender2D::EndBatch()
-		{
-			m_data.mShader.Bind();
-			//Current position - first position
-			GLsizeiptr size = (uint8_t*)m_data.BufferPtr - (uint8_t*)m_data.Buffer;
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-			GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.Buffer));
 		}
 
 		void QuadRender2D::Flush()
 		{
-			m_data.mShader.Bind();
+			mShader->Bind();
 			for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 			{
 				GLCall(glActiveTexture(GL_TEXTURE0 + i));
 				GLCall(glBindTexture(GL_TEXTURE_2D, m_data.TextureSlots[i]));
 			}
-
-			GLCall(glBindVertexArray(m_data.VA));
-			GLCall(glDrawElements(GL_TRIANGLES, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
-			m_data.RenderStatus.DrawCount++;
-
-			m_data.IndexCount = 0;
+			Render::Flush();
 			m_data.TextureSlotIndex = 1;
 		}
 
-		void QuadRender2D::Dispose()
+		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,  float_t rotation, const glm::vec3& axis)
 		{
-			m_data.mShader.Dispose();
-			GLCall(glDeleteVertexArrays(1, &m_data.VA));
-			GLCall(glDeleteBuffers(1, &m_data.VB));
-			GLCall(glDeleteBuffers(1, &m_data.IB));
-			GLCall(glDeleteTextures(1, &m_data.WhiteTexture));
-			delete[] m_data.Buffer;
-			disposed = true;
+			DrawQuad(pos_trans(position,size), color);
 		}
 
-		const Shader& QuadRender2D::GetShader()
+		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4], float_t rotation, const glm::vec3& axis)
 		{
-			return m_data.mShader;
+			DrawQuad(pos_trans(position, size), color);
 		}
 
-		void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, float_t layer, float_t rotation, const glm::vec3& axis)
+		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Texture& texture, const glm::vec4 & color, float_t rotation, const glm::vec3& axis)
 		{
-			if (m_data.IndexCount >= MaxIndexCount)
-			{
-				EndBatch();
-				Flush();
-				BeginBatch();
-			}
-			int8_t texture_index = 0;
-
-			FillV(position, size, color, m_default_tex_coords, texture_index, layer, rotation, axis);
-			m_data.IndexCount += 6;
-			m_data.RenderStatus.QuadCount++;
+			DrawQuad(pos_trans(position,size), texture, color, rotation, axis);
 		}
 
-		void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4], float_t layer, float_t rotation, const glm::vec3& axis)
+		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture, const glm::vec4& color,float_t rotation, const glm::vec3& axis)
+		{
+			DrawQuad(pos_trans(position, size), sub_texture, color, rotation, axis);
+		}
+
+		void QuadRender2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+		{
+			glm::vec4 colors[4]{};
+			for (uint8_t i = 0; i < 4; i++) //TODO: Necessary? Idk
+				colors[i] = color;
+			DrawQuad(transform, colors, rotation, axis);
+		}
+
+		void QuadRender2D::DrawQuad(const glm::mat4& transform, const glm::vec4 color[4], float_t rotation, const glm::vec3& axis)
 		{
 			if (m_data.IndexCount >= MaxIndexCount)
 			{
@@ -173,14 +150,24 @@ namespace en
 				Flush();
 				BeginBatch();
 			}
-			int8_t texture_index = 0;
 
-			FillVC(position, size, color, m_default_tex_coords, texture_index, layer, rotation, axis);
+			glm::mat4 trans = transform;
+			if (rotation)
+				trans = glm::rotate(transform, glm::radians(rotation), axis);
+
+			for (size_t i = 0; i < 4; i++)
+			{
+				m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
+				m_data.BufferPtr->Color = color[i];
+				m_data.BufferPtr->TexCoords = m_default_tex_coords[i];
+				m_data.BufferPtr->TexIndex = m_data.WhiteTextureSlot;
+				m_data.BufferPtr++;
+			}
 			m_data.IndexCount += 6;
 			m_data.RenderStatus.QuadCount++;
 		}
 
-		void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Texture& texture, const glm::vec4 & color, float_t layer, float_t rotation, const glm::vec3& axis)
+		void QuadRender2D::DrawQuad(const glm::mat4& transform, const Texture& texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 		{
 			if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
 			{
@@ -208,13 +195,24 @@ namespace en
 					m_data.TextureSlotIndex++;
 				}
 
-			FillV(position, size, color, m_default_tex_coords, texture_index, layer, rotation, axis);
+			glm::mat4 trans = transform;
+			if (rotation)
+				trans = glm::rotate(transform, glm::radians(rotation), axis);
+
+			for (size_t i = 0; i < 4; i++)
+			{
+				m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
+				m_data.BufferPtr->Color = color;
+				m_data.BufferPtr->TexCoords = m_default_tex_coords[i];
+				m_data.BufferPtr->TexIndex = texture_index;
+				m_data.BufferPtr++;
+			}
 
 			m_data.IndexCount += 6;
 			m_data.RenderStatus.QuadCount++;
 		}
 
-		void QuadRender2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const SubTexture& sub_texture, float_t layer, float_t rotation, const glm::vec3& axis)
+		void QuadRender2D::DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 		{
 			if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
 			{
@@ -223,15 +221,15 @@ namespace en
 				BeginBatch();
 			}
 
-			constexpr glm::vec4 color = { 1.0f,1.0f ,1.0f ,1.0f };
+			auto coords = sub_texture.GetTexCoords();
 
-			int32_t texture_index = 0;
+			int8_t texture_index = 0;
 			if (sub_texture.GetId())
-				for (uint32_t i = 1; i < m_data.TextureSlotIndex; i++)
+				for (int8_t i = 1; i < m_data.TextureSlotIndex; i++)
 				{
 					if (m_data.TextureSlots[i] == sub_texture.GetId())
 					{
-						texture_index = (float)i;
+						texture_index = i;
 						break;
 					}
 				}
@@ -239,12 +237,24 @@ namespace en
 			if (sub_texture.GetId())
 				if (!texture_index)
 				{
-					texture_index = (float)m_data.TextureSlotIndex;
+					texture_index = m_data.TextureSlotIndex;
 					m_data.TextureSlots[m_data.TextureSlotIndex] = sub_texture.GetId();
 					m_data.TextureSlotIndex++;
 				}
 
-			FillV(position, size, color, sub_texture.GetTexCoords(), texture_index, layer, rotation, axis);
+			glm::mat4 trans = transform;
+			if (rotation)
+				trans = glm::rotate(transform, glm::radians(rotation), axis);
+
+			for (size_t i = 0; i < 4; i++)
+			{
+				m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
+				m_data.BufferPtr->Color = color;
+				m_data.BufferPtr->TexCoords = coords[i];
+				m_data.BufferPtr->TexIndex = texture_index;
+				m_data.BufferPtr++;
+			}
+
 			m_data.IndexCount += 6;
 			m_data.RenderStatus.QuadCount++;
 		}
@@ -320,48 +330,5 @@ namespace en
 				}
 		}
 
-		void QuadRender2D::FillV(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, const glm::vec2 tex_coords[4], float_t tex_index, float_t layer, float_t rotation, const glm::vec3& axis)
-		{
-			glm::vec3 quads[4] = {
-				{position.x,position.y,-layer},
-				{position.x + size.x, position.y,-layer},
-				{position.x + size.x,position.y + size.y,-layer},
-				{position.x,position.y + size.y,-layer}
-			};
-
-			if (rotation)
-				Render::rotate(quads, rotation, { position.x + (size.x / 2), position.y + (size.y / 2), layer }, axis);
-
-			for (uint8_t i = 0; i < 4; i++)
-			{
-				m_data.BufferPtr->Position = quads[i];
-				m_data.BufferPtr->Color = color;
-				m_data.BufferPtr->TexCoords = tex_coords[i];
-				m_data.BufferPtr->TexIndex = tex_index;
-				m_data.BufferPtr++;
-			}
-		}
-		
-		void QuadRender2D::FillVC(const glm::vec2& position, const glm::vec2& size, const glm::vec4 color[4], const glm::vec2 tex_coords[4], float_t tex_index, float_t layer, float_t rotation, const glm::vec3& axis)
-		{
-			glm::vec3 quads[4] = {
-				{position.x,position.y,-layer},
-				{position.x + size.x, position.y,-layer},
-				{position.x + size.x,position.y + size.y,-layer},
-				{position.x,position.y + size.y,-layer}
-			};
-
-			if (rotation)
-				Render::rotate(quads, rotation, { position.x + (size.x / 2), position.y + (size.y / 2), layer }, axis);
-
-			for (uint8_t i = 0; i < 4; i++)
-			{
-				m_data.BufferPtr->Position = quads[i];
-				m_data.BufferPtr->Color = color[i];
-				m_data.BufferPtr->TexCoords = tex_coords[i];
-				m_data.BufferPtr->TexIndex = tex_index;
-				m_data.BufferPtr++;
-			}
-		}
 	}
 }

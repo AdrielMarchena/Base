@@ -7,37 +7,23 @@ namespace en
 namespace render
 {
 
-	class CircleRender : public Render
+	class CircleRender : public Render<CircleRenderData>
 	{
 	private:
-		CircleRenderData m_data;
 	public:
 		static glm::vec2 m_default_tex_coords[4];
 
 		CircleRender(const char* vs, const char* fs);
-		CircleRender(){}
-		~CircleRender();
+		
+		void Flush() override;
 
-		void BeginBatch();
-		void EndBatch();
-		void Flush();
-		void Dispose();
+		void DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color,
+			float_t rotation = NULL, const glm::vec3& axis = {});
+		
+		//DO nothing
+		void DrawCircle(const glm::mat4& transform,float_t radius ,bool fill, float thick, const glm::vec4& color,
+			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		const Shader& GetShader();
-
-		void DrawCircle(const glm::vec2& position, float_t radius, bool fill, float thick, const glm::vec4& color,
-			float_t layer = 0, float_t rotation = NULL, const glm::vec3& axis = {});
-	
-	private:
-		void FillV(const glm::vec2& position, 
-				   const glm::vec2& size ,
-				   const glm::vec2& middle_point,
-				   float_t radius,
-				   bool fill,
-				   float thick,
-				   const glm::vec4& color,
-				   const glm::vec2 tex_coords[4], float_t tex_index,
-				   float_t layer, float_t rotation, const glm::vec3& axis);
 	};
 }
 }
