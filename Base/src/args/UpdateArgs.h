@@ -15,9 +15,6 @@ namespace en
 	struct UpdateArgs
 	{
 		float dt;
-		input::Mouse& mouse;
-		input::Keyboard& keyboard;
-		glm::vec2 m_pos;
 		float width;
 		float height;
 		float res_w;
