@@ -25,6 +25,12 @@ namespace render
 		GLuint GetId() const;
 		/* 4 */
 		const glm::vec2* GetTexCoords() const { return m_TexCoords; };
+
+		operator bool() const 
+		{ 
+			if(m_Texture) return m_Texture->GetId(); 
+			return false;
+		}
 	};
 }
 }

@@ -155,7 +155,7 @@ namespace render
             float h = ch.Size.y * scale;
             //Draw here
             TmpTexture.SetID(ch.TextureID);
-            args.render.DrawText({ xpos,ypos + h }, { w,-h }, TmpTexture,m_Layer,glm::vec4(color,1.0f));
+            args.render.DrawText({ xpos,ypos + h,m_Layer }, { w,-h }, TmpTexture,glm::vec4(color,1.0f));
             x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
         }
     }

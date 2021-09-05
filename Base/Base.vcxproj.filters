@@ -82,12 +82,6 @@
     <ClCompile Include="src\render\geo_renders\LineRender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\geo_renders\QuadRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\QuadRender.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\render\geo_renders\CircleRender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -106,12 +100,15 @@
     <ClCompile Include="src\scene\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\scene\Entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\geo_renders\QuadRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\callbacks_glfw.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\render2D.h">
@@ -250,6 +247,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\Colors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\MouseKeys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\KeyboardKeys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\geo_renders\QuadRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

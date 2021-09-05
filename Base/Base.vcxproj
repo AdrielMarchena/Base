@@ -216,6 +216,8 @@
     <None Include="shaders\vs.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
+    <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\audio\AudioSource.cpp" />
@@ -229,8 +231,6 @@
     <ClCompile Include="src\render\geo_renders\CircleRender.cpp" />
     <ClCompile Include="src\render\geo_renders\LineRender.cpp" />
     <ClCompile Include="src\render\ParticleSystem.cpp" />
-    <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\QuadRender.h" />
     <ClCompile Include="src\render\SubTexture.cpp" />
     <ClCompile Include="src\render\Text.cpp" />
     <ClCompile Include="src\utils\Files.cpp" />
@@ -247,6 +247,11 @@
     <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\input\KeyboardKeys.h" />
+    <ClInclude Include="src\input\MouseKeys.h" />
+    <ClInclude Include="src\render\Camera.h" />
+    <ClInclude Include="src\render\geo_renders\QuadRender.h" />
+    <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\render\Colors.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\scene\Components.h" />
@@ -284,7 +289,6 @@
     <ClInclude Include="src\input\Mouse.h" />
     <ClInclude Include="src\render\Shader.h" />
     <ClInclude Include="src\render\render2D.h" />
-    <ClInclude Include="src\callbacks_glfw.h" />
     <ClInclude Include="src\utils\Generic.h" />
     <ClInclude Include="src\utils\gl_error_macro_db.h" />
     <ClInclude Include="src\utils\Logs.h" />

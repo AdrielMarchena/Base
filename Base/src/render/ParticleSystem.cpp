@@ -85,10 +85,10 @@ namespace en {
 				{
 					glm::vec4 color = glm::lerp(particle.ColorEnd, particle.ColorBegin, life);
 					color.a = color.a * life;
-					args.render.DrawQuad(particle.Position, { size,size }, color, 2.0f, particle.Rotation, { 0.0f,1.0f,1.0f });
+					args.render.DrawQuad(glm::vec3(particle.Position, 2.0f), { size,size }, color, particle.Rotation, { 0.0f,1.0f,1.0f });
 				}
 				else
-					args.render.DrawQuad(particle.Position, { size,size }, *particle.TexturePtr, 2.0f, Color::White ,particle.Rotation, { 0.0f,1.0f,1.0f });
+					args.render.DrawQuad(glm::vec3(particle.Position, 2.0f), { size,size }, *particle.TexturePtr, Color::White ,particle.Rotation, { 0.0f,1.0f,1.0f });
 			}
 		}
 
