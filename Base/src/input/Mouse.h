@@ -10,8 +10,8 @@
 
 #include <array>
 #include "gl/glew.h"
-#include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
+#include "MouseKeys.h"
 
 #include <algorithm>
 
@@ -44,9 +44,9 @@ namespace input
 		
 		bool isAnyKey() const;
 
-		void on_mouse_button(GLFWwindow* window, int32_t key, int32_t action, int32_t mods);
-		void on_mouse_scroll(GLFWwindow* window, double_t xOffSet, double_t yOffSet);
-		void on_mouse_cursor(GLFWwindow* window, double_t xPos, double_t yPos);
+		void on_mouse_button(int32_t key, int32_t action, int32_t mods);
+		void on_mouse_scroll(double_t xOffSet, double_t yOffSet);
+		void on_mouse_cursor(double_t xPos, double_t yPos);
 
 		glm::vec2 gpos() const { return pos; }
 		glm::vec2 gprevPos() const  { return prevPos; }
@@ -58,7 +58,7 @@ namespace input
 		}
 		glm::vec2 gprevOffValue() const { return PrevOff; }
 
-		void clamp_cursor(GLFWwindow* window, float_t min_x, float_t max_x, float_t min_y, float_t max_y);
+		void clamp_cursor(float_t min_x, float_t max_x, float_t min_y, float_t max_y);
 	};
 }
 }

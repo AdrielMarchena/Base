@@ -8,6 +8,7 @@
 #include "Keyboard.h"
 #include <iostream>
 #include "Log.h"
+
 namespace en
 {
 namespace input
@@ -32,21 +33,21 @@ namespace input
 		return AnyKey;
 	}
 
-	void Keyboard::on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
+	void Keyboard::on_keyboard_button(int32_t key, int32_t scancode, int32_t action, int32_t mods)
 	{
 		key -= 32;
 		switch (action)
 		{
-		case GLFW_PRESS:
+		case BASE_PRESS:
 			keysPressed[key] = true;
 			AnyKey = true;
 			break;
-		case GLFW_RELEASE:
+		case BASE_RELEASE:
 			keysPressed[key] = false;
 			singleClickControl[key] = false;
 			AnyKey = false;
 			break;
-		case GLFW_REPEAT:
+		case BASE_REPEAT:
 			break;
 		default:
 			BASE_WARN("Unknow Keyboard Action '{0}'!", action);

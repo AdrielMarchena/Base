@@ -8,8 +8,8 @@
 #pragma once
 #include <array>
 #include "gl/glew.h"
-#include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
+#include "KeyboardKeys.h"
 
 constexpr unsigned short EN_KEYBOARD_NUMBER_KEYS = 348*2; // Bizarre numbers there
 namespace en
@@ -33,7 +33,7 @@ namespace input
 
 		bool isAnyKey() const;
 
-		void on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods);
+		void on_keyboard_button(int32_t key, int32_t scancode, int32_t action, int32_t mods);
 	};
 }
 }
