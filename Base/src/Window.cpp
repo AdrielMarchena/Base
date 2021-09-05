@@ -13,60 +13,137 @@
 
 #include "Window.h"
 
-#include "render/Texture.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "gl/glew.h"
+#include "GLFW/glfw3.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+#include "render/render2D.h"
 
 #include <iostream>
 
 #include "utils/Files.h"
+#include "AL/al.h"
+#include "AL/alc.h"
+#include "audio/AudioDevice.h"
+
+#include "Log.h"
 
 #define CALLBACK_STATIC_CAST(type,window) static_cast<type*>(glfwGetWindowUserPointer(window))
+
+#define DEAR_NEW_FRAME() ImGui_ImplOpenGL3_NewFrame();\
+						 ImGui_ImplGlfw_NewFrame();\
+						 ImGui::NewFrame()
+
+#define DEAR_END_FRAME() ImGui::Render();\
+						 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData())
 
 namespace en
 {
 	namespace windowing
 	{
+
+		void on_resize(GLFWwindow* window, int32_t w, int32_t h)
+		{
+			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			ResizeArgs args{};
+			args.old_w = ptr->m_Wid;
+			args.old_h = ptr->m_Hei;
+			args.new_w = w;
+			args.new_h = h;
+			ptr->OnResize(args);
+
+		}
+		void on_mouse_scroll(GLFWwindow* window, double_t xOffSet, double_t yOffSet)
+		{
+			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			MouseArgs args
+			{
+				MouseAction::SCROLL,
+				ptr->mouse,
+				0.0,0.0,
+				xOffSet,
+				yOffSet,
+				NULL,
+				NULL,
+				NULL
+			};
+			ptr->OnMouseAction(args);
+		}
+		void on_cursor_move(GLFWwindow* window, double_t xPos, double_t yPos)
+		{
+			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			MouseArgs args
+			{
+				MouseAction::MOVE,
+				ptr->mouse,
+				xPos,
+				yPos,
+				0.0,0.0,
+				NULL,
+				NULL,
+				NULL
+			};
+			ptr->OnMouseAction(args);
+		}
+		void on_mouse_button(GLFWwindow* window, int32_t key, int32_t action, int32_t mods)
+		{
+
+			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			MouseArgs args
+			{
+				action == GLFW_PRESS ? MouseAction::PRESS : MouseAction::RELEASE,
+				ptr->mouse,
+				0.0,0.0,0.0,0.0,
+				key,
+				action,
+				mods
+			};
+			ptr->OnMouseAction(args);
+		}
+		void on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
+		{
+			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			KeyboardArgs args
+			{
+				action == GLFW_PRESS ? KeyboardAction::PRESS : KeyboardAction::RELEASE,
+				ptr->keyboard,
+				key,
+				scancode,
+				action,
+				mods
+			};
+			ptr->OnKeyboardAction(args);
+		}
+		void on_mouse_enter(GLFWwindow* window, int32_t entered)
+		{
+			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			MouseArgs args
+			{
+				MouseAction::LEAVE,
+				ptr->mouse,
+				0.0,0.0,0.0,0.0,
+				0,
+				0,
+				0
+			};
+			if (entered)
+				args.m_action = MouseAction::ENTER;
+			ptr->OnMouseAction(args);
+		}
+
 		using namespace utils;
+		GLFWwindow* m_Window = nullptr;
+		ALCdevice* p_ALCDevice = nullptr;
+		ALCcontext* p_ALCContext = nullptr;
+		ImGuiIO* m_IO = nullptr;
 
-		static inline void SetView(const render::Shader& m_Shader, const OrthographicCameraController& m_Camera)
+		void Window::ClampTMouse()
 		{
-			m_Shader.SetUniformMat4f("u_ViewProj", m_Camera.GetCamera().GetViewProjectionMatrix());
-		}
-
-		static inline void SetTransform(const render::Shader& m_Shader, float wid, float hei)
-		{
-			float ratio = wid / hei;
-			m_Shader.SetUniformMat4f("u_Transform", glm::ortho(0.0f, wid, 0.0f, hei, -1.0f, 10.0f));
-		}
-
-		void Window::SetPerpectiveInShaders()
-		{
-			for (auto& a : render_shaders)
-			{
-				a->Bind();
-				SetView(*a, m_camera);
-				SetTransform(*a, m_Resolution.x, m_Resolution.y);
-			}
-		}
-
-		void inline Window::SetViewInShaders()
-		{
-			for (auto& a : render_shaders)
-			{
-				a->Bind();
-				SetView(*a, m_camera);
-			}
-		}
-
-		void inline Window::SetTransformInShaders()
-		{
-			for (auto& a : render_shaders)
-			{
-				a->Bind();
-				SetTransform(*a, m_Wid, m_Hei);
-			}
+			glfwSetCursorPos(m_Window, mouse.gpos().x, mouse.gpos().y);
 		}
 
 		void Window::HideCursor()
@@ -82,14 +159,14 @@ namespace en
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			m_ClampMouse = false;
 		}
-
+		
 		bool Window::CursorHoveredWindow()
 		{
 			return glfwGetWindowAttrib(m_Window,GLFW_HOVERED);
 		}
 
 		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
-			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_camera(1, false ,false),myWindow(nullptr)
+			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), myWindow(nullptr)
 		{
 
 			//Initialize Log system (spdlog)
@@ -138,12 +215,6 @@ namespace en
 									"shaders/circle_vs.shader", "shaders/circle_fs.shader",
 									"shaders/quad_vs.shader",	  "shaders/text_fs.shader",
 									"shaders/quad_vs.shader", "shaders/quad_fs.shader");
-
-			render_shaders.push_back(&render::Render2D::GetQuadShader());
-			render_shaders.push_back(&render::Render2D::GetLineShader());
-			render_shaders.push_back(&render::Render2D::GetCircleShader());
-			render_shaders.push_back(&render::Render2D::GetTextShader());
-			render_shaders.push_back(&render::Render2D::GetTriShader());
 
 			BASE_TRACE("2D Render created!");
 			
@@ -194,13 +265,17 @@ namespace en
 			auto render = render::Render2D(); //Temp
 
 			SetResizeble(false);
-			SetPerpectiveInShaders();
+			//SetPerpectiveInShaders();
+
+			//TODO: Remove camera (and render things) from here
+			//float_t asp_ratio = m_Wid/m_Hei;
+			//en::Camera camera(glm::ortho(-1 * 1.0f, 1 * 1.0f, -1.0f, 1.0f,-1.0f,1.0f));
 
 			render.SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 
 			float deltaTime = 0.0f;
 			float lastFrame = 0.0f;
-			OnAttach({ render, m_camera,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
+			OnAttach();
 			
 			std::string fps_title = m_Title + " | FPS: " + std::to_string(nbFrame);
 			glfwSetWindowTitle(m_Window, fps_title.c_str());
@@ -219,19 +294,16 @@ namespace en
 				double fps = double(nbFrame) / deltaTime;
 				
 				//Camera Update
-				UpdateArgs up_args = { deltaTime,mouse,keyboard,m_pos(mouse),m_Wid,m_Hei,m_Resolution.x,m_Resolution.y };
-				m_camera.OnUpdate(up_args);
+				UpdateArgs up_args = { deltaTime,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y };
 
 				//Update shader things
-				SetViewInShaders();
-
-				//Clear screen
-				render.ClearColorDepth();
-
-				//Start render batch
-				render.BeginBatch();
-
-				//Game Update
+				//SetViewInShaders();
+				//auto t = glm::translate(glm::mat4(1.0f), { 0.0f,0.0f,0.0f });// *glm::scale(glm::mat4(1.0f), { m_Wid, m_Hei, 1.0f });
+				glm::mat4 t = glm::translate(glm::mat4(1.0f), {0.0f,0.0f,0.0f}) *
+					glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
+				
+				//TODO: Scene here somehow? or maybe leave to the client
+				//Game Update 
 				OnUpdate(up_args);
 
 				//Set FPS on window title
@@ -239,16 +311,12 @@ namespace en
 				glfwSetWindowTitle(m_Window, fps_title.c_str());
 
 				//Call render method
-				OnRender({ deltaTime,render,m_camera,m_camera.GetCamera(),m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
-
-				//Finish the rendering
-				render.EndBatch();
-				render.Flush();
+				OnRender(); // TODO: REMOVE
 
 				//ImGui things
 				DEAR_NEW_FRAME();
 
-				OnImGui({ render });
+				OnImGui();
 
 				DEAR_END_FRAME();
 
@@ -259,22 +327,21 @@ namespace en
 			BASE_TRACE("Game loop Ended!");
 			Dispose();
 		}
-		void Window::OnUpdate(UpdateArgs args)
+		void Window::OnUpdate(const UpdateArgs& args)
 		{
-
-			if (args.keyboard.isPress(GLFW_KEY_LEFT_CONTROL) && args.keyboard.isPress(GLFW_KEY_Q))
+			if (keyboard.isPress(BASE_KEY_LEFT_CONTROL) && keyboard.isPress(BASE_KEY_Q))
 				glfwSetWindowShouldClose(m_Window,GLFW_TRUE);
 		}
 
-		void Window::OnAttach(AttachArgs args)
+		void Window::OnAttach()
 		{
 		}
 
-		void Window::OnRender(RenderArgs args)
+		void Window::OnRender()
 		{
 		}
 
-		void Window::OnImGui(ImGuiArgs args)
+		void Window::OnImGui()
 		{
 		}
 
@@ -299,105 +366,12 @@ namespace en
 			glfwWindowHint(GLFW_RESIZABLE, m_Resizeble ? GLFW_TRUE : GLFW_FALSE);
 		}
 
-		void Window::on_resize(GLFWwindow* window, int32_t w, int32_t h)
-		{
-			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
-			ResizeArgs args{};
-			args.old_w = ptr->m_Wid;
-			args.old_h = ptr->m_Wid;
-			args.new_w = w;
-			args.new_h = h;
-			ptr->OnResize(args);
-
-		}
-		void Window::on_mouse_scroll(GLFWwindow* window, double_t xOffSet, double_t yOffSet)
-		{
-			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
-			MouseArgs args
-			{
-				MouseAction::SCROLL,
-				ptr->mouse,
-				0.0,0.0,
-				xOffSet,
-				yOffSet,
-				NULL,
-				NULL,
-				NULL
-			};
-			ptr->OnMouseAction(args);
-		}
-		void Window::on_cursor_move(GLFWwindow* window, double_t xPos, double_t yPos)
-		{
-			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
-			MouseArgs args
-			{
-				MouseAction::MOVE,
-				ptr->mouse,
-				xPos,
-				yPos,
-				0.0,0.0,
-				NULL,
-				NULL,
-				NULL
-			};
-			ptr->OnMouseAction(args);
-		}
-		void Window::on_mouse_button(GLFWwindow* window, int32_t key, int32_t action, int32_t mods)
-		{
-			
-			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
-			MouseArgs args
-			{
-				action == GLFW_PRESS ? MouseAction::PRESS : MouseAction::RELEASE,
-				ptr->mouse,
-				0.0,0.0,0.0,0.0,
-				key,
-				action,
-				mods
-			};
-			ptr->OnMouseAction(args);
-		}
-		void Window::on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
-		{
-			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
-			KeyboardArgs args
-			{
-				action == GLFW_PRESS ? KeyboardAction::PRESS : KeyboardAction::RELEASE,
-				ptr->keyboard,
-				key,
-				scancode,
-				action,
-				mods
-			};
-			ptr->OnKeyboardAction(args);
-		}
-
-		void Window::on_mouse_enter(GLFWwindow* window, int32_t entered)
-		{
-			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
-			MouseArgs args
-			{
-				MouseAction::LEAVE,
-				ptr->mouse,
-				0.0,0.0,0.0,0.0,
-				0,
-				0,
-				0
-			};
-			if (entered)
-				args.m_action = MouseAction::ENTER;
-			ptr->OnMouseAction(args);
-		}
-
 		void Window::OnResize(ResizeArgs args)
 		{
 			//CALLBACK_STATIC_CAST(Window, window)->m_camera.Resize(w, h);
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
 			m_AspectRatio = m_Wid / m_Hei;
-			//m_camera.Resize(m_Wid, m_Hei);
-			//m_camera.Resize(m_Hei, m_Wid);
-			SetPerpectiveInShaders();
 			
 			glViewport(0, 0, m_Wid, m_Hei);
 		}
@@ -409,16 +383,13 @@ namespace en
 				{
 				case MouseAction::PRESS:
 				case MouseAction::RELEASE:
-					mouse.on_mouse_button(this->m_Window, args.key, args.action, args.mods);
+					mouse.on_mouse_button( args.key, args.action, args.mods);
 					break;
 				case MouseAction::MOVE:
-					mouse.on_mouse_cursor(this->m_Window, args.Xpos, args.Ypos);
+					mouse.on_mouse_cursor(args.Xpos, args.Ypos);
 					break;
 				case MouseAction::SCROLL:
-					mouse.on_mouse_scroll(this->m_Window, args.Xoffset, args.Yoffset);
-					m_camera.OnMouseScrolled(args.Yoffset);
-
-					SetViewInShaders();
+					mouse.on_mouse_scroll(args.Xoffset, args.Yoffset);
 
 					break;
 				}
@@ -426,62 +397,7 @@ namespace en
 		void Window::OnKeyboardAction(KeyboardArgs args)
 		{
 			if (args.k_action != KeyboardAction::INVALID)
-				keyboard.on_keyboard_button(this->m_Window, args.key, args.scancode, args.action, args.mods);
+				keyboard.on_keyboard_button(args.key, args.scancode, args.action, args.mods);
 		}
-
-		//Copy things and Bizarre Contructors
-		Window::Window(Window&& other) noexcept
-			:m_IO(nullptr), m_camera(1)
-		{
-			m_Window = other.m_Window;
-			m_Wid = other.m_Wid;
-			m_Hei = other.m_Hei;
-			m_Resizeble = other.m_Resizeble;
-			m_IO = other.m_IO;
-			m_Title = std::move(other.m_Title);
-			keyboard = other.keyboard;
-			mouse = other.mouse;
-			m_camera = other.m_camera;
-
-			//Kill other
-			other.m_Window = nullptr;
-			m_Title.clear();
-			other.m_Wid = NULL;
-			other.m_Hei = NULL;
-			other.m_Resizeble = NULL;
-			other.m_IO = nullptr;
-
-		}
-
-		Window& Window::operator=(Window&& other) noexcept
-		{
-			if (this == &other)
-				return *this;
-
-			//Clear actual instance (usually when heap allocated)
-			m_Window = nullptr;
-			m_Title.clear();
-
-			//Grab data from other
-			m_Window = other.m_Window;
-			m_Wid = other.m_Wid;
-			m_Hei = other.m_Hei;
-			m_Resizeble = other.m_Resizeble;
-			m_Title = std::move(other.m_Title);
-			keyboard = other.keyboard;
-			mouse = other.mouse;
-			m_camera = other.m_camera;
-
-			//Kill other
-			other.m_Window = nullptr;
-			other.m_Wid = 0;
-			other.m_Hei = 0;
-			other.m_Resizeble = NULL;
-			other.m_Title.clear();
-
-			return *this;
-
-		} //Moveble
-
 	}
 }
