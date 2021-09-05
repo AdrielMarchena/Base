@@ -45,7 +45,7 @@ private:
 	float_t m_Gravity = 9.8f;
 	uint64_t points = 0;
 
-	glm::vec2 m_Pointer[3];
+	glm::vec3 m_Pointer[3];
 
 	std::shared_ptr<en::render::Text> m_TextFont;
 

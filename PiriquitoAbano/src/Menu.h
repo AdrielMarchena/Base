@@ -25,8 +25,8 @@ namespace en
 			glm::vec3* actual_button_text_color = &button_text_color;
 
 		private:
-			glm::vec2 txt_out_pos;
-			glm::vec2 txt_button_pos;
+			glm::vec3 txt_out_pos;
+			glm::vec3 txt_button_pos;
 
 		public:
 

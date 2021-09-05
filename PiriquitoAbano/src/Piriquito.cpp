@@ -26,7 +26,7 @@ void Piriquito::OnAttach(const en::AttachArgs& args)
 	Props.Gravity = 1.8f;
 	Props.TexturePtr = nullptr;
 	m_Particles = en::render::ParticleSystem(75);
-	m_Rotation = -90.0f;
+	m_Rotation = 90.0f;
 }
 
 void Piriquito::OnUpdate(const en::UpdateArgs& args, const MoreArgs& more_args)
@@ -50,7 +50,7 @@ void Piriquito::OnUpdate(const en::UpdateArgs& args, const MoreArgs& more_args)
 	//else
 		//m_ColisionBox.velocity += dec_velocity * args.dt;
 
-	if (args.mouse.isClicked(GLFW_MOUSE_BUTTON_1) || args.keyboard.isClicked(GLFW_KEY_SPACE))
+	if (args.mouse.isClicked(BASE_MOUSE_BUTTON_1) || args.keyboard.isClicked(BASE_KEY_SPACE))
 	{
 		m_ColisionBox.velocity = up_velocity;
 		Props.Position = m_ColisionBox.pos + (m_ColisionBox.size / 2.0f);
@@ -59,7 +59,7 @@ void Piriquito::OnUpdate(const en::UpdateArgs& args, const MoreArgs& more_args)
 	}
 	m_ColisionBox.pos += m_ColisionBox.velocity * args.dt;
 	m_Rotation += (m_ColisionBox.velocity.y * args.dt) / 2;
-	m_Rotation = std::clamp(m_Rotation, -100.0f, -20.0f);
+	m_Rotation = std::clamp(m_Rotation, 20.0f, 100.0f);
 
 	//TODO: remove this logic
 	m_Animation.BeginUpdate();
@@ -68,12 +68,12 @@ void Piriquito::OnUpdate(const en::UpdateArgs& args, const MoreArgs& more_args)
 void Piriquito::OnRender(const en::RenderArgs& args)
 {
 	m_Particles.OnUpdate(args.dt);
-	glm::vec2 rotate_pos = m_ColisionBox.pos;
+	glm::vec3 rotate_pos = glm::vec3(m_ColisionBox.pos,2.0f);
 	glm::vec2 rotate_size = {64.0f,64.0f};
 	rotate_pos.y += rotate_size.y;
 	rotate_size.y = -rotate_size.y;
 	auto& current_subt = m_Animation.Run(args.dt);
-	args.render.DrawQuad(rotate_pos, rotate_size, current_subt, 2.0f ,glm::radians(m_Rotation));
+	args.render.DrawQuad(rotate_pos, rotate_size, current_subt, Color::White ,m_Rotation);
 	const auto b = GetColision();
 	m_Particles.OnRender(args);
 

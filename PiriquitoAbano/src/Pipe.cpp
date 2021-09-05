@@ -36,14 +36,14 @@ void Pipe::OnRender(const en::RenderArgs& args)
 	constexpr glm::vec2 size = { 64.0f,64.0f };
 	if (m_SRender)
 	{
- 		glm::vec2 current_pos = {m_ColisionBox.pos.x,m_ColisionBox.size.y};
+ 		glm::vec3 current_pos = {m_ColisionBox.pos.x,m_ColisionBox.size.y,2.0f};
 		if (!invert) // Down Pipe
 		{
 			current_pos.y -= 64.0f;
-			args.render.DrawQuad(current_pos, size, *m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+			args.render.DrawQuad(current_pos, size, *m_HeadTexture, Color::White, rotation);
 			for (int i = 1; i < h * 2; i++)
 			{
-				args.render.DrawQuad(current_pos, size, *m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+				args.render.DrawQuad(current_pos, size, *m_BodyTexture, Color::White, rotation);
 				current_pos.y -= 64.0f;
 			}
 		}
@@ -51,15 +51,14 @@ void Pipe::OnRender(const en::RenderArgs& args)
 		{
 			current_pos.y = m_ColisionBox.pos.y;
 			rotation = 180.0f;
-			args.render.DrawQuad(current_pos, size, *m_HeadTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+			args.render.DrawQuad(current_pos, size, *m_HeadTexture, Color::White, rotation);
 			current_pos.y += 64.0f;
 			for (int i = 1; i < h*2; i++)
 			{
-				args.render.DrawQuad(current_pos, size, *m_BodyTexture, 2.0f, { 1.0f,1.0f,1.0f,1.0f }, glm::radians(rotation));
+				args.render.DrawQuad(current_pos, size, *m_BodyTexture, Color::White, rotation);
 				current_pos.y += 64.0f;
 			}
 		}
-			
 		//args.render.DrawOutLineQuad(m_ColisionBox.pos, m_ColisionBox.size, {1.0f,0.0f,0.0f,1.0f}, 3.0f, glm::radians(rotation));
 	}
 }

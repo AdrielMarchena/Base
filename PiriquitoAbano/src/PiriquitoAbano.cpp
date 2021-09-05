@@ -21,12 +21,12 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 
 	args.camera.SetScroll(false);
 
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetQuadShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetCircleShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetTriShader(), false);
-	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, args.render.GetLineShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, *args.render.GetQuadShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, *args.render.GetCircleShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, *args.render.GetTriShader(), false);
+	m_Lights.UpdateAmbient(en::windowing::Ambient::Middle * 1.1f, *args.render.GetLineShader(), false);
 
-	en::windowing::LightSource source;
+	en::windowing::LightSource source{};
 	source.m_LightIntencity = 500.0f;
 	source.u_LightColor = { 0.9f,0.8f,0.2f,1.0f };
 	source.u_LightPos.x = glm::lerp(0.0f, args.res_h, 0.99f);
@@ -34,10 +34,10 @@ void PiriquitoAbano::OnAttach(en::AttachArgs args)
 
 	m_Lights.AddStaticLightSource(source);
 
-	m_Lights.UpdateStaticLight(args.render.GetQuadShader());
-	m_Lights.UpdateStaticLight(args.render.GetCircleShader());
-	m_Lights.UpdateStaticLight(args.render.GetLineShader());
-	m_Lights.UpdateStaticLight(args.render.GetTriShader());
+	m_Lights.UpdateStaticLight(*args.render.GetQuadShader());
+	m_Lights.UpdateStaticLight(*args.render.GetCircleShader());
+	m_Lights.UpdateStaticLight(*args.render.GetLineShader());
+	m_Lights.UpdateStaticLight(*args.render.GetTriShader());
 
 	m_Piriquito.SetTexture(m_Textures["priquito_atlas"]);
 	m_Piriquito.OnAttach(args);
@@ -117,9 +117,9 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 		{0,0}
 	};
 
-	if (args.keyboard.isClicked(GLFW_KEY_R))
+	if (args.keyboard.isClicked(BASE_KEY_R))
 		Restart(args);
-	if (args.keyboard.isClicked(GLFW_KEY_P))
+	if (args.keyboard.isClicked(BASE_KEY_P))
 		SwitchPause();
 	//Update Piriquito
 	if (m_State == PiriquitoState::PLAYING)
@@ -161,7 +161,7 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 	else
 	{
 		if (m_State == PiriquitoState::GAMEOVER){
-			if (args.keyboard.isClicked(GLFW_KEY_SPACE))
+			if (args.keyboard.isClicked(BASE_KEY_SPACE))
 			{
 				Restart(args);
 				m_Piper.Reset();
@@ -170,7 +170,7 @@ void PiriquitoAbano::OnUpdate(en::UpdateArgs args)
 		}
 		if (m_State == PiriquitoState::PAUSE)
 		{
-			if (args.keyboard.isClicked(GLFW_KEY_SPACE))
+			if (args.keyboard.isClicked(BASE_KEY_SPACE))
 			{
 				SwitchPause();
 			}
@@ -202,7 +202,7 @@ void PiriquitoAbano::OnRender(en::RenderArgs args)
 		{0.0f,0.0f,1.0f,0.9f}
 	};
 
-	args.render.DrawTriangle(m_Pointer, pointer_colors, 10.0f);
+	args.render.DrawTriangle(m_Pointer, pointer_colors);
 	Window::OnRender(args);
 }
 
@@ -241,9 +241,9 @@ void PiriquitoAbano::OnMouseAction(en::MouseArgs args)
 		UnhideCursor();
 		break;
 	default:
-		m_Pointer[0] = m_pos(args.mouse);
-		m_Pointer[1] = m_Pointer[0] - (glm::vec2(-15.0f, 7.5f) * 1.50f);
-		m_Pointer[2] = m_Pointer[0] - (glm::vec2(-7.5f, 15.0f) * 1.50f);
+		m_Pointer[0] = glm::vec3(m_pos(args.mouse),10.0f);
+		m_Pointer[1] = m_Pointer[0] - (glm::vec3(-15.0f, 7.5f,0.0f) * 1.50f);
+		m_Pointer[2] = m_Pointer[0] - (glm::vec3(-7.5f, 15.0f,0.0f) * 1.50f);
 		break;
 	}
 }
@@ -289,6 +289,8 @@ void PiriquitoAbano::LoadSounds(const char* directory)
 	catch (const utils::baseException::directory_not_found& dex)
 	{
 		//TODO: Put a default texture on the u_map (do not rethrow please)
+		// The ResourceManager return a default one already
+		// Yes i'm arguing with my self here
 		APP_ERROR("Directory to Audios ({0}) not found!", dex.path());
 	}
 	catch (const std::exception& ex)
@@ -308,7 +310,7 @@ void PiriquitoAbano::LoadText(const char* directory)
 	}
 	catch (const utils::baseException::directory_not_found& dex)
 	{
-		//TODO: Put a default texture on the u_map (do not rethrow please)
+		// TODO: Put a default text on the u_map (do not rethrow please)
 		APP_ERROR("Directory to Fonts ({0}) not found!", dex.path());
 	}
 	catch (const std::exception& ex)

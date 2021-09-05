@@ -109,21 +109,22 @@ void Background::OnUpdate(const en::UpdateArgs& args)
 
 void Background::OnRender(const en::RenderArgs& args)
 {
-	static glm::vec4 b_color;
-	static glm::vec4 sun_color;
-	static glm::vec2 sun_pos;
+	static glm::vec4 b_color{};
+	static glm::vec4 sun_color{};
+	static glm::vec3 sun_pos{};
 	static bool once = [&]()
 	{
 		float n = 1.0f / 256.0f;
 		b_color = { n * 95.0f,n * 197.0f,n * 228.0f,1.0f };
 		sun_pos.x = glm::lerp(0.0f, args.res_h, 0.99f);
 		sun_pos.y = glm::lerp(0.0f, args.res_w, 0.50f);
+		sun_pos.z = 1.01f;
 		sun_color = { n * 247.0f,n * 202.0f,n * 24.0f, 1.0f };
 		return true;
 	}();
 
-	args.render.DrawCircle(sun_pos, 150.0f, sun_color, true, 1.0f, 1.01f);
-	args.render.DrawQuad({ 0.0f,0.0f }, { args.res_w ,args.res_h }, b_color, -0.0f);
+	args.render.DrawCircle(sun_pos, 150.0f, sun_color, true, 1.0f);
+	args.render.DrawQuad({ args.res_w/2,args.res_h / 2,0.0f }, { args.res_w ,args.res_h }, b_color);
 	MapM([&](Mountain& m)
 	{
 		m.OnRender(args);
