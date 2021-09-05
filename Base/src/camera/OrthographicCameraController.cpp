@@ -22,26 +22,26 @@ namespace en {
 
 	void OrthographicCameraController::OnUpdate(UpdateArgs args)
 	{
-		auto& keyboard = args.keyboard;
-		if (m_Move)
+
+		/*if (m_Move)
 		{
-			if (keyboard.isPress(GLFW_KEY_LEFT))
+			if (keyboard.isPress(BASE_KEY_LEFT))
 			{
 				m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
 				m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
 			}
-			else if (keyboard.isPress(GLFW_KEY_RIGHT))
+			else if (keyboard.isPress(BASE_KEY_RIGHT))
 			{
 				m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
 				m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
 			}
 
-			if (keyboard.isPress(GLFW_KEY_UP))
+			if (keyboard.isPress(BASE_KEY_UP))
 			{
 				m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
 				m_CameraPosition.y += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
 			}
-			else if (keyboard.isPress(GLFW_KEY_DOWN))
+			else if (keyboard.isPress(BASE_KEY_DOWN))
 			{
 				m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
 				m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * args.dt;
@@ -49,9 +49,9 @@ namespace en {
 		}
 		if (m_Rotation)
 		{
-			if (keyboard.isPress(GLFW_KEY_Q))
+			if (keyboard.isPress(BASE_KEY_Q))
 				m_CameraRotation += m_CameraRotationSpeed * args.dt;
-			if (keyboard.isPress(GLFW_KEY_E))
+			if (keyboard.isPress(BASE_KEY_E))
 				m_CameraRotation -= m_CameraRotationSpeed * args.dt;
 
 			if (m_CameraRotation > 180.0f)
@@ -63,7 +63,7 @@ namespace en {
 		}
 
 		m_Camera.SetPosition(m_CameraPosition);
-		m_CameraTranslationSpeed = m_ZoomLevel;
+		m_CameraTranslationSpeed = m_ZoomLevel;*/
 	}
 
 	bool OrthographicCameraController::OnMouseScrolled(double_t yoffset, float_t m_value)
