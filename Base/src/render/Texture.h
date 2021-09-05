@@ -36,7 +36,6 @@ namespace render
 		int32_t  m_Wid = NULL;
 		int32_t  m_Hei = NULL;
 		int32_t  m_Bit = NULL;
-		bool copy = false; //Maybe is trash code?
 		bool disposed = false;
 	public:
 		Texture() = default;
@@ -45,58 +44,15 @@ namespace render
 		~Texture() 
 		{ 
 		};
-		
-		Texture(Texture& other) noexcept
-		{
-			BASE_DEBUG("Texture& other");
-			StealFrom(other);
-			this->copy = true;
-		}
-		Texture(Texture&& other) noexcept :copy(false)
-		{
-			BASE_DEBUG("Texture&& other");
-			StealFrom(other);
-			DeleteFrom(std::move(other));
-			copy = false;
-		}
-		Texture& operator=(Texture& other) noexcept
-		{
-			BASE_DEBUG("=Texture& other");
-			if (this == &other)
-				return *this;
-			StealFrom(other);
-			this->copy = true;
-			return *this;
-		}
-		Texture& operator=(Texture&& other) noexcept
-		{
-			BASE_DEBUG("=Texture&& other");
-			if (this == &other)
-				return *this;
 
-			if (deletable() && m_Id)
-				Dispose();
-			//Delete any heap alocated here
-
-			StealFrom(other);
-			DeleteFrom(std::move(other));
-
-			this->copy = false;
-			return *this;
-		}
 		uint32_t GetId() const { return m_Id; };
 		glm::vec2 GetSize() const { return { m_Wid ,m_Hei }; }
 
 		static ImageInfo GetImage(const char* path);
 		static ImageInfo GetPNGImage(const char* path);
 		static ResourceManager<Texture> LoadAsyncTexture(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE, uint8_t batchLimit = 5);
-		static Texture& GetBlanckTexture()
-		{
-			static Texture tmp;
-			return tmp;
-		}
-
-		bool IsCopy() const { return copy; }
+		
+		operator bool() const { return (bool)m_Id; }
 
 		//Used only for draw Text
 		void SetID(GLuint new_id) { m_Id = new_id; }
@@ -111,30 +67,6 @@ namespace render
 					disposed = true;
 				}
 			}
-		}
-	private:
-		inline bool deletable() const
-		{
-			return (m_Id && !copy);
-		}
-
-		inline void StealFrom(Texture& other)
-		{
-			m_Id = other.m_Id;
-			m_Wid = other.m_Wid;
-			m_Hei = other.m_Hei;
-			m_Bit = other.m_Bit;
-			disposed = other.disposed;
-		}
-		//void DeleteFrom(Texture& other) { DeleteFrom((Texture&&)other); }
-		inline void DeleteFrom(Texture&& other)
-		{
-			other.m_Id = NULL;
-			other.m_Wid = NULL;
-			other.m_Hei = NULL;
-			other.m_Bit = NULL;
-			other.copy = false;
-			other.disposed = false;
 		}
 	};
 }
