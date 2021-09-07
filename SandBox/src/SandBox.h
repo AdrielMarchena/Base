@@ -6,9 +6,10 @@
 class SandBox : public en::windowing::Window
 {
 private:
-	std::unique_ptr<en::Scene> m_Scene;
 	en::Entity m_Camera;
-	en::Entity m_Ball;
+	std::vector<en::Entity> m_Balls;
+	std::unique_ptr<en::Scene> m_Scene;
+
 public:
 	SandBox();
 	~SandBox();
