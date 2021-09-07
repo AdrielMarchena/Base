@@ -2,7 +2,6 @@
 #pragma once
 #include "entt/entt.hpp"
 #include "args/UpdateArgs.h"
-#include "Components.h"
 
 namespace en
 {
@@ -13,6 +12,9 @@ namespace en
 
 		Scene();
 		~Scene();
+
+		void SceneBegin();
+		void SceneEnd();
 
 		Entity CreateEntity(const std::string& name = std::string());
 

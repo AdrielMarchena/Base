@@ -1,7 +1,6 @@
 #pragma once
 #include "Scene.h"
 #include "entt/entt.hpp"
-struct DumbThing{};
 namespace en
 {
 	class Entity
