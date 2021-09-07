@@ -44,7 +44,6 @@ namespace render
 		{ 
 		}
 
-		//TODO: Create a .cpp file
 		virtual void BeginScene(const glm::mat4& viewProj, const glm::mat4& transform_g)
 		{
 			mShader->Bind();

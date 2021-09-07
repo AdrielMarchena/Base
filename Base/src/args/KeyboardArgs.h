@@ -22,7 +22,6 @@ namespace en
 	{
 		KeyboardArgs() = default;
 		KeyboardAction k_action;
-		input::Keyboard& keyboard;
 
 		int32_t key;
 		int32_t scancode;

@@ -12,7 +12,6 @@ namespace en
 {
 namespace utils
 {
-	//TODO: copy safe this entire thing, there's a mutex here
 	template<typename _Key, typename _Res>
 	struct ResourceLoads
 	{
@@ -22,6 +21,9 @@ namespace utils
 		std::mutex mutex;
 
 		ResourceLoads() = default;
+		ResourceLoads(ResourceLoads&) = delete;
+		ResourceLoads(ResourceLoads&&) = delete;
+		ResourceLoads& operator=(const ResourceLoads&) = delete;
 
 		bool isAllLoad() const
 		{

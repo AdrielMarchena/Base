@@ -26,7 +26,6 @@ namespace en
 	{
 		MouseArgs() = default;
 		MouseAction m_action;
-		input::Mouse& mouse;
 
 		double_t Xpos;
 		double_t Ypos;

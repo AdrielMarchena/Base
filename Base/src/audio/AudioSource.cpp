@@ -52,7 +52,6 @@ namespace aux
 				catch (const std::exception& ex)
 				{
 					const std::string error_what = ex.what();
-					//TODO: This message is strange
 					BASE_WARN("{0} could not be used to create AudioSorce\nError: '{1}'",inf.first, error_what);
 				}
 				break;

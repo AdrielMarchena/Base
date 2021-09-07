@@ -80,7 +80,7 @@ namespace render
 		if (!px)
 			throw std::exception("The pixels tried to be loaded are empty");
 		info.m_Pixels = px;
-		//TODO: Add er to exception message
+
 		const char* er = stbi_failure_reason();
 		if (er)
 		{

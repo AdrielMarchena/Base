@@ -63,7 +63,6 @@ namespace en
 			MouseArgs args
 			{
 				MouseAction::SCROLL,
-				ptr->mouse,
 				0.0,0.0,
 				xOffSet,
 				yOffSet,
@@ -79,7 +78,6 @@ namespace en
 			MouseArgs args
 			{
 				MouseAction::MOVE,
-				ptr->mouse,
 				xPos,
 				yPos,
 				0.0,0.0,
@@ -96,7 +94,6 @@ namespace en
 			MouseArgs args
 			{
 				action == GLFW_PRESS ? MouseAction::PRESS : MouseAction::RELEASE,
-				ptr->mouse,
 				0.0,0.0,0.0,0.0,
 				key,
 				action,
@@ -110,7 +107,6 @@ namespace en
 			KeyboardArgs args
 			{
 				action == GLFW_PRESS ? KeyboardAction::PRESS : KeyboardAction::RELEASE,
-				ptr->keyboard,
 				key,
 				scancode,
 				action,
@@ -124,7 +120,6 @@ namespace en
 			MouseArgs args
 			{
 				MouseAction::LEAVE,
-				ptr->mouse,
 				0.0,0.0,0.0,0.0,
 				0,
 				0,
@@ -143,7 +138,7 @@ namespace en
 
 		void Window::ClampTMouse()
 		{
-			glfwSetCursorPos(m_Window, mouse.gpos().x, mouse.gpos().y);
+			glfwSetCursorPos(m_Window, input::Mouse::gpos().x, input::Mouse::gpos().y);
 		}
 
 		void Window::HideCursor()
@@ -200,7 +195,7 @@ namespace en
 			BASE_TRACE("Window created!");
 
 			glfwMakeContextCurrent(m_Window);
-			glfwSwapInterval(1);
+			glfwSwapInterval(0);
 
 			if (glewInit() != GLEW_OK)
 			{
@@ -265,16 +260,13 @@ namespace en
 			auto render = render::Render2D(); //Temp
 
 			SetResizeble(false);
-			//SetPerpectiveInShaders();
-
-			//TODO: Remove camera (and render things) from here
-			//float_t asp_ratio = m_Wid/m_Hei;
-			//en::Camera camera(glm::ortho(-1 * 1.0f, 1 * 1.0f, -1.0f, 1.0f,-1.0f,1.0f));
 
 			render.SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 
-			float deltaTime = 0.0f;
-			float lastFrame = 0.0f;
+			double deltaTime = 0.0;
+			double lastFrame = 0.0;
+			double fps = 0.0;
+			double fps_lastFrame = 0.0;
 			OnAttach();
 			
 			std::string fps_title = m_Title + " | FPS: " + std::to_string(nbFrame);
@@ -284,68 +276,42 @@ namespace en
 			
 			while (!glfwWindowShouldClose(m_Window))
 			{
+				//Check Events
 				glfwPollEvents();
 
-				// Delta Time and FPS things
-				float currentTime = glfwGetTime();
+				// Delta Time and FPS calculations
+				double currentTime = glfwGetTime();
 				deltaTime = currentTime - lastFrame;
 				lastFrame = currentTime;
 				nbFrame++;
-				double fps = double(nbFrame) / deltaTime;
 				
-				//Camera Update
-				UpdateArgs up_args = { deltaTime,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y };
-
-				//Update shader things
-				//SetViewInShaders();
-				//auto t = glm::translate(glm::mat4(1.0f), { 0.0f,0.0f,0.0f });// *glm::scale(glm::mat4(1.0f), { m_Wid, m_Hei, 1.0f });
-				glm::mat4 t = glm::translate(glm::mat4(1.0f), {0.0f,0.0f,0.0f}) *
-					glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
+				if (currentTime - fps_lastFrame >= 1.0)
+				{
+					//fps = 1000.0 / deltaTime;
+					UpdateFpsTitle(nbFrame);
+					nbFrame = 0;
+					fps_lastFrame = currentTime;
+				}
 				
-				//TODO: Scene here somehow? or maybe leave to the client
 				//Game Update 
-				OnUpdate(up_args);
-
-				//Set FPS on window title
-				fps_title = m_Title + " | FPS: " + std::to_string(fps);
-				glfwSetWindowTitle(m_Window, fps_title.c_str());
-
+				OnUpdate({ (float)deltaTime,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
+				UpdateWindow();
 				//Call render method
-				OnRender(); // TODO: REMOVE
+				OnRender();
 
 				//ImGui things
 				DEAR_NEW_FRAME();
-
 				OnImGui();
-
 				DEAR_END_FRAME();
 
-				nbFrame = 0;
 				//Swap buffer
 				glfwSwapBuffers(m_Window);
 			}
 			BASE_TRACE("Game loop Ended!");
 			Dispose();
+			CloseWindow();
 		}
-		void Window::OnUpdate(const UpdateArgs& args)
-		{
-			if (keyboard.isPress(BASE_KEY_LEFT_CONTROL) && keyboard.isPress(BASE_KEY_Q))
-				glfwSetWindowShouldClose(m_Window,GLFW_TRUE);
-		}
-
-		void Window::OnAttach()
-		{
-		}
-
-		void Window::OnRender()
-		{
-		}
-
-		void Window::OnImGui()
-		{
-		}
-
-		void Window::Dispose()
+		void Window::CloseWindow()
 		{
 			render::Render2D::Dispose();
 			try
@@ -357,7 +323,20 @@ namespace en
 				BASE_ERROR(ex.what());
 			}
 			BASE_TRACE("Dispose completed!");
-			
+		}
+
+		void Window::UpdateFpsTitle(double fps)
+		{
+			//Set FPS on window title
+			static std::string fps_title;
+			fps_title = m_Title + " | FPS: " + std::to_string(fps);
+			glfwSetWindowTitle(m_Window, fps_title.c_str());
+		}
+		
+		void Window::UpdateWindow()
+		{
+			if (input::Keyboard::isPress(BASE_KEY_LEFT_CONTROL) && input::Keyboard::isPress(BASE_KEY_Q))
+				glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
 		}
 
 		void Window::SetResizeble(bool resizeble)
@@ -368,7 +347,6 @@ namespace en
 
 		void Window::OnResize(ResizeArgs args)
 		{
-			//CALLBACK_STATIC_CAST(Window, window)->m_camera.Resize(w, h);
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
 			m_AspectRatio = m_Wid / m_Hei;
@@ -383,13 +361,13 @@ namespace en
 				{
 				case MouseAction::PRESS:
 				case MouseAction::RELEASE:
-					mouse.on_mouse_button( args.key, args.action, args.mods);
+					input::Mouse::on_mouse_button( args.key, args.action, args.mods);
 					break;
 				case MouseAction::MOVE:
-					mouse.on_mouse_cursor(args.Xpos, args.Ypos);
+					input::Mouse::on_mouse_cursor(args.Xpos, args.Ypos);
 					break;
 				case MouseAction::SCROLL:
-					mouse.on_mouse_scroll(args.Xoffset, args.Yoffset);
+					input::Mouse::on_mouse_scroll(args.Xoffset, args.Yoffset);
 
 					break;
 				}
@@ -397,7 +375,7 @@ namespace en
 		void Window::OnKeyboardAction(KeyboardArgs args)
 		{
 			if (args.k_action != KeyboardAction::INVALID)
-				keyboard.on_keyboard_button(args.key, args.scancode, args.action, args.mods);
+				input::Keyboard::on_keyboard_button(args.key, args.scancode, args.action, args.mods);
 		}
 	}
 }

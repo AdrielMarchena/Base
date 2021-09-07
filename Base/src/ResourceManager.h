@@ -59,7 +59,6 @@ public:
 		if (!key.empty())
 			if(m_Resources.find(key) != m_Resources.end())
 				return m_Resources[key];
-		//TODO: Do something when there is no thing here
 		return m_Resources[d_text];
 	}
 	std::shared_ptr<T> operator[](const char* key) noexcept
@@ -67,7 +66,6 @@ public:
 		if(key && key != "")
 			if (m_Resources.find(key) != m_Resources.end())
 				return m_Resources[key];
-		//TODO: Do something when there is no thing here
 		return m_Resources[d_text];
 	}
 };

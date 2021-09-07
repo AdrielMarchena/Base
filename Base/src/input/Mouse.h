@@ -23,42 +23,41 @@ namespace input
 	class Mouse
 	{
 	private:
-		std::array<bool, EN_MOUSE_NUMBER_KEYS> keysPressed;
-		mutable std::array<bool, EN_MOUSE_NUMBER_KEYS> singleClickControl;
+		static std::array<bool, EN_MOUSE_NUMBER_KEYS> keysPressed;
+		static std::array<bool, EN_MOUSE_NUMBER_KEYS> singleClickControl;
 
-		glm::vec2 pos		= { 0.0f,0.0f };
-		glm::vec2 prevPos	= { 0.0f,0.0f };
-		mutable glm::vec2 OffValue	= { 0.0f,0.0f };
-		glm::vec2 PrevOff	= { 0.0f,0.0f };
-		bool AnyKey = false;
+		static glm::vec2 pos;
+		static glm::vec2 prevPos;
+		static glm::vec2 OffValue;
+		static glm::vec2 PrevOff;
+		static bool AnyKey;
 	public:
-		Mouse()
-		: keysPressed(std::array<bool, EN_MOUSE_NUMBER_KEYS>()),
-		  singleClickControl(std::array<bool, EN_MOUSE_NUMBER_KEYS>())
-		{}
-
 		~Mouse(){}
 
-		bool isClicked(int32_t key)const;
-		bool isPress(int32_t key)const;
+		static void Init();
+
+		static bool isClicked(int32_t key);
+		static bool isPress(int32_t key);
 		
-		bool isAnyKey() const;
+		static bool isAnyKey();
 
-		void on_mouse_button(int32_t key, int32_t action, int32_t mods);
-		void on_mouse_scroll(double_t xOffSet, double_t yOffSet);
-		void on_mouse_cursor(double_t xPos, double_t yPos);
+		static void on_mouse_button(int32_t key, int32_t action, int32_t mods);
+		static void on_mouse_scroll(double_t xOffSet, double_t yOffSet);
+		static void on_mouse_cursor(double_t xPos, double_t yPos);
 
-		glm::vec2 gpos() const { return pos; }
-		glm::vec2 gprevPos() const  { return prevPos; }
-		glm::vec2 goffValue() const 
+		static glm::vec2 gpos() { return pos; }
+		static glm::vec2 gprevPos()  { return prevPos; }
+		static glm::vec2 goffValue()
 		{ 
 			auto aux = OffValue;
 			OffValue = { 0.0f,0.0f };
 			return aux;
 		}
-		glm::vec2 gprevOffValue() const { return PrevOff; }
+		static glm::vec2 gprevOffValue() { return PrevOff; }
 
-		void clamp_cursor(float_t min_x, float_t max_x, float_t min_y, float_t max_y);
+		static glm::vec2 m_pos(float h) { return { pos.x, -(pos.y - h) }; }
+
+		static void clamp_cursor(float_t min_x, float_t max_x, float_t min_y, float_t max_y);
 	};
 }
 }

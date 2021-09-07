@@ -105,7 +105,7 @@ namespace en
 
 		void LineRender2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& dest, const glm::vec4& color,float_t precision)
 		{
-			glm::vec3* acting_origin = &const_cast<glm::vec3&>(origin); //TODO: remove const_cast ??
+			glm::vec3* acting_origin = &const_cast<glm::vec3&>(origin);
 			glm::vec3 acting_interpol{};
 			for (float i = precision; i < 1; i+= precision)
 			{
@@ -118,7 +118,7 @@ namespace en
 		}
 		void LineRender2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, float_t precision)
 		{
-			glm::vec3* acting_origin = &const_cast<glm::vec3&>(origin); //TODO: remove const_cast ??
+			glm::vec3* acting_origin = &const_cast<glm::vec3&>(origin);
 			glm::vec3 acting_interpol{};
 			for (float i = precision; i < 1; i += precision)
 			{

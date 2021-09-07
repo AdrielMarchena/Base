@@ -125,7 +125,6 @@ namespace render
         }
         FT_Done_Face(face.face);
         GLCall(glBindTexture(GL_TEXTURE_2D, 0));
-        //TODO: I dont know how to delete all faces
     }
 
     Text::~Text()
@@ -171,7 +170,7 @@ namespace render
                 continue;
             ch = it->second;
             //Draw here
-            x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+            x += (ch.Advance >> 6) * scale;
         }
         return x;
     }

@@ -13,12 +13,21 @@ namespace en
 {
 namespace input
 {
-	bool Keyboard::isPress(int32_t key) const
+	bool Keyboard::AnyKey = false;
+	std::array<bool, EN_KEYBOARD_NUMBER_KEYS> Keyboard::keysPressed{false};
+	std::array<bool, EN_KEYBOARD_NUMBER_KEYS> Keyboard::singleClickControl{false};
+	
+	void Keyboard::Init()
+	{
+		//TODO: Idk, remove latter i guess
+	}
+
+	bool Keyboard::isPress(int32_t key)
 	{
 		key -= 32;
 		return keysPressed[key];
 	}
-	bool Keyboard::isClicked(int32_t key) const
+	bool Keyboard::isClicked(int32_t key)
 	{
 		key -= 32;
 		if (!keysPressed[key] || singleClickControl[key])
@@ -28,7 +37,7 @@ namespace input
 		return keysPressed[key];
 	}
 
-	bool Keyboard::isAnyKey() const
+	bool Keyboard::isAnyKey()
 	{
 		return AnyKey;
 	}

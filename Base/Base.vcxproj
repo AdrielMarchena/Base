@@ -279,6 +279,7 @@
     <ClInclude Include="src\render\SubTexture.h" />
     <ClInclude Include="src\args\UpdateArgs.h" />
     <ClInclude Include="src\render\Text.h" />
+    <ClInclude Include="src\scene\ScriptableEntity.h" />
     <ClInclude Include="src\utils\alc_error_macro_db.h" />
     <ClInclude Include="src\utils\al_error_marcro_db.h" />
     <ClInclude Include="src\utils\base_assert.h" />

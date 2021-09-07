@@ -111,6 +111,12 @@ namespace render
 
 	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
+		if (m_data.IndexCount >= MaxIndexCount)
+		{
+			EndBatch();
+			Flush();
+			BeginBatch();
+		}
 		float fullSize = radius * 2;
 		constexpr float tex_index = 0;
 

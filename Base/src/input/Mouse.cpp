@@ -15,14 +15,29 @@ namespace en
 {
 namespace input
 {
-	bool Mouse::isPress(int32_t key) const
+
+	std::array<bool, EN_MOUSE_NUMBER_KEYS> Mouse::keysPressed{false};
+	std::array<bool, EN_MOUSE_NUMBER_KEYS> Mouse::singleClickControl{false};
+
+	glm::vec2 Mouse::pos		= {0.0f,0.0f};
+	glm::vec2 Mouse::prevPos	= {0.0f,0.0f};
+	glm::vec2 Mouse::OffValue	= {0.0f,0.0f};
+	glm::vec2 Mouse::PrevOff	= {0.0f,0.0f};
+	bool Mouse::AnyKey = false;
+
+	void Mouse::Init()
+	{
+
+	}
+
+	bool Mouse::isPress(int32_t key)
 	{
 		if (key > 16)
 			return false;
 		return keysPressed[key];
 	}
 
-	bool Mouse::isClicked(int32_t key) const
+	bool Mouse::isClicked(int32_t key)
 	{
 		if (key > 16)
 			return false;
@@ -33,7 +48,7 @@ namespace input
 		return keysPressed[key];
 	}
 
-	bool Mouse::isAnyKey() const
+	bool Mouse::isAnyKey()
 	{
 		return AnyKey;
 	}

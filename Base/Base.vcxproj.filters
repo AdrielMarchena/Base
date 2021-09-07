@@ -264,5 +264,8 @@
     <ClInclude Include="src\render\geo_renders\QuadRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\scene\ScriptableEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
