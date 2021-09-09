@@ -17,6 +17,7 @@ namespace en
 		void SceneEnd();
 
 		Entity CreateEntity(const std::string& name = std::string());
+		void StartNativeScript(Entity& ent);
 
 		//entt::registry& Reg() { return m_Registry; }
 		void OnUpdate(const UpdateArgs& args);

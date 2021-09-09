@@ -15,9 +15,6 @@ namespace en
 
 	Scene::Scene()
 	{
-		//entt::entity entity = m_Registry.create();
-		
-		//m_S_Pointer_Scene = std::make_shared<Scene*>(this);
 	}
 
 	Scene::~Scene()
@@ -40,16 +37,16 @@ namespace en
 
 	void Scene::SceneEnd()
 	{
-		{//Kill all Scripts
-			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
-				{
-					if (!script.Instance)
-					{
-						script.DestroyScript(&script);
-						script.Instance->OnDestroy();
-					}
-				});
-		}
+		//Destroy all Scripts
+		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
+		{
+			if (!script.Instance)
+			{
+				script.DestroyScript(&script);
+				script.Instance->OnDestroy();
+			}
+		});
+		
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -60,6 +57,18 @@ namespace en
 		tag.Tag = name.empty() ? "Unnamed Entity" : name;
 		return entity;
 	}
+
+	void Scene::StartNativeScript(Entity& ent)
+	{
+		auto& script = ent.GetComponent<NativeScriptComponent>();
+		if (!script.Instance)
+		{
+			script.Instance = script.InstantiateScript(); //Instanciate the script class inside
+			script.Instance->m_Entity = ent;
+			script.Instance->OnAwake();
+		}
+	}
+
 	void Scene::OnUpdate(const UpdateArgs& args)
 	{
 		{//Native Scripts
@@ -102,14 +111,38 @@ namespace en
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-					//glm::vec2 position = glm::vec2(pos.Transform[12], pos.Transform[13]);
-					//glm::vec2 Size = { 120,102 }; //TODO: REMOVE THIS
+					render::DrawQuad(position.Transform, spr.Color, spr.Rotation, spr.Axis);
+				}
+			}
+
+			{//Draw Textures
+				auto view = m_Registry.view<TransformComponent, TextureComponent>();
+				for (auto entity : view)
+				{
+					auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
 					if (spr.Texture)
-						render::DrawQuad(position.Transform, spr.Texture, spr.Color, spr.Rotation, spr.Axis);
-					else if (spr.SubTexture)
-						render::DrawQuad(position.Transform, spr.SubTexture, spr.Color, spr.Rotation, spr.Axis);
-					else
-						render::DrawQuad(position.Transform, spr.Color, spr.Rotation, spr.Axis);
+						render::DrawQuad(position.Transform, spr.Texture, Color::White, spr.Rotation, spr.Axis);
+				}
+			}
+
+			{//Draw SebTextures
+				auto view = m_Registry.view<TransformComponent, SubTextureComponent>();
+				for (auto entity : view)
+				{
+					auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
+					if (spr.SubTexture)
+						render::DrawQuad(position.Transform, spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
+				}
+			}
+
+			{//Draw Animated stuff
+				auto view = m_Registry.view<TransformComponent, AnimateComponent>();
+				for (auto entity : view)
+				{
+					//TODO: Test to see if works
+					auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
+					auto& sprite = anim.Animation.Run(args.dt);
+					render::DrawQuad(position.Transform, sprite, Color::White, anim.Rotation, anim.Axis);
 				}
 			}
 
