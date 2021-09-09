@@ -2,10 +2,11 @@
 
 #include "scene/Components.h"
 #include "utils/RandomList.h"
-
+#include "utils/Files.h"
 //Make sense?
 #define XPOS(x) x[3][0]
 #define YPOS(x) x[3][1]
+#define ZPOS(x) x[3][2]
 
 inline static float Distance(const glm::vec2& point_a, const glm::vec2& point_b)
 {
@@ -73,6 +74,8 @@ SandBox::~SandBox()
 
 void SandBox::OnAttach()
 {
+	m_Textures = en::render::Texture::LoadAsyncTexture(en::utils::Files::GetPairText("images/"));
+
 	m_Balls.reserve(1000);
 	m_Scene = std::make_unique<en::Scene>();
 	float norm = 1.0f / 256.0f;
@@ -80,6 +83,13 @@ void SandBox::OnAttach()
 	m_Balls.push_back(CreateBall(m_Scene.get()));
 	m_Balls.push_back(CreateBall(m_Scene.get()));
 
+	m_TexQuad = m_Scene->CreateEntity("Thing");
+	m_TexQuad.AddComponent<en::TextureComponent>(*m_Textures["test"]);
+	auto& pos = m_TexQuad.GetComponent<en::TransformComponent>().Transform;
+	XPOS(pos) = 400;
+	YPOS(pos) = 300;
+	ZPOS(pos) = 1.0f;
+	pos = glm::scale(pos, glm::vec3(-50.0f, 50.0f, 1.0f));//Negative flip in some way
 	//Camera
 	glm::mat4 camera_transform = glm::translate(glm::mat4(1.0f), { 0.0f,0.0f,0.0f }) *
 		glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
@@ -94,8 +104,9 @@ void SandBox::OnUpdate(const en::UpdateArgs& args)
 {
 	if (en::input::Mouse::isClicked(BASE_MOUSE_BUTTON_1))
 	{
-		m_Balls.push_back(CreateBall(m_Scene.get()));
-		m_Scene->SceneBegin(); //Temp because init the script for the new ball
+		auto ball = CreateBall(m_Scene.get());
+		m_Balls.push_back(ball);
+		m_Scene->StartNativeScript(ball);
 	}
 	m_Scene->OnUpdate(args);
 }
