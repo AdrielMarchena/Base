@@ -30,14 +30,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
@@ -45,14 +45,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
@@ -217,6 +217,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
+    <ClCompile Include="src\render\gl\IndexBuffer.cpp" />
+    <ClCompile Include="src\render\gl\VertexArray.cpp" />
+    <ClCompile Include="src\render\gl\VertexAttribute.cpp" />
+    <ClCompile Include="src\render\gl\VertexBuffer.cpp" />
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\Log.cpp" />
@@ -236,7 +240,7 @@
     <ClCompile Include="src\utils\Files.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\input\Mouse.cpp" />
-    <ClCompile Include="src\render\Shader.cpp" />
+    <ClCompile Include="src\render\gl\Shader.cpp" />
     <ClCompile Include="src\render\render2D.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\utils\Generic.cpp" />
@@ -251,6 +255,10 @@
     <ClInclude Include="src\input\MouseKeys.h" />
     <ClInclude Include="src\render\Camera.h" />
     <ClInclude Include="src\render\geo_renders\QuadRender.h" />
+    <ClInclude Include="src\render\gl\IndexBuffer.h" />
+    <ClInclude Include="src\render\gl\VertexArray.h" />
+    <ClInclude Include="src\render\gl\VertexAttribute.h" />
+    <ClInclude Include="src\render\gl\VertexBuffer.h" />
     <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\render\Colors.h" />
     <ClInclude Include="src\ResourceManager.h" />
@@ -288,7 +296,7 @@
     <ClInclude Include="src\colision\Colisions.h" />
     <ClInclude Include="src\input\Keyboard.h" />
     <ClInclude Include="src\input\Mouse.h" />
-    <ClInclude Include="src\render\Shader.h" />
+    <ClInclude Include="src\render\gl\Shader.h" />
     <ClInclude Include="src\render\render2D.h" />
     <ClInclude Include="src\utils\Generic.h" />
     <ClInclude Include="src\utils\gl_error_macro_db.h" />

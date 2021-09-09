@@ -14,6 +14,7 @@ namespace en
 
 	protected:
 		virtual void OnCreate(){}
+		virtual void OnAwake(){}
 		virtual void OnUpdate(const UpdateArgs& args){}
 		virtual void OnDestroy(){}
 
