@@ -6,6 +6,7 @@
 #include "glm/glm.hpp"
 #include "render/Camera.h"
 #include "render/Colors.h"
+#include "ent/Animator.h"
 
 #include "ScriptableEntity.h"
 namespace en
@@ -40,10 +41,46 @@ namespace en
 			:Velocity(velocity) {}
 	};
 
-	struct SpriteComponent
+	struct TextureComponent
 	{
 		render::Texture Texture;
+		float_t Rotation = 0.0f;
+		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
+
+		TextureComponent() = default;
+		TextureComponent(const TextureComponent&) = default;
+		TextureComponent(const render::Texture& texture)
+			:Texture(texture) {}
+
+	};
+
+	struct AnimateComponent
+	{
+		ett::Animator Animation;
+		float_t Rotation = 0.0f;
+		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
+
+		AnimateComponent() = default;
+		AnimateComponent(const AnimateComponent&) = default;
+		AnimateComponent(const ett::Animator& animation)
+			:Animation(animation) {}
+	};
+
+	struct SubTextureComponent
+	{
 		render::SubTexture SubTexture;
+		float_t Rotation = 0.0f;
+		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
+
+		SubTextureComponent() = default;
+		SubTextureComponent(const SubTextureComponent&) = default;
+		SubTextureComponent(const render::SubTexture& sub_texture)
+			:SubTexture(sub_texture) {}
+
+	};
+
+	struct SpriteComponent
+	{
 		float_t Layer = 0.0f;
 		glm::vec4 Color = Color::Base_Color;
 		float_t Rotation = 0.0f;
@@ -53,10 +90,6 @@ namespace en
 		SpriteComponent(const SpriteComponent&) = default;
 		SpriteComponent(const glm::vec4& color)
 			:Color(color) {}
-		SpriteComponent(render::Texture texture,const glm::vec4& color)
-			:Texture(texture), Color(color){}
-		SpriteComponent(render::SubTexture sub_texture, const glm::vec4& color)
-			:SubTexture(sub_texture), Color(color) {}
 	};
 
 	struct CircleComponent
