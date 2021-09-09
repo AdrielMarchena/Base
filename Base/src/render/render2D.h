@@ -7,7 +7,7 @@
 #pragma once
 #include <array>
 #include "glm/glm.hpp"
-#include "Shader.h"
+#include "gl/Shader.h"
 #include "Texture.h"
 #include "SubTexture.h"
 #include <memory>

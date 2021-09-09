@@ -1,7 +1,11 @@
 #pragma once
 #include <stdint.h>
 #include <utility>
-#include "../Shader.h"
+#include "../gl/Shader.h"
+#include "../gl/VertexArray.h"
+#include "../gl/VertexBuffer.h"
+#include "../gl/VertexAttribute.h"
+#include "../gl/IndexBuffer.h"
 
 namespace en
 {
@@ -48,9 +52,9 @@ namespace render
 		RenderData() {}
 		~RenderData() {}
 
-		uint32_t VA = 0;
-		uint32_t VB = 0;
-		uint32_t IB = 0;
+		VertexArray VA;
+		VertexBuffer VB;
+		IndexBuffer IB;
 		uint32_t IndexCount = 0;
 		Vertex* Buffer = nullptr;
 		Vertex* BufferPtr = nullptr;

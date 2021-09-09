@@ -29,18 +29,23 @@ namespace en
 			m_data.Target = GL_LINES;
 			m_data.Buffer = new LineVertex[MaxLineVertexCount];
 
-			GLCall(glGenVertexArrays(1, &m_data.VA));
-			GLCall(glBindVertexArray(m_data.VA));
+			//GLCall(glGenVertexArrays(1, &m_data.VA));
+			//GLCall(glBindVertexArray(m_data.VA));
+			m_data.VA = VertexArray::CreateVertexArray();
 
-			GLCall(glGenBuffers(1, &m_data.VB));
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-			GLCall(glBufferData(GL_ARRAY_BUFFER, MaxLineVertexCount * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW));
+			//GLCall(glGenBuffers(1, &m_data.VB));
+			//GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
+			//GLCall(glBufferData(GL_ARRAY_BUFFER, MaxLineVertexCount * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW));
+			m_data.VB = VertexBuffer::CreateVertexBuffer(MaxLineVertexCount * sizeof(LineVertex));
 
-			GLCall(glEnableVertexAttribArray(0));
-			GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position)));
+			VertexAttribute layout(m_data.VA, m_data.VB);
+			//GLCall(glEnableVertexAttribArray(0));
+			//GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position)));
+			layout.AddLayout<float>(3, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position));
 
-			GLCall(glEnableVertexAttribArray(1));
-			GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color)));
+			//GLCall(glEnableVertexAttribArray(1));
+			//GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color)));
+			layout.AddLayout<float>(4, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));
 
 			//To much memory for the stack, free below
 			uint32_t* indices = new uint32_t[MaxLineIndexCount]{};
@@ -53,9 +58,10 @@ namespace en
 				offset += 2;
 			}
 
-			GLCall(glGenBuffers(1, &m_data.IB));
-			GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
-			GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+			//GLCall(glGenBuffers(1, &m_data.IB));
+			//GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
+			//GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+			m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
 			delete[] indices;
 
 		}

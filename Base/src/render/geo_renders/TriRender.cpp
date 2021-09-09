@@ -23,24 +23,31 @@ namespace render
 
 		m_data.Buffer = new TriangleVertex[MaxVertexCount];
 
-		GLCall(glGenVertexArrays(1, &m_data.VA));
-		GLCall(glBindVertexArray(m_data.VA));
+		//GLCall(glGenVertexArrays(1, &m_data.VA));
+		//GLCall(glBindVertexArray(m_data.VA));
+		m_data.VA = VertexArray::CreateVertexArray();
 
-		GLCall(glGenBuffers(1, &m_data.VB));
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-		GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(TriangleVertex), nullptr, GL_DYNAMIC_DRAW));
+		//GLCall(glGenBuffers(1, &m_data.VB));
+		//GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
+		//GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(TriangleVertex), nullptr, GL_DYNAMIC_DRAW));
+		m_data.VB = VertexBuffer::CreateVertexBuffer(MaxVertexCount * sizeof(TriangleVertex));
 
-		GLCall(glEnableVertexAttribArray(0));
-		GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Position)));
+		VertexAttribute layout(m_data.VA, m_data.VB);
+		//GLCall(glEnableVertexAttribArray(0));
+		//GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Position)));
+		layout.AddLayout<float>(3, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Position));
 
-		GLCall(glEnableVertexAttribArray(1));
-		GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Color)));
+		//GLCall(glEnableVertexAttribArray(1));
+		//GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Color)));
+		layout.AddLayout<float>(4, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Color));
 
-		GLCall(glEnableVertexAttribArray(2));
-		GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexCoords)));
+		//GLCall(glEnableVertexAttribArray(2));
+		//GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexCoords)));
+		layout.AddLayout<float>(2, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexCoords));
 
-		GLCall(glEnableVertexAttribArray(3));
-		GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexIndex)));
+		//GLCall(glEnableVertexAttribArray(3));
+		//GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexIndex)));
+		layout.AddLayout<float>(1, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexIndex));
 
 		//To much memory for the stack, free below
 		uint32_t* indices = new uint32_t[MaxIndexCount]{};
@@ -54,9 +61,10 @@ namespace render
 			offset += 3;
 		}
 
-		GLCall(glGenBuffers(1, &m_data.IB));
-		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+		//GLCall(glGenBuffers(1, &m_data.IB));
+		//GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
+		//GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+		m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
 		delete[] indices;
 
 		//1x1 white Texture

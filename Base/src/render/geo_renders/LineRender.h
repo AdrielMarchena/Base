@@ -7,7 +7,6 @@
 #pragma once
 #include <array>
 #include "glm/glm.hpp"
-#include "../Shader.h"
 #include <memory>
 #include <math.h>
 #include "RenderTemplate.h"

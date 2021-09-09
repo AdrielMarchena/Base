@@ -1,5 +1,6 @@
 #include "CircleRender.h"
 #include "utils/gl_error_macro_db.h"
+
 namespace en
 {
 namespace render
@@ -23,30 +24,39 @@ namespace render
 
 		m_data.Buffer = new CircleVertex[MaxVertexCount];
 
-		GLCall(glGenVertexArrays(1, &m_data.VA));
-		GLCall(glBindVertexArray(m_data.VA));
+		//GLCall(glGenVertexArrays(1, &m_data.VA));
+		//GLCall(glBindVertexArray(m_data.VA));
+		m_data.VA = VertexArray::CreateVertexArray();
 
-		GLCall(glGenBuffers(1, &m_data.VB));
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-		GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(CircleVertex), nullptr, GL_DYNAMIC_DRAW));
+		//GLCall(glGenBuffers(1, &m_data.VB));
+		//GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
+		//GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(CircleVertex), nullptr, GL_DYNAMIC_DRAW));
+		m_data.VB = VertexBuffer::CreateVertexBuffer(MaxVertexCount * sizeof(CircleVertex));
 
-		GLCall(glEnableVertexAttribArray(0));
-		GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Position)));
+		VertexAttribute layout(m_data.VA, m_data.VB);
+		//GLCall(glEnableVertexAttribArray(0));
+		//GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Position)));
+		layout.AddLayout<float>(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Position));
 
-		GLCall(glEnableVertexAttribArray(1));
-		GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Color)));
+		//GLCall(glEnableVertexAttribArray(1));
+		//GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Color)));
+		layout.AddLayout<float>(4, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Color));
 
-		GLCall(glEnableVertexAttribArray(2));
-		GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexCoords)));
+		//GLCall(glEnableVertexAttribArray(2));
+		//GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexCoords)));
+		layout.AddLayout<float>(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexCoords));
 
-		GLCall(glEnableVertexAttribArray(3));
-		GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex)));
+		//GLCall(glEnableVertexAttribArray(3));
+		//GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex)));
+		layout.AddLayout<float>(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex));
 
-		GLCall(glEnableVertexAttribArray(4));
-		GLCall(glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint)));
+		//GLCall(glEnableVertexAttribArray(4));
+		//GLCall(glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint)));
+		layout.AddLayout<float>(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint));
 
-		GLCall(glEnableVertexAttribArray(5));
-		GLCall(glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th)));
+		//GLCall(glEnableVertexAttribArray(5));
+		//GLCall(glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th)));
+		layout.AddLayout<float>(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th));
 
 		//To much memory for the stack, free below
 		uint32_t* indices = new uint32_t[MaxIndexCount]{};
@@ -64,9 +74,10 @@ namespace render
 			offset += 4;
 		}
 
-		GLCall(glGenBuffers(1, &m_data.IB));
-		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+		//GLCall(glGenBuffers(1, &m_data.IB));
+		//GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
+		//GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+		m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
 		delete[] indices;
 
 		//1x1 white Texture
@@ -94,7 +105,6 @@ namespace render
 		m_data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
 		m_data.QuadVertexPositions[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
 		m_data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
-
 	}
 
 	void CircleRender::Flush()

@@ -34,24 +34,32 @@ namespace en
 
 			m_data.Buffer = new QuadVertex[MaxVertexCount];
 
-			GLCall(glGenVertexArrays(1, &m_data.VA));
-			GLCall(glBindVertexArray(m_data.VA));
-			
-			GLCall(glGenBuffers(1, &m_data.VB));
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-			GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(QuadVertex), nullptr, GL_DYNAMIC_DRAW));
-			
-			GLCall(glEnableVertexAttribArray(0));
-			GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position)));
-			
-			GLCall(glEnableVertexAttribArray(1));
-			GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color)));
-			
-			GLCall(glEnableVertexAttribArray(2));
-			GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords)));
-			
-			GLCall(glEnableVertexAttribArray(3));
-			GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex)));
+			//GLCall(glGenVertexArrays(1, &m_data.VA));
+			//GLCall(glBindVertexArray(m_data.VA));
+			m_data.VA = VertexArray::CreateVertexArray();
+
+			//GLCall(glGenBuffers(1, &m_data.VB));
+			//GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
+			//GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(QuadVertex), nullptr, GL_DYNAMIC_DRAW));
+			m_data.VB = VertexBuffer::CreateVertexBuffer(MaxVertexCount * sizeof(QuadVertex));
+
+			VertexAttribute layout(m_data.VA, m_data.VB);
+
+			//GLCall(glEnableVertexAttribArray(0));
+			//GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position)));
+			layout.AddLayout<float>(3, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position));
+
+			//GLCall(glEnableVertexAttribArray(1));
+			//GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color)));
+			layout.AddLayout<float>(4, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color));
+
+			//GLCall(glEnableVertexAttribArray(2));
+			//GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords)));
+			layout.AddLayout<float>(2, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords));
+
+			//GLCall(glEnableVertexAttribArray(3));
+			//GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex)));
+			layout.AddLayout<float>(1, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex));
 
 			//To much memory for the stack, free below
 			uint32_t* indices = new uint32_t[MaxIndexCount]{};
@@ -69,9 +77,10 @@ namespace en
 				offset += 4;
 			}
 
-			GLCall(glGenBuffers(1, &m_data.IB));
-			GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
-			GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+			//GLCall(glGenBuffers(1, &m_data.IB));
+			//GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
+			//GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
+			m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
 			delete[] indices;
 
 			//1x1 white Texture

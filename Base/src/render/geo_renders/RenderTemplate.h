@@ -64,14 +64,17 @@ namespace render
 			mShader->Bind();
 			//Current position - first position
 			GLsizeiptr size = (uint8_t*)m_data.BufferPtr - (uint8_t*)m_data.Buffer;
-			GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-			GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.Buffer));
+			m_data.VB.Bind();
+			m_data.VB.SubData(size, m_data.Buffer);
+			//GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
+			//GLCall(glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_data.Buffer));
 		};
 
 		virtual void Flush()
 		{
 			mShader->Bind();
-			GLCall(glBindVertexArray(m_data.VA));
+			//GLCall(glBindVertexArray(m_data.VA));
+			m_data.VA.Bind();
 			GLCall(glDrawElements(m_data.Target, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
 			m_data.RenderStatus.DrawCount++;
 
@@ -82,9 +85,12 @@ namespace render
 		virtual void Dispose()
 		{
 			mShader->Dispose();
-			GLCall(glDeleteVertexArrays(1, &m_data.VA));
-			GLCall(glDeleteBuffers(1, &m_data.VB));
-			GLCall(glDeleteBuffers(1, &m_data.IB));
+			//GLCall(glDeleteVertexArrays(1, &m_data.VA));
+			m_data.VA.Dispose();
+			//GLCall(glDeleteBuffers(1, &m_data.VB));
+			m_data.VB.Dispose();
+			//GLCall(glDeleteBuffers(1, &m_data.IB));
+			m_data.IB.Dispose();
 			delete[] m_data.Buffer;
 			if (m_data.WhiteTexture)
 				GLCall(glDeleteTextures(1, &m_data.WhiteTexture));
