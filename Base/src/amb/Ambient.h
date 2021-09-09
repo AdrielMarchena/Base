@@ -8,7 +8,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "render/Shader.h"
+#include "render/gl/Shader.h"
 #include "camera/OrthographicCameraController.h"
 #include <vector>
 #include <iostream>
