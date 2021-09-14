@@ -26,8 +26,8 @@ void main()
 	o_Color = vec4(0.0);
 	int index = int(v_TexIndex);
 	vec4 tmp_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
-	if (tmp_Color.a <= 0.0)
-		discard;
+	/*if (tmp_Color.a <= 0.0)
+		discard;*/
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else
@@ -46,5 +46,4 @@ void main()
 			o_Color = max(o_Color, new_color);
 		}
 	}
-	//o_Color = tmp_Color;
 }

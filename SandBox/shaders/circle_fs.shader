@@ -29,27 +29,27 @@ uniform vec3 u_Ambient;
 
 float DistancePvP(vec2 a, vec2 b)
 {
-	return float(sqrt(pow(b.x - a.x,2) + pow(b.y - a.y,2)));
+	return float(sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
 void main()
 {
 	int index = int(v_TexIndex);;
 	vec4 tmp_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
-	/*if (tmp_Color.a < 1.0)
+	/*if (tmp_Color.a <= 0.0)
 		discard;*/
-	o_Color = vec4(tmp_Color.rgb * u_Ambient.rgb, tmp_Color.a);
 	float dist_pvp = DistancePvP(v_MiddlePoint, v_Pos.xy);
-	//if (dist_pvp == v_Radius) //Circunference
-
+	/*if (dist_pvp == v_Radius) //Circunference
+		discard;*/
 	if (dist_pvp > v_Radius) // Outside
-		discard;
+		tmp_Color.a = 0.0;
 	if (dist_pvp < v_Radius - v_Thick && v_Fill == 0) //Inside
-		discard;
-
+		tmp_Color.a = 0.0;;
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else
+	{
+		o_Color = vec4(tmp_Color.rgb * u_Ambient.rgb, tmp_Color.a);
 		for (int i = 0; i < u_LightQtd; i++)
 		{
 			float distance = distance(u_LightInfo[i].u_LightPos.xy, v_Pos.xy);
@@ -62,4 +62,5 @@ void main()
 
 			o_Color = max(o_Color, new_color);
 		}
+	}
 }
