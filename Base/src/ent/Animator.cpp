@@ -20,14 +20,14 @@ namespace ett
 	static constexpr float_t default_x_sprite_size = 64.0f;
 	static constexpr float_t default_y_sprite_size = 64.0f;
 	static constexpr unsigned int max_uint32 = std::numeric_limits<uint32_t>::max();
-	static Base::render::Texture default_white_texture;
+	static Base::Ref<Base::render::Texture> default_white_texture = std::make_shared<Base::render::Texture>();
 	static render::SubTexture default_sub_white_texture = render::SubTexture::CreateFromCoords(default_white_texture, { 1,1 }, { 0,0 }, { 1,1 });;
 	
 	AnimationSpecs::AnimationSpecs()
 	{
 	}
 
-	AnimationSpecs AnimationSpecs::CreateAnimationSpecs(const Base::render::Texture& texture, uint8_t preset)
+	AnimationSpecs AnimationSpecs::CreateAnimationSpecs(Base::Ref<Base::render::Texture> texture, uint8_t preset)
 	{
 		AnimationSpecs new_spec{};
 		new_spec.atlas = texture;
@@ -100,7 +100,7 @@ namespace ett
 	{
 		m_Specs = _Specs;
 		m_Specs.m_Animator = this;
-		glm::vec2 atlas_size = m_Specs.atlas.GetSize();
+		glm::vec2 atlas_size = m_Specs.atlas->GetSize();
 
 		if (m_Specs.threshold <= 0.0f)
 			m_Specs.threshold = default_threshold;

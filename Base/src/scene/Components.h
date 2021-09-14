@@ -43,13 +43,13 @@ namespace Base
 
 	struct TextureComponent
 	{
-		render::Texture Texture;
+		Ref<render::Texture> Texture;
 		float_t Rotation = 0.0f;
 		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
 
 		TextureComponent() = default;
 		TextureComponent(const TextureComponent&) = default;
-		TextureComponent(const render::Texture& texture)
+		TextureComponent(Ref<render::Texture> texture)
 			:Texture(texture) {}
 
 	};

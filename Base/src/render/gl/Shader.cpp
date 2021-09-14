@@ -8,6 +8,8 @@
 
 #include "Shader.h"
 
+#include "Base/Base.h"
+
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -92,10 +94,10 @@ namespace render
 	{
 	}
 
-	Shader Shader::CreateShader(const char* vs, const char* fs, int32_t MaxTexSlots)
+	Ref<Shader> Shader::CreateShader(const char* vs, const char* fs, int32_t MaxTexSlots)
 	{
 		Shader new_sh(vs, fs, MaxTexSlots);
-		return new_sh;
+		return std::make_shared<Shader>(new_sh);
 	}
 
 	void Shader::Bind() const

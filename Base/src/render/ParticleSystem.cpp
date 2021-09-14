@@ -88,7 +88,7 @@ namespace Base {
 					args.render.DrawQuad(glm::vec3(particle.Position, 2.0f), { size,size }, color, particle.Rotation, { 0.0f,1.0f,1.0f });
 				}
 				else
-					args.render.DrawQuad(glm::vec3(particle.Position, 2.0f), { size,size }, *particle.TexturePtr, Color::White ,particle.Rotation, { 0.0f,1.0f,1.0f });
+					args.render.DrawQuad(glm::vec3(particle.Position, 2.0f), { size,size }, particle.TexturePtr, Color::White ,particle.Rotation, { 0.0f,1.0f,1.0f });
 			}
 		}
 

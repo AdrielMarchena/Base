@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Base/Base.h"
+
 #include <stdint.h>
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -46,9 +48,9 @@ namespace render
 
 		virtual void BeginScene(const glm::mat4& viewProj, const glm::mat4& transform_g)
 		{
-			mShader.Bind();
-			mShader.SetUniformMat4f("u_ViewProj", viewProj);
-			mShader.SetUniformMat4f("u_Transform", transform_g);
+			mShader->Bind();
+			mShader->SetUniformMat4f("u_ViewProj", viewProj);
+			mShader->SetUniformMat4f("u_Transform", transform_g);
 		}
 
 		virtual void BeginBatch() 
@@ -61,7 +63,7 @@ namespace render
 
 		virtual void EndBatch()
 		{
-			mShader.Bind();
+			mShader->Bind();
 			//Current position - first position
 			GLsizeiptr size = (uint8_t*)m_data.BufferPtr - (uint8_t*)m_data.Buffer;
 			m_data.VB.Bind();
@@ -72,7 +74,7 @@ namespace render
 
 		virtual void Flush()
 		{
-			mShader.Bind();
+			mShader->Bind();
 			//GLCall(glBindVertexArray(m_data.VA));
 			m_data.VA.Bind();
 			GLCall(glDrawElements(m_data.Target, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
@@ -84,12 +86,9 @@ namespace render
 
 		virtual void Dispose()
 		{
-			mShader.Dispose();
-			//GLCall(glDeleteVertexArrays(1, &m_data.VA));
+			mShader->Dispose();
 			m_data.VA.Dispose();
-			//GLCall(glDeleteBuffers(1, &m_data.VB));
 			m_data.VB.Dispose();
-			//GLCall(glDeleteBuffers(1, &m_data.IB));
 			m_data.IB.Dispose();
 			delete[] m_data.Buffer;
 			if (m_data.WhiteTexture)
@@ -97,7 +96,7 @@ namespace render
 			disposed = true;
 		};
 
-		virtual const Shader GetShader() { return mShader; };
+		virtual const Ref<Shader> GetShader() { return mShader; };
 
 		//virtual ~Render() { if (!disposed) Dispose(); }
 	
@@ -108,7 +107,7 @@ namespace render
 		}
 	protected:
 		T m_data;
-		Shader mShader;
+		Ref<Shader> mShader;
 		bool disposed = false;
 	};
 }

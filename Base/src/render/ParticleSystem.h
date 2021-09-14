@@ -17,7 +17,7 @@ namespace Base{
 			glm::vec2 Position = {0.0f,0.0f};
 			glm::vec2 Velocity, VelocityVariation = { 0.0f,0.0f };
 			glm::vec4 ColorBegin = { 0.0f,0.0f, 0.0f, 0.0f }, ColorEnd = { 0.0f, 0.0f, 0.0f, 0.0f };
-			std::shared_ptr<Base::render::Texture> TexturePtr;
+			Base::Ref<Base::render::Texture> TexturePtr;
 			float SizeBegin = 0.0f, SizeEnd = 0.0f, SizeVariation = 0.0f;
 			float LifeTime = 1.0f;
 			float Gravity = 0.0f;
@@ -44,7 +44,7 @@ namespace Base{
 				float Rotation = 0.0f;
 				float SizeBegin, SizeEnd;
 
-				std::shared_ptr<Base::render::Texture> TexturePtr;
+				Base::Ref<Base::render::Texture> TexturePtr;
 
 				float LifeTime = 1.0f;
 				float LifeRemaining = 0.0f;

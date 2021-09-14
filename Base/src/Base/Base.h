@@ -7,10 +7,10 @@ namespace Base
 {
 	//From The Cherno video
 	template<typename T>
-	using BRef = std::shared_ptr<T>;
+	using Ref = std::shared_ptr<T>;
 
 	template<typename T>
-	using BScope = std::unique_ptr<T>;
+	using Scope = std::unique_ptr<T>;
 }
 
 #include "render/render2D.h"

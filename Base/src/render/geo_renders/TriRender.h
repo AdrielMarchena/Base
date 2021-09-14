@@ -19,7 +19,7 @@ namespace render
 
 		void DrawTriangle(const glm::vec3 points[3], const glm::vec4& color);
 		void DrawTriangle(const glm::vec3 points[3], const glm::vec4 color[3]);
-		//void DrawTriangle(const glm::vec2 points[3], const Texture& texture, float_t layer);
+		//void DrawTriangle(const glm::vec2 points[3], Ref<Texture> texture, float_t layer);
 	};
 }
 }

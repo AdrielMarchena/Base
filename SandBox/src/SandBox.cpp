@@ -84,7 +84,7 @@ void SandBox::OnAttach()
 	m_Balls.push_back(CreateBall(m_Scene.get()));
 
 	m_TexQuad = m_Scene->CreateEntity("Thing");
-	m_TexQuad.AddComponent<Base::TextureComponent>(*m_Textures["test"]);
+	m_TexQuad.AddComponent<Base::TextureComponent>(m_Textures["test"]);
 	auto& pos = m_TexQuad.GetComponent<Base::TransformComponent>().Transform;
 	XPOS(pos) = 400;
 	YPOS(pos) = 300;

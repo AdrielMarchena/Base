@@ -27,7 +27,7 @@ namespace render
 		Shader(const char* vs, const char* fs,int32_t MaxTexSlots = 8);
 		~Shader();
 
-		static Shader CreateShader(const char* vs, const char* fs, int32_t MaxTexSlots = 8);
+		static Ref<Shader> CreateShader(const char* vs, const char* fs, int32_t MaxTexSlots = 8);
 
 		void Bind() const;
 		void Unbind() const;

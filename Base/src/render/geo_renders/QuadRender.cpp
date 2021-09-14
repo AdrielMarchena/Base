@@ -31,7 +31,7 @@ namespace Base
 		{
 			mShader = std::move(Shader(vs, fs, MaxTexturesSlots()));
 			mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
-			mShader.Bind();
+			mShader->Bind();
 
 			m_data.Buffer = new QuadVertex[MaxVertexCount];
 
@@ -97,7 +97,7 @@ namespace Base
 			int32_t* samplers = new int32_t[MaxTexture];
 			for (int i = 0; i < MaxTexture; i++)
 				samplers[i] = i;
-			mShader.SetUniform1iv("u_Textures", MaxTexture, samplers);
+			mShader->SetUniform1iv("u_Textures", MaxTexture, samplers);
 			delete[] samplers;
 
 			m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
@@ -114,7 +114,7 @@ namespace Base
 
 		void QuadRender2D::Flush()
 		{
-			mShader.Bind();
+			mShader->Bind();
 			for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 			{
 				GLCall(glActiveTexture(GL_TEXTURE0 + i));
@@ -134,7 +134,7 @@ namespace Base
 			DrawQuad(pos_trans(position, size), color);
 		}
 
-		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Texture& texture, const glm::vec4 & color, float_t rotation, const glm::vec3& axis)
+		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, const glm::vec4 & color, float_t rotation, const glm::vec3& axis)
 		{
 			DrawQuad(pos_trans(position,size), texture, color, rotation, axis);
 		}
@@ -177,7 +177,7 @@ namespace Base
 			m_data.RenderStatus.QuadCount++;
 		}
 
-		void QuadRender2D::DrawQuad(const glm::mat4& transform, const Texture& texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+		void QuadRender2D::DrawQuad(const glm::mat4& transform, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 		{
 			if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
 			{
@@ -187,21 +187,21 @@ namespace Base
 			}
 
 			int8_t texture_index = 0;
-			if (texture.GetId())
+			if (texture->GetId())
 				for (int8_t i = 1; i < m_data.TextureSlotIndex; i++)
 				{
-					if (m_data.TextureSlots[i] == texture.GetId())
+					if (m_data.TextureSlots[i] == texture->GetId())
 					{
 						texture_index = i;
 						break;
 					}
 				}
 
-			if (texture.GetId())
+			if (texture->GetId())
 				if (!texture_index)
 				{
 					texture_index = m_data.TextureSlotIndex;
-					m_data.TextureSlots[m_data.TextureSlotIndex] = texture.GetId();
+					m_data.TextureSlots[m_data.TextureSlotIndex] = texture->GetId();
 					m_data.TextureSlotIndex++;
 				}
 
@@ -339,6 +339,5 @@ namespace Base
 					m_data.IndexCount += 6;
 				}
 		}
-
 	}
 }

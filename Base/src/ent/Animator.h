@@ -34,10 +34,10 @@ namespace ett
 		float_t decrement = 5.0f; // if 0, default to 5
 		uint32_t texture_offset = 0; // default to 0
 		glm::vec2 sprite_size = {64.0f,64.0f}; //if 0, default to 64x64
-		Base::render::Texture atlas; // Atlas Texture
+		Base::Ref<Base::render::Texture> atlas; // Atlas Texture
 		AnimationSpecs();
-		//AnimationSpecs(const Base::render::Texture& texture);
-		static AnimationSpecs CreateAnimationSpecs(const Base::render::Texture& texture,uint8_t preset = ANIMATOR_DEFAULT);
+		//AnimationSpecs(Base::Ref<Base::render::Texture> texture);
+		static AnimationSpecs CreateAnimationSpecs(Base::Ref<Base::render::Texture> texture,uint8_t preset = ANIMATOR_DEFAULT);
 		operator const Animator*() { return m_Animator; }
 	private:
 		Animator* m_Animator = nullptr; // TODO: prevent some pointer bugs here

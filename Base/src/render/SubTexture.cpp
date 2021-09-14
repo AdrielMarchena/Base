@@ -13,7 +13,7 @@ namespace Base
 {
 namespace render
 {
-	SubTexture::SubTexture(Texture& texture, const glm::vec2& min, const glm::vec2& max)
+	SubTexture::SubTexture(Ref<Texture> texture, const glm::vec2& min, const glm::vec2& max)
 		:m_Texture(texture)
 	{
 		if (m_Texture)
@@ -25,7 +25,7 @@ namespace render
 		}
 	}
 
-	SubTexture SubTexture::CreateFromCoords(Texture& texture, const glm::vec2 size, const glm::vec2& coords, const glm::vec2& spriteSize)
+	SubTexture SubTexture::CreateFromCoords(Ref<Texture> texture, const glm::vec2 size, const glm::vec2& coords, const glm::vec2& spriteSize)
 	{
 		float sheetWidth = size.x, sheetHeight = size.y;
 
@@ -41,7 +41,7 @@ namespace render
 		{
 			return NULL;
 		}
-		return m_Texture.GetId();
+		return m_Texture->GetId();
 	}
 }
 }

@@ -1,14 +1,11 @@
 #pragma once
 
+#include "Base/Base.h"
+
 #include <unordered_map>
 #include <memory>
 #include <string>
 #include <functional>
-
-namespace Base
-{
-
-}
 
 /* 
 * Use as this example
@@ -20,7 +17,7 @@ template<typename T>
 class ResourceManager
 {
 private:
-	std::unordered_map<std::string, std::shared_ptr<T>> m_Resources;
+	std::unordered_map<std::string, Base::Ref<T>> m_Resources;
 	const char* d_text = "default";
 public:
 	ResourceManager()

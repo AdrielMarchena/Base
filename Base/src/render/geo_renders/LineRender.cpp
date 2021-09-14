@@ -25,7 +25,7 @@ namespace Base
 		{
 			//Line Stuff
 			mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
-			mShader.Bind();
+			mShader->Bind();
 			m_data.Target = GL_LINES;
 			m_data.Buffer = new LineVertex[MaxLineVertexCount];
 

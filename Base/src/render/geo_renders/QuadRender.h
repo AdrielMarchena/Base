@@ -36,7 +36,7 @@ namespace Base
 			void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4],
 				 float_t rotation = NULL, const glm::vec3& axis = {});
 
-			void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Texture& texture,
+			void DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture,
 				 const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
 			void DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture,
@@ -48,7 +48,7 @@ namespace Base
 			void DrawQuad(const glm::mat4& transform, const glm::vec4 color[4],
 				 float_t rotation = NULL, const glm::vec3& axis = {});
 
-			void DrawQuad(const glm::mat4& transform, const Texture& texture ,const glm::vec4& color,
+			void DrawQuad(const glm::mat4& transform, Ref<Texture> texture ,const glm::vec4& color,
 				float_t rotation = NULL, const glm::vec3& axis = {});
 
 			void DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, const glm::vec4& color,

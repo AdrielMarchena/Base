@@ -5,12 +5,15 @@
 */
 
 #pragma once
+
+
+#include "Base/Base.h"
+
 #include <array>
 #include "glm/glm.hpp"
 #include "gl/Shader.h"
 #include "Texture.h"
 #include "SubTexture.h"
-#include <memory>
 #include <math.h>
 #include "Colors.h"
 #include "Camera.h"
@@ -28,11 +31,11 @@ namespace render
 	class Render2D
 	{
 	private:
-		static QuadRender2D m_QuadRender;
-		static CircleRender m_CircleRender;
-		static LineRender2D m_LineRender;
-		static QuadRender2D m_TextRender;
-		static TriRender m_TriRender;
+		static Ref<QuadRender2D> m_QuadRender;
+		static Ref<CircleRender> m_CircleRender;
+		static Ref<LineRender2D> m_LineRender;
+		static Ref<QuadRender2D> m_TextRender;
+		static Ref<TriRender> m_TriRender;
 	public:
 		static constexpr GLbitfield Cl_Color = GL_COLOR_BUFFER_BIT;
 		static constexpr GLbitfield Cl_DepthColor = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -68,11 +71,11 @@ namespace render
 		}
 		static const glm::mat4& GetTransform() { return m_Transform; }
 
-		static const Shader GetQuadShader();
-		static const Shader GetLineShader();
-		static const Shader GetCircleShader();
-		static const Shader GetTextShader();
-		static const Shader GetTriShader();
+		static const Ref<Shader> GetQuadShader();
+		static const Ref<Shader> GetLineShader();
+		static const Ref<Shader> GetCircleShader();
+		static const Ref<Shader> GetTextShader();
+		static const Ref<Shader> GetTriShader();
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
@@ -80,7 +83,7 @@ namespace render
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4],
 			float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Texture& texture,
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture,
 			const glm::vec4& color = Color::White,float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture,
@@ -92,13 +95,13 @@ namespace render
 		static void DrawQuad(const glm::mat4& transform, const glm::vec4 color[4],
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawQuad(const glm::mat4& transform, const Texture& texture, const glm::vec4& color = Color::White,
+		static void DrawQuad(const glm::mat4& transform, Ref<Texture> texture, const glm::vec4& color = Color::White,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
 		static void DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, const glm::vec4& color = Color::White,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawText(const glm::vec3& position, const glm::vec2& size, const Texture& texture,
+		static void DrawText(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture,
 			const glm::vec4& color = Color::White, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		static void DrawOutLineQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,

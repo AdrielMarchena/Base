@@ -7,6 +7,8 @@
 */
 #pragma once
 
+#include "Base/Base.h"
+
 #include "glm/glm.hpp"
 #include "render/gl/Shader.h"
 #include "camera/OrthographicCameraController.h"
@@ -55,14 +57,14 @@ namespace windowing
 		/**
 		* update the Ambient Light
 		*/
-		void UpdateAmbient(const glm::vec3& value, const render::Shader& _Shader, bool UpdateShader = true);
+		void UpdateAmbient(const glm::vec3& value, Ref<render::Shader> _Shader, bool UpdateShader = true);
 
 		void AddStaticLightSource(const LightSource& source);
 
 		// Insert all data in the givin shader
-		void UpdateStaticLight(const render::Shader& _Shader, const uint8_t _LightSourceLimit = 20);
+		void UpdateStaticLight(Ref<render::Shader>, const uint8_t _LightSourceLimit = 20);
 	
-		void ZeroLight(const render::Shader& _Shader);
+		void ZeroLight(Ref<render::Shader> _Shader);
 	};
 }	
 }
