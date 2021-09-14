@@ -5,12 +5,10 @@
 #include <string>
 #include <functional>
 
-struct DumbTest
+namespace Base
 {
-	DumbTest(std::string a)
-	{
-	}
-};
+
+}
 
 /* 
 * Use as this example
@@ -69,11 +67,3 @@ public:
 		return m_Resources[d_text];
 	}
 };
-
-/*template<typename T>
-template<typename ..._Args>
-inline std::shared_ptr<T> ResourceManager<T>::AddResource(std::string key,_Args ...resource_construct_args)
-{
-	m_Resources[key] = std::make_shared<T>(resource_construct_args);
-	return m_Resources[key];
-}*/

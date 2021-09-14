@@ -13,10 +13,11 @@
 #include <sstream>
 #include <fstream>
 #include "gl/glew.h"
+#include "utils/gl_error_macro_db.h"
 
 #include "Log.h"
 
-namespace en
+namespace Base
 {
 namespace render
 {
@@ -89,8 +90,12 @@ namespace render
 
 	Shader::~Shader()
 	{
-		if(!disposed)
-			Dispose();
+	}
+
+	Shader Shader::CreateShader(const char* vs, const char* fs, int32_t MaxTexSlots)
+	{
+		Shader new_sh(vs, fs, MaxTexSlots);
+		return new_sh;
 	}
 
 	void Shader::Bind() const

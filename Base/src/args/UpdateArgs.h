@@ -10,7 +10,7 @@
 #include "input/Mouse.h"
 #include "input/Keyboard.h"
 
-namespace en
+namespace Base
 {
 	struct UpdateArgs
 	{

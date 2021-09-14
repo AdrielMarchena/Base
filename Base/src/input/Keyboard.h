@@ -12,7 +12,7 @@
 #include "KeyboardKeys.h"
 
 constexpr unsigned short EN_KEYBOARD_NUMBER_KEYS = 348*2; // Bizarre numbers there
-namespace en
+namespace Base
 {
 namespace input
 {

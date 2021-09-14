@@ -12,22 +12,36 @@
 #include "glm/glm.hpp"
 #include "render/Texture.h"
 #include "render/SubTexture.h"
-
-namespace en
+#include <optional>
+namespace Base
 {
 namespace ett
 {
+	class Animator;
 	struct AnimationSpecs
 	{
+		enum : uint8_t
+		{
+			ANIMATOR_DEFAULT = NULL,
+			ANIMATOR_SLOW,
+			ANIMATOR_SLOW2,
+			ANIMATOR_FAST,
+			ANIMATOR_FAST2
+		};
+
 		float_t threshold = 350.0f; // if 0, set to a default value of 350
 		float_t timestamp = 0.0f; // If 0, calculate based on threshold and the atlas
 		float_t decrement = 5.0f; // if 0, default to 5
 		uint32_t texture_offset = 0; // default to 0
 		glm::vec2 sprite_size = {64.0f,64.0f}; //if 0, default to 64x64
-		std::shared_ptr<en::render::Texture> atlas; // Atlas Texture
+		Base::render::Texture atlas; // Atlas Texture
 		AnimationSpecs();
-		AnimationSpecs(std::shared_ptr<en::render::Texture> texture);
-		AnimationSpecs& operator=(AnimationSpecs& other);
+		//AnimationSpecs(const Base::render::Texture& texture);
+		static AnimationSpecs CreateAnimationSpecs(const Base::render::Texture& texture,uint8_t preset = ANIMATOR_DEFAULT);
+		operator const Animator*() { return m_Animator; }
+	private:
+		Animator* m_Animator = nullptr; // TODO: prevent some pointer bugs here
+		friend Animator;
 	};
 	class Animator
 	{
@@ -47,8 +61,11 @@ namespace ett
 		Animator(const AnimationSpecs& _Specs);
 		Animator();
 		
-		const AnimationSpecs& GetSpecs() const { return m_Specs; }
-
+		AnimationSpecs& GetSpecs() { return m_Specs; }
+		
+		// implicit convertion from Animator to AnimationSpecs
+		operator AnimationSpecs&() { return m_Specs; }
+		operator bool() { return m_CroppedTexture.size() != 0; }
 		/**
 		* Run the animation based on the specs, if the loop is false
 		* it will return the last Frame from on
@@ -70,8 +87,13 @@ namespace ett
 		* Set a new decrement value to the threshold
 		*/
 		inline void SetDecrement(float decrement) { m_Specs.decrement = decrement; }
-
+		/*
+		* Stop Updating the Animation
+		*/
 		inline void StopUpdate() { m_Stop = true; }
+		/*
+		* Begin Updating the Animation
+		*/
 		inline void BeginUpdate() { m_Stop = false; }
 	};
 }

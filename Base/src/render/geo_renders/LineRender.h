@@ -11,7 +11,7 @@
 #include <math.h>
 #include "RenderTemplate.h"
 
-namespace en
+namespace Base
 {
 	namespace render
 	{
@@ -21,7 +21,7 @@ namespace en
 		public:
 
 			LineRender2D(const char* vs, const char* fs);
-			//LineRender2D() {}
+			LineRender2D() = default;
 
 			void DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color);
 			void DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& dest, const glm::vec4& color, float_t precision);

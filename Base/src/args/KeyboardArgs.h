@@ -7,7 +7,7 @@
 
 #pragma once
 #include "input/Keyboard.h"
-namespace en
+namespace Base
 {
 	enum class KeyboardAction : uint8_t
 	{

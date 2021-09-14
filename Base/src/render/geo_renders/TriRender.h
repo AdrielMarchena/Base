@@ -2,7 +2,7 @@
 #include "RenderTemplate.h"
 
 #include "render/Texture.h"
-namespace en
+namespace Base
 {
 namespace render
 {
@@ -13,7 +13,7 @@ namespace render
 		static glm::vec2 m_default_tex_coords[4];
 
 		TriRender(const char* vs, const char* fs);
-		//TriRender() {}
+		TriRender() = default;
 
 		void Flush() override;
 

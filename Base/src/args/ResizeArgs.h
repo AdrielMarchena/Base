@@ -7,7 +7,7 @@
 
 #pragma once
 
-namespace en
+namespace Base
 {
 	struct ResizeArgs
 	{

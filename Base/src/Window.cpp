@@ -41,7 +41,7 @@
 #define DEAR_END_FRAME() ImGui::Render();\
 						 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData())
 
-namespace en
+namespace Base
 {
 	namespace windowing
 	{
@@ -195,7 +195,7 @@ namespace en
 			BASE_TRACE("Window created!");
 
 			glfwMakeContextCurrent(m_Window);
-			glfwSwapInterval(0);
+			glfwSwapInterval(1);
 
 			if (glewInit() != GLEW_OK)
 			{

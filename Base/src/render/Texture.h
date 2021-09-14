@@ -14,7 +14,7 @@
 #include "utils/NameCaps.h"
 #include "utils/gl_error_macro_db.h"
 #include "ResourceManager.h"
-namespace en
+namespace Base
 {
 namespace render
 {

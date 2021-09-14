@@ -8,7 +8,7 @@
 #pragma once
 #include "camera/OrthographicCameraController.h"
 #include "render/render2D.h"
-namespace en{
+namespace Base{
 	struct RenderArgs
 	{
 		float dt;

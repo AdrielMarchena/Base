@@ -2,7 +2,7 @@
 
 #include <exception>
 
-namespace en
+namespace Base
 {
 namespace utils
 {

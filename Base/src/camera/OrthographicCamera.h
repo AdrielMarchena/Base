@@ -10,7 +10,7 @@
 
 #include "glm/glm.hpp"
 
-namespace en {
+namespace Base {
 
 	class OrthographicCamera
 	{

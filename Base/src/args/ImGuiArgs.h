@@ -8,7 +8,7 @@
 #pragma once
 #include "render/render2D.h"
 
-namespace en
+namespace Base
 {
 	struct ImGuiArgs
 	{

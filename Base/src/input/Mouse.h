@@ -16,7 +16,7 @@
 #include <algorithm>
 
 constexpr unsigned char EN_MOUSE_NUMBER_KEYS = 32;
-namespace en
+namespace Base
 {
 namespace input
 {

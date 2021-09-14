@@ -9,7 +9,7 @@
 
 #include "OrthographicCameraController.h"
 #include "input/Keyboard.h"
-namespace en {
+namespace Base {
 
 	OrthographicCameraController::OrthographicCameraController(float_t aspectRatio, bool move, bool scroll,bool rotation)
 		: m_AspectRatio(aspectRatio), 

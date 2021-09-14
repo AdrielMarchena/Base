@@ -7,7 +7,7 @@
 #include "../gl/VertexAttribute.h"
 #include "../gl/IndexBuffer.h"
 
-namespace en
+namespace Base
 {
 namespace render
 {

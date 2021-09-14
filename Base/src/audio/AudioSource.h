@@ -12,7 +12,7 @@
 #include "AL/al.h"
 #include "utils/NameCaps.h"
 #include "ResourceManager.h"
-namespace en
+namespace Base
 {
 namespace aux
 {

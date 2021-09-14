@@ -10,7 +10,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include <algorithm>
-namespace en
+namespace Base
 {
 	struct Rect
 	{

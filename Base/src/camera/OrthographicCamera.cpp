@@ -10,7 +10,7 @@
 #include "OrthographicCamera.h"
 #include "glm/gtc/matrix_transform.hpp"
 
-namespace en {
+namespace Base {
 
 	OrthographicCamera::OrthographicCamera(float_t left, float_t right, float_t bottom, float_t top)
 		: m_ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), m_ViewMatrix(1.0f)

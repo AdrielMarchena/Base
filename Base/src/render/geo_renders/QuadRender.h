@@ -15,7 +15,7 @@
 #include <memory>
 #include <math.h>
 
-namespace en
+namespace Base
 {
 	namespace render
 	{
@@ -26,7 +26,7 @@ namespace en
 			static glm::vec2 m_default_tex_coords[4];
 
 			QuadRender2D(const char* vs, const char* fs);
-			//QuadRender2D() {}
+			QuadRender2D() = default;
 
 			void Flush() override;
 

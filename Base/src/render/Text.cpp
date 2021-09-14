@@ -6,7 +6,7 @@
 #include "utils/threading.h"
 #include "utils/Generic.h"
 #include "Log.h"
-namespace en
+namespace Base
 {
 namespace render
 {
@@ -137,7 +137,7 @@ namespace render
             glDeleteTextures(1, &c.second.TextureID);
     }
 
-    void Text::RenderText(const en::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const
+    void Text::RenderText(const Base::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const
     {
         static Texture TmpTexture;
         for (auto c : text)

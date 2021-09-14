@@ -17,7 +17,7 @@
 
 #include <future>
 
-namespace en {
+namespace Base {
 	namespace render {
 
 		ParticleProps ParticleProps::Effects[] =

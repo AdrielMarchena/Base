@@ -7,8 +7,6 @@
 
 * 	Implementation File
 */
-
-
 #include "RandomList.h"
 
 std::mt19937 Random::s_RandomEngine;

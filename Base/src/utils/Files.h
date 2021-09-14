@@ -12,7 +12,7 @@
 
 #include "base_exceptions.h"
 
-namespace en
+namespace Base
 {
 namespace utils
 {

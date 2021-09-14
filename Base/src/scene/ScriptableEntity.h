@@ -1,6 +1,6 @@
 #pragma once
 #include "Entity.h"
-namespace en
+namespace Base
 {
 	class ScriptableEntity
 	{

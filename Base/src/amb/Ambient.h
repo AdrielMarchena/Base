@@ -13,7 +13,7 @@
 #include <vector>
 #include <iostream>
 #include "utils/Logs.h"
-namespace en
+namespace Base
 {
 namespace windowing
 {
@@ -49,7 +49,7 @@ namespace windowing
 			{
 				return m_StaticLightSource[index];
 			}
-			static LightSource blankLightSource{};
+			LightSource blankLightSource{};
 			return blankLightSource;
 		}
 		/**

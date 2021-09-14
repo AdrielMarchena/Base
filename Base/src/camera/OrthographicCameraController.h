@@ -11,7 +11,7 @@
 #include "OrthographicCamera.h"
 #include "args/UpdateArgs.h"
 
-namespace en {
+namespace Base {
 
 	class OrthographicCameraController
 	{

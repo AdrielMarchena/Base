@@ -20,7 +20,7 @@
 #include "geo_renders/CircleRender.h"
 #include "geo_renders/TriRender.h"
 
-namespace en
+namespace Base
 {
 namespace render
 {
@@ -28,19 +28,19 @@ namespace render
 	class Render2D
 	{
 	private:
-		static std::shared_ptr<QuadRender2D> m_QuadRender;
-		static std::shared_ptr<CircleRender> m_CircleRender;
-		static std::shared_ptr<LineRender2D> m_LineRender;
-		static std::shared_ptr<QuadRender2D> m_TextRender;
-		static std::shared_ptr<TriRender> m_TriRender;
-		
+		static QuadRender2D m_QuadRender;
+		static CircleRender m_CircleRender;
+		static LineRender2D m_LineRender;
+		static QuadRender2D m_TextRender;
+		static TriRender m_TriRender;
 	public:
+		static constexpr GLbitfield Cl_Color = GL_COLOR_BUFFER_BIT;
+		static constexpr GLbitfield Cl_DepthColor = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
 
 		static glm::vec3 m_default_axis;
 
 		static void SetClearColor(const glm::vec4& color);
-		static void ClearColor();
-		static void ClearColorDepth();
+		static void ClearColor(GLbitfield clear = Cl_Color);
 
 		/*Render2D(const char* quad_vs, const char* quad_fs,
 				 const char* line_vs, const char* line_fs,
@@ -68,11 +68,11 @@ namespace render
 		}
 		static const glm::mat4& GetTransform() { return m_Transform; }
 
-		static const std::shared_ptr<Shader> GetQuadShader();
-		static const std::shared_ptr<Shader> GetLineShader();
-		static const std::shared_ptr<Shader> GetCircleShader();
-		static const std::shared_ptr<Shader> GetTextShader();
-		static const std::shared_ptr<Shader> GetTriShader();
+		static const Shader GetQuadShader();
+		static const Shader GetLineShader();
+		static const Shader GetCircleShader();
+		static const Shader GetTextShader();
+		static const Shader GetTriShader();
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = m_default_axis);

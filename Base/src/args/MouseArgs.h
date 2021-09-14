@@ -7,7 +7,7 @@
 
 #pragma once
 #include "input/Mouse.h"
-namespace en
+namespace Base
 {
 	enum class MouseAction : uint8_t
 	{

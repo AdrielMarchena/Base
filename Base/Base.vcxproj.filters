@@ -291,5 +291,8 @@
     <ClInclude Include="src\render\gl\VertexAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Base\Base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

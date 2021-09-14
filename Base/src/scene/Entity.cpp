@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-namespace en
+namespace Base
 {
 	Entity::Entity(entt::entity handle, Scene* scene)
 		:m_EntityHandle(handle), m_Scene(scene)

@@ -5,7 +5,7 @@
 
 #include "Components.h"
 
-namespace en
+namespace Base
 {
 	static inline void SetTransform(float wid, float hei)
 	{
@@ -79,7 +79,7 @@ namespace en
 			});
 		}
 
-		en::Camera* mainCamera = nullptr;
+		Base::Camera* mainCamera = nullptr;
 		glm::mat4* cameraTransform = nullptr;
 		{
 			auto group = m_Registry.group<TransformComponent>(entt::get<CameraComponent>);
@@ -98,7 +98,7 @@ namespace en
 		{
 			using render = render::Render2D;
 			//Clear screen
-			render::ClearColorDepth();
+			render::ClearColor();
 
 			//Start render Scene
 			SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything

@@ -9,7 +9,7 @@
 #include "ent/Animator.h"
 
 #include "ScriptableEntity.h"
-namespace en
+namespace Base
 {
 	struct TagComponent
 	{
@@ -112,7 +112,7 @@ namespace en
 
 	struct CameraComponent
 	{
-		en::Camera Camera;
+		Base::Camera Camera;
 		bool Primary = true;
 
 		CameraComponent() = default;

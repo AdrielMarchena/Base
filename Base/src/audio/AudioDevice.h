@@ -8,7 +8,7 @@
 #pragma once
 #include "AL/alc.h"
 
-namespace en
+namespace Base
 {
 namespace aux
 {

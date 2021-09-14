@@ -9,7 +9,7 @@
 #include <algorithm>
 #include "ResourceManager.h"
 #include FT_FREETYPE_H
-namespace en
+namespace Base
 {
 	namespace render
 	{
@@ -43,7 +43,7 @@ namespace en
 			Text(loadCharacter faces);
 			~Text();
 			void Dispose();
-			void RenderText(const en::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const;
+			void RenderText(const Base::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const;
 			float PreviewWid(const std::string& text, float scale) const;
 
 			static ResourceManager<Text> LoadFontsAsync(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE, uint8_t batchLimit = 10);

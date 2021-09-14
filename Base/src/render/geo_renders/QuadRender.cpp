@@ -10,7 +10,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "gl/glew.h"
 #include <iostream>
-namespace en
+namespace Base
 {
 	namespace render
 	{
@@ -29,8 +29,9 @@ namespace en
 
 		QuadRender2D::QuadRender2D(const char* vs, const char* fs)
 		{
-			mShader = std::make_shared<Shader>(vs, fs, MaxTexturesSlots());
-			mShader->Bind();
+			mShader = std::move(Shader(vs, fs, MaxTexturesSlots()));
+			mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
+			mShader.Bind();
 
 			m_data.Buffer = new QuadVertex[MaxVertexCount];
 
@@ -96,7 +97,7 @@ namespace en
 			int32_t* samplers = new int32_t[MaxTexture];
 			for (int i = 0; i < MaxTexture; i++)
 				samplers[i] = i;
-			mShader->SetUniform1iv("u_Textures", MaxTexture, samplers);
+			mShader.SetUniform1iv("u_Textures", MaxTexture, samplers);
 			delete[] samplers;
 
 			m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
@@ -113,7 +114,7 @@ namespace en
 
 		void QuadRender2D::Flush()
 		{
-			mShader->Bind();
+			mShader.Bind();
 			for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 			{
 				GLCall(glActiveTexture(GL_TEXTURE0 + i));

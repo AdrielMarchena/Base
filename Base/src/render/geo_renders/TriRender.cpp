@@ -1,6 +1,6 @@
 #include "TriRender.h"
 #include "utils/gl_error_macro_db.h"
-namespace en
+namespace Base
 {
 namespace render
 {
@@ -18,8 +18,8 @@ namespace render
 
 	TriRender::TriRender(const char* vs, const char* fs)
 	{
-		mShader = std::make_shared<Shader>(vs, fs, MaxTexturesSlots());
-		mShader->Bind();
+		mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
+		mShader.Bind();
 
 		m_data.Buffer = new TriangleVertex[MaxVertexCount];
 
@@ -80,7 +80,7 @@ namespace render
 		int32_t* samplers = new int32_t[MaxTexture];
 		for (int i = 0; i < MaxTexture; i++)
 			samplers[i] = i;
-		mShader->SetUniform1iv("u_Textures", MaxTexture, samplers);
+		mShader.SetUniform1iv("u_Textures", MaxTexture, samplers);
 		delete[] samplers;
 
 		m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
@@ -91,7 +91,7 @@ namespace render
 
 	void TriRender::Flush()
 	{
-		mShader->Bind();
+		mShader.Bind();
 		for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 		{
 			GLCall(glActiveTexture(GL_TEXTURE0 + i));

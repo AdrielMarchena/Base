@@ -16,7 +16,7 @@
 #include "AL/alc.h"
 #include "Log.h"
 #include "utils/alc_error_macro_db.h"
-namespace en
+namespace Base
 {
 namespace aux
 {

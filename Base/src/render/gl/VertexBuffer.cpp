@@ -2,7 +2,7 @@
 
 #include "gl/glew.h"
 #include "utils/gl_error_macro_db.h"
-namespace en
+namespace Base
 {
 namespace render
 {

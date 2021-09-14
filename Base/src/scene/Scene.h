@@ -3,7 +3,7 @@
 #include "entt/entt.hpp"
 #include "args/UpdateArgs.h"
 
-namespace en
+namespace Base
 {
 	class Entity;
 	class Scene

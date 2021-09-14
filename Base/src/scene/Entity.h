@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "entt/entt.hpp"
-namespace en
+namespace Base
 {
 	class Entity
 	{

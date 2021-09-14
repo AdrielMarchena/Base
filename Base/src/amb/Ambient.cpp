@@ -10,7 +10,7 @@
 
 #include "Ambient.h"
 #include "Log.h"
-namespace en
+namespace Base
 {
 namespace windowing
 {

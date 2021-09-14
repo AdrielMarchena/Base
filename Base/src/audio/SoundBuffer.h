@@ -10,7 +10,7 @@
 #include "AL/al.h"
 #include <vector>
 
-namespace en
+namespace Base
 {
 namespace aux
 {

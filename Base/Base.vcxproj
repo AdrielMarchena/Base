@@ -251,6 +251,7 @@
     <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\input\KeyboardKeys.h" />
     <ClInclude Include="src\input\MouseKeys.h" />
     <ClInclude Include="src\render\Camera.h" />

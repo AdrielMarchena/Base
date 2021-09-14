@@ -11,7 +11,7 @@
 #include "gl/glew.h"
 #include <iostream>
 #include "utils/gl_error_macro_db.h"
-namespace en
+namespace Base
 {
 	namespace render
 	{
@@ -24,8 +24,8 @@ namespace en
 		LineRender2D::LineRender2D(const char* vs, const char* fs)
 		{
 			//Line Stuff
-			mShader = std::make_shared<Shader>(vs, fs, MaxTexturesSlots());
-			mShader->Bind();
+			mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
+			mShader.Bind();
 			m_data.Target = GL_LINES;
 			m_data.Buffer = new LineVertex[MaxLineVertexCount];
 

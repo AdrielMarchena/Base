@@ -13,7 +13,7 @@
 #include "utils/al_error_marcro_db.h"
 #include "Log.h"
 
-namespace en
+namespace Base
 {
 namespace aux
 {

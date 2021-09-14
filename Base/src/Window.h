@@ -14,7 +14,7 @@
 #include "input/Mouse.h"
 #include "glm/glm.hpp"
 
-namespace en
+namespace Base
 {
 	namespace windowing
 	{

@@ -9,9 +9,8 @@
 #include <cstdint>
 #include <unordered_map>
 #include "glm/glm.hpp"
-#include "utils/gl_error_macro_db.h"
 
-namespace en
+namespace Base
 {
 namespace render
 {
@@ -28,8 +27,7 @@ namespace render
 		Shader(const char* vs, const char* fs,int32_t MaxTexSlots = 8);
 		~Shader();
 
-		Shader(Shader& other) = delete;
-		Shader& operator=(Shader& other) = delete;
+		static Shader CreateShader(const char* vs, const char* fs, int32_t MaxTexSlots = 8);
 
 		void Bind() const;
 		void Unbind() const;

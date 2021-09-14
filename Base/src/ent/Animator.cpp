@@ -13,35 +13,43 @@
 
 #include <limits>
 
-namespace en
+namespace Base
 {
 namespace ett
 {
 	static constexpr float_t default_x_sprite_size = 64.0f;
 	static constexpr float_t default_y_sprite_size = 64.0f;
-	static std::shared_ptr<en::render::Texture> default_white_texture = std::make_shared<render::Texture>();
+	static constexpr unsigned int max_uint32 = std::numeric_limits<uint32_t>::max();
+	static Base::render::Texture default_white_texture;
 	static render::SubTexture default_sub_white_texture = render::SubTexture::CreateFromCoords(default_white_texture, { 1,1 }, { 0,0 }, { 1,1 });;
 	
 	AnimationSpecs::AnimationSpecs()
-		:atlas(default_white_texture)
-	{
-	}
-	AnimationSpecs::AnimationSpecs(std::shared_ptr<en::render::Texture> texture)
-		:atlas(texture)
 	{
 	}
 
-	AnimationSpecs& AnimationSpecs::operator=(AnimationSpecs& other)
+	AnimationSpecs AnimationSpecs::CreateAnimationSpecs(const Base::render::Texture& texture, uint8_t preset)
 	{
-		if (this == &other)
-			return *this;
-		threshold = other.threshold;
-		timestamp = other.timestamp;
-		decrement = other.decrement;
-		texture_offset = other.texture_offset;
-		sprite_size = other.sprite_size;
-		atlas = other.atlas;
-		return *this;
+		AnimationSpecs new_spec{};
+		new_spec.atlas = texture;
+		switch (preset)
+		{
+		case ANIMATOR_FAST:
+			new_spec.decrement *= 1.5f;
+			break;
+		case ANIMATOR_FAST2:
+			new_spec.decrement *= 2.0f;
+			break;
+		case ANIMATOR_SLOW:
+			new_spec.decrement *= 0.5f;
+			break;
+		case ANIMATOR_SLOW2:
+			new_spec.decrement *= 0.25f;
+			break;
+		default:
+		case ANIMATOR_DEFAULT:
+		break;
+		}
+		return new_spec;
 	}
 
 	Animator::Animator(const AnimationSpecs& _Specs)
@@ -53,7 +61,7 @@ namespace ett
 		:m_Specs()
 	{
 		m_Specs.atlas = default_white_texture;
-		//default_white_texture = render::Texture(); //This is trash
+		m_Specs.m_Animator = this;
 	}
 
 	render::SubTexture& Animator::Run(float_t dt)
@@ -68,7 +76,7 @@ namespace ett
 		{
 			//Go to next texture
 			if(s)
-				m_CurrentTexIndex = std::min((m_CurrentTexIndex + 1) % int(s), unsigned int(std::numeric_limits<uint32_t>::max()));
+				m_CurrentTexIndex = std::min((m_CurrentTexIndex + 1) % int(s), max_uint32);// TODO: need all this?
 			m_CurrentTimeStamp = m_Specs.timestamp;
 		}
 		if (loop && m_CurrentThreshold <= 0 && m_CurrentTimeStamp <= 0)
@@ -83,14 +91,16 @@ namespace ett
 	}
 	void Animator::Reset()
 	{
-		m_CurrentTexIndex = m_Specs.texture_offset;
+		int s = m_CroppedTexture.size();
+		m_CurrentTexIndex = m_Specs.texture_offset % (s-1);
 		m_CurrentThreshold = m_Specs.threshold;
 		m_CurrentTimeStamp = m_Specs.timestamp;
 	}
 	void Animator::SetNewTexture(const AnimationSpecs& _Specs)
 	{
-		m_Specs = const_cast<AnimationSpecs&>(_Specs);
-		glm::vec2 atlas_size = m_Specs.atlas->GetSize();
+		m_Specs = _Specs;
+		m_Specs.m_Animator = this;
+		glm::vec2 atlas_size = m_Specs.atlas.GetSize();
 
 		if (m_Specs.threshold <= 0.0f)
 			m_Specs.threshold = default_threshold;
@@ -119,15 +129,18 @@ namespace ett
 			);
 		}
 
+		int s = m_CroppedTexture.size();
+		m_CurrentTexIndex = m_Specs.texture_offset % (s - 1);
 		if (m_Specs.timestamp <= 0)
-			m_Specs.timestamp = m_Specs.threshold / m_CroppedTexture.size();
+			m_Specs.timestamp = m_Specs.threshold / s;
 
-		if (m_Specs.texture_offset >= m_CroppedTexture.size())
-			m_Specs.texture_offset = m_CroppedTexture.size() - 1;
+		if (m_Specs.texture_offset >= s)
+			m_Specs.texture_offset = s - 1;
 
-		m_CurrentThreshold = m_Specs.threshold;
-		m_CurrentTimeStamp = m_Specs.timestamp;
-		m_CurrentTexIndex = 0;
+		Reset();
+		//m_CurrentThreshold = m_Specs.threshold;
+		//m_CurrentTimeStamp = m_Specs.timestamp;
+		//m_CurrentTexIndex = 0;
 	}
 }
 }

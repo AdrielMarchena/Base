@@ -13,19 +13,19 @@ inline static float Distance(const glm::vec2& point_a, const glm::vec2& point_b)
 	return float(std::sqrt(std::pow(point_b.x - point_a.x, 2) + std::pow(point_b.y - point_a.y, 2)));
 }
 
-static en::Entity CreateBall(en::Scene* scene);
+static Base::Entity CreateBall(Base::Scene* scene);
 
-class ScriptExample : public en::ScriptableEntity
+class ScriptExample : public Base::ScriptableEntity
 {
 public:
 	void OnCreate()
 	{
 	}
 
-	void OnUpdate(const en::UpdateArgs& args)
+	void OnUpdate(const Base::UpdateArgs& args)
 	{
-		auto& comp = GetComponent<en::CircleComponent>();
-		auto& vel = GetComponent<en::VelocityComponent>().Velocity;
+		auto& comp = GetComponent<Base::CircleComponent>();
+		auto& vel = GetComponent<Base::VelocityComponent>().Velocity;
 
 		auto& rad = comp.Radius;
 		auto& pos = comp.Position;
@@ -44,27 +44,27 @@ public:
 	}
 };
 
-static en::Entity CreateBall(en::Scene* scene)
+static Base::Entity CreateBall(Base::Scene* scene)
 {
 	static unsigned int i = 0;
 	static float norm = 1.0f / 256.0f;
 	auto ball = scene->CreateEntity("Ball_" + i);
-	auto& Circle = ball.AddComponent<en::CircleComponent>();
+	auto& Circle = ball.AddComponent<Base::CircleComponent>();
 	Circle.Radius = ((P_random() + 10)) % 60;
 	Circle.Position = { ((P_random() + int(Circle.Radius)) << 2)%800 - Circle.Radius,((P_random() + int(Circle.Radius)) << 2) % 600 - Circle.Radius,1.0f };
 	Circle.Color = { norm * P_random(),norm * P_random(),norm * P_random() ,1.0f };
-	auto& vel = ball.AddComponent<en::VelocityComponent>().Velocity;
+	auto& vel = ball.AddComponent<Base::VelocityComponent>().Velocity;
 	vel.x = vel.y = ((P_random() << 2));
 	vel.x = vel.x - ((int(Circle.Radius) << 3));
 	vel.y = vel.y - ((int(Circle.Radius) << 3));
 	vel.z = 1.0f;
-	ball.AddComponent<en::NativeScriptComponent>().Bind<ScriptExample>();
+	ball.AddComponent<Base::NativeScriptComponent>().Bind<ScriptExample>();
 	i++;
 	return ball;
 }
 
 SandBox::SandBox()
-	:en::windowing::Window()
+	:Base::windowing::Window()
 {
 }
 
@@ -74,18 +74,18 @@ SandBox::~SandBox()
 
 void SandBox::OnAttach()
 {
-	m_Textures = en::render::Texture::LoadAsyncTexture(en::utils::Files::GetPairText("images/"));
+	m_Textures = Base::render::Texture::LoadAsyncTexture(Base::utils::Files::GetPairText("images/"));
 
 	m_Balls.reserve(1000);
-	m_Scene = std::make_unique<en::Scene>();
+	m_Scene = std::make_unique<Base::Scene>();
 	float norm = 1.0f / 256.0f;
 	
 	m_Balls.push_back(CreateBall(m_Scene.get()));
 	m_Balls.push_back(CreateBall(m_Scene.get()));
 
 	m_TexQuad = m_Scene->CreateEntity("Thing");
-	m_TexQuad.AddComponent<en::TextureComponent>(*m_Textures["test"]);
-	auto& pos = m_TexQuad.GetComponent<en::TransformComponent>().Transform;
+	m_TexQuad.AddComponent<Base::TextureComponent>(*m_Textures["test"]);
+	auto& pos = m_TexQuad.GetComponent<Base::TransformComponent>().Transform;
 	XPOS(pos) = 400;
 	YPOS(pos) = 300;
 	ZPOS(pos) = 1.0f;
@@ -94,15 +94,15 @@ void SandBox::OnAttach()
 	glm::mat4 camera_transform = glm::translate(glm::mat4(1.0f), { 0.0f,0.0f,0.0f }) *
 		glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
 	m_Camera = m_Scene->CreateEntity("Main_Camera");
-	m_Camera.AddComponent<en::CameraComponent>(camera_transform);
+	m_Camera.AddComponent<Base::CameraComponent>(camera_transform);
 	
 	m_Scene->SceneBegin();
 	Window::OnAttach();
 }
 
-void SandBox::OnUpdate(const en::UpdateArgs& args)
+void SandBox::OnUpdate(const Base::UpdateArgs& args)
 {
-	if (en::input::Mouse::isClicked(BASE_MOUSE_BUTTON_1))
+	if (Base::input::Mouse::isClicked(BASE_MOUSE_BUTTON_1))
 	{
 		auto ball = CreateBall(m_Scene.get());
 		m_Balls.push_back(ball);

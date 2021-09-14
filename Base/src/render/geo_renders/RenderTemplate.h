@@ -11,7 +11,7 @@
 #include "utils/gl_error_macro_db.h"
 #include "render/Colors.h"
 #include "render/Camera.h"
-namespace en
+namespace Base
 {
 namespace render
 {
@@ -46,9 +46,9 @@ namespace render
 
 		virtual void BeginScene(const glm::mat4& viewProj, const glm::mat4& transform_g)
 		{
-			mShader->Bind();
-			mShader->SetUniformMat4f("u_ViewProj", viewProj);
-			mShader->SetUniformMat4f("u_Transform", transform_g);
+			mShader.Bind();
+			mShader.SetUniformMat4f("u_ViewProj", viewProj);
+			mShader.SetUniformMat4f("u_Transform", transform_g);
 		}
 
 		virtual void BeginBatch() 
@@ -61,7 +61,7 @@ namespace render
 
 		virtual void EndBatch()
 		{
-			mShader->Bind();
+			mShader.Bind();
 			//Current position - first position
 			GLsizeiptr size = (uint8_t*)m_data.BufferPtr - (uint8_t*)m_data.Buffer;
 			m_data.VB.Bind();
@@ -72,7 +72,7 @@ namespace render
 
 		virtual void Flush()
 		{
-			mShader->Bind();
+			mShader.Bind();
 			//GLCall(glBindVertexArray(m_data.VA));
 			m_data.VA.Bind();
 			GLCall(glDrawElements(m_data.Target, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
@@ -84,7 +84,7 @@ namespace render
 
 		virtual void Dispose()
 		{
-			mShader->Dispose();
+			mShader.Dispose();
 			//GLCall(glDeleteVertexArrays(1, &m_data.VA));
 			m_data.VA.Dispose();
 			//GLCall(glDeleteBuffers(1, &m_data.VB));
@@ -97,7 +97,7 @@ namespace render
 			disposed = true;
 		};
 
-		virtual const std::shared_ptr<Shader> GetShader() { return mShader; };
+		virtual const Shader GetShader() { return mShader; };
 
 		//virtual ~Render() { if (!disposed) Dispose(); }
 	
@@ -108,7 +108,7 @@ namespace render
 		}
 	protected:
 		T m_data;
-		std::shared_ptr<Shader> mShader;
+		Shader mShader;
 		bool disposed = false;
 	};
 }

@@ -21,7 +21,7 @@
 #include <Windows.h>
 #include <filesystem>
 #include "Logs.h"
-namespace en
+namespace Base
 {
 namespace utils
 {

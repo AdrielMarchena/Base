@@ -15,7 +15,7 @@
 #include <mutex>
 #include "Log.h"
 #include "utils/Generic.h"
-namespace en
+namespace Base
 {
 namespace render
 {
