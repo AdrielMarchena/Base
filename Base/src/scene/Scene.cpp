@@ -107,7 +107,7 @@ namespace Base
 
 			{//Draw Sprites
 				//It's a view because a group just breaks
-				auto view = m_Registry.view<TransformComponent, SpriteComponent>();
+				auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
@@ -115,8 +115,8 @@ namespace Base
 				}
 			}
 
-			{//Draw Textures
-				auto view = m_Registry.view<TransformComponent, TextureComponent>();
+			{//Draw SubTextures
+				auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
@@ -125,8 +125,8 @@ namespace Base
 				}
 			}
 
-			{//Draw SebTextures
-				auto view = m_Registry.view<TransformComponent, SubTextureComponent>();
+			{//Draw SubTextures
+				auto view = m_Registry.view<TransformComponent, SubTextureComponent>(entt::exclude<CircleComponent>);
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
@@ -136,7 +136,7 @@ namespace Base
 			}
 
 			{//Draw Animated stuff
-				auto view = m_Registry.view<TransformComponent, AnimateComponent>();
+				auto view = m_Registry.view<TransformComponent, AnimateComponent>(entt::exclude<CircleComponent>);
 				for (auto entity : view)
 				{
 					//TODO: Test to see if works
@@ -146,12 +146,21 @@ namespace Base
 				}
 			}
 
-			{//Draw Circles
-				auto view = m_Registry.view<CircleComponent>();
+			{//Draw Color Circles
+				auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
 				for (auto entity : view)
 				{
-					auto& circle_def = view.get<CircleComponent>(entity);
-					render::DrawCircle(circle_def.Position, circle_def.Radius, circle_def.Color, circle_def.Fill);
+					auto&& [trans,circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
+					render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f ,spr.Color);
+				}
+			}
+
+			{//Draw Texture Circles
+				auto view = m_Registry.view<TransformComponent, CircleComponent, TextureComponent>();
+				for (auto entity : view)
+				{
+					auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
+					render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f, tex.Texture ,Color::White);
 				}
 			}
 

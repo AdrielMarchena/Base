@@ -37,12 +37,16 @@ namespace render
 		int32_t  m_Hei = NULL;
 		int32_t  m_Bit = NULL;
 		bool disposed = false;
+		void Create(ImageInfo& info);
 	public:
 		Texture() = default;
 		Texture(const std::string& path);
-		Texture(const ImageInfo& info);
+		Texture(ImageInfo& info);
+		Texture(uint32_t color,uint32_t w, uint32_t);
 		~Texture() 
-		{ 
+		{
+			BASE_CORE_ASSERT(disposed, "This texture should not be disposed twice");
+			Dispose();
 		};
 
 		uint32_t GetId() const { return m_Id; };
@@ -56,6 +60,7 @@ namespace render
 
 		//Used only for draw Text
 		void SetID(GLuint new_id) { m_Id = new_id; }
+	private:
 		void Dispose()
 		{
 			if(!disposed)

@@ -94,14 +94,12 @@ namespace Base
 
 	struct CircleComponent
 	{
-		glm::vec3 Position = { 0.0f,0.0f,0.0f }; //Temp
 		float Radius = 5.0f;
-		glm::vec4 Color = Color::Base_Color;
 		bool Fill = true;
 		CircleComponent() = default;
 		CircleComponent(const CircleComponent&) = default;
-		CircleComponent(const glm::vec3& position,float radius, const glm::vec4& color, bool fill = true)
-			:Position(position), Radius(radius), Color(color), Fill(fill) {}
+		CircleComponent(float radius, bool fill = true)
+			:Radius(radius), Fill(fill) {}
 	};
 
 	struct SquareColisionComponent // Use the Position and size

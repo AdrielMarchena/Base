@@ -19,71 +19,76 @@ namespace Base
 {
 namespace render
 {
+	void Texture::Create(ImageInfo& info)
+	{
+		m_Wid = info.m_Wid;
+		m_Hei = info.m_Hei;
+		GLenum internalFormat = 0, dataFormat = 0;
+		if (info.m_Bit == 4 || info.png)
+		{
+			internalFormat = GL_RGBA8;
+			dataFormat = GL_RGBA;
+		}
+		else if (info.m_Bit == 3)
+		{
+			internalFormat = GL_RGB8;
+			dataFormat = GL_RGB;
+		}
+		BASE_CORE_ASSERT(internalFormat & dataFormat, "Format not supported");
+
+		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+
+		GLCall(glGenTextures(1, &m_Id));
+		BASE_CORE_ASSERT(m_Id, "Texture Id is 0");
+
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Wid, m_Hei, 0, dataFormat, GL_UNSIGNED_BYTE, info.m_Pixels));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+	}
+
 	Texture::Texture(const std::string& path)
 	{
 		ImageInfo info = GetImage(path.c_str());
-		if (!info.m_Pixels)
-			throw std::exception("The image data is empty");
-		m_Wid = info.m_Wid;
-		m_Hei = info.m_Hei;
-
-		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
-
-		GLCall(glGenTextures(1, &m_Id));
-		if (!m_Id)
-			throw std::exception("The image OpenGL_ID is empty");
-
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Wid, m_Hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, info.m_Pixels));
-		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		Create(info);
 		info.clear();
 	}
 
-	Texture::Texture(const ImageInfo& info)
+	Texture::Texture(ImageInfo& info)
 	{
-		if (!info.m_Pixels)
-			throw std::exception("The image data is empty");
-	
-		m_Wid = info.m_Wid;
-		m_Hei = info.m_Hei;
+		Create(info);
+	}
 
-		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
-
+	Texture::Texture(uint32_t color, uint32_t w, uint32_t h)
+	{
 		GLCall(glGenTextures(1, &m_Id));
-		if (!m_Id)
-			throw std::exception("OpenGL_ID is empty");
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Wid, m_Hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, info.m_Pixels));
-		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color));
 	}
 
 	ImageInfo Texture::GetImage(const char* path)
 	{
-		//TODO: If the stbi_load can't load the PNG, pngloader will
-		//      But i think this is "loading twice"
+		//TODO: Fix this stbi 'no SOI' bullshit 
 		ImageInfo info;
 
 		stbi_set_flip_vertically_on_load(1);
+		auto px = stbi_load(path, &info.m_Wid, &info.m_Hei, &info.m_Bit, 0);
+		
+		BASE_CORE_ASSERT(px, "Failed to load image");
 
-		auto px = stbi_load(path, &info.m_Wid, &info.m_Hei, &info.m_Bit, STBI_rgb_alpha);
-	
-		if (!px)
-			throw std::exception("The pixels tried to be loaded are empty");
 		info.m_Pixels = px;
-
 		const char* er = stbi_failure_reason();
 		if (er)
 		{
+			info.clear();
 			if (er == "no SOI")
 				return GetPNGImage(path);
 			throw std::exception(er);
@@ -106,9 +111,8 @@ namespace render
 
 		info.m_Wid = w;
 		info.m_Hei = h;
-		//If i could steal the buffer inside the vector this would be much easy
 		info.m_Pixels = new uint8_t[image.size()];
-		std::copy(image.begin(),image.end(),info.m_Pixels);
+		std::copy(image.begin(), image.end(),info.m_Pixels);
 		image.clear();
 		return info;
 	}
@@ -144,7 +148,6 @@ namespace render
 					info.resources[inf.first].clear();
 					info.futures.erase(inf.first);
 					info.resources.erase(inf.first);
-					//std::cout << "Can't Create Texture '" << inf.first << "' , error: " << ex.what() << std::endl;
 					break;
 				}
 			}
@@ -180,7 +183,6 @@ namespace render
 				{
 					std::lock_guard<std::mutex> lock(loads.mutex);
 					BASE_TRACE("Image: '{0}' Loaded!", name);
-					//D_LOG("image: '" << name << "' Loaded!");
 					loads.resources[name] = info;
 				}
 			}
@@ -188,7 +190,6 @@ namespace render
 			{
 				std::lock_guard<std::mutex> lock(loads.mutex);
 				BASE_ERROR("Can't Load Image '{0}', error: {1}", name, ex.what());
-				//std::cout << "Can't Load Image '" << name << "' , error: " << ex.what() << std::endl;
 			}
 		};
 

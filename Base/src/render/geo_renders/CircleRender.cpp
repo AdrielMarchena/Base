@@ -24,41 +24,23 @@ namespace render
 
 		m_data.Buffer = new CircleVertex[MaxVertexCount];
 
-		//GLCall(glGenVertexArrays(1, &m_data.VA));
-		//GLCall(glBindVertexArray(m_data.VA));
 		m_data.VA = VertexArray::CreateVertexArray();
 
-		//GLCall(glGenBuffers(1, &m_data.VB));
-		//GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-		//GLCall(glBufferData(GL_ARRAY_BUFFER, MaxVertexCount * sizeof(CircleVertex), nullptr, GL_DYNAMIC_DRAW));
 		m_data.VB = VertexBuffer::CreateVertexBuffer(MaxVertexCount * sizeof(CircleVertex));
 
 		VertexAttribute layout(m_data.VA, m_data.VB);
-		//GLCall(glEnableVertexAttribArray(0));
-		//GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Position)));
 		layout.AddLayout<float>(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Position));
 
-		//GLCall(glEnableVertexAttribArray(1));
-		//GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Color)));
 		layout.AddLayout<float>(4, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Color));
 
-		//GLCall(glEnableVertexAttribArray(2));
-		//GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexCoords)));
 		layout.AddLayout<float>(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexCoords));
 
-		//GLCall(glEnableVertexAttribArray(3));
-		//GLCall(glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex)));
 		layout.AddLayout<float>(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex));
 
-		//GLCall(glEnableVertexAttribArray(4));
-		//GLCall(glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint)));
 		layout.AddLayout<float>(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint));
 
-		//GLCall(glEnableVertexAttribArray(5));
-		//GLCall(glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th)));
 		layout.AddLayout<float>(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th));
 
-		//To much memory for the stack, free below
 		uint32_t* indices = new uint32_t[MaxIndexCount]{};
 		uint32_t offset = 0;
 		for (int i = 0; i < MaxIndexCount; i += 6)
@@ -74,32 +56,10 @@ namespace render
 			offset += 4;
 		}
 
-		//GLCall(glGenBuffers(1, &m_data.IB));
-		//GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
-		//GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
 		m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
 		delete[] indices;
 
-		//1x1 white Texture
-		GLCall(glGenTextures(1, &m_data.WhiteTexture));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_data.WhiteTexture));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-		uint32_t color = 0xffffffff;
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color));
-
-		int32_t* samplers = new int32_t[MaxTexture];
-		for (int i = 0; i < MaxTexture; i++)
-			samplers[i] = i;
-		mShader->SetUniform1iv("u_Textures", MaxTexture, samplers);
-		delete[] samplers;
-
-		m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
-		m_data.TextureSlots[0] = m_data.WhiteTexture;
-		for (size_t i = 1; i < MaxTexture; i++)
-			m_data.TextureSlots[i] = 0;
+		SampleTex(MaxTexture);
 
 		m_data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
 		m_data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
@@ -121,65 +81,145 @@ namespace render
 
 	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
+		glm::vec3 quad_position = { position.x, position.y, position.z };
+		glm::vec3 quad_size = { radius, radius,position.z };
+		DrawCircle(pos_trans(quad_position, quad_size),radius,fill,thick,color,rotation,axis);
+	}
+
+	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		glm::vec3 quad_position = { position.x, position.y, position.z };
+		glm::vec3 quad_size = { radius, radius,position.z };
+		DrawCircle(pos_trans(quad_position, quad_size), radius, fill, thick, texture ,color, rotation, axis);
+	}
+
+	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		glm::vec3 quad_position = { position.x, position.y, position.z };
+		glm::vec3 quad_size = { radius, radius,position.z };
+		DrawCircle(pos_trans(quad_position, quad_size), radius, fill, thick, sub_texture, color, rotation, axis);
+	}
+
+	void CircleRender::DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
 		if (m_data.IndexCount >= MaxIndexCount)
 		{
 			EndBatch();
 			Flush();
 			BeginBatch();
 		}
-		float fullSize = radius * 2;
+		float diameter = radius * 2;
 		constexpr float tex_index = 0;
 
-		glm::vec3 quad_position = {position.x - radius, position.y - radius, position.z};
-		glm::vec3 quad_size = { position.x + fullSize, position.y + fullSize,position.z };
-
-		glm::vec3 quads[4] = {
-			{quad_position.x,quad_position.y,quad_position.z},
-			{quad_position.x + quad_size.x, quad_position.y,quad_position.z},
-			{quad_position.x + quad_size.x,quad_position.y + quad_size.y,quad_position.z},
-			{quad_position.x,quad_position.y + quad_size.y,quad_position.z}
-		};
-
+		glm::mat4 trans = transform;
 		if (rotation)
-			rotate(quads, rotation, { quad_position.x + (quad_size.x / 2), quad_position.y + (quad_size.y / 2), quad_position.z }, axis);
+			trans = glm::rotate(trans, glm::radians(rotation), axis);
 
 		for (uint8_t i = 0; i < 4; i++)
 		{
-			m_data.BufferPtr->Position = quads[i];
+			m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 			m_data.BufferPtr->Color = color;
 			m_data.BufferPtr->TexCoords = m_default_tex_coords[i];
-			m_data.BufferPtr->TexIndex = tex_index;
-			m_data.BufferPtr->MiddlePoint = {position.x,position.y};
+			m_data.BufferPtr->TexIndex = tex_index; 
+			m_data.BufferPtr->MiddlePoint = glm::vec2(BASE_XPOS(trans), BASE_YPOS(trans));
 			m_data.BufferPtr->Rad_Fill_Th = { radius,fill,thick };
 			m_data.BufferPtr++;
 		}
 
 		m_data.IndexCount += 6;
 	}
-
-	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	
+	void CircleRender::DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-	}
+		if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
+		{
+			EndBatch();
+			Flush();
+			BeginBatch();
+		}
 
-	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
-	{
-	}
+		int8_t texture_index = 0;
+		if (texture->GetId())
+			for (int8_t i = 1; i < m_data.TextureSlotIndex; i++)
+			{
+				if (m_data.TextureSlots[i] == texture->GetId())
+				{
+					texture_index = i;
+					break;
+				}
+			}
 
-	void CircleRender::DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
-	{
-		/*for (uint8_t i = 0; i < 4; i++)
+		if (texture->GetId())
+			if (!texture_index)
+			{
+				texture_index = m_data.TextureSlotIndex;
+				m_data.TextureSlots[m_data.TextureSlotIndex] = texture->GetId();
+				m_data.TextureSlotIndex++;
+			}
+
+		glm::mat4 trans = transform;
+		if (rotation)
+			trans = glm::rotate(transform, glm::radians(rotation), axis);
+
+		for (size_t i = 0; i < 4; i++)
 		{
 			m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 			m_data.BufferPtr->Color = color;
 			m_data.BufferPtr->TexCoords = m_default_tex_coords[i];
-			m_data.BufferPtr->TexIndex = tex_index;
-			m_data.BufferPtr->MiddlePoint = middle_point;
+			m_data.BufferPtr->TexIndex = texture_index;
+			m_data.BufferPtr->MiddlePoint = glm::vec2(BASE_XPOS(trans), BASE_YPOS(trans));
 			m_data.BufferPtr->Rad_Fill_Th = { radius,fill,thick };
 			m_data.BufferPtr++;
-		}*/
+		}
+		m_data.IndexCount += 6;
+	}
 
-		//FillV(quad_position, quad_size, position, radius, fill, thick, color, m_default_tex_coords, 0, layer, rotation, axis);
-		//m_data.IndexCount += 6;
+	void CircleRender::DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		if (m_data.IndexCount >= MaxIndexCount || m_data.TextureSlotIndex > MaxTexture - 1)
+		{
+			EndBatch();
+			Flush();
+			BeginBatch();
+		}
+
+		const glm::vec2* coords = sub_texture.GetTexCoords();
+		BASE_CORE_ASSERT(coords, "GetTexCoords return nullptr");
+
+		int8_t texture_index = 0;
+		if (sub_texture.GetId())
+			for (int8_t i = 1; i < m_data.TextureSlotIndex; i++)
+			{
+				if (m_data.TextureSlots[i] == sub_texture.GetId())
+				{
+					texture_index = i;
+					break;
+				}
+			}
+
+		if (sub_texture.GetId())
+			if (!texture_index)
+			{
+				texture_index = m_data.TextureSlotIndex;
+				m_data.TextureSlots[m_data.TextureSlotIndex] = sub_texture.GetId();
+				m_data.TextureSlotIndex++;
+			}
+
+		glm::mat4 trans = transform;
+		if (rotation)
+			trans = glm::rotate(transform, glm::radians(rotation), axis);
+
+		for (size_t i = 0; i < 4; i++)
+		{
+			m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
+			m_data.BufferPtr->Color = color;
+			m_data.BufferPtr->TexCoords = coords[i];
+			m_data.BufferPtr->TexIndex = texture_index;
+			m_data.BufferPtr->MiddlePoint = glm::vec2(BASE_XPOS(trans), BASE_YPOS(trans));
+			m_data.BufferPtr->Rad_Fill_Th = { radius,fill,thick };
+			m_data.BufferPtr++;
+		}
+		m_data.IndexCount += 6;
 	}
 }
 }

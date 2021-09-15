@@ -206,9 +206,34 @@ namespace render
 		m_LineRender->DrawCurveLine(origin, p1, dest, color, precision);
 	}
 
-	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, const glm::vec4& color, bool fill, float thick,float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(position, radius, fill, thick ,color, rotation, axis);
+		m_CircleRender->DrawCircle(position, radius, fill, thick, color, rotation, axis);
+	}
+
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_CircleRender->DrawCircle(position, radius, fill, thick, texture ,color, rotation, axis);
+	}
+
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_CircleRender->DrawCircle(position, radius, fill, thick, sub_texture, color, rotation, axis);
+	}
+
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_CircleRender->DrawCircle(transform, radius, fill, thick, color, rotation, axis);
+	}
+
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_CircleRender->DrawCircle(transform, radius, fill, thick, texture, color, rotation, axis);
+	}
+
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	{
+		m_CircleRender->DrawCircle(transform, radius, fill, thick, sub_texture, color, rotation, axis);
 	}
 
 	void Render2D::DrawTriangle(const glm::vec3 points[3], const glm::vec4& color)

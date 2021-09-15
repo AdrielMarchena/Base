@@ -3,6 +3,10 @@
 
 #define BASE_API
 
+#define BASE_XPOS(x) x[3][0]
+#define BASE_YPOS(x) x[3][1]
+#define BASE_ZPOS(x) x[3][2]
+
 namespace Base
 {
 	//From The Cherno video
@@ -12,8 +16,5 @@ namespace Base
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
 }
-
-#include "render/render2D.h"
-#include "Log.h"
 
 #endif

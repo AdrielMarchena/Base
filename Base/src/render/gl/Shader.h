@@ -5,6 +5,7 @@
 */
 
 #pragma once
+#include "Base/Base.h"
 #include <string>
 #include <cstdint>
 #include <unordered_map>

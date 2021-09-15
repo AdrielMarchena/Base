@@ -27,7 +27,6 @@ namespace Base
 {
 namespace render
 {
-
 	class Render2D
 	{
 	private:
@@ -36,6 +35,7 @@ namespace render
 		static Ref<LineRender2D> m_LineRender;
 		static Ref<QuadRender2D> m_TextRender;
 		static Ref<TriRender> m_TriRender;
+
 	public:
 		static constexpr GLbitfield Cl_Color = GL_COLOR_BUFFER_BIT;
 		static constexpr GLbitfield Cl_DepthColor = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -113,15 +113,29 @@ namespace render
 
 		static void DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, float_t precision = 0.01f);
 
-		static void DrawCircle(const glm::vec3& position, float_t radius, const glm::vec4& color, bool fill = true, float thick = 1.0f,
+		static void DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = {});
+
+		static void DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture,
+			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
+
+		static void DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture,
+			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
+
+		static void DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color,
+			float_t rotation = NULL, const glm::vec3& axis = {});
+
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, Ref<Texture> texture,
+			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
+
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, const SubTexture& sub_texture,
+			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
 		static void DrawTriangle(const glm::vec3 points[3], const glm::vec4& color);
 
 		static void DrawTriangle(const glm::vec3 points[3], const glm::vec4 color[3]);
 
 	private:
-
 		static void QuadBeginBatch();
 		static void QuadEndBatch();
 		static void QuadFlush();
