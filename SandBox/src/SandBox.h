@@ -1,4 +1,5 @@
 #pragma once
+#include "Base/Base.h"
 #include "Window.h"
 #include "scene/Entity.h"
 #include "scene/Scene.h"
@@ -8,9 +9,8 @@ class SandBox : public Base::windowing::Window
 {
 private:
 	Base::Entity m_Camera;
-	std::vector<Base::Entity> m_Balls;
 	Base::Entity m_TexQuad;
-	std::unique_ptr<Base::Scene> m_Scene;
+	Base::Scope<Base::Scene> m_Scene;
 	ResourceManager<Base::render::Texture> m_Textures;
 public:
 	SandBox();
