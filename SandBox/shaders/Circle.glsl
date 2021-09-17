@@ -1,5 +1,44 @@
+#type vertex
 #version 330 core
-#define MAX_TEXTURES_SLOTS
+layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec4 a_Color;
+layout(location = 2) in vec2 a_TexCoord;
+layout(location = 3) in float a_TexIndex;
+layout(location = 4) in vec2 a_MiddlePoint;
+layout(location = 5) in vec3 a_Rad_Fill_Th;
+
+uniform mat4 u_ViewProj;
+
+out vec4 v_Color;
+out vec2 v_TexCoord;
+out float v_TexIndex;
+out vec3 v_Pos;
+out vec2 v_MiddlePoint;
+//out vec3 v_Rad_Fill_Th;
+out float v_Radius;
+out float v_Fill;
+out float v_Thick;
+
+void main()
+{
+	v_Color = a_Color;
+	v_TexCoord = a_TexCoord;
+	v_TexIndex = a_TexIndex;
+	v_Pos = a_Position;
+	v_MiddlePoint = a_MiddlePoint;
+	//v_Rad_Fill_Th = a_Rad_Fill_Th;
+
+	v_Radius = a_Rad_Fill_Th.x;
+	v_Fill = a_Rad_Fill_Th.y;
+	v_Thick = a_Rad_Fill_Th.z;
+
+	gl_Position = u_ViewProj * vec4(a_Position, 1.0);
+}
+
+
+#type fragment
+#version 330 core
+#define MAX_TEXTURES_SLOTS 8
 
 layout(location = 0) out vec4 o_Color;
 
@@ -44,7 +83,7 @@ void main()
 	if (dist_pvp > v_Radius) // Outside
 		tmp_Color.a = 0.0;
 	if (dist_pvp < v_Radius - v_Thick && v_Fill == 0) //Inside
-		tmp_Color.a = 0.0;;
+		tmp_Color.a = 0.0;
 	if (u_LightQtd < 1)
 		o_Color = tmp_Color;
 	else

@@ -11,43 +11,67 @@
 #include <unordered_map>
 #include "glm/glm.hpp"
 
+typedef unsigned int GLenum;
 namespace Base
 {
 namespace render
 {
+
 	class Shader
 	{
 	private:
 		uint32_t m_Id = NULL;
-		mutable std::unordered_map<std::string, int32_t> m_Locations;
-		bool copy = false;
+		std::string m_Name = "";
+		std::string m_Path = "";
+		std::unordered_map<GLenum, std::string> m_GL_SourceCode;
 		bool disposed = false;
 	public:
 
-		Shader() = default;
-		Shader(const char* vs, const char* fs,int32_t MaxTexSlots = 8);
+		Shader(const std::string& path);
+		Shader(const std::string& name, const std::string& vs, const std::string& fs);
 		~Shader();
 
-		static Ref<Shader> CreateShader(const char* vs, const char* fs, int32_t MaxTexSlots = 8);
+		static Ref<Shader> CreateShader(const std::string& name, const std::string& vs, const std::string& fs);
+		static Ref<Shader> CreateShader(const std::string& path);
+
+		const std::string& GetName() const { return m_Name; };
 
 		void Bind() const;
 		void Unbind() const;
-
 		void Dispose();
 
-		void SetUniform1i(const std::string& name, int32_t value) const;
-		void SetUniform1iv(const std::string& name, int32_t size, int32_t* value) const;
-		void SetUniform1f(const std::string& name, float_t value) const;
-		void SetUniform2f(const std::string& name, float_t v0, float_t v1) const;
-		void SetUniform3f(const std::string& name, float_t v0, float_t v1, float_t v2) const;
-		void SetUniform4f(const std::string& name, float_t v0, float_t v1, float_t v2, float_t v3) const;
-		void SetUniformMat4f(const std::string& name, const glm::mat4& matrix) const;
-
-		int32_t GetUniformLocation(const std::string& name) const;
+		void SetUniform1i(const std::string& name, int32_t value);
+		void SetUniform1iv(const std::string& name, int32_t size, int32_t* value);
+		void SetUniform1f(const std::string& name, float_t value);
+		void SetUniform2f(const std::string& name, float_t v0, float_t v1);
+		void SetUniform3f(const std::string& name, float_t v0, float_t v1, float_t v2);
+		void SetUniform4f(const std::string& name, float_t v0, float_t v1, float_t v2, float_t v3);
+		void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 
 	private:
+		std::string ReadFile(const std::string& path);
+		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
+
+		void CreateProgram();
+
 		void checkCompileErrors(uint32_t shader, const char* type, const char* path);
 		std::string GetShaderFile(const char* path, int32_t MaxTexSlots = 8);
 	};
+
+	class ShaderLib
+	{
+	private:
+		std::unordered_map<std::string, Ref<Shader>> m_Shaders;
+	public:
+		void Add(const std::string& name, const Ref<Shader>& shader);
+		void Add(const Ref<Shader>& shader);
+		Ref<Shader> Load(const std::string& path);
+		Ref<Shader> Load(const std::string& name, const std::string& path);
+
+		Ref<Shader> Get(const std::string& name);
+
+		bool Exists(const std::string& name) const;
+	};
+
 }
 }
