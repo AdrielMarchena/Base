@@ -27,10 +27,12 @@ namespace Base
 		static const size_t MaxIndexCount = MaxQuadCount * 6;
 		static int32_t MaxTexture = MaxTexturesSlots();
 
-		QuadRender2D::QuadRender2D(const char* vs, const char* fs)
+		QuadRender2D::QuadRender2D(const Ref<Shader>& shader)
 		{
-			mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
+			mShader = shader;
 			mShader->Bind();
+
+			m_data.VerticesNumber = 4;
 
 			m_data.Buffer = new QuadVertex[MaxVertexCount];
 
@@ -69,14 +71,16 @@ namespace Base
 			SampleTex(MaxTexture);
 
 			m_data.QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-			m_data.QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
-			m_data.QuadVertexPositions[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
+			m_data.QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
+			m_data.QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
 			m_data.QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 
 		}
 
 		void QuadRender2D::Flush()
 		{
+			if (!m_data.IndexCount)
+				return;
 			mShader->Bind();
 			for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 			{
@@ -128,7 +132,7 @@ namespace Base
 			if (rotation)
 				trans = glm::rotate(transform, glm::radians(rotation), axis);
 
-			for (size_t i = 0; i < 4; i++)
+			for (size_t i = 0; i < m_data.VerticesNumber; i++)
 			{
 				m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 				m_data.BufferPtr->Color = color[i];
@@ -172,7 +176,7 @@ namespace Base
 			if (rotation)
 				trans = glm::rotate(transform, glm::radians(rotation), axis);
 
-			for (size_t i = 0; i < 4; i++)
+			for (size_t i = 0; i < m_data.VerticesNumber; i++)
 			{
 				m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 				m_data.BufferPtr->Color = color;
@@ -219,7 +223,7 @@ namespace Base
 			if (rotation)
 				trans = glm::rotate(transform, glm::radians(rotation), axis);
 
-			for (size_t i = 0; i < 4; i++)
+			for (size_t i = 0; i < m_data.VerticesNumber; i++)
 			{
 				m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 				m_data.BufferPtr->Color = color;

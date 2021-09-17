@@ -15,7 +15,7 @@ namespace render
 	public:
 		static glm::vec2 m_default_tex_coords[4];
 
-		CircleRender(const char* vs, const char* fs);
+		CircleRender(const Ref<Shader>& shader);
 		CircleRender() = default;
 
 		void Flush() override;

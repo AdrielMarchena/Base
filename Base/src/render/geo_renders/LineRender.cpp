@@ -21,33 +21,24 @@ namespace Base
 		static const size_t MaxLineVertexCount = MaxLineCount * 2;
 		static const size_t MaxLineIndexCount = MaxLineCount * 2;
 
-		LineRender2D::LineRender2D(const char* vs, const char* fs)
+		LineRender2D::LineRender2D(const Ref<Shader>& shader)
 		{
-			//Line Stuff
-			mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
+			mShader = shader;
 			mShader->Bind();
 			m_data.Target = GL_LINES;
 			m_data.Buffer = new LineVertex[MaxLineVertexCount];
+			
+			m_data.VerticesNumber = 4;
 
-			//GLCall(glGenVertexArrays(1, &m_data.VA));
-			//GLCall(glBindVertexArray(m_data.VA));
 			m_data.VA = VertexArray::CreateVertexArray();
 
-			//GLCall(glGenBuffers(1, &m_data.VB));
-			//GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_data.VB));
-			//GLCall(glBufferData(GL_ARRAY_BUFFER, MaxLineVertexCount * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW));
 			m_data.VB = VertexBuffer::CreateVertexBuffer(MaxLineVertexCount * sizeof(LineVertex));
 
 			VertexAttribute layout(m_data.VA, m_data.VB);
-			//GLCall(glEnableVertexAttribArray(0));
-			//GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position)));
 			layout.AddLayout<float>(3, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position));
 
-			//GLCall(glEnableVertexAttribArray(1));
-			//GLCall(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color)));
 			layout.AddLayout<float>(4, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));
 
-			//To much memory for the stack, free below
 			uint32_t* indices = new uint32_t[MaxLineIndexCount]{};
 			uint32_t offset = 0;
 			for (int i = 0; i < MaxLineIndexCount; i += 2)
@@ -58,9 +49,6 @@ namespace Base
 				offset += 2;
 			}
 
-			//GLCall(glGenBuffers(1, &m_data.IB));
-			//GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_data.IB));
-			//GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, _msize(indices), indices, GL_STATIC_DRAW));
 			m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
 			delete[] indices;
 

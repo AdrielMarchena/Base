@@ -12,7 +12,7 @@ namespace render
 	public:
 		static glm::vec2 m_default_tex_coords[4];
 
-		TriRender(const char* vs, const char* fs);
+		TriRender(const Ref<Shader>& shader);
 		TriRender() = default;
 
 		void Flush() override;

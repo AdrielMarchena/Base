@@ -16,10 +16,12 @@ namespace render
 	static const size_t MaxIndexCount = MaxCircleCount * 3;
 	static int32_t MaxTexture = MaxTexturesSlots();
 
-	TriRender::TriRender(const char* vs, const char* fs)
+	TriRender::TriRender(const Ref<Shader>& shader)
 	{
-		mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
+		mShader = shader;
 		mShader->Bind();
+
+		m_data.VerticesNumber = 4;
 
 		m_data.Buffer = new TriangleVertex[MaxVertexCount];
 
@@ -55,6 +57,8 @@ namespace render
 
 	void TriRender::Flush()
 	{
+		if (!m_data.IndexCount)
+			return;
 		mShader->Bind();
 		for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 		{
@@ -76,7 +80,7 @@ namespace render
 
 	void TriRender::DrawTriangle(const glm::vec3 points[3], const glm::vec4 color[3])
 	{
-		for (uint8_t i = 0; i < 3; i++)
+		for (uint8_t i = 0; i < m_data.VerticesNumber; i++)
 		{
 			m_data.BufferPtr->Position = { points[i].x,points[i].y,points[i].z };
 			m_data.BufferPtr->Color = color[i];

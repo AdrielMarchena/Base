@@ -17,10 +17,12 @@ namespace render
 	static const size_t MaxIndexCount = MaxCircleCount * 6;
 	static int32_t MaxTexture = MaxTexturesSlots();
 
-	CircleRender::CircleRender(const char* vs, const char* fs)
+	CircleRender::CircleRender(const Ref<Shader>& shader)
 	{
-		mShader = Shader::CreateShader(vs, fs, MaxTexturesSlots());
+		mShader = shader;
 		mShader->Bind();
+
+		m_data.VerticesNumber = 4;
 
 		m_data.Buffer = new CircleVertex[MaxVertexCount];
 
@@ -69,6 +71,8 @@ namespace render
 
 	void CircleRender::Flush()
 	{
+		if (!m_data.IndexCount)
+			return;
 		mShader->Bind();
 		for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 		{
@@ -115,7 +119,7 @@ namespace render
 		if (rotation)
 			trans = glm::rotate(trans, glm::radians(rotation), axis);
 
-		for (uint8_t i = 0; i < 4; i++)
+		for (uint8_t i = 0; i < m_data.VerticesNumber; i++)
 		{
 			m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 			m_data.BufferPtr->Color = color;
@@ -161,7 +165,7 @@ namespace render
 		if (rotation)
 			trans = glm::rotate(transform, glm::radians(rotation), axis);
 
-		for (size_t i = 0; i < 4; i++)
+		for (size_t i = 0; i < m_data.VerticesNumber; i++)
 		{
 			m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 			m_data.BufferPtr->Color = color;
@@ -209,7 +213,7 @@ namespace render
 		if (rotation)
 			trans = glm::rotate(transform, glm::radians(rotation), axis);
 
-		for (size_t i = 0; i < 4; i++)
+		for (size_t i = 0; i < m_data.VerticesNumber; i++)
 		{
 			m_data.BufferPtr->Position = trans * m_data.QuadVertexPositions[i];
 			m_data.BufferPtr->Color = color;

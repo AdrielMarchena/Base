@@ -21,6 +21,10 @@ namespace render
 	{
 		glm::vec3 Position;
 		glm::vec4 Color;
+		operator Vertex*()
+		{
+			return this;
+		}
 	};
 
 	struct LineVertex : Vertex
@@ -63,6 +67,7 @@ namespace render
 		uint32_t Count = 0;
 		GLenum Target = GL_TRIANGLES;
 		uint8_t TextureSlotIndex = 1;
+		uint8_t VerticesNumber = 2;
 		Stats RenderStatus;
 	};
 

@@ -37,7 +37,7 @@ namespace render
 				reverseTranslationMatrix * rotationMatrix * translationMatrix * glm::vec4(vertices[i], 1.0f));
 		}
 	}
-
+	class Render2D;
 	template<typename T>
 	class Render
 	{
@@ -51,7 +51,7 @@ namespace render
 		{
 			mShader->Bind();
 			mShader->SetUniformMat4f("u_ViewProj", viewProj);
-			mShader->SetUniformMat4f("u_Transform", transform_g);
+			//mShader->SetUniformMat4f("u_Transform", transform_g);
 		}
 
 		virtual void BeginBatch() 
@@ -64,15 +64,27 @@ namespace render
 
 		virtual void EndBatch()
 		{
+			if (!m_data.IndexCount)
+				return;
 			mShader->Bind();
 			//Current position - first position
 			GLsizeiptr size = (uint8_t*)m_data.BufferPtr - (uint8_t*)m_data.Buffer;
+
+			//TODO: seek a way to sort this jumping the vertices of the same Quad
+			// example in case of a Quad, advance 4 Vertex ahead instead of one
+			std::sort(m_data.Buffer, m_data.BufferPtr, [&](Vertex* buffer_a, Vertex* buffer_b) 
+			{
+				return buffer_a->Position.z > buffer_b->Position.z;
+			}); //TODO: move to static render
+
 			m_data.VB.Bind();
 			m_data.VB.SubData(size, m_data.Buffer);
 		};
 
 		virtual void Flush()
 		{
+			if (!m_data.IndexCount)
+				return;
 			mShader->Bind();
 			m_data.VA.Bind();
 			GLCall(glDrawElements(m_data.Target, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
@@ -88,6 +100,7 @@ namespace render
 			m_data.VA.Dispose();
 			m_data.VB.Dispose();
 			m_data.IB.Dispose();
+			WhiteTexture()->Dispose();
 			delete[] m_data.Buffer;
 			disposed = true;
 		};
@@ -107,12 +120,16 @@ namespace render
 		}
 
 		virtual const Ref<Shader> GetShader() { return mShader; };
+		virtual const void SetShader(const Ref<Shader>& shader) { mShader = shader; }
+ 
+		virtual T& GetData() { return m_data; }
 
 		inline glm::mat4 pos_trans(const glm::vec3& pos, const glm::vec2& size)
 		{
 			return glm::translate(glm::mat4(1.0f), pos)
 				* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		}
+
 	protected:
 		T m_data;
 		Ref<Shader> mShader;
@@ -122,6 +139,7 @@ namespace render
 			return white_texture;
 		};
 		bool disposed = false;
+		friend Render2D;
 	};
 }
 }

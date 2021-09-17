@@ -20,7 +20,7 @@ namespace Base
 		private:
 		public:
 
-			LineRender2D(const char* vs, const char* fs);
+			LineRender2D(const Ref<Shader>& shader);
 			LineRender2D() = default;
 
 			void DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color);
