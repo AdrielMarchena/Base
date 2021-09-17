@@ -15,12 +15,13 @@ namespace Base
 namespace render
 {
 	glm::vec3 Render2D::m_default_axis = { 0.0f,0.0f,1.0f };
-	glm::mat4 Render2D::m_Transform = glm::ortho(0, 800, 0, 600); //TODO: remove
+	glm::mat4 Render2D::m_Transform = glm::ortho(0, 800, 0, 600,1,-10); //TODO: remove
 	Ref<QuadRender2D> Render2D::m_QuadRender;
 	Ref<CircleRender> Render2D::m_CircleRender;
 	Ref<LineRender2D> Render2D::m_LineRender;
 	Ref<QuadRender2D> Render2D::m_TextRender;
 	Ref<TriRender> Render2D::m_TriRender;
+	ShaderLib Render2D::m_Shaders;
 
 	void Render2D::SetClearColor(const glm::vec4& color)
 	{
@@ -32,18 +33,30 @@ namespace render
 		GLCall(glClear(clear));
 	}
 
-	void Render2D::Init(const char* quad_vs, const char* quad_fs, const char* line_vs, const char* line_fs, const char* circle_vs, const char* circle_fs, const char* text_vs, const char* text_fs, const char* tri_vs, const char* tri_fs)
+	void Render2D::Init()
 	{
-		m_QuadRender	= std::make_shared<QuadRender2D>(quad_vs, quad_fs);
-		m_LineRender	= std::make_shared<LineRender2D>(line_vs, line_fs);
-		m_CircleRender	= std::make_shared<CircleRender>(circle_vs, circle_fs);
-		m_TextRender	= std::make_shared<QuadRender2D>(text_vs, text_fs);
-		m_TriRender		= std::make_shared<TriRender>(tri_vs, tri_fs);
 
-		//GLCall(glEnable(GL_DEPTH_TEST));
+		m_Shaders.Load("shaders/Quad.glsl");
+		//m_Shaders.Load("Triangle", "shaders/Quad.glsl");
+		m_Shaders.Load("shaders/Circle.glsl");
+		m_Shaders.Load("shaders/Line.glsl");
+		m_Shaders.Load("shaders/Text.glsl");
+
+		m_QuadRender	= std::make_shared<QuadRender2D>(m_Shaders.Get("Quad"));
+		m_LineRender	= std::make_shared<LineRender2D>(m_Shaders.Get("Line"));
+		m_CircleRender	= std::make_shared<CircleRender>(m_Shaders.Get("Circle"));
+		m_TextRender	= std::make_shared<QuadRender2D>(m_Shaders.Get("Text"));
+		m_TriRender		= std::make_shared<TriRender>(m_Shaders.Get("Quad")); //TODO: Test to se if works with the same shader
+
+		GLCall(glEnable(GL_DEPTH_TEST));
 		GLCall(glEnable(GL_BLEND));
 		//GLCall(glEnable(GL_MULTISAMPLE));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	}
+
+	void Render2D::AddShader(const std::string& path)
+	{
+		m_Shaders.Load(path);
 	}
 	
 	void Render2D::BeginBatch()
@@ -57,7 +70,8 @@ namespace render
 
 	void Render2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
-		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
+		glm::mat4 viewProj = camera.GetProjection() 
+			* glm::inverse(transform);
 			
 		m_LineRender->BeginScene(viewProj, m_Transform);
 		m_QuadRender->BeginScene(viewProj, m_Transform);
@@ -91,6 +105,11 @@ namespace render
 		m_LineRender->Dispose();
 		m_TextRender->Dispose();
 		m_TriRender->Dispose();
+	}
+
+	void Render2D::Sort()
+	{
+		//TODO: implement something
 	}
 
 	const Ref<Shader> Render2D::GetQuadShader()

@@ -74,6 +74,12 @@ namespace render
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color));
 	}
 
+	Texture::~Texture()
+	{
+		//BASE_CORE_ASSERT(!disposed, "This texture should not be disposed twice");
+		Dispose();
+	};
+
 	ImageInfo Texture::GetImage(const char* path)
 	{
 		//TODO: Fix this stbi 'no SOI' bullshit 
@@ -212,6 +218,19 @@ namespace render
 		loads.waitAll();
 		CreateTexture(mm, loads, nameCaps);
 		return mm;
+	}
+
+	void Texture::Dispose()
+	{
+		if (!disposed)
+		{
+			if (m_Id)
+			{
+				GLCall(glDeleteTextures(1, &m_Id));
+				m_Id = NULL;
+				disposed = true;
+			}
+		}
 	}
 
 	void ImageInfo::clear()

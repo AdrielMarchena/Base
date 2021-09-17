@@ -35,7 +35,7 @@ namespace render
 		static Ref<LineRender2D> m_LineRender;
 		static Ref<QuadRender2D> m_TextRender;
 		static Ref<TriRender> m_TriRender;
-
+		static ShaderLib m_Shaders;
 	public:
 		static constexpr GLbitfield Cl_Color = GL_COLOR_BUFFER_BIT;
 		static constexpr GLbitfield Cl_DepthColor = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -52,17 +52,17 @@ namespace render
 				 const char* tri_vs, const char* tri_fs);*/
 		//Render2D(){}
 
-		static void Init(const char* quad_vs, const char* quad_fs,
-			const char* line_vs, const char* line_fs,
-			const char* circle_vs, const char* circle_fs,
-			const char* text_vs, const char* text_fs,
-			const char* tri_vs, const char* tri_fs);
+		static void Init();
+
+		static void AddShader(const std::string& path);
 
 		static void BeginBatch();
 		static void BeginScene(const Camera& camera,const glm::mat4& transform);
 		static void EndBatch();
 		static void Flush();
 		static void Dispose();
+
+		static void Sort();
 
 		//Temporary
 		static void SetTransform(glm::mat4 transform)

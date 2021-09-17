@@ -43,11 +43,8 @@ namespace render
 		Texture(const std::string& path);
 		Texture(ImageInfo& info);
 		Texture(uint32_t color,uint32_t w, uint32_t);
-		~Texture() 
-		{
-			BASE_CORE_ASSERT(disposed, "This texture should not be disposed twice");
-			Dispose();
-		};
+		~Texture();
+		/* */
 
 		uint32_t GetId() const { return m_Id; };
 		glm::vec2 GetSize() const { return { m_Wid ,m_Hei }; }
@@ -60,19 +57,7 @@ namespace render
 
 		//Used only for draw Text
 		void SetID(GLuint new_id) { m_Id = new_id; }
-	private:
-		void Dispose()
-		{
-			if(!disposed)
-			{
-				if (m_Id)
-				{
-					GLCall(glDeleteTextures(1, &m_Id));
-					m_Id = NULL;
-					disposed = true;
-				}
-			}
-		}
+		void Dispose();
 	};
 }
 }

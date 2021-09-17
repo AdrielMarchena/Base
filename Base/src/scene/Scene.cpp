@@ -10,7 +10,8 @@ namespace Base
 	static inline void SetTransform(float wid, float hei)
 	{
 		float ratio = wid / hei;
-		render::Render2D::SetTransform(glm::ortho(0.0f, wid, 0.0f, hei, 1.0f, -10.0f));
+		//render::Render2D::SetTransform(glm::ortho(0.0f, wid, 0.0f, hei, 1.0f, -10.0f));
+		render::Render2D::SetTransform(glm::mat4(1.0f));
 	}
 
 	Scene::Scene()
@@ -98,10 +99,10 @@ namespace Base
 		{
 			using render = render::Render2D;
 			//Clear screen
-			render::ClearColor();
+			render::ClearColor(render::Cl_DepthColor);
 
 			//Start render Scene
-			SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything
+			//SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything
 			render::BeginScene(*mainCamera,*cameraTransform);
 			render::BeginBatch();
 
