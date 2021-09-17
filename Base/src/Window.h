@@ -29,11 +29,12 @@ namespace Base
 			glm::vec2 m_Resolution = { 800.0f,600.0f };
 			float m_AspectRatio = 1.0f;
 			bool m_Resizeble;
+			float m_Wid;
+			float m_Hei;
 
 			bool m_ClampMouse = true;
 		public:
-			float m_Wid;
-			float m_Hei;
+			
 
 			Window(const char* title = "Base", float_t w = 800, float_t h = 600, bool resizeble = true);
 			virtual ~Window();
@@ -64,7 +65,7 @@ namespace Base
 			inline void UpdateWindow();
 			inline void UpdateFpsTitle(double fps);
 		protected:
-
+			
 			//Return a correted position of the cursor, taking in consideration the camera position
 			/*glm::vec2 m_pos(input::Mouse& mouse)
 			{
@@ -81,14 +82,14 @@ namespace Base
 			bool CursorHoveredWindow();
 
 		public:
+			void OnWindowResize(const ResizeArgs& args);
+			void OnWindowMouseAction(const MouseArgs& args);
+			void OnWindowKeyboardAction(const KeyboardArgs& args);
 			//Event functions
-			
-			//Call super first
-			virtual void OnResize(ResizeArgs args);
-			//Call super first
-			virtual void OnMouseAction(MouseArgs args);
-			//Call super first
-			virtual void OnKeyboardAction(KeyboardArgs args);
+
+			virtual void OnResize(const ResizeArgs& args){}
+			virtual void OnMouseAction(const MouseArgs& args){}
+			virtual void OnKeyboardAction(const KeyboardArgs& args){}
 		};
 	}
 }

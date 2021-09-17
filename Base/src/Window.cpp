@@ -50,11 +50,11 @@ namespace Base
 		{
 			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
 			ResizeArgs args{};
-			args.old_w = ptr->m_Wid;
-			args.old_h = ptr->m_Hei;
+			args.old_w = WindowProps::width;
+			args.old_h = WindowProps::height;
 			args.new_w = w;
 			args.new_h = h;
-			ptr->OnResize(args);
+			ptr->OnWindowResize(args);
 
 		}
 		void on_mouse_scroll(GLFWwindow* window, double_t xOffSet, double_t yOffSet)
@@ -70,7 +70,7 @@ namespace Base
 				NULL,
 				NULL
 			};
-			ptr->OnMouseAction(args);
+			ptr->OnWindowMouseAction(args);
 		}
 		void on_cursor_move(GLFWwindow* window, double_t xPos, double_t yPos)
 		{
@@ -85,7 +85,7 @@ namespace Base
 				NULL,
 				NULL
 			};
-			ptr->OnMouseAction(args);
+			ptr->OnWindowMouseAction(args);
 		}
 		void on_mouse_button(GLFWwindow* window, int32_t key, int32_t action, int32_t mods)
 		{
@@ -99,7 +99,7 @@ namespace Base
 				action,
 				mods
 			};
-			ptr->OnMouseAction(args);
+			ptr->OnWindowMouseAction(args);
 		}
 		void on_keyboard_button(GLFWwindow* window, int32_t key, int32_t scancode, int32_t action, int32_t mods)
 		{
@@ -112,7 +112,7 @@ namespace Base
 				action,
 				mods
 			};
-			ptr->OnKeyboardAction(args);
+			ptr->OnWindowKeyboardAction(args);
 		}
 		void on_mouse_enter(GLFWwindow* window, int32_t entered)
 		{
@@ -127,7 +127,7 @@ namespace Base
 			};
 			if (entered)
 				args.m_action = MouseAction::ENTER;
-			ptr->OnMouseAction(args);
+			ptr->OnWindowMouseAction(args);
 		}
 
 		using namespace utils;
@@ -163,6 +163,9 @@ namespace Base
 		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
 			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), myWindow(nullptr)
 		{
+			WindowProps::width = w;
+			WindowProps::height = h;
+			WindowProps::minimized = false;
 
 			//Initialize Log system (spdlog)
 			Log::Init();
@@ -205,11 +208,7 @@ namespace Base
 
 			BASE_TRACE("Glew Init");
 
-			render::Render2D::Init("shaders/quad_vs.shader",   "shaders/quad_fs.shader",
-									"shaders/line_vs.shader",	  "shaders/line_fs.shader",
-									"shaders/circle_vs.shader", "shaders/circle_fs.shader",
-									"shaders/quad_vs.shader",	  "shaders/text_fs.shader",
-									"shaders/quad_vs.shader", "shaders/quad_fs.shader");
+			render::Render2D::Init();
 
 			BASE_TRACE("2D Render created!");
 			
@@ -332,6 +331,48 @@ namespace Base
 			fps_title = m_Title + " | FPS: " + std::to_string(fps);
 			glfwSetWindowTitle(m_Window, fps_title.c_str());
 		}
+
+		void Window::OnWindowResize(const ResizeArgs& args)
+		{
+			m_Wid = args.new_w;
+			m_Hei = args.new_h;
+			WindowProps::width = m_Wid;
+			WindowProps::height = m_Hei;
+			if (WindowProps::width == 0 || WindowProps::height == 0)
+				WindowProps::minimized = true;
+			else
+				WindowProps::minimized = false;
+			m_AspectRatio = m_Wid / m_Hei;
+			glViewport(0, 0, m_Wid, m_Hei);
+
+			OnResize(args);
+		}
+
+		void Window::OnWindowMouseAction(const MouseArgs& args)
+		{
+			if (args.m_action != MouseAction::INVALID)
+				switch (args.m_action)
+				{
+				case MouseAction::PRESS:
+				case MouseAction::RELEASE:
+					input::Mouse::on_mouse_button(args.key, args.action, args.mods);
+					break;
+				case MouseAction::MOVE:
+					input::Mouse::on_mouse_cursor(args.Xpos, args.Ypos);
+					break;
+				case MouseAction::SCROLL:
+					input::Mouse::on_mouse_scroll(args.Xoffset, args.Yoffset);
+					break;
+				}
+			OnMouseAction(args);
+		}
+
+		void Window::OnWindowKeyboardAction(const KeyboardArgs& args)
+		{
+			if (args.k_action != KeyboardAction::INVALID)
+				input::Keyboard::on_keyboard_button(args.key, args.scancode, args.action, args.mods);
+			OnKeyboardAction(args);
+		}
 		
 		void Window::UpdateWindow()
 		{
@@ -343,39 +384,6 @@ namespace Base
 		{
 			m_Resizeble = resizeble;
 			glfwWindowHint(GLFW_RESIZABLE, m_Resizeble ? GLFW_TRUE : GLFW_FALSE);
-		}
-
-		void Window::OnResize(ResizeArgs args)
-		{
-			m_Wid = args.new_w;
-			m_Hei = args.new_h;
-			m_AspectRatio = m_Wid / m_Hei;
-			
-			glViewport(0, 0, m_Wid, m_Hei);
-		}
-
-		void Window::OnMouseAction(MouseArgs args)
-		{
-			if (args.m_action != MouseAction::INVALID)
-				switch (args.m_action)
-				{
-				case MouseAction::PRESS:
-				case MouseAction::RELEASE:
-					input::Mouse::on_mouse_button( args.key, args.action, args.mods);
-					break;
-				case MouseAction::MOVE:
-					input::Mouse::on_mouse_cursor(args.Xpos, args.Ypos);
-					break;
-				case MouseAction::SCROLL:
-					input::Mouse::on_mouse_scroll(args.Xoffset, args.Yoffset);
-
-					break;
-				}
-		}
-		void Window::OnKeyboardAction(KeyboardArgs args)
-		{
-			if (args.k_action != KeyboardAction::INVALID)
-				input::Keyboard::on_keyboard_button(args.key, args.scancode, args.action, args.mods);
 		}
 	}
 }
