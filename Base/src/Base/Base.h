@@ -15,6 +15,13 @@ namespace Base
 
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
+
+	namespace WindowProps
+	{
+		static int width;
+		static int height;
+		static bool minimized;
+	};
 }
 
 #endif
