@@ -15,6 +15,8 @@
 #include <mutex>
 #include "Log.h"
 #include "utils/Generic.h"
+#include "gl/glew.h"
+#include "utils/gl_error_macro_db.h"
 namespace Base
 {
 namespace render

@@ -25,7 +25,7 @@ namespace Base
 		{
 			mShader = shader;
 			mShader->Bind();
-			m_data.Target = GL_LINES;
+			m_data.Target = GL_Target::LINES;
 			m_data.Buffer = new LineVertex[MaxLineVertexCount];
 			
 			m_data.VerticesNumber = 4;
@@ -35,9 +35,9 @@ namespace Base
 			m_data.VB = VertexBuffer::CreateVertexBuffer(MaxLineVertexCount * sizeof(LineVertex));
 
 			VertexAttribute layout(m_data.VA, m_data.VB);
-			layout.AddLayout<float>(3, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position));
+			layout.AddLayoutFloat(3, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position));
 
-			layout.AddLayout<float>(4, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));
+			layout.AddLayoutFloat(4, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));
 
 			uint32_t* indices = new uint32_t[MaxLineIndexCount]{};
 			uint32_t offset = 0;

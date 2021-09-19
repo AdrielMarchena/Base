@@ -6,6 +6,7 @@
 #include "utils/threading.h"
 #include "utils/Generic.h"
 #include "Log.h"
+#include "utils/gl_error_macro_db.h"
 namespace Base
 {
 namespace render

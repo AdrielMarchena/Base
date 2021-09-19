@@ -1,12 +1,13 @@
 #pragma once
 #include <stdint.h>
 #include <utility>
+
 #include "../gl/Shader.h"
 #include "../gl/VertexArray.h"
 #include "../gl/VertexBuffer.h"
 #include "../gl/VertexAttribute.h"
 #include "../gl/IndexBuffer.h"
-
+#include "render/gl/GL_Types.h"
 namespace Base
 {
 namespace render
@@ -65,7 +66,7 @@ namespace render
 		
 		uint8_t  WhiteTextureSlot = 0;
 		uint32_t Count = 0;
-		GLenum Target = GL_TRIANGLES;
+		GL_Target Target = GL_Target::TRIANGLES;
 		uint8_t TextureSlotIndex = 1;
 		uint8_t VerticesNumber = 2;
 		Stats RenderStatus;

@@ -5,17 +5,18 @@
 *
 *	Implementation File
 */
+
 #include "render2D.h"
 #include "geo_renders/RenderTemplate.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "gl/glew.h"
+#include "utils/gl_error_macro_db.h"
 
 namespace Base
 {
 namespace render
 {
 	glm::vec3 Render2D::m_default_axis = { 0.0f,0.0f,1.0f };
-	glm::mat4 Render2D::m_Transform = glm::ortho(0, 800, 0, 600,1,-10); //TODO: remove
 	Ref<QuadRender2D> Render2D::m_QuadRender;
 	Ref<CircleRender> Render2D::m_CircleRender;
 	Ref<LineRender2D> Render2D::m_LineRender;
@@ -42,11 +43,11 @@ namespace render
 		m_Shaders.Load("shaders/Line.glsl");
 		m_Shaders.Load("shaders/Text.glsl");
 
-		m_QuadRender	= std::make_shared<QuadRender2D>(m_Shaders.Get("Quad"));
-		m_LineRender	= std::make_shared<LineRender2D>(m_Shaders.Get("Line"));
-		m_CircleRender	= std::make_shared<CircleRender>(m_Shaders.Get("Circle"));
-		m_TextRender	= std::make_shared<QuadRender2D>(m_Shaders.Get("Text"));
-		m_TriRender		= std::make_shared<TriRender>(m_Shaders.Get("Quad")); //TODO: Test to se if works with the same shader
+		m_QuadRender	= MakeRef<QuadRender2D>(m_Shaders.Get("Quad"));
+		m_LineRender	= MakeRef<LineRender2D>(m_Shaders.Get("Line"));
+		m_CircleRender	= MakeRef<CircleRender>(m_Shaders.Get("Circle"));
+		m_TextRender	= MakeRef<QuadRender2D>(m_Shaders.Get("Text"));
+		m_TriRender		= MakeRef<TriRender>(m_Shaders.Get("Quad")); //TODO: Test to se if works with the same shader
 
 		GLCall(glEnable(GL_DEPTH_TEST));
 		GLCall(glEnable(GL_BLEND));
@@ -73,11 +74,11 @@ namespace render
 		glm::mat4 viewProj = camera.GetProjection() 
 			* glm::inverse(transform);
 			
-		m_LineRender->BeginScene(viewProj, m_Transform);
-		m_QuadRender->BeginScene(viewProj, m_Transform);
-		m_CircleRender->BeginScene(viewProj, m_Transform);
-		m_TextRender->BeginScene(viewProj, m_Transform);
-		m_TriRender	->BeginScene(viewProj, m_Transform);
+		m_LineRender->BeginScene(viewProj);
+		m_QuadRender->BeginScene(viewProj);
+		m_CircleRender->BeginScene(viewProj);
+		m_TextRender->BeginScene(viewProj);
+		m_TriRender	->BeginScene(viewProj);
 	}
 
 	void Render2D::EndBatch()
@@ -91,10 +92,19 @@ namespace render
 
 	void Render2D::Flush()
 	{
+		m_LineRender->BindShader();
 		m_LineRender->Flush();
+
+		m_QuadRender->BindShader();
 		m_QuadRender->Flush();
+
+		m_CircleRender->BindShader();
 		m_CircleRender->Flush();
+
+		m_TextRender->BindShader();
 		m_TextRender->Flush();
+
+		m_TriRender->BindShader();
 		m_TriRender->Flush();
 	}
 
@@ -177,7 +187,7 @@ namespace render
 		m_QuadRender->DrawQuad(transform, sub_texture, color, rotation, axis);
 	}
 
-	void Render2D::DrawText(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawText_(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
 		m_TextRender->DrawQuad(position, size, texture, color, rotation, axis);
 	}

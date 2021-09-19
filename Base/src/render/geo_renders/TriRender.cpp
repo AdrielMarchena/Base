@@ -30,13 +30,14 @@ namespace render
 		m_data.VB = VertexBuffer::CreateVertexBuffer(MaxVertexCount * sizeof(TriangleVertex));
 
 		VertexAttribute layout(m_data.VA, m_data.VB);
-		layout.AddLayout<float>(3, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Position));
 
-		layout.AddLayout<float>(4, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Color));
+		layout.AddLayoutFloat(3, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Position));
 
-		layout.AddLayout<float>(2, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexCoords));
+		layout.AddLayoutFloat(4, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, Color));
 
-		layout.AddLayout<float>(1, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexIndex));
+		layout.AddLayoutFloat(2, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexCoords));
+
+		layout.AddLayoutFloat(1, sizeof(TriangleVertex), (const void*)offsetof(TriangleVertex, TexIndex));
 
 		uint32_t* indices = new uint32_t[MaxIndexCount]{};
 		uint32_t offset = 0;
@@ -59,7 +60,6 @@ namespace render
 	{
 		if (!m_data.IndexCount)
 			return;
-		mShader->Bind();
 		for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 		{
 			GLCall(glActiveTexture(GL_TEXTURE0 + i));

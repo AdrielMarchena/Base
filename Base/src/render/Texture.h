@@ -9,11 +9,10 @@
 #include <stdint.h>
 #include <string>
 #include <unordered_map>
-#include "gl/glew.h"
 #include "glm/glm.hpp"
 #include "utils/NameCaps.h"
-#include "utils/gl_error_macro_db.h"
 #include "ResourceManager.h"
+#include "gl/GL_Types.h"
 namespace Base
 {
 namespace render
@@ -53,10 +52,15 @@ namespace render
 		static ImageInfo GetPNGImage(const char* path);
 		static ResourceManager<Texture> LoadAsyncTexture(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE, uint8_t batchLimit = 5);
 		
+		static Ref<Texture> WhiteTexture()
+		{
+			static Ref<Texture> white_texture = MakeRef<Texture>(0xffffffff, 1, 1);
+			return white_texture;
+		};
+
 		operator bool() const { return (bool)m_Id; }
 
-		//Used only for draw Text
-		void SetID(GLuint new_id) { m_Id = new_id; }
+		void SetID(uint32_t new_id) { m_Id = new_id; }
 		void Dispose();
 	};
 }

@@ -7,9 +7,10 @@
 */
 
 #include "QuadRender.h"
+#include "utils/Generic.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "utils/gl_error_macro_db.h"
 #include "gl/glew.h"
-#include <iostream>
 namespace Base
 {
 	namespace render
@@ -42,13 +43,13 @@ namespace Base
 
 			VertexAttribute layout(m_data.VA, m_data.VB);
 
-			layout.AddLayout<float>(3, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position));
+			layout.AddLayoutFloat(3, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position));
 
-			layout.AddLayout<float>(4, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color));
+			layout.AddLayoutFloat(4, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Color));
 
-			layout.AddLayout<float>(2, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords));
+			layout.AddLayoutFloat(2, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords));
 
-			layout.AddLayout<float>(1, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex));
+			layout.AddLayoutFloat(1, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex));
 
 			uint32_t* indices = new uint32_t[MaxIndexCount]{};
 			uint32_t offset = 0;
@@ -81,7 +82,6 @@ namespace Base
 		{
 			if (!m_data.IndexCount)
 				return;
-			mShader->Bind();
 			for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 			{
 				GLCall(glActiveTexture(GL_TEXTURE0 + i));
@@ -93,22 +93,22 @@ namespace Base
 
 		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,  float_t rotation, const glm::vec3& axis)
 		{
-			DrawQuad(pos_trans(position,size), color);
+			DrawQuad(utils::pos_trans(position,size), color);
 		}
 
 		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4], float_t rotation, const glm::vec3& axis)
 		{
-			DrawQuad(pos_trans(position, size), color);
+			DrawQuad(utils::pos_trans(position, size), color);
 		}
 
 		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, const glm::vec4 & color, float_t rotation, const glm::vec3& axis)
 		{
-			DrawQuad(pos_trans(position,size), texture, color, rotation, axis);
+			DrawQuad(utils::pos_trans(position,size), texture, color, rotation, axis);
 		}
 
 		void QuadRender2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture, const glm::vec4& color,float_t rotation, const glm::vec3& axis)
 		{
-			DrawQuad(pos_trans(position, size), sub_texture, color, rotation, axis);
+			DrawQuad(utils::pos_trans(position, size), sub_texture, color, rotation, axis);
 		}
 
 		void QuadRender2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, float_t rotation, const glm::vec3& axis)

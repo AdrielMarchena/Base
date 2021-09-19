@@ -1,6 +1,7 @@
 #include "CircleRender.h"
 #include "utils/gl_error_macro_db.h"
-
+#include "utils/Generic.h"
+#include "glm/gtc/matrix_transform.hpp"
 namespace Base
 {
 namespace render
@@ -31,17 +32,17 @@ namespace render
 		m_data.VB = VertexBuffer::CreateVertexBuffer(MaxVertexCount * sizeof(CircleVertex));
 
 		VertexAttribute layout(m_data.VA, m_data.VB);
-		layout.AddLayout<float>(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Position));
+		layout.AddLayoutFloat(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Position));
 
-		layout.AddLayout<float>(4, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Color));
+		layout.AddLayoutFloat(4, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Color));
 
-		layout.AddLayout<float>(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexCoords));
+		layout.AddLayoutFloat(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexCoords));
 
-		layout.AddLayout<float>(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex));
+		layout.AddLayoutFloat(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex));
 
-		layout.AddLayout<float>(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint));
+		layout.AddLayoutFloat(2, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, MiddlePoint));
 
-		layout.AddLayout<float>(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th));
+		layout.AddLayoutFloat(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Rad_Fill_Th));
 
 		uint32_t* indices = new uint32_t[MaxIndexCount]{};
 		uint32_t offset = 0;
@@ -73,7 +74,6 @@ namespace render
 	{
 		if (!m_data.IndexCount)
 			return;
-		mShader->Bind();
 		for (uint8_t i = 0; i < m_data.TextureSlotIndex; i++)
 		{
 			GLCall(glActiveTexture(GL_TEXTURE0 + i));
@@ -87,21 +87,21 @@ namespace render
 	{
 		glm::vec3 quad_position = { position.x, position.y, position.z };
 		glm::vec3 quad_size = { radius, radius,position.z };
-		DrawCircle(pos_trans(quad_position, quad_size),radius,fill,thick,color,rotation,axis);
+		DrawCircle(utils::pos_trans(quad_position, quad_size),radius,fill,thick,color,rotation,axis);
 	}
 
 	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quad_position = { position.x, position.y, position.z };
 		glm::vec3 quad_size = { radius, radius,position.z };
-		DrawCircle(pos_trans(quad_position, quad_size), radius, fill, thick, texture ,color, rotation, axis);
+		DrawCircle(utils::pos_trans(quad_position, quad_size), radius, fill, thick, texture ,color, rotation, axis);
 	}
 
 	void CircleRender::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quad_position = { position.x, position.y, position.z };
 		glm::vec3 quad_size = { radius, radius,position.z };
-		DrawCircle(pos_trans(quad_position, quad_size), radius, fill, thick, sub_texture, color, rotation, axis);
+		DrawCircle(utils::pos_trans(quad_position, quad_size), radius, fill, thick, sub_texture, color, rotation, axis);
 	}
 
 	void CircleRender::DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)

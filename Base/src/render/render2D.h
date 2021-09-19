@@ -45,13 +45,6 @@ namespace render
 		static void SetClearColor(const glm::vec4& color);
 		static void ClearColor(GLbitfield clear = Cl_Color);
 
-		/*Render2D(const char* quad_vs, const char* quad_fs,
-				 const char* line_vs, const char* line_fs,
-				 const char* circle_vs, const char* circle_fs,
-				 const char* text_vs, const char* text_fs,
-				 const char* tri_vs, const char* tri_fs);*/
-		//Render2D(){}
-
 		static void Init();
 
 		static void AddShader(const std::string& path);
@@ -63,13 +56,6 @@ namespace render
 		static void Dispose();
 
 		static void Sort();
-
-		//Temporary
-		static void SetTransform(glm::mat4 transform)
-		{
-			m_Transform = transform;
-		}
-		static const glm::mat4& GetTransform() { return m_Transform; }
 
 		static const Ref<Shader> GetQuadShader();
 		static const Ref<Shader> GetLineShader();
@@ -101,7 +87,7 @@ namespace render
 		static void DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, const glm::vec4& color = Color::White,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawText(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture,
+		static void DrawText_(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture,
 			const glm::vec4& color = Color::White, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 
 		static void DrawOutLineQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
@@ -160,9 +146,6 @@ namespace render
 		[[deprecated("Use DrawLine() instead")]]
 		static void DrawQuadLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t thick,
 			float_t layer = 0.0f);
-
-		//Temporary
-		static glm::mat4 m_Transform;
 	};
 }
 }
