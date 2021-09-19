@@ -1,7 +1,5 @@
 #pragma once
-#include <iostream>
 #include <gl/glew.h>
-#include <assert.h>
 #include "Log.h"
 
 #ifndef GL_DEBUG_STUFF

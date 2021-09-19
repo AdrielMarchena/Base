@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "entt/entt.hpp"
+#include "utils/base_assert.h"
 namespace Base
 {
 	class Entity

@@ -218,6 +218,8 @@
   <ItemGroup>
     <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
     <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp" />
+    <ClCompile Include="src\render\gl\GL_Commands.cpp" />
+    <ClCompile Include="src\render\gl\GL_Types.cpp" />
     <ClCompile Include="src\render\gl\IndexBuffer.cpp" />
     <ClCompile Include="src\render\gl\VertexArray.cpp" />
     <ClCompile Include="src\render\gl\VertexAttribute.cpp" />
@@ -257,6 +259,8 @@
     <ClInclude Include="src\input\MouseKeys.h" />
     <ClInclude Include="src\render\Camera.h" />
     <ClInclude Include="src\render\geo_renders\QuadRender.h" />
+    <ClInclude Include="src\render\gl\Gl_Commands.h" />
+    <ClInclude Include="src\render\gl\GL_Types.h" />
     <ClInclude Include="src\render\gl\IndexBuffer.h" />
     <ClInclude Include="src\render\gl\VertexArray.h" />
     <ClInclude Include="src\render\gl\VertexAttribute.h" />

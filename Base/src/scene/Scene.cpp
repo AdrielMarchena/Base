@@ -7,13 +7,6 @@
 
 namespace Base
 {
-	static inline void SetTransform(float wid, float hei)
-	{
-		float ratio = wid / hei;
-		//render::Render2D::SetTransform(glm::ortho(0.0f, wid, 0.0f, hei, 1.0f, -10.0f));
-		render::Render2D::SetTransform(glm::mat4(1.0f));
-	}
-
 	Scene::Scene()
 	{
 	}

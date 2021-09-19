@@ -121,6 +121,12 @@
     <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\gl\GL_Commands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\GL_Types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">
@@ -295,6 +301,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Base\Base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\Gl_Commands.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\GL_Types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
