@@ -143,13 +143,13 @@ namespace render
 	Ref<Shader> Shader::CreateShader(const std::string& name, const std::string& vs, const std::string& fs)
 	{
 		Shader new_sh(name,vs, fs);
-		return std::make_shared<Shader>(new_sh);
+		return MakeRef<Shader>(new_sh);
 	}
 
 	Ref<Shader> Shader::CreateShader(const std::string& path)
 	{
 		Shader new_sh(path);
-		return std::make_shared<Shader>(new_sh);
+		return MakeRef<Shader>(new_sh);
 	}
 
 	void Shader::Bind() const

@@ -2,8 +2,6 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 
-#include "gl/glew.h"
-#include "utils/gl_error_macro_db.h"
 namespace Base
 {
 namespace render
@@ -17,33 +15,8 @@ namespace render
 		VertexAttribute(VertexArray va, VertexBuffer vb)
 			:Va(&va),Vb(&vb) {}
 
-		template<typename T>
-		void AddLayout(GLint size, GLsizei stride, const void* pointer)
-		{
-			//Va->Bind();
-			//Vb->Bind();
-			GLCall(glEnableVertexAttribArray(current_index));
-			GLCall(glVertexAttribPointer(current_index, size, GL_FLOAT, GL_FALSE, stride, pointer));
-			current_index++;
-		}
-		template<>
-		void AddLayout<float>(GLint size, GLsizei stride, const void* pointer)
-		{
-			//Va->Bind();
-			//Vb->Bind();
-			GLCall(glEnableVertexAttribArray(current_index));
-			GLCall(glVertexAttribPointer(current_index, size, GL_FLOAT, GL_FALSE, stride, pointer));
-			current_index++;
-		}
-		template<>
-		void AddLayout<unsigned int>(GLint size, GLsizei stride, const void* pointer)
-		{
-			//Va->Bind();
-			//Vb->Bind();
-			GLCall(glEnableVertexAttribArray(current_index));
-			GLCall(glVertexAttribPointer(current_index, size, GL_UNSIGNED_INT, GL_FALSE, stride, pointer));
-			current_index++;
-		}
+		void AddLayoutFloat(int32_t size, uint32_t stride,const void* pointer);
+		void AddLayoutUint(int32_t size, uint32_t stride,const void* pointer);
 	};
 }
 }
