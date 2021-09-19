@@ -42,7 +42,6 @@ void SandBox::OnAttach()
 
 	glm::mat4 camera = glm::translate(glm::mat4(1.0f), { 0.0f,0.0f,0.0f }) *
 		glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
-
 	glm::mat4 camera_transform = glm::translate(glm::mat4(1.0f), { 0.0f,0.0f,0.0f }) *
 		glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
 
