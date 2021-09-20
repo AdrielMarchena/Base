@@ -11,7 +11,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "gl/glew.h"
 #include "utils/gl_error_macro_db.h"
-
+#include "utils/Instrumentor.h"
 namespace Base
 {
 namespace render
@@ -36,6 +36,7 @@ namespace render
 
 	void Render2D::Init()
 	{
+		BASE_PROFILE_FUNCTION();
 
 		m_Shaders.Load("shaders/Quad.glsl");
 		//m_Shaders.Load("Triangle", "shaders/Quad.glsl");
@@ -71,6 +72,7 @@ namespace render
 
 	void Render2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
+		BASE_PROFILE_FUNCTION();
 		glm::mat4 viewProj = camera.GetProjection() 
 			* glm::inverse(transform);
 			
@@ -83,6 +85,8 @@ namespace render
 
 	void Render2D::EndBatch()
 	{
+		BASE_PROFILE_FUNCTION();
+
 		m_LineRender->EndBatch();
 		m_QuadRender->EndBatch();
 		m_CircleRender->EndBatch();
@@ -92,6 +96,8 @@ namespace render
 
 	void Render2D::Flush()
 	{
+		BASE_PROFILE_FUNCTION();
+
 		m_LineRender->BindShader();
 		m_LineRender->Flush();
 
@@ -110,6 +116,8 @@ namespace render
 
 	void Render2D::Dispose()
 	{
+		BASE_PROFILE_FUNCTION();
+
 		m_QuadRender->Dispose();
 		m_CircleRender->Dispose();
 		m_LineRender->Dispose();

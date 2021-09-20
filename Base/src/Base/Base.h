@@ -7,6 +7,11 @@
 #define BASE_YPOS(x) x[3][1]
 #define BASE_ZPOS(x) x[3][2]
 
+#ifdef _DEBUG
+	#define BASE_PROFILING
+#else
+#endif
+
 namespace Base
 {
 	//From The Cherno video

@@ -31,6 +31,7 @@
 #include "audio/AudioDevice.h"
 
 #include "Log.h"
+#include "utils/Instrumentor.h"
 
 #define CALLBACK_STATIC_CAST(type,window) static_cast<type*>(glfwGetWindowUserPointer(window))
 
@@ -170,6 +171,10 @@ namespace Base
 			//Initialize Log system (spdlog)
 			Log::Init();
 
+			#ifdef BASE_PROFILING
+						BASE_INFO("Profiling is active");
+			#endif
+
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
 			{
@@ -209,7 +214,7 @@ namespace Base
 			BASE_TRACE("Glew Init");
 
 			render::Render2D::Init();
-
+			
 			BASE_TRACE("2D Render created!");
 			
 			//Set callback and pointer to this very window
@@ -236,14 +241,16 @@ namespace Base
 			BASE_TRACE("ImGUI Initialized!");
 
 			//Audio
-			aux::LoadDevices();
-			p_ALCDevice = aux::GetDevicePtr();
-			p_ALCContext = aux::GetContextPtr();
-			
+			//aux::LoadDevices();
+			//p_ALCDevice = aux::GetDevicePtr();
+			//p_ALCContext = aux::GetContextPtr();
+			OnAttach();
+
 		}
 
 		Window::~Window()
 		{
+			render::Render2D::Dispose();
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplGlfw_Shutdown();
 			ImGui::DestroyContext();
@@ -266,7 +273,7 @@ namespace Base
 			double lastFrame = 0.0;
 			double fps = 0.0;
 			double fps_lastFrame = 0.0;
-			OnAttach();
+			uint64_t frame_counter = 0;
 			
 			std::string fps_title = m_Title + " | FPS: " + std::to_string(nbFrame);
 			glfwSetWindowTitle(m_Window, fps_title.c_str());
@@ -275,6 +282,7 @@ namespace Base
 			
 			while (!glfwWindowShouldClose(m_Window))
 			{
+				BASE_PROFILE_SCOPE(std::string("Frame '" + std::to_string(frame_counter) + "'").c_str());
 				//Check Events
 				glfwPollEvents();
 
@@ -305,23 +313,15 @@ namespace Base
 
 				//Swap buffer
 				glfwSwapBuffers(m_Window);
+				frame_counter++;
 			}
 			BASE_TRACE("Game loop Ended!");
 			Dispose();
+			BASE_TRACE("Dispose completed!");
 			CloseWindow();
 		}
 		void Window::CloseWindow()
 		{
-			render::Render2D::Dispose();
-			try
-			{
-				aux::DeleteDevices();
-			}
-			catch (const std::exception& ex)
-			{
-				BASE_ERROR(ex.what());
-			}
-			BASE_TRACE("Dispose completed!");
 		}
 
 		void Window::UpdateFpsTitle(double fps)

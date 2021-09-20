@@ -306,11 +306,13 @@
     <ClInclude Include="src\render\render2D.h" />
     <ClInclude Include="src\utils\Generic.h" />
     <ClInclude Include="src\utils\gl_error_macro_db.h" />
+    <ClInclude Include="src\utils\Instrumentor.h" />
     <ClInclude Include="src\utils\Logs.h" />
     <ClInclude Include="src\utils\NameCaps.h" />
     <ClInclude Include="src\utils\RandomList.h" />
     <ClInclude Include="src\utils\threading.h" />
     <ClInclude Include="src\args\VirtualArgs.h" />
+    <ClInclude Include="src\utils\Timer.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\render\Texture.h" />
     <ClInclude Include="src\render\geo_renders\TriRender.h" />

@@ -4,7 +4,7 @@
 #include "render/Camera.h"
 
 #include "Components.h"
-
+#include "utils/Instrumentor.h"
 namespace Base
 {
 	Scene::Scene()
@@ -65,7 +65,10 @@ namespace Base
 
 	void Scene::OnUpdate(const UpdateArgs& args)
 	{
+		BASE_PROFILE_FUNCTION();
+
 		{//Native Scripts
+			BASE_PROFILE_SCOPE("Scene Native Script(OnUpdate)");
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
 			{
 				if (script.Instance)
@@ -73,94 +76,105 @@ namespace Base
 			});
 		}
 
-		Base::Camera* mainCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
-		{
-			auto group = m_Registry.group<TransformComponent>(entt::get<CameraComponent>);
-			for (auto entity : group)
+		{//Render Scope
+			BASE_PROFILE_SCOPE("Scene Render Scope");
+			Base::Camera* mainCamera = nullptr;
+			glm::mat4* cameraTransform = nullptr;
 			{
-				auto&& [position, camera] = group.get< TransformComponent, CameraComponent>(entity);
-				if (camera.Primary)
+				auto group = m_Registry.group<TransformComponent>(entt::get<CameraComponent>);
+				for (auto entity : group)
 				{
-					mainCamera = &camera.Camera;
-					cameraTransform = &position.Transform;
-				}
-			}
-		}
-
-		if (mainCamera)
-		{
-			using render = render::Render2D;
-			//Clear screen
-			render::ClearColor(render::Cl_DepthColor);
-
-			//Start render Scene
-			//SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything
-			render::BeginScene(*mainCamera,*cameraTransform);
-			render::BeginBatch();
-
-			{//Draw Sprites
-				//It's a view because a group just breaks
-				auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
-				for (auto entity : view)
-				{
-					auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-					render::DrawQuad(position.Transform, spr.Color, spr.Rotation, spr.Axis);
+					auto&& [position, camera] = group.get< TransformComponent, CameraComponent>(entity);
+					if (camera.Primary)
+					{
+						mainCamera = &camera.Camera;
+						cameraTransform = &position.Transform;
+					}
 				}
 			}
 
-			{//Draw SubTextures
-				auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
-				for (auto entity : view)
-				{
-					auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
-					if (spr.Texture)
-						render::DrawQuad(position.Transform, spr.Texture, Color::White, spr.Rotation, spr.Axis);
-				}
-			}
+			if (mainCamera)
+			{
+				using render = render::Render2D;
+				//Clear screen
+				render::ClearColor(render::Cl_DepthColor);
 
-			{//Draw SubTextures
-				auto view = m_Registry.view<TransformComponent, SubTextureComponent>(entt::exclude<CircleComponent>);
-				for (auto entity : view)
-				{
-					auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
-					if (spr.SubTexture)
-						render::DrawQuad(position.Transform, spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
-				}
-			}
+				//Start render Scene
+				//SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything
+				render::BeginScene(*mainCamera, *cameraTransform);
+				render::BeginBatch();
 
-			{//Draw Animated stuff
-				auto view = m_Registry.view<TransformComponent, AnimateComponent>(entt::exclude<CircleComponent>);
-				for (auto entity : view)
-				{
-					//TODO: Test to see if works
-					auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
-					auto& sprite = anim.Animation.Run(args.dt);
-					render::DrawQuad(position.Transform, sprite, Color::White, anim.Rotation, anim.Axis);
+				{//Draw Sprites
+					//It's a view because a group just breaks
+					auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
+					for (auto entity : view)
+					{
+						auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
+						render::DrawQuad(position.Transform, spr.Color, spr.Rotation, spr.Axis);
+					}
 				}
-			}
 
-			{//Draw Color Circles
-				auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
-				for (auto entity : view)
-				{
-					auto&& [trans,circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
-					render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f ,spr.Color);
+				{//Draw SubTextures
+					auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
+					for (auto entity : view)
+					{
+						auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
+						if (spr.Texture)
+							render::DrawQuad(position.Transform, spr.Texture, Color::White, spr.Rotation, spr.Axis);
+					}
 				}
-			}
 
-			{//Draw Texture Circles
-				auto view = m_Registry.view<TransformComponent, CircleComponent, TextureComponent>();
-				for (auto entity : view)
-				{
-					auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-					render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f, tex.Texture ,Color::White);
+				{//Draw SubTextures
+					auto view = m_Registry.view<TransformComponent, SubTextureComponent>(entt::exclude<CircleComponent>);
+					for (auto entity : view)
+					{
+						auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
+						if (spr.SubTexture)
+							render::DrawQuad(position.Transform, spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
+					}
 				}
-			}
 
-			//Finish the rendering
-			render::EndBatch();
-			render::Flush();
-		}
+				{//Draw Animated stuff
+					auto view = m_Registry.view<TransformComponent, AnimateComponent>(entt::exclude<CircleComponent>);
+					for (auto entity : view)
+					{
+						//TODO: Test to see if works
+						auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
+						auto& sprite = anim.Animation.Run(args.dt);
+						render::DrawQuad(position.Transform, sprite, Color::White, anim.Rotation, anim.Axis);
+					}
+				}
+
+				{//Draw Color Circles
+					auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
+					for (auto entity : view)
+					{
+						auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
+						render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f, spr.Color);
+					}
+				}
+
+				{//Draw Texture Circles
+					auto view = m_Registry.view<TransformComponent, CircleComponent, TextureComponent>();
+					for (auto entity : view)
+					{
+						auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
+						render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f, tex.Texture, Color::White);
+					}
+				}
+
+				//Finish the rendering
+				render::EndBatch();
+				render::Flush();
+			}
+			else
+			{
+				static bool once = []() //Just warn once
+				{
+					BASE_WARN("There is no Camera to use on rendering");
+					return false;
+				}();
+			}
+		}//End Render Scope
 	}
 }
