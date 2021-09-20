@@ -14,7 +14,6 @@
 #include "camera/OrthographicCameraController.h"
 #include <vector>
 #include <iostream>
-#include "utils/Logs.h"
 namespace Base
 {
 namespace windowing
