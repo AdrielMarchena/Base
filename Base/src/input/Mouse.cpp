@@ -10,7 +10,6 @@
 #include "Mouse.h"
 #include <iostream>
 #include "Log.h"
-
 namespace Base
 {
 namespace input

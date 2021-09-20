@@ -7,6 +7,7 @@
 */
 
 #pragma once
+#include "Base/Base.h"
 
 #include <array>
 #include "gl/glew.h"
@@ -55,7 +56,7 @@ namespace input
 		}
 		static glm::vec2 gprevOffValue() { return PrevOff; }
 
-		static glm::vec2 m_pos(float h) { return { pos.x, -(pos.y - h) }; }
+		static glm::vec2 m_pos() { return { pos.x, -(pos.y - WindowProps::height) }; }
 
 		static void clamp_cursor(float_t min_x, float_t max_x, float_t min_y, float_t max_y);
 	};
