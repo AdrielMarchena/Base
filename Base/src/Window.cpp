@@ -240,11 +240,13 @@ namespace Base
 
 			BASE_TRACE("ImGUI Initialized!");
 
+			strcpy_s(m_ProfileOptions.profilePath, "Base_Runtime_Profile.json");
+			strcpy_s(m_ProfileOptions.profileName, "Runtime");
+
 			//Audio
 			//aux::LoadDevices();
 			//p_ALCDevice = aux::GetDevicePtr();
 			//p_ALCContext = aux::GetContextPtr();
-			OnAttach();
 
 		}
 
@@ -279,10 +281,11 @@ namespace Base
 			glfwSetWindowTitle(m_Window, fps_title.c_str());
 
 			BASE_TRACE("Game loop starting!");
-			
+			OnAttach();
+
 			while (!glfwWindowShouldClose(m_Window))
 			{
-				BASE_PROFILE_SCOPE(std::string("Frame '" + std::to_string(frame_counter) + "'").c_str());
+				BASE_PROFILE_SCOPE("Frame");
 				//Check Events
 				glfwPollEvents();
 
@@ -309,17 +312,70 @@ namespace Base
 				//ImGui things
 				DEAR_NEW_FRAME();
 				OnImGui();
+				BASE_DEBUG_CALL(OnImGuiDebug());
+				#ifdef BASE_PROFILING
+					WindowOnImGuiDebug();
+				#endif
 				DEAR_END_FRAME();
 
 				//Swap buffer
 				glfwSwapBuffers(m_Window);
 				frame_counter++;
 			}
-			BASE_TRACE("Game loop Ended!");
+			BASE_TRACE("Game loop Ended! {0} Frames", frame_counter);
 			Dispose();
 			BASE_TRACE("Dispose completed!");
 			CloseWindow();
 		}
+
+		void Window::WindowOnImGuiDebug()
+		{
+			ImGui::Begin("Profile Frame");
+
+			ImGui::InputText("Profile Name [25]", m_ProfileOptions.profileName, 25);
+			ImGui::InputText("Result Path [50]", m_ProfileOptions.profilePath, 50);
+
+			if (ImGui::Button("Start Profiling") && !m_ProfileOptions.profiling)
+			{
+				if (m_ProfileOptions.profilePath == "")
+					strcpy_s(m_ProfileOptions.profilePath, "results.json");
+				BASE_PROFILE_BEGIN_SESSION(m_ProfileOptions.profileName, m_ProfileOptions.profilePath);
+				m_ProfileOptions.profiling = true;
+			}
+			if (ImGui::Button("Stop Profiling") && m_ProfileOptions.profiling)
+			{
+				m_ProfileOptions.profiling = false;
+				BASE_PROFILE_END_SESSION();
+			}
+
+			static bool frameProfiling = false;
+			ImGui::Text("Profile Frames");
+			if(!frameProfiling)
+				ImGui::InputInt("Qtd frames", &m_ProfileOptions.qtdFrames);
+			static int count = 0;
+			if (ImGui::Button("Start Profiling Frames") && !m_ProfileOptions.profiling)
+			{
+				m_ProfileOptions.profiling = frameProfiling = true;
+				if (m_ProfileOptions.profilePath == "")
+					strcpy_s(m_ProfileOptions.profilePath, "results.json");
+				BASE_PROFILE_BEGIN_SESSION(m_ProfileOptions.profileName, m_ProfileOptions.profilePath);
+			}
+
+			if (frameProfiling)
+			{
+				count++;
+				if (count >= m_ProfileOptions.qtdFrames)
+				{
+					count = 0;
+					frameProfiling = false;
+					m_ProfileOptions.profiling = false;
+					BASE_PROFILE_END_SESSION();
+				}
+			}
+
+			ImGui::End();
+		}
+
 		void Window::CloseWindow()
 		{
 		}

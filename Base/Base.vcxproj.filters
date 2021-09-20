@@ -156,9 +156,6 @@
     <ClInclude Include="src\colision\Colisions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Logs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\utils\Files.h">
       <Filter>Header Files</Filter>
     </ClInclude>

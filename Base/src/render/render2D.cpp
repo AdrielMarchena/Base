@@ -39,7 +39,7 @@ namespace render
 		BASE_PROFILE_FUNCTION();
 
 		m_Shaders.Load("shaders/Quad.glsl");
-		//m_Shaders.Load("Triangle", "shaders/Quad.glsl");
+		m_Shaders.Load("Triangle", "shaders/Quad.glsl");
 		m_Shaders.Load("shaders/Circle.glsl");
 		m_Shaders.Load("shaders/Line.glsl");
 		m_Shaders.Load("shaders/Text.glsl");
@@ -48,7 +48,7 @@ namespace render
 		m_LineRender	= MakeRef<LineRender2D>(m_Shaders.Get("Line"));
 		m_CircleRender	= MakeRef<CircleRender>(m_Shaders.Get("Circle"));
 		m_TextRender	= MakeRef<QuadRender2D>(m_Shaders.Get("Text"));
-		m_TriRender		= MakeRef<TriRender>(m_Shaders.Get("Quad")); //TODO: Test to se if works with the same shader
+		m_TriRender		= MakeRef<TriRender>(m_Shaders.Get("Triangle")); //TODO: Test to se if works with the same shader
 
 		GLCall(glEnable(GL_DEPTH_TEST));
 		GLCall(glEnable(GL_BLEND));

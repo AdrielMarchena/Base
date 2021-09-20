@@ -24,6 +24,14 @@ namespace Base
 		private:
 			Window* myWindow;
 			uint64_t nbFrame = 0;
+			struct ProfileOptions
+			{
+				char profilePath[50];
+				char profileName[25];
+				int qtdFrames = 1;
+				bool profiling = false;
+
+			} m_ProfileOptions ;
 		protected:
 			std::string m_Title;
 			glm::vec2 m_Resolution = { 800.0f,600.0f };
@@ -35,7 +43,6 @@ namespace Base
 			bool m_ClampMouse = true;
 		public:
 			
-
 			Window(const char* title = "Base", float_t w = 800, float_t h = 600, bool resizeble = true);
 			virtual ~Window();
 
@@ -55,12 +62,16 @@ namespace Base
 			//Called after the Game Loop ends
 			virtual void Dispose(){}
 
+			//Only called on debug
+			virtual void OnImGuiDebug() {}
+
 			void SetResizeble(bool resizeble);
 
 			//Initializa the Game Loop
 			void Run();
 
 		private:
+			void WindowOnImGuiDebug();
 			inline void CloseWindow();
 			inline void UpdateWindow();
 			inline void UpdateFpsTitle(double fps);
