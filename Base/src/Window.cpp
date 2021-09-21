@@ -51,8 +51,8 @@ namespace Base
 		{
 			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
 			ResizeArgs args{};
-			args.old_w = WindowProps::width;
-			args.old_h = WindowProps::height;
+			args.old_w = WindowProps().width;
+			args.old_h = WindowProps().height;
 			args.new_w = w;
 			args.new_h = h;
 			ptr->OnWindowResize(args);
@@ -164,9 +164,9 @@ namespace Base
 		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
 			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), myWindow(nullptr)
 		{
-			WindowProps::width = w;
-			WindowProps::height = h;
-			WindowProps::minimized = false;
+			WindowProps().width = w;
+			WindowProps().height = h;
+			WindowProps().minimized = false;
 
 			//Initialize Log system (spdlog)
 			Log::Init();
@@ -392,12 +392,12 @@ namespace Base
 		{
 			m_Wid = args.new_w;
 			m_Hei = args.new_h;
-			WindowProps::width = m_Wid;
-			WindowProps::height = m_Hei;
-			if (WindowProps::width == 0 || WindowProps::height == 0)
-				WindowProps::minimized = true;
+			WindowProps().width = m_Wid;
+			WindowProps().height = m_Hei;
+			if (WindowProps().width == 0 || WindowProps().height == 0)
+				WindowProps().minimized = true;
 			else
-				WindowProps::minimized = false;
+				WindowProps().minimized = false;
 			m_AspectRatio = m_Wid / m_Hei;
 			glViewport(0, 0, m_Wid, m_Hei);
 

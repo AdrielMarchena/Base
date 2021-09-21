@@ -16,7 +16,7 @@
 #include "SubTexture.h"
 #include <math.h>
 #include "Colors.h"
-#include "Camera.h"
+#include "render/Camera.h"
 
 #include "geo_renders/QuadRender.h"
 #include "geo_renders/LineRender.h"

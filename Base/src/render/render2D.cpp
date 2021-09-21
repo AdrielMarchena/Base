@@ -73,8 +73,7 @@ namespace render
 	void Render2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
 		BASE_PROFILE_FUNCTION();
-		glm::mat4 viewProj = camera.GetProjection() 
-			* glm::inverse(transform);
+		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
 			
 		m_LineRender->BeginScene(viewProj);
 		m_QuadRender->BeginScene(viewProj);

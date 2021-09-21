@@ -79,7 +79,7 @@ namespace Base
 		{//Render Scope
 			BASE_PROFILE_SCOPE("Scene Render Scope");
 			Base::Camera* mainCamera = nullptr;
-			glm::mat4* cameraTransform = nullptr;
+			glm::mat4 cameraTransform;
 			{
 				auto group = m_Registry.group<TransformComponent>(entt::get<CameraComponent>);
 				for (auto entity : group)
@@ -88,7 +88,7 @@ namespace Base
 					if (camera.Primary)
 					{
 						mainCamera = &camera.Camera;
-						cameraTransform = &position.Transform;
+						cameraTransform = position.GetTransform();
 					}
 				}
 			}
@@ -101,7 +101,7 @@ namespace Base
 
 				//Start render Scene
 				//SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything
-				render::BeginScene(*mainCamera, *cameraTransform);
+				render::BeginScene(*mainCamera, cameraTransform);
 				render::BeginBatch();
 
 				{//Draw Sprites
@@ -110,7 +110,7 @@ namespace Base
 					for (auto entity : view)
 					{
 						auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-						render::DrawQuad(position.Transform, spr.Color, spr.Rotation, spr.Axis);
+						render::DrawQuad(position.GetTransform(), spr.Color, spr.Rotation, spr.Axis);
 					}
 				}
 
@@ -120,7 +120,7 @@ namespace Base
 					{
 						auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
 						if (spr.Texture)
-							render::DrawQuad(position.Transform, spr.Texture, Color::White, spr.Rotation, spr.Axis);
+							render::DrawQuad(position.GetTransform(), spr.Texture, Color::White, spr.Rotation, spr.Axis);
 					}
 				}
 
@@ -130,7 +130,7 @@ namespace Base
 					{
 						auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
 						if (spr.SubTexture)
-							render::DrawQuad(position.Transform, spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
+							render::DrawQuad(position.GetTransform(), spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
 					}
 				}
 
@@ -141,7 +141,7 @@ namespace Base
 						//TODO: Test to see if works
 						auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
 						auto& sprite = anim.Animation.Run(args.dt);
-						render::DrawQuad(position.Transform, sprite, Color::White, anim.Rotation, anim.Axis);
+						render::DrawQuad(position.GetTransform(), sprite, Color::White, anim.Rotation, anim.Axis);
 					}
 				}
 
@@ -150,7 +150,7 @@ namespace Base
 					for (auto entity : view)
 					{
 						auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
-						render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f, spr.Color);
+						render::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fill, 1.0f, spr.Color);
 					}
 				}
 
@@ -159,7 +159,7 @@ namespace Base
 					for (auto entity : view)
 					{
 						auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-						render::DrawCircle(trans.Transform, circle_def.Radius, circle_def.Fill, 1.0f, tex.Texture, Color::White);
+						render::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fill, 1.0f, tex.Texture, Color::White);
 					}
 				}
 

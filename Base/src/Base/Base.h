@@ -35,11 +35,21 @@ namespace Base
 		return std::make_unique<T>(std::forward<_Args>(args)...);
 	}
 
-	namespace WindowProps
+	struct WindowsProps
 	{
-		static int width;
-		static int height;
-		static bool minimized;
+		int width = 800;
+		int height = 600;
+		bool minimized = false;
 	};
+	static WindowsProps& WindowProps()
+	{
+		static WindowsProps p;
+		return p;
+	}
+	static double B_GetRatio()
+	{
+		return (double)WindowProps().width / (double)WindowProps().height;
+	}
+
 }
 #endif
