@@ -34,10 +34,10 @@ namespace Base
 		//Destroy all Scripts
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
 		{
-			if (!script.Instance)
+			if (script.Instance)
 			{
-				script.DestroyScript(&script);
 				script.Instance->OnDestroy();
+				script.DestroyScript(&script);
 			}
 		});
 		
@@ -59,7 +59,17 @@ namespace Base
 		{
 			script.Instance = script.InstantiateScript(); //Instanciate the script class inside
 			script.Instance->m_Entity = ent;
-			script.Instance->OnAwake();
+			script.Instance->OnCreate();
+		}
+	}
+
+	void Scene::DestroyNativeScript(Entity& ent)
+	{
+		auto& script = ent.GetComponent<NativeScriptComponent>();
+		if (script.Instance)
+		{
+			script.Instance->OnDestroy();
+			script.DestroyScript(&script); //Instanciate the script class inside
 		}
 	}
 
@@ -68,7 +78,6 @@ namespace Base
 		BASE_PROFILE_FUNCTION();
 
 		{//Native Scripts
-			BASE_PROFILE_SCOPE("Scene Native Script(OnUpdate)");
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
 			{
 				if (script.Instance)
@@ -113,6 +122,12 @@ namespace Base
 						render::DrawQuad(position.GetTransform(), spr.Color, spr.Rotation, spr.Axis);
 					}
 				}
+
+				m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
+					{
+						if (script.Instance)
+							script.Instance->ExtraRender();
+					});
 
 				{//Draw SubTextures
 					auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
