@@ -39,6 +39,7 @@ namespace Base
 	{
 		int width = 800;
 		int height = 600;
+		double aspect_ratio = (double)width / (double)height;
 		bool minimized = false;
 	};
 	static WindowsProps& WindowProps()
