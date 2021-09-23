@@ -6,13 +6,14 @@ namespace Base {
 	class SceneCamera : public Camera
 	{
 	public:
-		enum class ProjectionType { Perspective = 0, Orthographic = 1 };
+		enum class ProjectionType { Perspective = 0, Orthographic = 1, OrthographicPX = 2 };
 	public:
 		SceneCamera();
 		virtual ~SceneCamera() = default;
 
 		void SetPerspective(float verticalFOV, float nearClip, float farClip);
 		void SetOrthographic(float size, float nearClip, float farClip);
+		void SetOrthographicPX(float w, float h, float nearClip, float farClip);
 
 		void SetViewportSize(uint32_t width, uint32_t height);
 
@@ -30,6 +31,10 @@ namespace Base {
 		float GetOrthographicFarClip() const { return m_OrthographicFar; }
 		void SetOrthographicFarClip(float farClip) { m_OrthographicFar = farClip; RecalculateProjection(); }
 
+		glm::vec2 GetOrthoOrthographicPX() const { return m_OrthographicPX; }
+		void SetOrthoOrthographicPX(const glm::vec2& size) { m_OrthographicPX = size; }
+		void SetOrthoOrthographicPX(float w, float h) { m_OrthographicPX = { w , h }; }
+
 		ProjectionType GetProjectionType() const { return m_ProjectionType; }
 		void SetProjectionType(ProjectionType type) { m_ProjectionType = type; RecalculateProjection(); }
 	private:
@@ -42,6 +47,8 @@ namespace Base {
 
 		float m_OrthographicSize = 10.0f;
 		float m_OrthographicNear = -1.0f, m_OrthographicFar = 1.0f;
+
+		glm::vec2 m_OrthographicPX = { 800.0f,600.0f };
 
 		float m_AspectRatio = 0.0f;
 	};

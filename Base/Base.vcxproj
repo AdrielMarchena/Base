@@ -240,6 +240,7 @@
     <ClCompile Include="src\render\ParticleSystem.cpp" />
     <ClCompile Include="src\render\SubTexture.cpp" />
     <ClCompile Include="src\render\Text.cpp" />
+    <ClCompile Include="src\scene\SceneCamera.cpp" />
     <ClCompile Include="src\utils\Files.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\input\Mouse.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="src\render\SubTexture.h" />
     <ClInclude Include="src\args\UpdateArgs.h" />
     <ClInclude Include="src\render\Text.h" />
+    <ClInclude Include="src\scene\SceneCamera.h" />
     <ClInclude Include="src\scene\ScriptableEntity.h" />
     <ClInclude Include="src\utils\alc_error_macro_db.h" />
     <ClInclude Include="src\utils\al_error_marcro_db.h" />

@@ -23,7 +23,7 @@ namespace Base
 		{0.0f,1.0f}
 		};
 
-		static const size_t MaxQuadCount = 1000;
+		static const size_t MaxQuadCount = 3000;
 		static const size_t MaxVertexCount = MaxQuadCount * 4;
 		static const size_t MaxIndexCount = MaxQuadCount * 6;
 		static int32_t MaxTexture = MaxTexturesSlots();

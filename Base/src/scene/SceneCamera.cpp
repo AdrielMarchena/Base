@@ -29,6 +29,15 @@ namespace Base {
 		RecalculateProjection();
 	}
 
+	void SceneCamera::SetOrthographicPX(float w, float h, float nearClip, float farClip)
+	{
+		m_ProjectionType = ProjectionType::OrthographicPX;
+		m_OrthographicPX = { w,h };
+		m_OrthographicNear = nearClip;
+		m_OrthographicFar = farClip;
+		RecalculateProjection();
+	}
+
 	void SceneCamera::SetViewportSize(uint32_t width, uint32_t height)
 	{
 		BASE_ASSERT(width > 0 && height > 0);
@@ -42,7 +51,7 @@ namespace Base {
 		{
 			m_Projection = glm::perspective(m_PerspectiveFOV, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
 		}
-		else
+		else if(m_ProjectionType == ProjectionType::Orthographic)
 		{
 			float orthoLeft = -m_OrthographicSize * m_AspectRatio * 0.5f;
 			float orthoRight = m_OrthographicSize * m_AspectRatio * 0.5f;
@@ -51,6 +60,18 @@ namespace Base {
 
 			m_Projection = glm::ortho(orthoLeft, orthoRight,
 				orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
+		}
+		else
+		{
+			float orthoLeft = -m_OrthographicPX.x * m_AspectRatio * 0.5f;
+			float orthoRight = m_OrthographicPX.x * m_AspectRatio * 0.5f;
+			float orthoBottom = -m_OrthographicPX.y * m_AspectRatio * 0.5f;
+			float orthoTop = m_OrthographicPX.y * m_AspectRatio * 0.5f;
+
+			m_Projection = glm::ortho(orthoLeft, orthoRight,
+				orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
+
+			//m_Projection = glm::ortho(0.0f, m_OrthographicPX.x * m_AspectRatio, 0.0f, m_OrthographicPX.y, m_OrthographicNear, m_OrthographicFar);
 		}
 
 	}
