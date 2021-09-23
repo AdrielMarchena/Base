@@ -50,6 +50,7 @@ namespace Base
 		void on_resize(GLFWwindow* window, int32_t w, int32_t h)
 		{
 			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			WindowProps().aspect_ratio = (double)WindowProps().width / (double)WindowProps().height;
 			ResizeArgs args{};
 			args.old_w = WindowProps().width;
 			args.old_h = WindowProps().height;
@@ -307,12 +308,12 @@ namespace Base
 				OnUpdate({ (float)deltaTime,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
 				UpdateWindow();
 				//Call render method
-				OnRender();
+				//OnRender();
 
 				//ImGui things
 				DEAR_NEW_FRAME();
 				OnImGui();
-				BASE_DEBUG_CALL(OnImGuiDebug());
+				//BASE_DEBUG_CALL(OnImGuiDebug());
 				#ifdef BASE_PROFILING
 					WindowOnImGuiDebug();
 				#endif
@@ -398,7 +399,7 @@ namespace Base
 				WindowProps().minimized = true;
 			else
 				WindowProps().minimized = false;
-			m_AspectRatio = m_Wid / m_Hei;
+			m_AspectRatio = WindowProps().aspect_ratio;
 			glViewport(0, 0, m_Wid, m_Hei);
 
 			OnResize(args);
