@@ -70,10 +70,11 @@ namespace render
 
 			//TODO: seek a way to sort this jumping the vertices of the same Quad
 			// example in case of a Quad, advance 4 Vertex ahead instead of one
-			std::sort(m_data.Buffer, m_data.BufferPtr, [&](Vertex* buffer_a, Vertex* buffer_b) 
+			/*std::sort(m_data.Buffer, m_data.BufferPtr, [&](Vertex* buffer_a, Vertex* buffer_b) 
 			{
 				return buffer_a->Position.z > buffer_b->Position.z;
 			}); //TODO: move to static render
+			*/
 			
 			m_data.VB.Bind();
 			m_data.VB.SubData(size, m_data.Buffer);
