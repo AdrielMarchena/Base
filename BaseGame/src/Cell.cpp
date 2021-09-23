@@ -1,225 +1,179 @@
 #include "Cell.h"
 
-#include <iostream>
-#include <algorithm>
-#include "imgui.h"
-const glm::vec2 Size = { 25.0f,25.0f };
-const glm::vec4 Global_Live_Color = { 1.0f, 1.0f, 1.0f, 1.0f };
-const glm::vec4 Global_Dead_Color = { 0.3f, 0.3f, 0.3f, 1.0f };
-const glm::vec2 Default_Draw_Offset = { TOTAL_COLUMNS/2,TOTAL_ROWS/2 };
+#include "utils/Instrumentor.h"
+#include "utils/RandomList.h"
+#include "render/Colors.h"
+#include "render/render2D.h"
+#include <functional>
+#define ITERATE_MATRIX(x) {for(int col = 0; col < columns; col++){\
+							for (int row = 0; row < rows; row++){\
+								x;}}}
 
-static void iterate_matrix(const std::function<void(int col, int row)>& func)
+#define CLAMP_MATRIX(m,n) std::clamp(n, 0.0f, m-1)
+
+void MapScript::OnCreate()
 {
-	for (int col = 0; col < TOTAL_COLUMNS; col++)
+	double ratio = Base::WindowProps().aspect_ratio;
+	transform.Scale = glm::vec3(m_Size, m_Size, 0.0f);
+	start = glm::vec3(-5 * ratio, -5.0f, 1.0f) + (transform.Scale * 0.5f);
+
+	columns = 96;
+	rows = 96;
+
+	current_map.create(rows, columns);
+	new_map.create(rows, columns);
+	int count = 25 , x = 0, y = 0;
+	do
 	{
-		for (int row = 0; row < TOTAL_COLUMNS; row++)
-		{
-			func(col, row);
+		x = P_random() << 2 % columns;
+		y = P_random() << 2 % rows;
+		new_map.set_cell(x, y);
+		//new_map.set_cell(count, count);
+		count--;
+	} 	while (count >= 0);
+	current_map.copy_cells(new_map);
+}
+
+void MapScript::ExtraRender()
+{
+	using render = Base::render::Render2D;
+
+	transform.Translation = start;
+
+	for (int y = 0; y < new_map.height; y++) {
+		for (int x = 0; x < new_map.width; x++) {
+			bool alive = new_map.cell_state(x, y);
+			transform.Translation = start + (glm::vec3(x * transform.Scale.x, y * transform.Scale.y, 0.0f) * 1.1f);
+			render::DrawQuad(transform.GetTransform(), alive ? Color::Base_Color : glm::vec4(0.3f, 0.3f, 0.3f, 1.0f));
 		}
 	}
-}
-static inline float col_clamp(float n)
-{
-	const static float total = TOTAL_COLUMNS-1;
-	return std::clamp(n, 0.0f, total);
+
 }
 
-static inline float row_clamp(float n)
+void MapScript::OnUpdate(const Base::UpdateArgs& args)
 {
-	const static float total = TOTAL_ROWS-1;
-	return std::clamp(n, 0.0f, total);
-}
+	using mouse = Base::input::Mouse;
+	using key = Base::input::Keyboard;
 
-bool Map::CheckNeighbours(int p_col, int p_row, float dt)
-{
-	//Rules
-	// < 2 livin neighbours = Die
-	// = 3 livin neighbours = Live
-	// > 3 livin neighbours = Die
-	// if dead and = 3 livin neighbours = revive
-	if (p_col < 0 || p_row < 0)
-		return false;
-	
-	//    #0 #1 #2
-	// #0  N  N	 N	 N = Neighbour
-	// #1  N  O	 N   O = Actual Cell
-	// #2  N  N	 N
-	int living_neighbours = 0;
-	bool alive = false;
-	int col_start = p_col == 0 ? 0 : p_col - 1;
-	int col_end = p_col == TOTAL_COLUMNS ? p_col - 1 : p_col + 1;
-	int row_start = p_row == 0 ? 0 : p_row - 1;
-	int row_end = p_row == TOTAL_ROWS ? p_row - 1 : p_row + 1;
-
-	for (int col = col_start; col <= col_end; col++)
+	if (mouse::isPress(BASE_MOUSE_BUTTON_1))
 	{
-		if (col < 0 || col >= TOTAL_COLUMNS)
-			continue; // Skip out of bounds
-		for (int row = row_start; row <= row_end; row++)
-		{
-			if (row < 0 || row >= TOTAL_COLUMNS)
-				continue; // Skip out of bounds
-			if (col == p_col && row == p_row)
-			{
-				alive = OldCells[col][row];
-				continue; // don't check with yourself
+		const glm::vec2 mouse_pos = mouse::m_pos() * m_Size;
+		//Cells[(int)col_clamp(mouse_pos.x)][(int)row_clamp(mouse_pos.y)] = true;
+		//Cells[(int)CLAMP_MATRIX((float)columns, mouse_pos.x)][(int)CLAMP_MATRIX((float)rows, mouse_pos.y)] = true;
+	}
+
+	if (mouse::isPress(BASE_MOUSE_BUTTON_2))
+	{
+		const glm::vec2 mouse_pos = mouse::m_pos() * m_Size;
+		//Cells[(int)CLAMP_MATRIX((float)columns, mouse_pos.x)][(int)CLAMP_MATRIX((float)rows, mouse_pos.y)] = false;
+	}
+
+	if (key::isClicked(BASE_KEY_P))
+		m_CellPause = !m_CellPause;
+
+	if (m_CellPause)
+		return;
+
+	if (m_CurrentCount >= 0.0f)
+	{
+		m_CurrentCount -= (m_CountInit * 0.5f) * args.dt;
+		return;
+	}
+
+	current_map.next_generation(new_map);
+
+	current_map.copy_cells(new_map);
+
+	m_CurrentCount = m_CountInit;
+}
+
+void MapScript::OnDestroy()
+{
+	current_map.destroy();
+	new_map.destroy();
+}
+
+void cell_map::create(unsigned int h, unsigned int w)
+{
+	width = w;
+	width_in_bytes = (w + 7) / 8;
+	height = h;
+	length_in_bytes = width_in_bytes * h;
+	cells = new unsigned char[length_in_bytes];
+	memset(cells, 0, length_in_bytes);
+}
+
+void cell_map::destroy()
+{
+	delete[] cells;
+}
+
+void cell_map::clear_cell(unsigned int x, unsigned int y)
+{
+	unsigned char* cell_ptr =
+		cells + (y * width_in_bytes) + (x / 8);
+
+	*(cell_ptr) &= ~(0x80 >> (x & 0x07));
+}
+
+void cell_map::set_cell(unsigned int x, unsigned int y)
+{
+	unsigned char* cell_ptr =
+		cells + (y * width_in_bytes) + (x / 8);
+
+	*(cell_ptr) |= 0x80 >> (x & 0x07);
+}
+
+void cell_map::copy_cells(cell_map& sourcemap)
+{
+	memcpy(cells, sourcemap.cells, length_in_bytes);
+}
+
+int cell_map::cell_state(int x, int y)
+{
+	unsigned char* cell_ptr;
+#if WRAP_EDGES
+	while (x < 0) x += width;     // wrap, if necessary
+	while (x >= width) x -= width;
+	while (y < 0) y += height;
+	while (y >= height) y -= height;
+#else
+	if ((x < 0) || (x >= width) || (y < 0) || (y >= height))
+		return 0;   // return 0 for off edges if no wrapping
+#endif
+	cell_ptr = cells + (y * width_in_bytes) + (x / 8);
+	return (*cell_ptr & (0x80 >> (x & 0x07))) ? 1 : 0;
+}
+
+void cell_map::next_generation(cell_map& next_map)
+{
+
+	unsigned int x, y, neighbor_count;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			// Figure out how many neighbors this cell has
+			neighbor_count = cell_state(x - 1, y - 1) + cell_state(x, y - 1) +
+				cell_state(x + 1, y - 1) + cell_state(x - 1, y) +
+				cell_state(x + 1, y) + cell_state(x - 1, y + 1) +
+				cell_state(x, y + 1) + cell_state(x + 1, y + 1);
+			if (cell_state(x, y) == 1) {
+				// The cell is on; does it stay on?
+				if ((neighbor_count != 2) && (neighbor_count != 3)) {
+					next_map.clear_cell(x, y);    // turn it off
+					//transform.Translation = start + (glm::vec3(x * transform.Scale.x, y * transform.Scale.y, 0.0f) * 1.1f);
+					//render::DrawQuad(transform.GetTransform(), glm::vec4(0.3f, 0.3f, 0.3f, 1.0f));
+				}
 			}
-			bool populated = OldCells[col][row];
-			if (populated)
-				living_neighbours++;
+			else {
+				// The cell is off; does it turn on?
+				if (neighbor_count == 3) {
+					next_map.set_cell(x, y);      // turn it on
+					//transform.Translation = start + (glm::vec3(x * transform.Scale.x, y * transform.Scale.y, 0.0f) * 1.1f);
+					//render::DrawQuad(transform.GetTransform(), Color::Base_Color);
+				}
+			}
 		}
 	}
-
-	//Dead
-	if (!alive)
-	{
-		if (living_neighbours == 3)
-			return true;
-		return false;
-	}
-	//Alive
-	if (living_neighbours == 2 || living_neighbours == 3)
-		return true;
-	return false;
-
 }
 
-static void CopyHere(bool** origin, bool** dest)
-{
-	for(int col = 0; col < TOTAL_COLUMNS;col++)
-		std::copy(&origin[col][0], &origin[col][TOTAL_ROWS], &dest[col][0]);
-}
-
-void Map::UpdateCells(const en::UpdateArgs& args)
-{
-	//Mouse test
-	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_1))
-	{
-		const glm::vec2 mouse_pos = (args.m_pos / Size + (Default_Draw_Offset / 25.0f));
-		OldCells[(int)col_clamp(mouse_pos.x)][(int)row_clamp(mouse_pos.y)] = true;
-	}
-
-	if (args.mouse.isPress(GLFW_MOUSE_BUTTON_2))
-	{
-		const glm::vec2 mouse_pos = (args.m_pos / Size + (Default_Draw_Offset / 25.0f));
-		OldCells[(int)col_clamp(mouse_pos.x)][(int)row_clamp(mouse_pos.y)] = false;
-	}
-
-	if (args.keyboard.isClicked(GLFW_KEY_Q))
-	{
-		iterate_matrix([&](int col, int row)
-		{
-			OldCells[col][row] = false;
-		});
-	}
-
-	if (args.keyboard.isClicked(GLFW_KEY_P))
-	{
-		pause = !pause;
-	}
-
-	if (pause) // Do nothing other than check input if paused
-		return;
-
-	static float timestamp = init_timestamp;
-	if (timestamp >= 0)
-	{
-		timestamp -= decay_timestamp * args.dt;
-		return;
-	}
-
-	iterate_matrix([&](int col, int row)
-	{
-		NewCells[col][row] = CheckNeighbours(col, row);
-	});
-	
-	CopyHere(NewCells,OldCells);
-	timestamp = init_timestamp;
-}
-
-void Map::DrawCells(const en::RenderArgs& args)
-{
-	
-	iterate_matrix([&](int col, int row) {
-		const glm::vec4& quad_color = OldCells[col][row] ? Global_Live_Color : Global_Dead_Color;
-		
-		args.render.DrawQuad(glm::vec2(col, row) * Size - Default_Draw_Offset, Size, quad_color);
-	});
-
-	const int ColS = TOTAL_COLUMNS * Size.x;
-	const int RowS = TOTAL_ROWS * Size.y;
-
-	for(int i = 0; i < ColS; i += Size.x)
-		args.render.DrawLine((glm::vec2(i, 0)) - Default_Draw_Offset, glm::vec2(i, RowS) - Default_Draw_Offset, {0.0f,0.0f,0.0f,1.0f}, 1.0f);
-
-	for (int i = 0; i < RowS; i += Size.y)
-		args.render.DrawLine((glm::vec2(0, i)) - Default_Draw_Offset, glm::vec2(ColS, i) - Default_Draw_Offset, { 0.0f,0.0f,0.0f,1.0f }, 1.0f);
-
-	for (auto& lamb : m_RenderThisPlease)
-		lamb(args);
-	m_RenderThisPlease.clear();
-}
-
-void Map::OnImGui(const en::ImGuiArgs& args)
-{
-	ImGui::Text("'P' to Pause");
-	ImGui::Text("Right click revive");
-	ImGui::Text("Left click kill");
-	ImGui::Text("'Q' kill everything");
-	ImGui::Text("Configs");
-	ImGui::SliderFloat("Init timestamp velocity", &init_timestamp, -0.1f, 2.0f);
-	ImGui::SliderFloat("Decay timestamp velocity", &decay_timestamp, 0.1f, 2.0f);
-	if(ImGui::Button("Pause"))
-	{
-		pause = !pause;
-	}
-}
-
-void Map::OnAttach(const std::vector<InitActiveCell>& actives)
-{
-	iterate_matrix([&](int col, int row)
-	{ 
-		OldCells[col][row] = false;
-	});
-
-	for (auto& ac : actives)
-	{
-		if (ac.Column >= TOTAL_COLUMNS || ac.Row >= TOTAL_ROWS)
-			continue;
-		OldCells[ac.Column][ac.Row] = true;
-	}
-}
-
-Map::Map(const std::vector<InitActiveCell>& actives)
-{
-	InitMatrix();
-	OnAttach(actives);
-}
-
-Map::Map()
-{
-	InitMatrix();
-}
-
-void Map::InitMatrix()
-{
-	OldCells = new bool* [TOTAL_COLUMNS];
-	NewCells = new bool* [TOTAL_COLUMNS];
-
-	for (size_t i = 0; i < TOTAL_COLUMNS; ++i)
-	{
-		OldCells[i] = new bool[TOTAL_ROWS];
-		NewCells[i] = new bool[TOTAL_ROWS];
-	}
-}
-
-Map::~Map()
-{
-	for (size_t i = 0; i < TOTAL_COLUMNS; ++i)
-	{
-		delete[] OldCells[i];
-		delete[] NewCells[i];
-	}
-	delete[] OldCells;
-	delete[] NewCells;
-}

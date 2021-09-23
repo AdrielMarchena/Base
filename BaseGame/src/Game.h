@@ -1,60 +1,26 @@
 #pragma once
 
-#include <functional>
-
 #include "Window.h"
-#include "render/ParticleSystem.h"
-#include "render/Texture.h"
-#include "amb/Ambient.h"
-#include "audio/AudioSource.h"
 #include "Cell.h"
-#include "colision/Colisions.h"
-
-using namespace en;
-
-struct ImGuiInfoPack
-{
-	//glm::vec3 LightAmbient = windowing::Ambient::Day;
-	//float LightForce = 50.0f;
-	//float LightForce2 = 50.0f;
-	glm::vec2 origin = {50.0f,50.0f};
-	glm::vec2 p1	 = {226.0f,468.0f};
-	glm::vec2 p2	 = {600.0f,195.0f};
-	glm::vec2 dest	 = {150.0f,50.0f};
-	float precision = 0.01f;
-};
-
-class Game: public windowing::Window
+#include "scene/Scene.h"
+#include "scene/Entity.h"
+class Game: public Base::windowing::Window
 {
 protected:
-	std::unordered_map<std::string, render::Texture> m_Textures;
-	std::unordered_map<std::string, render::SubTexture> m_SubTextures;
-	std::unordered_map<std::string, aux::AudioSource> m_Audios;
-	/* You can "ask" to render something for you from other funtions than OnRender */
-	std::vector<std::function<void(RenderArgs& r_args)>> m_RenderThisPlease;
-
-	windowing::Ambient m_Ambient;
-
-	ImGuiInfoPack m_ImInfo;
-	Map CellGame;
-
-	Rect rect_a;
+	Base::Scope<Base::Scene> m_Scene;
+	Base::Entity m_Camera;
+	Base::Entity m_Map;
+	Base::Entity m_TestQuad;
 
 public:
+	Game();
+	~Game();
 
-	Game(const char* title, float_t w = 800, float_t h = 600, bool resizeble = true);
+	virtual void OnAttach() override;
+	virtual void OnUpdate(const Base::UpdateArgs& args) override;
+	virtual void OnImGui() override;
+	virtual void Dispose() override;
 
-	void OnAttach(AttachArgs args) override;
-	void OnUpdate(UpdateArgs args) override;
-	void OnRender(RenderArgs args) override;
-	void OnImGui(ImGuiArgs args) override;
-	void Dispose() override;
-
-	//callback things
-	//
-private:
-	void LoadTextures(const char* directory);
-	void LoadSounds(const char* directory);
-
+	virtual void OnResize(const Base::ResizeArgs& args) override;
 };
 

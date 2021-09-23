@@ -1,100 +1,86 @@
 #include "Game.h"
-#include <corecrt_math.h> //float_t is typedef here
+#include <corecrt_math.h>
+#include "scene/Components.h"
 
+#include "imgui.h"
 
-static inline void MainMenuBar(const ImGuiArgs& args)
+class CameraScript : public Base::ScriptableEntity
 {
-	if (ImGui::BeginMainMenuBar())
+protected:
+	virtual void OnUpdate(const Base::UpdateArgs& args) override
 	{
-		if (ImGui::BeginMenu("Options"))
-		{
-			bool exit_opt = ImGui::MenuItem("Exit", "Ctrl+Q", false);
+		auto& T = GetComponent<Base::TransformComponent>().Translation;
+		using kb = Base::input::Keyboard;
 
-			if (exit_opt)
-				exit(0);
-			ImGui::EndMenu();
-		}
-		ImGui::EndMainMenuBar();
+		constexpr float vel = 5.5f;
+
+		if (kb::isPress(BASE_KEY_D))
+			T.x += vel * args.dt;
+		if (kb::isPress(BASE_KEY_A))
+			T.x -= vel * args.dt;
+		if (kb::isPress(BASE_KEY_W))
+			T.y += vel * args.dt;
+		if (kb::isPress(BASE_KEY_S))
+			T.y -= vel * args.dt;
 	}
-}
+};
 
-Game::Game(const char* title, float_t w, float_t h, bool resizeble)
-	:Window(title, w, h, resizeble),CellGame(Map()), rect_a()
+Game::Game()
+	:Base::windowing::Window()
 {
 }
 
-void Game::OnAttach(AttachArgs args)
+Game::~Game()
 {
-	LoadTextures("test_imgs");
-	LoadSounds("test_audio");
-
-	Window::OnAttach(args);
 }
 
-void Game::OnUpdate(UpdateArgs args)
+void Game::OnAttach()
 {
+	m_Scene = Base::MakeScope <Base::Scene>();
+	m_Map = m_Scene->CreateEntity("Map");
+	m_Camera = m_Scene->CreateEntity("Main_Camera");
+	//m_TestQuad = m_Scene->CreateEntity("TestQuad");
+	//m_TestQuad.AddComponent<Base::SpriteComponent>();
 
-	Window::OnUpdate(args);
-}
-
-void Game::OnRender(RenderArgs args)
-{
+	auto& scp = m_Camera.AddComponent<Base::NativeScriptComponent>();
+	scp.Bind<CameraScript>();
+	auto& c = m_Camera.AddComponent<Base::CameraComponent>();
+	c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
 	
-	Window::OnRender(args);
+	auto& map_script = m_Map.AddComponent<Base::NativeScriptComponent>();
+	map_script.Bind<MapScript>();
+	m_Scene->StartNativeScript(m_Map);
+	m_Scene->StartNativeScript(m_Camera);
+
 }
 
-void Game::OnImGui(ImGuiArgs args)
+void Game::OnUpdate(const Base::UpdateArgs& args)
 {
-	MainMenuBar(args);
+	if (!Base::WindowProps().minimized)
+		m_Scene->OnUpdate(args);
+}
 
-	for (auto& audio : m_Audios)
-		if (ImGui::Button(audio.first.c_str()))
-			audio.second.Play();
-
-	Window::OnImGui(args);
+void Game::OnImGui()
+{
+	//ImGui::Begin("Test Quad");
+	//
+	//auto& q = m_TestQuad.GetComponent<Base::TransformComponent>();
+	//ImGui::SliderFloat3("Translation",&q.Translation.x,-50.0f,50.0f);
+	//ImGui::SliderFloat3("Scale", &q.Scale.x, -50.0f, 50.0f);
+	//ImGui::SliderFloat3("Rotation", &q.Rotation.x, -50.0f, 50.0f);
+	//
+	//ImGui::End();
 }
 
 void Game::Dispose()
 {
-	m_Textures.clear();
-	m_Audios.clear();
-	Window::Dispose();
+	m_Scene->SceneEnd();
 }
 
-void Game::LoadTextures(const char* directory)
+void Game::OnResize(const Base::ResizeArgs& args)
 {
-	//Texuture
-	try
-	{
-		m_Textures = render::Texture::LoadAsyncTextures(utils::Files::GetPairText(directory));
-	}
-	catch (const utils::baseException::directory_not_found& dex)
-	{
-		//TODO: Put a default texture on the u_map (do not rethrow)
-		LOG_NORMAL("Directory to Textures " << dex.path() << " not found!");
-	}
-	catch (const std::exception& ex)
-	{
-		//TODO: Put a default texture on the u_map or maybe throw this again
-		LOG_NORMAL("Can't create Textures, Error: " << ex.what());
-	}
-}
-
-void Game::LoadSounds(const char* directory)
-{
-	//Audios
-	try
-	{
-		m_Audios = aux::AudioSource::LoadAudios(utils::Files::GetPairText(directory, ".mp3#.ogg#.wav"));
-	}
-	catch (const utils::baseException::directory_not_found& dex)
-	{
-		//TODO: Put a default texture on the u_map (do not rethrow please)
-		LOG_NORMAL("Directory to Audios " << dex.path() << " not found!");
-	}
-	catch (const std::exception& ex)
-	{
-		//TODO: Put a default audio on the u_map or maybe throw this again
-		LOG_NORMAL("Can't create Audios, Error: " << ex.what());
-	}
+	if (Base::WindowProps().minimized)
+		return;
+	auto& c = m_Camera.GetComponent<Base::CameraComponent>();
+	c.Camera.SetViewportSize(args.new_w, args.new_h);
 }

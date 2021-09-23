@@ -36,12 +36,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="shaders\quad_fs.shader" />
-    <None Include="shaders\quad_vs.shader" />
-    <None Include="shaders\line_vs.shader" />
-    <None Include="shaders\line_fs.shader" />
-    <None Include="shaders\circle_vs.shader" />
-    <None Include="shaders\circle_fs.shader" />
-  </ItemGroup>
 </Project>
