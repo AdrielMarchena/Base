@@ -17,11 +17,11 @@ namespace Base
 namespace render
 {
 	glm::vec3 Render2D::m_default_axis = { 0.0f,0.0f,1.0f };
-	Ref<QuadRender2D> Render2D::m_QuadRender;
-	Ref<CircleRender> Render2D::m_CircleRender;
-	Ref<LineRender2D> Render2D::m_LineRender;
-	Ref<QuadRender2D> Render2D::m_TextRender;
-	Ref<TriRender> Render2D::m_TriRender;
+	Scope<QuadRender2D> Render2D::m_QuadRender;
+	Scope<CircleRender> Render2D::m_CircleRender;
+	Scope<LineRender2D> Render2D::m_LineRender;
+	Scope<QuadRender2D> Render2D::m_TextRender;
+	Scope<TriRender> Render2D::m_TriRender;
 	ShaderLib Render2D::m_Shaders;
 
 	void Render2D::SetClearColor(const glm::vec4& color)
@@ -44,11 +44,11 @@ namespace render
 		m_Shaders.Load("shaders/Line.glsl");
 		m_Shaders.Load("shaders/Text.glsl");
 
-		m_QuadRender	= MakeRef<QuadRender2D>(m_Shaders.Get("Quad"));
-		m_LineRender	= MakeRef<LineRender2D>(m_Shaders.Get("Line"));
-		m_CircleRender	= MakeRef<CircleRender>(m_Shaders.Get("Circle"));
-		m_TextRender	= MakeRef<QuadRender2D>(m_Shaders.Get("Text"));
-		m_TriRender		= MakeRef<TriRender>(m_Shaders.Get("Triangle")); //TODO: Test to se if works with the same shader
+		m_QuadRender	= MakeScope<QuadRender2D>(m_Shaders.Get("Quad"));
+		m_LineRender	= MakeScope<LineRender2D>(m_Shaders.Get("Line"));
+		m_CircleRender	= MakeScope<CircleRender>(m_Shaders.Get("Circle"));
+		m_TextRender	= MakeScope<QuadRender2D>(m_Shaders.Get("Text"));
+		m_TriRender		= MakeScope<TriRender>(m_Shaders.Get("Triangle")); //TODO: Test to se if works with the same shader
 
 		GLCall(glEnable(GL_DEPTH_TEST));
 		GLCall(glEnable(GL_BLEND));
@@ -72,7 +72,7 @@ namespace render
 
 	void Render2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
-		BASE_PROFILE_FUNCTION();
+		//BASE_PROFILE_FUNCTION();
 		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
 			
 		m_LineRender->BeginScene(viewProj);

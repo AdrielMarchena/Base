@@ -30,11 +30,11 @@ namespace render
 	class Render2D
 	{
 	private:
-		static Ref<QuadRender2D> m_QuadRender;
-		static Ref<CircleRender> m_CircleRender;
-		static Ref<LineRender2D> m_LineRender;
-		static Ref<QuadRender2D> m_TextRender;
-		static Ref<TriRender> m_TriRender;
+		static Scope<QuadRender2D> m_QuadRender;
+		static Scope<CircleRender> m_CircleRender;
+		static Scope<LineRender2D> m_LineRender;
+		static Scope<QuadRender2D> m_TextRender;
+		static Scope<TriRender> m_TriRender;
 		static ShaderLib m_Shaders;
 	public:
 		static constexpr GLbitfield Cl_Color = GL_COLOR_BUFFER_BIT;
