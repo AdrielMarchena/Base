@@ -73,6 +73,13 @@ namespace Base
 		}
 	}
 
+	void Scene::AwakeNativeScript(Entity& ent)
+	{
+		auto& script = ent.GetComponent<NativeScriptComponent>();
+		if (script.Instance)
+			script.Instance->OnAwake();
+	}
+
 	void Scene::OnUpdate(const UpdateArgs& args)
 	{
 		BASE_PROFILE_FUNCTION();
