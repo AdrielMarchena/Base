@@ -10,7 +10,6 @@ protected:
 	Base::Scope<Base::Scene> m_Scene;
 	Base::Entity m_Camera;
 	Base::Entity m_Map;
-	Base::Entity m_TestQuad;
 
 public:
 	Game();

@@ -4,19 +4,16 @@
 #include "scene/Components.h"
 
 #include "scene/ScriptableEntity.h"
+#include "Base/Base.h"
+#include "render/Texture.h"
 
-struct CellState
-{
-	int x = 0;
-	int y = 0;
-	bool alive;
-};
+typedef unsigned char cell_type;
 
 class cell_map
 {
 public:
 
-	unsigned char* cells;
+	cell_type* cells;
 	unsigned int width;
 	unsigned int width_in_bytes;
 	unsigned int height;
@@ -29,30 +26,31 @@ public:
 	void set_cell(unsigned int x, unsigned int y);
 	void clear_cell(unsigned int x, unsigned int y);
 	int cell_state(int x, int y);
-	void next_generation(cell_map& next_map);
+	void next_generation(cell_map& next_map, Base::Ref<Base::render::Texture>& texture,unsigned char* texture_buffer);
 
 };
 
 class MapScript : public Base::ScriptableEntity
 {
 private:
-	//bool** OldCells;
-	//bool** NewCells;
+	unsigned char* texture_buffer;
 	cell_map current_map;
 	cell_map new_map;
-	Base::TransformComponent transform;
-	glm::vec3 start = {0.0f,0.0f,0.0f};
 	bool m_CellPause = true;
+	bool m_IgnoreTimer = false;
 	float m_CountInit = 5.0f;
 	float m_CurrentCount = 1.0f;
-	uint8_t columns = 50;
-	uint8_t rows = 50;
-	float m_Size = 0.35f;
+	uint32_t columns = 50;
+	uint32_t rows = 50;
 
 protected:
-	virtual void OnCreate() override;
-	virtual void OnUpdate(const Base::UpdateArgs& args) override;
-	virtual void ExtraRender() override;
-	virtual void OnDestroy() override;
 
+	virtual void OnCreate() override;
+	virtual void OnAwake() override;
+	virtual void OnUpdate(const Base::UpdateArgs& args) override;
+	virtual void OnDestroy() override;
+public:
+	unsigned char* GetTexBuffer() { return texture_buffer; }
+	uint32_t p_Columns = 24;
+	uint32_t p_Rows = 24;
 };

@@ -178,6 +178,7 @@
     <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BufferToPng.h" />
     <ClInclude Include="src\Cell.h" />
     <ClInclude Include="src\Game.h" />
   </ItemGroup>

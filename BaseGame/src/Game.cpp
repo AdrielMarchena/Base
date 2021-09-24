@@ -39,17 +39,16 @@ void Game::OnAttach()
 	m_Scene = Base::MakeScope <Base::Scene>();
 	m_Map = m_Scene->CreateEntity("Map");
 	m_Camera = m_Scene->CreateEntity("Main_Camera");
-	//m_TestQuad = m_Scene->CreateEntity("TestQuad");
-	//m_TestQuad.AddComponent<Base::SpriteComponent>();
 
 	auto& scp = m_Camera.AddComponent<Base::NativeScriptComponent>();
 	scp.Bind<CameraScript>();
 	auto& c = m_Camera.AddComponent<Base::CameraComponent>();
 	c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
-	
+	m_Map.AddComponent<Base::TextureComponent>();
 	auto& map_script = m_Map.AddComponent<Base::NativeScriptComponent>();
 	map_script.Bind<MapScript>();
 	m_Scene->StartNativeScript(m_Map);
+	m_Scene->AwakeNativeScript(m_Map);
 	m_Scene->StartNativeScript(m_Camera);
 
 }
@@ -62,14 +61,39 @@ void Game::OnUpdate(const Base::UpdateArgs& args)
 
 void Game::OnImGui()
 {
-	//ImGui::Begin("Test Quad");
+	ImGui::Begin("Game Grid");
 	//
-	//auto& q = m_TestQuad.GetComponent<Base::TransformComponent>();
-	//ImGui::SliderFloat3("Translation",&q.Translation.x,-50.0f,50.0f);
-	//ImGui::SliderFloat3("Scale", &q.Scale.x, -50.0f, 50.0f);
-	//ImGui::SliderFloat3("Rotation", &q.Rotation.x, -50.0f, 50.0f);
+	auto& q = m_Map.GetComponent<Base::TransformComponent>();
+	if (ImGui::SliderFloat("Scale", &q.Scale.x, 1.0f, 150.0f))
+	{
+		q.Scale.y = q.Scale.x;
+	}
+
+	static int grid = 24;
+
+	ImGui::InputInt("Grid Size (width x height)", &grid);
+
+	if (ImGui::Button("Reset"))
+	{
+		m_Scene->DestroyNativeScript(m_Map);
+
+		m_Scene->StartNativeScript(m_Map);
+		auto& s = m_Map.GetComponent<Base::NativeScriptComponent>();
+		((MapScript*)s.Instance)->p_Columns = grid;
+		((MapScript*)s.Instance)->p_Rows = grid;
+		m_Scene->AwakeNativeScript(m_Map);
+	}
+
+	static char text[50] = "Map.png";
+	ImGui::InputText("Path", text, 50);
+	if (ImGui::Button("Save File"))
+	{
+		auto& s = m_Map.GetComponent<Base::NativeScriptComponent>();
+		Base::render::Texture::CreatePNGFile(text, grid, grid, ((MapScript*)s.Instance)->GetTexBuffer());
+	}
+
 	//
-	//ImGui::End();
+	ImGui::End();
 }
 
 void Game::Dispose()

@@ -35,5 +35,8 @@
     <ClInclude Include="src\Cell.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\BufferToPng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
