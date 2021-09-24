@@ -11,13 +11,13 @@ namespace Base
 namespace render
 {
 	//Data types
-	enum GL_Type: uint8_t
+	enum class GL_Type: uint8_t
 	{
 		UNSIGNED_INT = 0
 	};
 
 	//Enum types
-	enum GL_Target: uint8_t
+	enum class GL_Target: uint8_t
 	{
 		TRIANGLES = 0,
 		LINES,
