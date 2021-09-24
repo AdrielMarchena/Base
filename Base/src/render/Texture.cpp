@@ -65,15 +65,34 @@ namespace render
 		Create(info);
 	}
 
-	Texture::Texture(uint32_t color, uint32_t w, uint32_t h)
+	Texture::Texture(uint32_t wid, uint32_t hei, const void* data)
 	{
+		BASE_CORE_ASSERT(wid > 0 && hei > 0, "Texture can not have 0 width or height");
+		m_Wid = wid;
+		m_Hei = hei;
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		GLCall(glGenTextures(1, &m_Id));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &color));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, wid, hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, data));
+	}
+
+	Texture::Texture(uint32_t wid, uint32_t hei, unsigned char* data)
+	{
+		BASE_CORE_ASSERT(wid > 0 && hei > 0, "Texture can not have 0 width or height");
+		m_Wid = wid;
+		m_Hei = hei;
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		GLCall(glGenTextures(1, &m_Id));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, wid, hei, 0, GL_RGBA, GL_UNSIGNED_BYTE, data));
 	}
 
 	Texture::~Texture()
@@ -162,7 +181,7 @@ namespace render
 		}
 	}
 
-	static inline void CreateTexture(ResourceManager<Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
+	static inline void AsyncCreateTexture(ResourceManager<Texture>& map, utils::ResourceLoads<std::string, ImageInfo>& info, const utils::NameCaps& nameCaps)
 	{
 		using namespace utils;
 		while (!info.isAllLoad())
@@ -178,6 +197,7 @@ namespace render
 		info.futures.clear();
 		info.resources.clear();
 	}
+
 
 	ResourceManager<Texture> Texture::LoadAsyncTexture(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps, uint8_t batchLimit)
 	{
@@ -207,7 +227,7 @@ namespace render
 		{
 			if (count > batchLimit)
 			{
-				CreateTexture(mm, loads, nameCaps);
+				AsyncCreateTexture(mm, loads, nameCaps);
 				loads.resources.clear();
 				loads.futures.clear();
 				count = 0;
@@ -218,8 +238,26 @@ namespace render
 		}
 
 		loads.waitAll();
-		CreateTexture(mm, loads, nameCaps);
+		AsyncCreateTexture(mm, loads, nameCaps);
 		return mm;
+	}
+
+	Ref<Texture> Texture::CreateTexture(uint32_t wid, uint32_t hei, const void* data)
+	{
+		Ref<Texture> tex = MakeRef<Texture>(wid,hei,data);
+		return tex;
+	}
+
+	Ref<Texture> Texture::CreateTexture(uint32_t wid, uint32_t hei, unsigned char* data)
+	{
+		Ref<Texture> tex = MakeRef<Texture>(wid, hei, data);
+		return tex;
+	}
+
+	void Texture::CreatePNGFile(const std::string& path,unsigned int w, unsigned int h, unsigned char* buffer)
+	{
+		BASE_ASSERT(w > 0 && h > 0 && buffer != nullptr && path != "");
+		lodepng::encode(path, buffer, w, h);
 	}
 
 	void Texture::Dispose()
@@ -246,5 +284,6 @@ namespace render
 			if (m_Pixels)
 				stbi_image_free(m_Pixels);
 	}
+
 }
 }
