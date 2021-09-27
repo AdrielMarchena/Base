@@ -69,9 +69,12 @@ void Game::OnImGui()
 		q.Scale.y = q.Scale.x;
 	}
 
-	static int grid = 24;
+	static int grid = 24, a1 = 2, a2 = 3, rv = 3;
 
 	ImGui::InputInt("Grid Size (width x height)", &grid);
+	ImGui::InputInt("To be Alive 1", &a1);
+	ImGui::InputInt("To be Alive 2", &a2);
+	ImGui::InputInt("To Revive", &rv);
 
 	if (ImGui::Button("Reset"))
 	{
@@ -81,6 +84,9 @@ void Game::OnImGui()
 		auto& s = m_Map.GetComponent<Base::NativeScriptComponent>();
 		((MapScript*)s.Instance)->p_Columns = grid;
 		((MapScript*)s.Instance)->p_Rows = grid;
+		((MapScript*)s.Instance)->ToBeAlive1 = a1;
+		((MapScript*)s.Instance)->ToBeAlive2 = a2;
+		((MapScript*)s.Instance)->ToRevive = rv;
 		m_Scene->AwakeNativeScript(m_Map);
 	}
 
@@ -88,8 +94,8 @@ void Game::OnImGui()
 	ImGui::InputText("Path", text, 50);
 	if (ImGui::Button("Save File"))
 	{
-		auto& s = m_Map.GetComponent<Base::NativeScriptComponent>();
-		Base::render::Texture::CreatePNGFile(text, grid, grid, ((MapScript*)s.Instance)->GetTexBuffer());
+		auto& Texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
+		Texture->CreatePng(text);
 	}
 
 	//

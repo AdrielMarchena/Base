@@ -10,8 +10,8 @@
 
 #include <array>
 #include "glm/glm.hpp"
-#include "../Texture.h"
-#include "../SubTexture.h"
+#include "render/gl/Texture.h"
+#include "render/SubTexture.h"
 #include <memory>
 #include <math.h>
 

@@ -5,7 +5,7 @@
 
 #include "scene/ScriptableEntity.h"
 #include "Base/Base.h"
-#include "render/Texture.h"
+#include "render/gl/Texture.h"
 
 typedef unsigned char cell_type;
 
@@ -19,6 +19,10 @@ public:
 	unsigned int height;
 	unsigned int length_in_bytes;
 
+	unsigned int to_be_alive1 = 2;
+	unsigned int to_be_alive2 = 3;
+	unsigned int to_revive = 3;
+
 	void create(unsigned int h, unsigned int w);
 	void destroy();
 
@@ -26,14 +30,13 @@ public:
 	void set_cell(unsigned int x, unsigned int y);
 	void clear_cell(unsigned int x, unsigned int y);
 	int cell_state(int x, int y);
-	void next_generation(cell_map& next_map, Base::Ref<Base::render::Texture>& texture,unsigned char* texture_buffer);
+	void next_generation(cell_map& next_map, Base::Ref<Base::render::Texture>& texture);
 
 };
 
 class MapScript : public Base::ScriptableEntity
 {
 private:
-	unsigned char* texture_buffer;
 	cell_map current_map;
 	cell_map new_map;
 	bool m_CellPause = true;
@@ -50,7 +53,10 @@ protected:
 	virtual void OnUpdate(const Base::UpdateArgs& args) override;
 	virtual void OnDestroy() override;
 public:
-	unsigned char* GetTexBuffer() { return texture_buffer; }
+	//unsigned char* GetTexBuffer() { return texture_buffer; }
 	uint32_t p_Columns = 24;
 	uint32_t p_Rows = 24;
+	unsigned int ToBeAlive1 = 2;
+	unsigned int ToBeAlive2 = 3;
+	unsigned int ToRevive = 3;
 };

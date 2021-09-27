@@ -2,7 +2,7 @@
 
 #include "RenderTemplate.h"
 
-#include "render/Texture.h"
+#include "render/gl/Texture.h"
 #include "render/SubTexture.h"
 
 namespace Base

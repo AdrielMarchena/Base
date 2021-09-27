@@ -31,9 +31,6 @@
     <ClCompile Include="src\render\gl\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\input\Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -130,6 +127,9 @@
     <ClCompile Include="src\scene\SceneCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\gl\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">
@@ -142,9 +142,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\args\VirtualArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\input\Keyboard.h">
@@ -316,6 +313,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\SceneCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

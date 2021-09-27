@@ -122,6 +122,8 @@ namespace render
 		m_LineRender->Dispose();
 		m_TextRender->Dispose();
 		m_TriRender->Dispose();
+
+		Texture::DeleteWhiteTexture();
 	}
 
 	void Render2D::Sort()

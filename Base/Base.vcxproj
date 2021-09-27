@@ -221,6 +221,7 @@
     <ClCompile Include="src\render\gl\GL_Commands.cpp" />
     <ClCompile Include="src\render\gl\GL_Types.cpp" />
     <ClCompile Include="src\render\gl\IndexBuffer.cpp" />
+    <ClCompile Include="src\render\gl\Texture.cpp" />
     <ClCompile Include="src\render\gl\VertexArray.cpp" />
     <ClCompile Include="src\render\gl\VertexAttribute.cpp" />
     <ClCompile Include="src\render\gl\VertexBuffer.cpp" />
@@ -250,7 +251,6 @@
     <ClCompile Include="src\utils\Generic.cpp" />
     <ClCompile Include="src\utils\RandomList.cpp" />
     <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="src\render\Texture.cpp" />
     <ClCompile Include="src\render\geo_renders\TriRender.cpp" />
     <ClCompile Include="vendor\definer_Stb.cpp" />
   </ItemGroup>
@@ -263,6 +263,7 @@
     <ClInclude Include="src\render\gl\Gl_Commands.h" />
     <ClInclude Include="src\render\gl\GL_Types.h" />
     <ClInclude Include="src\render\gl\IndexBuffer.h" />
+    <ClInclude Include="src\render\gl\Texture.h" />
     <ClInclude Include="src\render\gl\VertexArray.h" />
     <ClInclude Include="src\render\gl\VertexAttribute.h" />
     <ClInclude Include="src\render\gl\VertexBuffer.h" />
@@ -315,7 +316,6 @@
     <ClInclude Include="src\args\VirtualArgs.h" />
     <ClInclude Include="src\utils\Timer.h" />
     <ClInclude Include="src\Window.h" />
-    <ClInclude Include="src\render\Texture.h" />
     <ClInclude Include="src\render\geo_renders\TriRender.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

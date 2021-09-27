@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderTemplate.h"
 
-#include "render/Texture.h"
+#include "render/gl/Texture.h"
 namespace Base
 {
 namespace render

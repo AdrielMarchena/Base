@@ -13,7 +13,7 @@
 
 #include "render/Colors.h"
 #include "render/Camera.h"
-#include "render/Texture.h"
+#include "render/gl/Texture.h"
 
 namespace Base
 {
@@ -99,7 +99,6 @@ namespace render
 			m_data.VA.Dispose();
 			m_data.VB.Dispose();
 			m_data.IB.Dispose();
-			Texture::WhiteTexture()->Dispose();
 			delete[] m_data.Buffer;
 			m_data.Buffer = nullptr;
 			m_data.BufferPtr = nullptr;
@@ -115,7 +114,7 @@ namespace render
 			delete[] samplers;
 
 			m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
-			m_data.TextureSlots[0] = Texture::WhiteTexture()->GetId();
+			m_data.TextureSlots[0] = Texture::GetWhiteTexture()->GetId();
 			for (size_t i = 1; i < MaxTexture; i++)
 				m_data.TextureSlots[i] = 0;
 		}

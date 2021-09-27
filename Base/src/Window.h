@@ -18,7 +18,7 @@ namespace Base
 {
 	namespace windowing
 	{
-		using namespace utils;
+		//using namespace utils;
 		class Window
 		{
 		private:

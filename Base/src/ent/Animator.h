@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <vector>
 #include "glm/glm.hpp"
-#include "render/Texture.h"
+#include "render/gl/Texture.h"
 #include "render/SubTexture.h"
 #include <optional>
 namespace Base

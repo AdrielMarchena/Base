@@ -1,7 +1,7 @@
 #pragma once
 
 #include "glm/glm.hpp"
-#include "render/Texture.h"
+#include "render/gl/Texture.h"
 #include "render/SubTexture.h"
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>

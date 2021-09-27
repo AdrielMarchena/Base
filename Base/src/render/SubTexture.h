@@ -8,7 +8,7 @@
 
 #include "Base/Base.h"
 
-#include "Texture.h"
+#include "gl/Texture.h"
 #include "glm/glm.hpp"
 #include "gl/glew.h"
 namespace Base

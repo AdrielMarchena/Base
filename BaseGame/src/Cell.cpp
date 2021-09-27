@@ -19,16 +19,28 @@ void MapScript::OnAwake()
 	columns = p_Columns;
 	rows = p_Rows;
 
+	Base::render::ImageInformation info;
+	info.Width = columns;
+	info.Height = rows;
+	info.UnpackAligment = 4;
+	info.Channels = 4;
+	info.Buffer = new Base::render::TextureBufferType[info.Width * info.Height * info.Channels * sizeof(Base::render::TextureBufferType)];
+	info.DeleteSourceBuffer = false;
+	info.MinFilter = Base::render::GL_TextureFilter::NEAREST;
+	info.MagFilter = Base::render::GL_TextureFilter::NEAREST;
+	info.WrapS = Base::render::GL_TextureWrap::REPEAT;
+	info.WrapT = Base::render::GL_TextureWrap::REPEAT;
+	info.DeleteSourceBuffer = false; //Delete the source buffer (texture_buffer)
+
 	//3D array
-	texture_buffer = new unsigned char[rows * columns * 4];
 	for (unsigned int ix = 0; ix < rows; ++ix)
 	{
 		for (unsigned int iy = 0; iy < columns; ++iy)
 		{
-			texture_buffer[ix * columns * 4 + iy * 4 + 0] = 255 * 0.3f;   //red
-			texture_buffer[ix * columns * 4 + iy * 4 + 1] = 255 * 0.3f;   //green
-			texture_buffer[ix * columns * 4 + iy * 4 + 2] = 255 * 0.3f;   //blue
-			texture_buffer[ix * columns * 4 + iy * 4 + 3] = 0xff; //alpha
+			info.Buffer[ix * columns * 4 + iy * 4 + 0] = 255 * 0.3f;   //red
+			info.Buffer[ix * columns * 4 + iy * 4 + 1] = 255 * 0.3f;   //green
+			info.Buffer[ix * columns * 4 + iy * 4 + 2] = 255 * 0.3f;   //blue
+			info.Buffer[ix * columns * 4 + iy * 4 + 3] = 0xff; //alpha
 		}
 	}
 	Random::Init();
@@ -40,16 +52,23 @@ void MapScript::OnAwake()
 		x = int((P_random() << 5 ) * Random::Float()) % columns;
 		y = int((P_random() << 5 ) * Random::Float()) % rows;
 		new_map.set_cell(x, y);
-		texture_buffer[x * columns * 4 + y * 4 + 0] = 255 * Color::Base_Color.r;   //red
-		texture_buffer[x * columns * 4 + y * 4 + 1] = 255 * Color::Base_Color.g;   //green
-		texture_buffer[x * columns * 4 + y * 4 + 2] = 255 * Color::Base_Color.b;   //blue
-		texture_buffer[x * columns * 4 + y * 4 + 3] = 0xff; //alpha
+		info.Buffer[x * columns * 4 + y * 4 + 0] = 255 * Color::Base_Color.r;   //red
+		info.Buffer[x * columns * 4 + y * 4 + 1] = 255 * Color::Base_Color.g;   //green
+		info.Buffer[x * columns * 4 + y * 4 + 2] = 255 * Color::Base_Color.b;   //blue
+		info.Buffer[x * columns * 4 + y * 4 + 3] = 0xff; //alpha
 
 		count--;
 	} while (count >= 0);
 
-	Texture = Base::render::Texture::CreateTexture(columns, rows, texture_buffer);
-	//delete[] texture_buffer;
+	Texture = Base::render::Texture::CreateTexture(info);
+
+	current_map.to_be_alive1 = ToBeAlive1;
+	current_map.to_be_alive2 = ToBeAlive2;
+	current_map.to_revive = ToRevive;
+
+	new_map.to_be_alive1 = ToBeAlive1;
+	new_map.to_be_alive2 = ToBeAlive2;
+	new_map.to_revive = ToRevive;
 
 	current_map.copy_cells(new_map);
 }
@@ -88,7 +107,7 @@ void MapScript::OnUpdate(const Base::UpdateArgs& args)
 	}
 
 	auto& Texture = GetComponent<Base::TextureComponent>().Texture;
-	current_map.next_generation(new_map, Texture, texture_buffer);
+	current_map.next_generation(new_map, Texture);
 
 	current_map.copy_cells(new_map);
 
@@ -99,7 +118,6 @@ void MapScript::OnDestroy()
 {
 	current_map.destroy();
 	new_map.destroy();
-	delete[] texture_buffer;
 }
 
 void cell_map::create(unsigned int h, unsigned int w)
@@ -154,16 +172,25 @@ int cell_map::cell_state(int x, int y)
 	return (*cell_ptr & (0x80 >> (x & 0x07))) ? 1 : 0;
 }
 
-void cell_map::next_generation(cell_map& next_map, Base::Ref<Base::render::Texture>& texture, unsigned char* texture_buffer)
+void cell_map::next_generation(cell_map& next_map, Base::Ref<Base::render::Texture>& texture)
 {
 
-	unsigned int x, y, neighbor_count;
+	static Base::render::ImageInformation info;
+	info.Width = width;
+	info.Height = height;
+	info.Channels = 4;
+	info.UnpackAligment = 4;
+	info.Buffer = new Base::render::TextureBufferType[info.Width * info.Height * info.Channels * sizeof(Base::render::TextureBufferType)];
+	info.DeleteSourceBuffer = false;
+	info.MinFilter = Base::render::GL_TextureFilter::NEAREST;
+	info.MagFilter = Base::render::GL_TextureFilter::NEAREST;
+	info.WrapS = Base::render::GL_TextureWrap::REPEAT;
+	info.WrapT = Base::render::GL_TextureWrap::REPEAT;
+	info.DeleteSourceBuffer = false; //Delete the source buffer (texture_buffer)
 
+	unsigned int x, y, neighbor_count;
 	//3D array
-	BASE_ASSERT(texture_buffer != nullptr);
-	//delete[] texture_buffer; //Needed?
-	//texture_buffer = nullptr;
-	//texture_buffer = new unsigned char[height * width * 4];
+	BASE_ASSERT(info.Buffer != nullptr);
 
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
@@ -174,45 +201,42 @@ void cell_map::next_generation(cell_map& next_map, Base::Ref<Base::render::Textu
 				cell_state(x, y + 1) + cell_state(x + 1, y + 1);
 			if (cell_state(x, y) == 1) {
 				// The cell is on; does it stay on?
-				if ((neighbor_count != 2) && (neighbor_count != 3)) {
+				if ((neighbor_count != to_be_alive1) && (neighbor_count != to_be_alive2)) {
 					next_map.clear_cell(x, y);    // turn it off
-					texture_buffer[x * width * 4 + y * 4 + 0] = 255 * 0.3f; //R
-					texture_buffer[x * width * 4 + y * 4 + 1] = 255 * 0.3f; //G
-					texture_buffer[x * width * 4 + y * 4 + 2] = 255 * 0.3f; //B
-					texture_buffer[x * width * 4 + y * 4 + 3] = 255; //A
+					info.Buffer[x * width * 4 + y * 4 + 0] = 255 * 0.3f; //R
+					info.Buffer[x * width * 4 + y * 4 + 1] = 255 * 0.3f; //G
+					info.Buffer[x * width * 4 + y * 4 + 2] = 255 * 0.3f; //B
+					info.Buffer[x * width * 4 + y * 4 + 3] = 255; //A
 				}
 				else
 				{
-					texture_buffer[x * width * 4 + y * 4 + 0] = Color::Base_Color.r * 255; //R
-					texture_buffer[x * width * 4 + y * 4 + 1] = Color::Base_Color.g * 255; //G
-					texture_buffer[x * width * 4 + y * 4 + 2] = Color::Base_Color.b * 255; //B
-					texture_buffer[x * width * 4 + y * 4 + 3] = 255; //A
+					info.Buffer[x * width * 4 + y * 4 + 0] = Color::Base_Color.r * 255; //R
+					info.Buffer[x * width * 4 + y * 4 + 1] = Color::Base_Color.g * 255; //G
+					info.Buffer[x * width * 4 + y * 4 + 2] = Color::Base_Color.b * 255; //B
+					info.Buffer[x * width * 4 + y * 4 + 3] = 255; //A
 				}
 			}
 			else {
 				// The cell is off; does it turn on?
-				if (neighbor_count == 3) {
+				if (neighbor_count == to_revive) {
 					next_map.set_cell(x, y);      // turn it on
-					texture_buffer[x * width * 4 + y * 4 + 0] = Color::Base_Color.r * 255; //R
-					texture_buffer[x * width * 4 + y * 4 + 1] = Color::Base_Color.g * 255; //G
-					texture_buffer[x * width * 4 + y * 4 + 2] = Color::Base_Color.b * 255; //B
-					texture_buffer[x * width * 4 + y * 4 + 3] = 255; //A
+					info.Buffer[x * width * 4 + y * 4 + 0] = Color::Base_Color.r * 255; //R
+					info.Buffer[x * width * 4 + y * 4 + 1] = Color::Base_Color.g * 255; //G
+					info.Buffer[x * width * 4 + y * 4 + 2] = Color::Base_Color.b * 255; //B
+					info.Buffer[x * width * 4 + y * 4 + 3] = 255; //A
 				}
 				else
 				{
-					texture_buffer[x * width * 4 + y * 4 + 0] = 255 * 0.3f; //R
-					texture_buffer[x * width * 4 + y * 4 + 1] = 255 * 0.3f; //G
-					texture_buffer[x * width * 4 + y * 4 + 2] = 255 * 0.3f; //B
-					texture_buffer[x * width * 4 + y * 4 + 3] = 255; //A
+					info.Buffer[x * width * 4 + y * 4 + 0] = 255 * 0.3f; //R
+					info.Buffer[x * width * 4 + y * 4 + 1] = 255 * 0.3f; //G
+					info.Buffer[x * width * 4 + y * 4 + 2] = 255 * 0.3f; //B
+					info.Buffer[x * width * 4 + y * 4 + 3] = 255; //A
 				}
 			}
 		}
 	}
-
-	texture->Dispose();
-	texture = Base::render::Texture::CreateTexture(width, height, texture_buffer);
-
-	//delete[] texture_buffer;
+	
+	texture = Base::render::Texture::CreateTexture(info);
 
 }
 

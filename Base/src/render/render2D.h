@@ -12,7 +12,7 @@
 #include <array>
 #include "glm/glm.hpp"
 #include "gl/Shader.h"
-#include "Texture.h"
+#include "gl/Texture.h"
 #include "SubTexture.h"
 #include <math.h>
 #include "Colors.h"
