@@ -267,6 +267,7 @@
     <ClInclude Include="src\render\gl\VertexArray.h" />
     <ClInclude Include="src\render\gl\VertexAttribute.h" />
     <ClInclude Include="src\render\gl\VertexBuffer.h" />
+    <ClInclude Include="src\scene\CameraScript.h" />
     <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\render\Colors.h" />
     <ClInclude Include="src\ResourceManager.h" />

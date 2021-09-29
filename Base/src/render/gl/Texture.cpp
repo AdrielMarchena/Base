@@ -21,6 +21,8 @@ namespace render
 			return GL_NEAREST;
 		case GL_TextureFilter::LINEAR_MIPMAP_LINEAR:
 			return GL_LINEAR_MIPMAP_LINEAR;
+		case GL_TextureFilter::NEAREST_MIPMAP_NEAREST:
+			return GL_NEAREST_MIPMAP_NEAREST;
 		default:
 			BASE_CORE_ASSERT(false, "Unknow Texture Filter");
 			break;

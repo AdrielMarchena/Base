@@ -14,7 +14,8 @@ namespace render
 	{
 		LINEAR = 1,
 		NEAREST,
-		LINEAR_MIPMAP_LINEAR
+		LINEAR_MIPMAP_LINEAR,
+		NEAREST_MIPMAP_NEAREST
 
 	};
 	enum class GL_TextureWrap : uint8_t
@@ -36,15 +37,16 @@ namespace render
 		TextureBufferType* Buffer = nullptr;
 		
 		uint32_t UnpackAligment = 1;
-		GL_TextureFilter MinFilter = GL_TextureFilter::LINEAR_MIPMAP_LINEAR;
-		GL_TextureFilter MagFilter = GL_TextureFilter::LINEAR;
+		GL_TextureFilter MinFilter = GL_TextureFilter::NEAREST_MIPMAP_NEAREST;
+		GL_TextureFilter MagFilter = GL_TextureFilter::NEAREST;
 		GL_TextureWrap WrapS = GL_TextureWrap::CLAMP_EDGE;
 		GL_TextureWrap WrapT = GL_TextureWrap::CLAMP_EDGE;
 
 		ImageInformation(const ImageInformation&) = default;
 		ImageInformation() = default;
 
-		bool DeleteSourceBuffer = false; // Set to true so the class delete the source buffer
+		// Set to true so the class delete the source buffer
+		bool DeleteSourceBuffer = false; 
 	};
 
 	class Texture
