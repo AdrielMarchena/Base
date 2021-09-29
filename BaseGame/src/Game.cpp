@@ -1,29 +1,8 @@
 #include "Game.h"
 #include <corecrt_math.h>
 #include "scene/Components.h"
-
+#include "scene/CameraScript.h"
 #include "imgui.h"
-
-class CameraScript : public Base::ScriptableEntity
-{
-protected:
-	virtual void OnUpdate(const Base::UpdateArgs& args) override
-	{
-		auto& T = GetComponent<Base::TransformComponent>().Translation;
-		using kb = Base::input::Keyboard;
-
-		constexpr float vel = 5.5f;
-
-		if (kb::isPress(BASE_KEY_D))
-			T.x += vel * args.dt;
-		if (kb::isPress(BASE_KEY_A))
-			T.x -= vel * args.dt;
-		if (kb::isPress(BASE_KEY_W))
-			T.y += vel * args.dt;
-		if (kb::isPress(BASE_KEY_S))
-			T.y -= vel * args.dt;
-	}
-};
 
 Game::Game()
 	:Base::windowing::Window()
@@ -41,9 +20,15 @@ void Game::OnAttach()
 	m_Camera = m_Scene->CreateEntity("Main_Camera");
 
 	auto& scp = m_Camera.AddComponent<Base::NativeScriptComponent>();
-	scp.Bind<CameraScript>();
+	scp.Bind<Base::OrthoCameraScript>();
 	auto& c = m_Camera.AddComponent<Base::CameraComponent>();
+	auto& camera_transform = m_Camera.GetComponent<Base::TransformComponent>();
+
+	camera_transform.Translation.z = 0.0f;
+
+	c.Camera.SetPerspective(45, 0.1f, 100.0f);
 	c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
+
 	m_Map.AddComponent<Base::TextureComponent>();
 	auto& map_script = m_Map.AddComponent<Base::NativeScriptComponent>();
 	map_script.Bind<MapScript>();

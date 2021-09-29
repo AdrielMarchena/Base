@@ -10,3 +10,6 @@
 [submodule "Base/vendor/entt"]
 	path = Base/vendor/entt
 	url = https://github.com/skypjack/entt
+[submodule "Base/vendor/assimp"]
+	path = Base/vendor/assimp
+	url = https://github.com/assimp/assimp.git

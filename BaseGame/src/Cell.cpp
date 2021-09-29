@@ -10,6 +10,7 @@ void MapScript::OnCreate()
 {
 	auto& Transform = GetComponent<Base::TransformComponent>();
 	Transform.Scale = glm::vec3(9.0f, 9.0f, 1.0f);
+	Transform.Translation = glm::vec3(0.0f, 0.0f, 1.0f);
 }
 
 void MapScript::OnAwake()
