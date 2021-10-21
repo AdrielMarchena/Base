@@ -41,7 +41,7 @@ namespace Base
 
 			m_data.VB = VertexBuffer::CreateVertexBuffer(MaxVertexCount * sizeof(QuadVertex));
 
-			VertexAttribute layout(m_data.VA, m_data.VB);
+			VertexAttribute layout(m_data.VB);
 
 			layout.AddLayoutFloat(3, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, Position));
 

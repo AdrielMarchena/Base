@@ -43,7 +43,7 @@ static char const* gl_error_string(GLenum const err) noexcept
 
         // gles 2, 3 and gl 4 error are handled by the switch above
     default:
-        BASE_WARN("unknown error");
+        BASE_WARN("unknown GL error");
         return nullptr;
     }
 }
@@ -53,7 +53,7 @@ static char const* gl_error_string(GLenum const err) noexcept
 static void GLClearError()
 {
     static GLenum err;
-    uint8_t wd = 255;
+    uint8_t wd = 32;
     while ((err = glGetError()) != GL_NO_ERROR && wd--) 
     {
     }
@@ -64,14 +64,12 @@ static bool GLLogCall(const char* function, const char* file, int line)
     while (GLenum error = glGetError())
     {
         BASE_ERROR("[OpenGL error]: {0}, {1}): {2} {3}: {4}", error, gl_error_string(error), function, file, line);
-        /*std::cerr << "[OpenGL error] (" << error << ", " << gl_error_string(error) << "): " << function <<
-            " " << file << ": " << line << std::endl;*/
         return false;
     }
     return true;
 }
 
-#if defined(_DEBUG) || defined(DEBUG)
+#if defined(BASE_DEBUG) //|| defined(BASE_RELEASE)
 #define GLCall(x) GLClearError();\
      x;\
      BASE_ASSERT(GLLogCall(#x,__FILE__,__LINE__))

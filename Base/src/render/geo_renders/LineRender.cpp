@@ -34,7 +34,7 @@ namespace Base
 
 			m_data.VB = VertexBuffer::CreateVertexBuffer(MaxLineVertexCount * sizeof(LineVertex));
 
-			VertexAttribute layout(m_data.VA, m_data.VB);
+			VertexAttribute layout(m_data.VB);
 			layout.AddLayoutFloat(3, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position));
 
 			layout.AddLayoutFloat(4, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));

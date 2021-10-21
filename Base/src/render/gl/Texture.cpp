@@ -4,8 +4,10 @@
 #include "gl/glew.h"
 #include "utils/base_assert.h"
 
-#include "stb_image/stb_image.h"
+#include "stb_image.h"
 #include "lodepng.h"
+
+#include "utils/Generic.h"
 
 namespace Base
 {
@@ -50,8 +52,8 @@ namespace render
 
 	Ref<Texture> Texture::m_WhiteTexture;
 
-	Texture::Texture(const ImageInformation& info)
-		:m_ImageInfo(info)
+	Texture::Texture(const ImageInformation& info, const std::string& path)
+		:m_ImageInfo(info),m_Path(path),m_Name(info.Name)
 	{
 		BASE_CORE_ASSERT(info.Width > 0 &&
 			info.Height > 0 &&
@@ -59,14 +61,6 @@ namespace render
 			info.Channels > 2 &&
 			info.Channels < 5
 		,"Some ImageInformation is wrong");
-
-		if (m_ImageInfo.DeleteSourceBuffer)
-		{
-			size_t buffer_size = static_cast<size_t>(info.Width) * info.Height * info.Channels * sizeof(TextureBufferType);
-			m_ImageInfo.Buffer = new TextureBufferType[buffer_size];
-			memcpy_s(m_ImageInfo.Buffer, buffer_size, info.Buffer, buffer_size);
-			delete[] info.Buffer;
-		}
 
 		GLenum internalFormat = 0, dataFormat = 0;
 		if (info.Channels == 4)
@@ -101,9 +95,39 @@ namespace render
 							GL_UNSIGNED_BYTE, 
 							m_ImageInfo.Buffer
 				));
-		glGenerateMipmap(GL_TEXTURE_2D);
+		if(info.GenerateMipMap)
+			glGenerateMipmap(GL_TEXTURE_2D);
 
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+
+		if (!info.KeepSourceBuffer)
+		{
+			m_ImageInfo.Buffer = nullptr;
+		}
+
+		if (info.CopySourceBuffer)
+		{
+			size_t buffer_size = static_cast<size_t>(info.Width) * info.Height * info.Channels * sizeof(TextureBufferType);
+			m_ImageInfo.Buffer = CreateTextureBuffer(buffer_size);
+			memcpy_s(m_ImageInfo.Buffer, buffer_size, info.Buffer, buffer_size);
+		}
+
+		if (m_ImageInfo.DeleteSourceBuffer && !info.KeepSourceBuffer)
+			DeleteTextureBuffer(info.Buffer);
+
+		if (m_Name == "" || m_Name.empty())
+		{
+			if (m_Path == "" || m_Path.empty())
+				m_Name = std::string(Base_Unamed_Texture);
+			else
+			{
+				auto lastSlash = m_Path.find_last_of("/\\");
+				lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+				auto lastDot = m_Path.rfind('.');
+				auto count = lastDot == std::string::npos ? m_Path.size() - lastSlash : lastDot - lastSlash;
+				m_Name = path.substr(lastSlash, count);
+			}
+		}
 	}
 
 	Texture::~Texture()
@@ -113,21 +137,24 @@ namespace render
 			glDeleteTextures(1, &m_Id);
 			m_Id = NULL;
 		}
-		if (m_ImageInfo.Buffer) 
-			delete[] m_ImageInfo.Buffer;
+		if (m_ImageInfo.Buffer)
+		{
+			DeleteTextureBuffer(m_ImageInfo.Buffer);
+			m_ImageInfo.Buffer = nullptr;
+		}
 	}
 
 	Ref<Texture> Texture::CreateTexture(ImageInformation& info)
 	{
-		//Ref<Texture> tex = MakeRef<Texture>(info);
 		return MakeRef<Texture>(info);
 	}
 
-	Ref<Texture> Texture::CreateTexture(const std::string& path)
+	Ref<Texture> Texture::CreateTexture(const std::string& path, const std::string& name)
 	{
-		//ImageInformation info = GetImageInfo(path);
-		//Ref<Texture> tex = MakeRef<Texture>(info);
-		return MakeRef<Texture>(GetImageInfo(path));
+		auto info = GetImageInfo(path);
+		info.Name = name;
+		info.KeepSourceBuffer = true;
+		return MakeRef<Texture>(GetImageInfo(path),path);
 	}
 
 	void Texture::CreatePng(const std::string& path, const ImageInformation& image_info)
@@ -137,7 +164,7 @@ namespace render
 		lodepng::encode(path, image_info.Buffer, image_info.Width, image_info.Height, type);
 	}
 
-	void Texture::CreatePng(const std::string& path)
+	void Texture::CreatePng(const std::string& path) const
 	{
 		BASE_ASSERT(m_ImageInfo.Width > 0 && m_ImageInfo.Height > 0 && m_ImageInfo.Buffer != nullptr && path != "" && m_ImageInfo.Channels > 2);
 		auto type = m_ImageInfo.Channels == 4 ? LodePNGColorType::LCT_RGBA : LodePNGColorType::LCT_RGB;
@@ -152,7 +179,7 @@ namespace render
 			info.Width = 1;
 			info.Height = 1;
 			info.Channels = 4;
-			info.Buffer = new TextureBufferType[1 * 1 * info.Channels];
+			info.Buffer = CreateTextureBuffer(1,1,info.Channels);
 			info.DeleteSourceBuffer = false;
 			info.MinFilter = GL_TextureFilter::NEAREST;
 			info.MagFilter = GL_TextureFilter::NEAREST;
@@ -176,12 +203,86 @@ namespace render
 		return m_WhiteTexture;
 	}
 
+	TextureBufferType* Texture::CreateTextureBuffer(size_t size)
+	{
+		BASE_CORE_ASSERT(size > 0,"Buffer size can't be 0");
+		return (TextureBufferType*)malloc(size);
+	}
+
+	TextureBufferType* Texture::CreateTextureBuffer(unsigned int w, unsigned int h, unsigned int channels)
+	{
+		return CreateTextureBuffer(static_cast<size_t>(w) * h * channels * sizeof(TextureBufferType));
+	}
+
+	void Texture::DeleteTextureBuffer(TextureBufferType* buffer)
+	{
+		if(buffer)
+			free(buffer);
+	}
+
 	void Texture::DeleteWhiteTexture()
 	{
 		m_WhiteTexture.reset();
 	}
 
 	ImageInformation Texture::GetImageInfo(const std::string& path)
+	{
+		const std::string ext = utils::ToLower(path.substr(path.find_last_of('.') + 1));
+		
+		if (ext == "png")
+		{
+			return GetImageInfoLodePNG(path);
+		}
+		
+		return GetImageInfoStbi(path);
+	}
+
+	ImageInformation Texture::GetImageInfoLodePNG(const std::string& path)
+	{
+		ImageInformation info;
+
+		//TODO: Flip vertically
+		unsigned w = 0, h = 0;
+		std::vector<unsigned char> image;
+
+		unsigned error = lodepng::decode(image, w, h, path);
+		if (error) //TODO: Deal properly with this error
+			BASE_CORE_ASSERT(false,lodepng_error_text(error));
+
+		info.Width = w;
+		info.Height = h;
+		info.Channels = 4;
+		auto size = image.size();
+		info.Buffer = CreateTextureBuffer(image.size());
+		/*TextureBufferType* BufferPtr = info.Buffer;
+		
+		unsigned char* buff = image.data();
+		unsigned char* last_ptr = &image.back();
+
+		for (int i = h - 1; i >= 0; i--)
+		{
+			unsigned char* ptr = last_ptr - w;
+			for (int j = 0; j < w; j++)
+			{
+				*BufferPtr = *ptr;
+				BufferPtr++;
+				ptr++;
+			}
+			if (last_ptr <= info.Buffer)
+				break;
+			last_ptr = ptr;
+		}*/
+
+		std::copy(image.begin(), image.end(), info.Buffer);
+		image.clear();
+
+		info.DeleteSourceBuffer = false;
+		info.CopySourceBuffer = false;
+		info.KeepSourceBuffer = true;
+		return info;
+	}
+
+	ImageInformation Texture::GetImageInfoStbi(const std::string& path)
 	{
 		//TODO: Fix this stbi 'no SOI' bullshit 
 		ImageInformation info;
@@ -192,42 +293,17 @@ namespace render
 		const char* er = stbi_failure_reason();
 		if (er)
 		{
-			stbi_image_free(px);
+			if(px)
+				stbi_image_free(px);
 			info.Buffer = nullptr;
-			if (er == "no SOI")
-				return GetImageInfoLodePNG(path);
-			BASE_CORE_ASSERT(px, "Failed to load image");
+			BASE_CORE_ASSERT(false, "Failed to load image");
 		}
-
 		info.Buffer = px;
 
 		info.DeleteSourceBuffer = false;
+		info.CopySourceBuffer = false;
+		info.KeepSourceBuffer = true;
 		return info;
-
-	}
-
-	ImageInformation Texture::GetImageInfoLodePNG(const std::string& path)
-	{
-		ImageInformation info;
-
-		//TODO: Flip vertically
-		unsigned w, h;
-		std::vector<unsigned char> image;
-
-		unsigned error = lodepng::decode(image, w, h, path);
-
-		if (error)
-			BASE_CORE_ASSERT(false,lodepng_error_text(error));
-
-		info.Width = w;
-		info.Height = h;
-		info.Buffer = new uint8_t[image.size() * sizeof(TextureBufferType)];
-		std::copy(image.begin(), image.end(), info.Buffer);
-		image.clear();
-
-		info.DeleteSourceBuffer = false;
-		return info;
-
 	}
 
 }

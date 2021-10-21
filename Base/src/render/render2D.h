@@ -35,7 +35,7 @@ namespace render
 		static Scope<LineRender2D> m_LineRender;
 		static Scope<QuadRender2D> m_TextRender;
 		static Scope<TriRender> m_TriRender;
-		static ShaderLib m_Shaders;
+		static Scope<ShaderLib> m_Shaders;
 	public:
 		static constexpr GLbitfield Cl_Color = GL_COLOR_BUFFER_BIT;
 		static constexpr GLbitfield Cl_DepthColor = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -99,22 +99,22 @@ namespace render
 
 		static void DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, float_t precision = 0.01f);
 
-		static void DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color,
+		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture,
+		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, Ref<Texture> texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture,
+		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color,
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, Ref<Texture> texture,
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<Texture> texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, const SubTexture& sub_texture,
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
 		static void DrawTriangle(const glm::vec3 points[3], const glm::vec4& color);

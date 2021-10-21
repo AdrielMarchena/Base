@@ -20,22 +20,22 @@ namespace render
 
 		void Flush() override;
 
-		void DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color,
+		void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 		
-		void DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture,
+		void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, Ref<Texture> texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		void DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture,
+		void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		void DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color,
+		void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		void DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, Ref<Texture> texture,
+		void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<Texture> texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		void DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, const SubTexture& sub_texture,
+		void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
 		/*//DO nothing

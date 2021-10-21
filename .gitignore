@@ -41,6 +41,7 @@
 
 #glew Lib
 */vendor/glew-2.1.0/*
+*/vendor/assimp/*
 
 #audio files
 *.[Mm]4[Aa]
@@ -63,6 +64,9 @@
 #Bin folder or something
 [Dd][Ee][Bb][Uu][Gg]/
 [Rr][Ee][Ll][Ee][Aa][Ss][Ee]/
+bin
+bin-int
 
 #Gimp File
 *.[Xx][Cc][Ff]
+

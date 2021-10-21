@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "render/render2D.h"
+#include "render/3d/Render3D.h"
 #include "Entity.h"
 #include "render/Camera.h"
 
@@ -84,6 +85,9 @@ namespace Base
 	{
 		BASE_PROFILE_FUNCTION();
 
+		//TODO: The render will not bind any shader when the batch is full, fix this (Batch problem)
+		// Fix: Binding the shader here before rendering things (maybe not the best solution)
+
 		{//Native Scripts
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
 			{
@@ -94,108 +98,144 @@ namespace Base
 
 		{//Render Scope
 			BASE_PROFILE_SCOPE("Scene Render Scope");
-			Base::Camera* mainCamera = nullptr;
-			glm::mat4 cameraTransform;
+			Base::Camera* mainCamera2D = nullptr;
+			glm::mat4 cameraTransform2D;
+
+			Base::Camera* mainCamera3D = nullptr;
+			glm::mat4 cameraTransform3D;
+
 			{
 				auto group = m_Registry.group<TransformComponent>(entt::get<CameraComponent>);
 				for (auto entity : group)
 				{
 					auto&& [position, camera] = group.get< TransformComponent, CameraComponent>(entity);
-					if (camera.Primary)
+					if (camera.Primary && camera.Camera.GetProjectionType() == SceneCamera::ProjectionType::Orthographic)
 					{
-						mainCamera = &camera.Camera;
-						cameraTransform = position.GetTransform();
+						mainCamera2D = &camera.Camera;
+						cameraTransform2D = position.GetTransform();
+					}
+					if (camera.Primary && camera.Camera.GetProjectionType() == SceneCamera::ProjectionType::Perspective)
+					{
+						mainCamera3D = &camera.Camera;
+						cameraTransform3D = position.GetTransform();
 					}
 				}
 			}
 
-			if (mainCamera)
+			using D2D = render::Render2D;
+			using D3D = Render3D;
+
+			D3D::Clear();
+			if (mainCamera2D)
 			{
-				using render = render::Render2D;
-				//Clear screen
-				render::ClearColor(render::Cl_DepthColor);
+				//Clear scree
+				//TODO: for now the 3D clear do the job for 2D as well
 
 				//Start render Scene
 				//SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything
-				render::BeginScene(*mainCamera, cameraTransform);
-				render::BeginBatch();
+				D2D::BeginScene(*mainCamera2D, cameraTransform2D);
+				D2D::BeginBatch();
 
-				{//Draw Sprites
-					//It's a view because a group just breaks
-					auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
-					for (auto entity : view)
-					{
-						auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-						render::DrawQuad(position.GetTransform(), spr.Color, spr.Rotation, spr.Axis);
+				{// Quads
+					
+					D2D::GetQuadShader()->Bind(); //Fix the batch problem, but maybe not the best solution
+					
+					{//Draw Sprites
+						//It's a view because a group just breaks
+						auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
+						for (auto entity : view)
+						{
+							auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
+							D2D::DrawQuad(position.GetTransform(), spr.Color, spr.Rotation, spr.Axis);
+						}
+					}
+
+					//TODO: remove
+					m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
+						{
+							if (script.Instance)
+								script.Instance->ExtraRender();
+						});
+
+
+					{//Draw Textures
+						auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
+						for (auto entity : view)
+						{
+							auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
+							if (spr.Texture)
+								D2D::DrawQuad(position.GetTransform(), spr.Texture, Color::White, spr.Rotation, spr.Axis);
+						}
+					}
+
+					{//Draw SubTextures
+						auto view = m_Registry.view<TransformComponent, SubTextureComponent>(entt::exclude<CircleComponent>);
+						for (auto entity : view)
+						{
+							auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
+							if (spr.SubTexture)
+								D2D::DrawQuad(position.GetTransform(), spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
+						}
+					}
+
+					{//Draw Animated stuff
+						auto view = m_Registry.view<TransformComponent, AnimateComponent>(entt::exclude<CircleComponent>);
+						for (auto entity : view)
+						{
+							//TODO: Test to see if works
+							auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
+							auto& sprite = anim.Animation.Run(args.dt);
+							D2D::DrawQuad(position.GetTransform(), sprite, Color::White, anim.Rotation, anim.Axis);
+						}
 					}
 				}
 
-				m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
-					{
-						if (script.Instance)
-							script.Instance->ExtraRender();
-					});
-
-				{//Draw SubTextures
-					auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
-					for (auto entity : view)
-					{
-						auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
-						if (spr.Texture)
-							render::DrawQuad(position.GetTransform(), spr.Texture, Color::White, spr.Rotation, spr.Axis);
+				{// Circle
+					
+					D2D::GetCircleShader()->Bind();
+					
+					{//Draw Color Circles
+						auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
+						for (auto entity : view)
+						{
+							auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
+							trans.Scale = glm::vec3(circle_def.Radius);
+							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color);
+						}
 					}
-				}
 
-				{//Draw SubTextures
-					auto view = m_Registry.view<TransformComponent, SubTextureComponent>(entt::exclude<CircleComponent>);
-					for (auto entity : view)
-					{
-						auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
-						if (spr.SubTexture)
-							render::DrawQuad(position.GetTransform(), spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
-					}
-				}
-
-				{//Draw Animated stuff
-					auto view = m_Registry.view<TransformComponent, AnimateComponent>(entt::exclude<CircleComponent>);
-					for (auto entity : view)
-					{
-						//TODO: Test to see if works
-						auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
-						auto& sprite = anim.Animation.Run(args.dt);
-						render::DrawQuad(position.GetTransform(), sprite, Color::White, anim.Rotation, anim.Axis);
-					}
-				}
-
-				{//Draw Color Circles
-					auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
-					for (auto entity : view)
-					{
-						auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
-						render::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fill, 1.0f, spr.Color);
-					}
-				}
-
-				{//Draw Texture Circles
-					auto view = m_Registry.view<TransformComponent, CircleComponent, TextureComponent>();
-					for (auto entity : view)
-					{
-						auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-						render::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fill, 1.0f, tex.Texture, Color::White);
+					{//Draw Texture Circles
+						auto view = m_Registry.view<TransformComponent, CircleComponent, TextureComponent>();
+						for (auto entity : view)
+						{
+							auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
+							trans.Scale = glm::vec3(circle_def.Radius);
+							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, Color::White);
+						}
+					
 					}
 				}
 
 				//Finish the rendering
-				render::EndBatch();
-				render::Flush();
+				D2D::EndBatch();
+				D2D::Flush();
 			}
-			else
+			if (mainCamera3D)
 			{
-				static bool once = []() //Just warn once
-				{
-					BASE_WARN("There is no Camera to use on rendering");
-					return false;
-				}();
+				D3D::StartScene(*mainCamera3D, cameraTransform3D);
+				D3D::StartBatch();
+
+				{//Draw Models
+					auto view = m_Registry.view<TransformComponent, ModelComponent>();
+					for (auto entity : view)
+					{
+						auto&& [trans, model] = view.get< TransformComponent, ModelComponent>(entity);
+						D3D::SubmitMesh(model.Model3D->GetMeshes(), trans.GetTransform());
+					}
+				}
+				D3D::EndBatch();
+				D3D::Flush();
+				D3D::EndScene();
 			}
 		}//End Render Scope
 	}

@@ -6,32 +6,39 @@ namespace Base
 {
 namespace render
 {
+	IndexBuffer::~IndexBuffer()
+	{
+		if (m_Id)
+			Dispose();
+	}
+
 	void IndexBuffer::Bind()
 	{
-		assert(m_Id > 0);
+		BASE_ASSERT(m_Id > 0);
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Id));
 	}
 
 	void IndexBuffer::Unbind()
 	{
-		assert(m_Id > 0);
+		BASE_ASSERT(m_Id > 0);
 		GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	}
 
 	void IndexBuffer::Dispose()
 	{
-		assert(m_Id > 0);
+		BASE_ASSERT(m_Id > 0);
 		GLCall(glDeleteBuffers(1, &m_Id));
-		m_Id = 0;
+		m_Id = NULL;
 	}
 
-	IndexBuffer IndexBuffer::CreateIndexBuffer(size_t size, uint32_t* indices)
+	Ref<IndexBuffer> IndexBuffer::CreateIndexBuffer(size_t size, uint32_t* indices, GL_Usage usage)
 	{
-		IndexBuffer new_ib;
-		GLCall(glGenBuffers(1, &new_ib.m_Id));
-		assert(new_ib.m_Id > 0);
-		new_ib.Bind();
-		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW));
+		Ref<IndexBuffer> new_ib = MakeRef<IndexBuffer>();
+		new_ib->m_Usage = usage;
+		GLCall(glGenBuffers(1, &new_ib->m_Id));
+		BASE_ASSERT(new_ib->m_Id > 0);
+		new_ib->Bind();
+		GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_SwitchUsage(usage)));
 		return new_ib;
 	}
 }

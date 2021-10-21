@@ -22,6 +22,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "render/render2D.h"
+#include "render/3d/Render3D.h"
 
 #include <iostream>
 
@@ -50,7 +51,7 @@ namespace Base
 		void on_resize(GLFWwindow* window, int32_t w, int32_t h)
 		{
 			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
-			WindowProps().aspect_ratio = (double)WindowProps().width / (double)WindowProps().height;
+			//WindowProps().aspect_ratio = (double)WindowProps().width / (double)WindowProps().height;
 			ResizeArgs args{};
 			args.old_w = WindowProps().width;
 			args.old_h = WindowProps().height;
@@ -179,7 +180,7 @@ namespace Base
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
 			{
-				std::cout << "Error on glfw initialization" << std::endl;
+				BASE_ERROR("Error on glfw initialization");
 				return;
 			}
 
@@ -218,6 +219,9 @@ namespace Base
 			
 			BASE_TRACE("2D Render created!");
 			
+			Render3D::Init();
+			BASE_TRACE("3D Render created!");
+
 			//Set callback and pointer to this very window
 			myWindow = this;
 			glfwSetWindowUserPointer(m_Window, myWindow);
@@ -253,6 +257,7 @@ namespace Base
 
 		Window::~Window()
 		{
+			Render3D::Dispose();
 			render::Render2D::Dispose();
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplGlfw_Shutdown();
@@ -395,11 +400,12 @@ namespace Base
 			m_Hei = args.new_h;
 			WindowProps().width = m_Wid;
 			WindowProps().height = m_Hei;
-			if (WindowProps().width == 0 || WindowProps().height == 0)
+
+			WindowProps().minimized = false;
+			if (m_Wid == 0 || m_Hei == 0)
 				WindowProps().minimized = true;
-			else
-				WindowProps().minimized = false;
-			m_AspectRatio = WindowProps().aspect_ratio;
+
+			m_AspectRatio = WindowProps().aspect_ratio = m_Wid/ m_Hei;
 			glViewport(0, 0, m_Wid, m_Hei);
 
 			OnResize(args);

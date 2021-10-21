@@ -16,7 +16,7 @@
 #include <fstream>
 #include "gl/glew.h"
 #include "utils/gl_error_macro_db.h"
-
+#include <glm/gtc/type_ptr.hpp>
 #include "Log.h"
 
 namespace Base
@@ -111,22 +111,34 @@ namespace render
 
 	void Shader::CreateProgram()
 	{
+		static const char* er_msg = "Shader Error: ";
+
 		GLCall(GLuint program = glCreateProgram());
 
 		const char* vsource = m_GL_SourceCode[GL_VERTEX_SHADER].c_str();
 		const char* fsource = m_GL_SourceCode[GL_FRAGMENT_SHADER].c_str();
 
+		std::string error;
 		GLCall(GLuint vs = glCreateShader(GL_VERTEX_SHADER));
 		GLCall(glShaderSource(vs, 1, &vsource, NULL));
 		GLCall(glCompileShader(vs));
+		error = VerifyShaderError(vs);
+
+		BASE_CORE_ASSERT(error.empty(), er_msg + error);
 
 		GLCall(GLuint fs = glCreateShader(GL_FRAGMENT_SHADER));
 		GLCall(glShaderSource(fs, 1, &fsource, NULL));
 		GLCall(glCompileShader(fs));
+		error = VerifyShaderError(fs);
+
+		BASE_CORE_ASSERT(error.empty(), er_msg + error);
 
 		GLCall(glAttachShader(program, vs));
 		GLCall(glAttachShader(program, fs));
 		GLCall(glLinkProgram(program));
+		error = VerifyProgramError(program);
+
+		BASE_CORE_ASSERT(error.empty(), er_msg + error);
 
 		GLCall(glDetachShader(program, vs));
 		GLCall(glDeleteShader(vs));
@@ -150,6 +162,50 @@ namespace render
 	{
 		Shader new_sh(path);
 		return MakeRef<Shader>(new_sh);
+	}
+
+	/* Return ' std::string() ' if no errors */
+	std::string Shader::VerifyShaderError(uint32_t shader_id)
+	{
+		GLint isCompiled = 0;
+		glGetShaderiv(shader_id, GL_COMPILE_STATUS, &isCompiled);
+		if (isCompiled == GL_FALSE)
+		{
+			GLint maxLength = 0;
+			glGetShaderiv(shader_id, GL_INFO_LOG_LENGTH, &maxLength);
+
+			// The maxLength includes the NULL character
+			std::vector<GLchar> errorLog(maxLength);
+			glGetShaderInfoLog(shader_id, maxLength, &maxLength, &errorLog[0]);
+
+			// Provide the infolog in whatever manor you deem best.
+			// Exit with failure.
+			glDeleteShader(shader_id); // Don't leak the shader.
+			return std::string(errorLog.begin(), errorLog.end());
+		}
+		return std::string();
+	}
+
+	/* Return ' std::string() ' if no errors */
+	std::string Shader::VerifyProgramError(uint32_t program_id)
+	{
+		GLint isCompiled = 0;
+		GLCall(glGetProgramiv(program_id, GL_LINK_STATUS, &isCompiled));
+		if (isCompiled == GL_FALSE)
+		{
+			GLint maxLength = 0;
+			GLCall(glGetProgramiv(program_id, GL_INFO_LOG_LENGTH, &maxLength));
+
+			// The maxLength includes the NULL character
+			std::vector<GLchar> errorLog(maxLength);
+			GLCall(glGetProgramInfoLog(program_id, maxLength, &maxLength, &errorLog[0]));
+
+			// Provide the infolog in whatever manor you deem best.
+			// Exit with failure.
+			GLCall(glDeleteProgram(program_id)); // Don't leak the shader.
+			return std::string(errorLog.begin(), errorLog.end());
+		}
+		return std::string();
 	}
 
 	void Shader::Bind() const
@@ -212,7 +268,8 @@ namespace render
 	void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
 	{
 		GLCall(GLint location = glGetUniformLocation(m_Id, name.c_str()));
-		GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
+		//GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
+		GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix)));
 	}
 
 	//----------------------------------------------------------------------------------------------------------------

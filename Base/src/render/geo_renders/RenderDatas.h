@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <utility>
-
+#include "Base/Base.h"
 #include "../gl/Shader.h"
 #include "../gl/VertexArray.h"
 #include "../gl/VertexBuffer.h"
@@ -44,8 +44,9 @@ namespace render
 
 	struct CircleVertex : public QuadVertex
 	{
-		glm::vec2 MiddlePoint;
-		glm::vec3 Rad_Fill_Th;
+		float_t Radius;
+		float_t Thickness;
+		float_t Fade;
 	};
 
 	struct TextVertex : public QuadVertex
@@ -57,9 +58,9 @@ namespace render
 		RenderData() {}
 		~RenderData() {}
 
-		VertexArray VA;
-		VertexBuffer VB;
-		IndexBuffer IB;
+		Ref<VertexArray> VA;
+		Ref<VertexBuffer> VB;
+		Ref<IndexBuffer> IB;
 		uint32_t IndexCount = 0;
 		Vertex* Buffer = nullptr;
 		Vertex* BufferPtr = nullptr;

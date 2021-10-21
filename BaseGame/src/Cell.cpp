@@ -24,8 +24,9 @@ void MapScript::OnAwake()
 	info.Width = columns;
 	info.Height = rows;
 	info.UnpackAligment = 4;
+	info.Name = "cube";
 	info.Channels = 4;
-	info.Buffer = new Base::render::TextureBufferType[info.Width * info.Height * info.Channels * sizeof(Base::render::TextureBufferType)];
+	info.Buffer = Base::render::Texture::CreateTextureBuffer(info.Width, info.Height, info.Channels);
 	info.DeleteSourceBuffer = false;
 	info.MinFilter = Base::render::GL_TextureFilter::NEAREST;
 	info.MagFilter = Base::render::GL_TextureFilter::NEAREST;
@@ -181,8 +182,9 @@ void cell_map::next_generation(cell_map& next_map, Base::Ref<Base::render::Textu
 	info.Height = height;
 	info.Channels = 4;
 	info.UnpackAligment = 4;
-	info.Buffer = new Base::render::TextureBufferType[info.Width * info.Height * info.Channels * sizeof(Base::render::TextureBufferType)];
-	info.DeleteSourceBuffer = false;
+	info.Name = "cube";
+	info.Buffer = Base::render::Texture::CreateTextureBuffer(info.Width, info.Height, info.Channels);
+	info.KeepSourceBuffer = true;
 	info.MinFilter = Base::render::GL_TextureFilter::NEAREST;
 	info.MagFilter = Base::render::GL_TextureFilter::NEAREST;
 	info.WrapS = Base::render::GL_TextureWrap::REPEAT;
@@ -238,6 +240,5 @@ void cell_map::next_generation(cell_map& next_map, Base::Ref<Base::render::Textu
 	}
 	
 	texture = Base::render::Texture::CreateTexture(info);
-
 }
 

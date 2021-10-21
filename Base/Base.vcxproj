@@ -1,113 +1,137 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|x64">
+      <Configuration>Dist</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|Win32">
+      <Configuration>Dist</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{60EC827C-4C23-840D-F50F-6A10E125000F}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{43078f13-347a-4c70-8f4a-ce54cea8b41e}</ProjectGuid>
     <RootNamespace>Base</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Label="Shared">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
+    <OutDir>..\bin\Debug-windows-x86_64\Base\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\Base\</IntDir>
+    <TargetName>Base</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\bin\Debug-windows-x86\Base\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86\Base\</IntDir>
+    <TargetName>Base</TargetName>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\intermediates\</IntDir>
-    <GlfwLinkage>static</GlfwLinkage>
-    <Linkage-glew>static</Linkage-glew>
+    <OutDir>..\bin\Release-windows-x86_64\Base\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\Base\</IntDir>
+    <TargetName>Base</TargetName>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnabled>true</VcpkgEnabled>
-    <VcpkgAutoLink>true</VcpkgAutoLink>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>..\bin\Release-windows-x86\Base\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86\Base\</IntDir>
+    <TargetName>Base</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <OutDir>..\bin\Dist-windows-x86_64\Base\</OutDir>
+    <IntDir>..\bin-int\Dist-windows-x86_64\Base\</IntDir>
+    <TargetName>Base</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <OutDir>..\bin\Dist-windows-x86\Base\</OutDir>
+    <IntDir>..\bin-int\Dist-windows-x86\Base\</IntDir>
+    <TargetName>Base</TargetName>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,209 +140,242 @@
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(ProjectDir)src;$(SolutionDir)Base\vendor\;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
-    </Lib>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(ProjectDir)src;$(SolutionDir)Base\vendor\;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
-    </Lib>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(ProjectDir)src;$(SolutionDir)Base\vendor\;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MTd %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
-    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/MTd %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)Base\vendor\entt\single_include;$(SolutionDir)Base\vendor\libsndfile\include;$(ProjectDir)src;$(SolutionDir)Base\vendor\;$(SolutionDir)Base\vendor\spdlog\include;$(SolutionDir)Base\vendor\glm</AdditionalIncludeDirectories>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
-    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="shaders\fs.shader" />
-    <None Include="shaders\vs.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp" />
-    <ClCompile Include="src\render\gl\GL_Commands.cpp" />
-    <ClCompile Include="src\render\gl\GL_Types.cpp" />
-    <ClCompile Include="src\render\gl\IndexBuffer.cpp" />
-    <ClCompile Include="src\render\gl\Texture.cpp" />
-    <ClCompile Include="src\render\gl\VertexArray.cpp" />
-    <ClCompile Include="src\render\gl\VertexAttribute.cpp" />
-    <ClCompile Include="src\render\gl\VertexBuffer.cpp" />
-    <ClCompile Include="src\scene\Entity.cpp" />
-    <ClCompile Include="src\scene\Scene.cpp" />
-    <ClCompile Include="src\Log.cpp" />
-    <ClCompile Include="src\audio\AudioSource.cpp" />
-    <ClCompile Include="src\audio\AudioDevice.cpp" />
-    <ClCompile Include="src\audio\SoundBuffer.cpp" />
-    <ClCompile Include="src\ent\Animator.cpp" />
-    <ClCompile Include="src\amb\Ambient.cpp" />
-    <ClCompile Include="src\camera\OrthographicCamera.cpp" />
-    <ClCompile Include="src\camera\OrthographicCameraController.cpp" />
-    <ClCompile Include="src\args\RenderArgs.h" />
-    <ClCompile Include="src\render\geo_renders\CircleRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\LineRender.cpp" />
-    <ClCompile Include="src\render\ParticleSystem.cpp" />
-    <ClCompile Include="src\render\SubTexture.cpp" />
-    <ClCompile Include="src\render\Text.cpp" />
-    <ClCompile Include="src\scene\SceneCamera.cpp" />
-    <ClCompile Include="src\utils\Files.cpp" />
-    <ClCompile Include="src\input\Keyboard.cpp" />
-    <ClCompile Include="src\input\Mouse.cpp" />
-    <ClCompile Include="src\render\gl\Shader.cpp" />
-    <ClCompile Include="src\render\render2D.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\utils\Generic.cpp" />
-    <ClCompile Include="src\utils\RandomList.cpp" />
-    <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="src\render\geo_renders\TriRender.cpp" />
-    <ClCompile Include="vendor\definer_Stb.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="src\Base\Base.h" />
-    <ClInclude Include="src\input\KeyboardKeys.h" />
-    <ClInclude Include="src\input\MouseKeys.h" />
-    <ClInclude Include="src\render\Camera.h" />
-    <ClInclude Include="src\render\geo_renders\QuadRender.h" />
-    <ClInclude Include="src\render\gl\Gl_Commands.h" />
-    <ClInclude Include="src\render\gl\GL_Types.h" />
-    <ClInclude Include="src\render\gl\IndexBuffer.h" />
-    <ClInclude Include="src\render\gl\Texture.h" />
-    <ClInclude Include="src\render\gl\VertexArray.h" />
-    <ClInclude Include="src\render\gl\VertexAttribute.h" />
-    <ClInclude Include="src\render\gl\VertexBuffer.h" />
-    <ClInclude Include="src\scene\CameraScript.h" />
-    <ClInclude Include="src\scene\Entity.h" />
-    <ClInclude Include="src\render\Colors.h" />
-    <ClInclude Include="src\ResourceManager.h" />
-    <ClInclude Include="src\scene\Components.h" />
-    <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\Log.h" />
-    <ClInclude Include="src\audio\Al_Error.h" />
-    <ClInclude Include="src\audio\AudioSource.h" />
-    <ClInclude Include="src\audio\AudioDevice.h" />
-    <ClInclude Include="src\audio\SoundBuffer.h" />
-    <ClInclude Include="src\ent\Animator.h" />
+    <ClInclude Include="src\ResourceManager.h" />
+    <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h" />
     <ClInclude Include="src\args\AttachArgs.h" />
     <ClInclude Include="src\args\ImGuiArgs.h" />
     <ClInclude Include="src\args\KeyboardArgs.h" />
     <ClInclude Include="src\args\MouseArgs.h" />
+    <ClInclude Include="src\args\RenderArgs.h" />
     <ClInclude Include="src\args\ResizeArgs.h" />
+    <ClInclude Include="src\args\UpdateArgs.h" />
+    <ClInclude Include="src\args\VirtualArgs.h" />
+    <ClInclude Include="src\audio\Al_Error.h" />
+    <ClInclude Include="src\audio\AudioDevice.h" />
+    <ClInclude Include="src\audio\AudioSource.h" />
+    <ClInclude Include="src\audio\SoundBuffer.h" />
     <ClInclude Include="src\camera\OrthographicCamera.h" />
     <ClInclude Include="src\camera\OrthographicCameraController.h" />
+    <ClInclude Include="src\colision\Colisions.h" />
+    <ClInclude Include="src\ent\Animator.h" />
+    <ClInclude Include="src\input\Keyboard.h" />
+    <ClInclude Include="src\input\KeyboardKeys.h" />
+    <ClInclude Include="src\input\Mouse.h" />
+    <ClInclude Include="src\input\MouseKeys.h" />
     <ClInclude Include="src\no_console_release.h" />
-    <ClInclude Include="src\render\geo_renders\CircleRender.h" />
-    <ClInclude Include="src\render\geo_renders\LineRender.h" />
-    <ClInclude Include="src\render\geo_renders\RenderDatas.h" />
-    <ClInclude Include="src\render\geo_renders\RenderTemplate.h" />
+    <ClInclude Include="src\render\3d\Mesh.h" />
+    <ClInclude Include="src\render\3d\Model.h" />
+    <ClInclude Include="src\render\3d\Render3D.h" />
+    <ClInclude Include="src\render\Camera.h" />
+    <ClInclude Include="src\render\Colors.h" />
     <ClInclude Include="src\render\ParticleSystem.h" />
     <ClInclude Include="src\render\SubTexture.h" />
-    <ClInclude Include="src\args\UpdateArgs.h" />
     <ClInclude Include="src\render\Text.h" />
+    <ClInclude Include="src\render\geo_renders\CircleRender.h" />
+    <ClInclude Include="src\render\geo_renders\LineRender.h" />
+    <ClInclude Include="src\render\geo_renders\QuadRender.h" />
+    <ClInclude Include="src\render\geo_renders\RenderDatas.h" />
+    <ClInclude Include="src\render\geo_renders\RenderTemplate.h" />
+    <ClInclude Include="src\render\geo_renders\TriRender.h" />
+    <ClInclude Include="src\render\gl\GL_Types.h" />
+    <ClInclude Include="src\render\gl\Gl_Commands.h" />
+    <ClInclude Include="src\render\gl\IndexBuffer.h" />
+    <ClInclude Include="src\render\gl\Shader.h" />
+    <ClInclude Include="src\render\gl\Texture.h" />
+    <ClInclude Include="src\render\gl\VertexArray.h" />
+    <ClInclude Include="src\render\gl\VertexAttribute.h" />
+    <ClInclude Include="src\render\gl\VertexBuffer.h" />
+    <ClInclude Include="src\render\render2D.h" />
+    <ClInclude Include="src\scene\CameraScript.h" />
+    <ClInclude Include="src\scene\Components.h" />
+    <ClInclude Include="src\scene\Entity.h" />
+    <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\scene\SceneCamera.h" />
     <ClInclude Include="src\scene\ScriptableEntity.h" />
-    <ClInclude Include="src\utils\alc_error_macro_db.h" />
-    <ClInclude Include="src\utils\al_error_marcro_db.h" />
-    <ClInclude Include="src\utils\base_assert.h" />
-    <ClInclude Include="src\utils\base_exceptions.h" />
     <ClInclude Include="src\utils\Files.h" />
-    <ClInclude Include="src\colision\Colisions.h" />
-    <ClInclude Include="src\input\Keyboard.h" />
-    <ClInclude Include="src\input\Mouse.h" />
-    <ClInclude Include="src\render\gl\Shader.h" />
-    <ClInclude Include="src\render\render2D.h" />
     <ClInclude Include="src\utils\Generic.h" />
-    <ClInclude Include="src\utils\gl_error_macro_db.h" />
     <ClInclude Include="src\utils\Instrumentor.h" />
+    <ClInclude Include="src\utils\Load.h" />
     <ClInclude Include="src\utils\NameCaps.h" />
     <ClInclude Include="src\utils\RandomList.h" />
-    <ClInclude Include="src\utils\threading.h" />
-    <ClInclude Include="src\args\VirtualArgs.h" />
     <ClInclude Include="src\utils\Timer.h" />
-    <ClInclude Include="src\Window.h" />
-    <ClInclude Include="src\render\geo_renders\TriRender.h" />
+    <ClInclude Include="src\utils\al_error_marcro_db.h" />
+    <ClInclude Include="src\utils\alc_error_macro_db.h" />
+    <ClInclude Include="src\utils\base_assert.h" />
+    <ClInclude Include="src\utils\base_exceptions.h" />
+    <ClInclude Include="src\utils\gl_error_macro_db.h" />
+    <ClInclude Include="src\utils\threading.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\amb\Ambient.cpp" />
+    <ClCompile Include="src\audio\AudioDevice.cpp" />
+    <ClCompile Include="src\audio\AudioSource.cpp" />
+    <ClCompile Include="src\audio\SoundBuffer.cpp" />
+    <ClCompile Include="src\camera\OrthographicCamera.cpp" />
+    <ClCompile Include="src\camera\OrthographicCameraController.cpp" />
+    <ClCompile Include="src\definer_Stb.cpp" />
+    <ClCompile Include="src\ent\Animator.cpp" />
+    <ClCompile Include="src\input\Keyboard.cpp" />
+    <ClCompile Include="src\input\Mouse.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\render\3d\Mesh.cpp" />
+    <ClCompile Include="src\render\3d\Model.cpp" />
+    <ClCompile Include="src\render\3d\Render3D.cpp" />
+    <ClCompile Include="src\render\ParticleSystem.cpp" />
+    <ClCompile Include="src\render\SubTexture.cpp" />
+    <ClCompile Include="src\render\Text.cpp" />
+    <ClCompile Include="src\render\geo_renders\CircleRender.cpp" />
+    <ClCompile Include="src\render\geo_renders\LineRender.cpp" />
+    <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
+    <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp" />
+    <ClCompile Include="src\render\geo_renders\TriRender.cpp" />
+    <ClCompile Include="src\render\gl\GL_Commands.cpp" />
+    <ClCompile Include="src\render\gl\GL_Types.cpp" />
+    <ClCompile Include="src\render\gl\IndexBuffer.cpp" />
+    <ClCompile Include="src\render\gl\Shader.cpp" />
+    <ClCompile Include="src\render\gl\Texture.cpp" />
+    <ClCompile Include="src\render\gl\VertexArray.cpp" />
+    <ClCompile Include="src\render\gl\VertexAttribute.cpp" />
+    <ClCompile Include="src\render\gl\VertexBuffer.cpp" />
+    <ClCompile Include="src\render\render2D.cpp" />
+    <ClCompile Include="src\scene\Entity.cpp" />
+    <ClCompile Include="src\scene\Scene.cpp" />
+    <ClCompile Include="src\scene\SceneCamera.cpp" />
+    <ClCompile Include="src\utils\Files.cpp" />
+    <ClCompile Include="src\utils\Generic.cpp" />
+    <ClCompile Include="src\utils\RandomList.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

@@ -9,6 +9,7 @@
 #include "render/Colors.h"
 #include "ent/Animator.h"
 #include "ScriptableEntity.h"
+#include "render/3d/Model.h"
 namespace Base
 {
 	struct TagComponent
@@ -23,17 +24,25 @@ namespace Base
 
 	struct TransformComponent
 	{
+		
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
+		//TODO: Maybe Temp
+		glm::mat4 Manual_Transform = glm::mat4(0.0f);
 
-		TransformComponent() = default;
+		TransformComponent()
+			:Translation(glm::vec3(0.0f, 0.0f, 0.0f)), Manual_Transform(glm::mat4(0.0f)) {}
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& translation)
-			: Translation(translation) {}
+			: Translation(translation), Manual_Transform(glm::mat4(0.0f)) {}
+
 
 		glm::mat4 GetTransform() const
 		{
+			if (Manual_Transform != glm::mat4(0.0f))
+				return Manual_Transform;
+
 			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
 			return glm::translate(glm::mat4(1.0f), Translation)
@@ -105,18 +114,30 @@ namespace Base
 
 	struct CircleComponent
 	{
-		float Radius = 5.0f;
-		bool Fill = true;
+		float Radius = 1.0f;
+		float Thickness = 1.0f;
+		float Fade = 0.005f;
+
 		CircleComponent() = default;
 		CircleComponent(const CircleComponent&) = default;
-		CircleComponent(float radius, bool fill = true)
-			:Radius(radius), Fill(fill) {}
+		CircleComponent(float radius, float thickness,float fade)
+			:Radius(radius), Thickness(thickness), Fade(fade) {}
 	};
 
 	struct SquareColisionComponent // Use the Position and size
 	{
 		bool Active = true;
 		bool Checking = false;
+	};
+
+	struct ModelComponent
+	{
+		Ref<Model> Model3D;
+
+		ModelComponent() = default;
+		ModelComponent(const ModelComponent&) = default;
+		ModelComponent(Ref<Model> model)
+			:Model3D(model) {}
 	};
 
 	struct CameraComponent

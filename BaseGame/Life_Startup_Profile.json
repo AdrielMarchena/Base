@@ -1,1 +1,1 @@
-{"otherData": {},"traceEvents":[{},{"cat":"function","dur":99650,"name":"void __cdecl Base::render::Render2D::Init(void)","ph":"X","pid":0,"tid":13580,"ts":1051080271476.100}]}
+{"otherData": {},"traceEvents":[{},{"cat":"function","dur":161235,"name":"void __cdecl Base::render::Render2D::Init(void)","ph":"X","pid":0,"tid":15052,"ts":2120902342579.100}]}

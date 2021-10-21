@@ -1,17 +1,20 @@
 #pragma once
 #include <stdint.h>
-
+#include "Base/Base.h"
+#include "GL_Types.h"
 namespace Base
 {
+	
 namespace render
 {
 	class VertexBuffer
 	{
 	private:
 		uint32_t m_Id = 0;
+		GL_Usage m_Usage = GL_Usage::DYNAMIC;
 	public:
 		VertexBuffer() = default;
-		~VertexBuffer(){}
+		~VertexBuffer();
 
 		void Bind();
 		void Unbind();
@@ -19,7 +22,7 @@ namespace render
 
 		void SubData(size_t size, const void* buffer, int offset = 0);
 
-		static VertexBuffer CreateVertexBuffer(size_t size);
+		static Ref<VertexBuffer> CreateVertexBuffer(size_t size,GL_Usage usage = GL_Usage::DYNAMIC);
 	};
 }
 }

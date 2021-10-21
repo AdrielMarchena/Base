@@ -76,15 +76,15 @@ namespace render
 			}); //TODO: move to static render
 			*/
 			
-			m_data.VB.Bind();
-			m_data.VB.SubData(size, m_data.Buffer);
+			m_data.VB->Bind();
+			m_data.VB->SubData(size, m_data.Buffer);
 		};
 
 		virtual void Flush()
 		{
 			if (!m_data.IndexCount) //TODO: this is wrong?
 				return;
-			m_data.VA.Bind();
+			m_data.VA->Bind();
 			GLCommands::GL_DrawElementsCall(m_data.Target, m_data.IndexCount, GL_Type::UNSIGNED_INT);
 			//GLCall(glDrawElements(m_data.Target, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
 			m_data.RenderStatus.DrawCount++;
@@ -96,9 +96,9 @@ namespace render
 		virtual void Dispose()
 		{
 			mShader->Dispose();
-			m_data.VA.Dispose();
-			m_data.VB.Dispose();
-			m_data.IB.Dispose();
+			m_data.VA->Dispose();
+			m_data.VB->Dispose();
+			m_data.IB->Dispose();
 			delete[] m_data.Buffer;
 			m_data.Buffer = nullptr;
 			m_data.BufferPtr = nullptr;

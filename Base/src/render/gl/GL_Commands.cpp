@@ -11,5 +11,9 @@ namespace render
 	{
 		GLCall(glDrawElements(GetTarget(target), size, GetType(type), indices));
 	}
+	void GLCommands::GL_Clear(GL_ClearCommand command)
+	{
+		GLCall(glClear(GL_SwitchClearCommand(command)));
+	}
 }
 }

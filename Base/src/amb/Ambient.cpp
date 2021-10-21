@@ -54,7 +54,7 @@ namespace windowing
 				m_StaticLightSource[i].u_LightColor.w);
 
 			_Shader->SetUniform1f(norm_name + ".u_LightIntencity", m_StaticLightSource[i].m_LightIntencity);
-			BASE_DEBUG("Static light update");
+			BASE_DEBUG_LOG("Static light updated");
 		}
 	}
 

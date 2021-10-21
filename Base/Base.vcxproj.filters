@@ -1,325 +1,356 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Base">
+      <UniqueIdentifier>{60EC827C-4C23-840D-F50F-6A10E125000F}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="amb">
+      <UniqueIdentifier>{F55D880B-6167-887C-EAE2-9E7C56EB937C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="args">
+      <UniqueIdentifier>{F232947C-DE69-950D-8756-7B10736C110F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="audio">
+      <UniqueIdentifier>{B7281C0F-233D-44C0-ECBE-E71F589240F1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="camera">
+      <UniqueIdentifier>{EE85E6F5-DA27-11CC-C3E2-2420AF23981C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="colision">
+      <UniqueIdentifier>{8502433D-71CF-9D48-9AE8-8BF08614D3D6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ent">
+      <UniqueIdentifier>{2C6F880B-9878-887C-21F4-9E7C8DFC937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{B54AA90F-215F-D1C0-EAE0-742056B4CDF1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{E5CF2C19-D171-57EF-BA2C-6B43A66DDE3F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\3d">
+      <UniqueIdentifier>{ABD0AC0B-173B-6182-6079-1228CC223FD7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\geo_renders">
+      <UniqueIdentifier>{E1516FBA-CD35-3010-3696-2A6322991A92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render\gl">
+      <UniqueIdentifier>{67D7AC0B-D341-6182-1C80-122888293FD7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{D3075810-3F1C-80C1-089E-232174717CF2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{169C8510-82B0-ADC1-4B32-5121B705AAF2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fs.shader" />
-    <None Include="shaders\vs.shader" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\render2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\input\Keyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\input\Mouse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\Files.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\SubTexture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\camera\OrthographicCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\camera\OrthographicCameraController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\ParticleSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\RandomList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\args\RenderArgs.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\amb\Ambient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ent\Animator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\SoundBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AudioDevice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AudioSource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\utils\Generic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\LineRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\CircleRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\definer_Stb.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\Text.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\TriRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scene\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scene\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\QuadRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\VertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\VertexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\IndexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\VertexAttribute.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\GL_Commands.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\GL_Types.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\scene\SceneCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\gl\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Window.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\Base\Base.h">
+      <Filter>Base</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\render2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\gl\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\args\VirtualArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\input\Keyboard.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\input\Mouse.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\threading.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\colision\Colisions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\Files.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\SubTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\camera\OrthographicCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\camera\OrthographicCameraController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\ParticleSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\RandomList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\args\UpdateArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\args\ResizeArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\args\MouseArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\args\KeyboardArgs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\ResourceManager.h" />
+    <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h">
-      <Filter>Header Files</Filter>
+      <Filter>amb</Filter>
     </ClInclude>
     <ClInclude Include="src\args\AttachArgs.h">
-      <Filter>Header Files</Filter>
+      <Filter>args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\ImGuiArgs.h">
-      <Filter>Header Files</Filter>
+      <Filter>args</Filter>
     </ClInclude>
-    <ClInclude Include="src\ent\Animator.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\args\KeyboardArgs.h">
+      <Filter>args</Filter>
     </ClInclude>
-    <ClInclude Include="src\audio\SoundBuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\args\MouseArgs.h">
+      <Filter>args</Filter>
     </ClInclude>
-    <ClInclude Include="src\audio\AudioDevice.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\args\RenderArgs.h">
+      <Filter>args</Filter>
     </ClInclude>
-    <ClInclude Include="src\audio\AudioSource.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\args\ResizeArgs.h">
+      <Filter>args</Filter>
+    </ClInclude>
+    <ClInclude Include="src\args\UpdateArgs.h">
+      <Filter>args</Filter>
+    </ClInclude>
+    <ClInclude Include="src\args\VirtualArgs.h">
+      <Filter>args</Filter>
     </ClInclude>
     <ClInclude Include="src\audio\Al_Error.h">
-      <Filter>Header Files</Filter>
+      <Filter>audio</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Generic.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\audio\AudioDevice.h">
+      <Filter>audio</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\NameCaps.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\audio\AudioSource.h">
+      <Filter>audio</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\base_exceptions.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\audio\SoundBuffer.h">
+      <Filter>audio</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\geo_renders\LineRender.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\camera\OrthographicCamera.h">
+      <Filter>camera</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\geo_renders\RenderTemplate.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\camera\OrthographicCameraController.h">
+      <Filter>camera</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\geo_renders\CircleRender.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\colision\Colisions.h">
+      <Filter>colision</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\geo_renders\RenderDatas.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\ent\Animator.h">
+      <Filter>ent</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\Text.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\geo_renders\TriRender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\gl_error_macro_db.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\no_console_release.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\al_error_marcro_db.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\alc_error_macro_db.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\utils\base_assert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\Components.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\Colors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\input\MouseKeys.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\input\Keyboard.h">
+      <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="src\input\KeyboardKeys.h">
-      <Filter>Header Files</Filter>
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\Mouse.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\input\MouseKeys.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\no_console_release.h" />
+    <ClInclude Include="src\render\3d\Mesh.h">
+      <Filter>render\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\3d\Model.h">
+      <Filter>render\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\3d\Render3D.h">
+      <Filter>render\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\Camera.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\Colors.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\ParticleSystem.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\SubTexture.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\Text.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\geo_renders\CircleRender.h">
+      <Filter>render\geo_renders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\geo_renders\LineRender.h">
+      <Filter>render\geo_renders</Filter>
     </ClInclude>
     <ClInclude Include="src\render\geo_renders\QuadRender.h">
-      <Filter>Header Files</Filter>
+      <Filter>render\geo_renders</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\ScriptableEntity.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\render\geo_renders\RenderDatas.h">
+      <Filter>render\geo_renders</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\gl\VertexBuffer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\render\geo_renders\RenderTemplate.h">
+      <Filter>render\geo_renders</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\gl\VertexArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\gl\IndexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\gl\VertexAttribute.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Base\Base.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\gl\Gl_Commands.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\render\geo_renders\TriRender.h">
+      <Filter>render\geo_renders</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\GL_Types.h">
-      <Filter>Header Files</Filter>
+      <Filter>render\gl</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Timer.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\render\gl\Gl_Commands.h">
+      <Filter>render\gl</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Instrumentor.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\render\gl\IndexBuffer.h">
+      <Filter>render\gl</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\SceneCamera.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="src\render\gl\Shader.h">
+      <Filter>render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\Texture.h">
-      <Filter>Header Files</Filter>
+      <Filter>render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\VertexArray.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\VertexAttribute.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\VertexBuffer.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\render2D.h">
+      <Filter>render</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\CameraScript.h">
-      <Filter>Header Files</Filter>
+      <Filter>scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\scene\Components.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Entity.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\Scene.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SceneCamera.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\ScriptableEntity.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Files.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Generic.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Instrumentor.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Load.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\NameCaps.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\RandomList.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\Timer.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\al_error_marcro_db.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\alc_error_macro_db.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\base_assert.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\base_exceptions.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\gl_error_macro_db.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\threading.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\amb\Ambient.cpp">
+      <Filter>amb</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AudioDevice.cpp">
+      <Filter>audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\AudioSource.cpp">
+      <Filter>audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\audio\SoundBuffer.cpp">
+      <Filter>audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\camera\OrthographicCamera.cpp">
+      <Filter>camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\camera\OrthographicCameraController.cpp">
+      <Filter>camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\definer_Stb.cpp" />
+    <ClCompile Include="src\ent\Animator.cpp">
+      <Filter>ent</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\Keyboard.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input\Mouse.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\render\3d\Mesh.cpp">
+      <Filter>render\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\3d\Model.cpp">
+      <Filter>render\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\3d\Render3D.cpp">
+      <Filter>render\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\ParticleSystem.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\SubTexture.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\Text.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\geo_renders\CircleRender.cpp">
+      <Filter>render\geo_renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\geo_renders\LineRender.cpp">
+      <Filter>render\geo_renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\geo_renders\QuadRender.cpp">
+      <Filter>render\geo_renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp">
+      <Filter>render\geo_renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\geo_renders\TriRender.cpp">
+      <Filter>render\geo_renders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\GL_Commands.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\GL_Types.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\IndexBuffer.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\Shader.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\Texture.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\VertexArray.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\VertexAttribute.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\VertexBuffer.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\render2D.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Entity.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\Scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SceneCamera.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\Files.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\Generic.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\RandomList.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

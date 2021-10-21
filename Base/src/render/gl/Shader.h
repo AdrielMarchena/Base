@@ -34,6 +34,9 @@ namespace render
 		static Ref<Shader> CreateShader(const std::string& name, const std::string& vs, const std::string& fs);
 		static Ref<Shader> CreateShader(const std::string& path);
 
+		static std::string VerifyShaderError(uint32_t shader_id);
+		static std::string VerifyProgramError(uint32_t program_id);
+
 		const std::string& GetName() const { return m_Name; };
 
 		void Bind() const;

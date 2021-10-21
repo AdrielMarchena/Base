@@ -22,7 +22,7 @@ namespace render
 	Scope<LineRender2D> Render2D::m_LineRender;
 	Scope<QuadRender2D> Render2D::m_TextRender;
 	Scope<TriRender> Render2D::m_TriRender;
-	ShaderLib Render2D::m_Shaders;
+	Scope<ShaderLib> Render2D::m_Shaders;
 
 	void Render2D::SetClearColor(const glm::vec4& color)
 	{
@@ -38,17 +38,19 @@ namespace render
 	{
 		BASE_PROFILE_FUNCTION();
 
-		m_Shaders.Load("shaders/Quad.glsl");
-		m_Shaders.Load("Triangle", "shaders/Quad.glsl");
-		m_Shaders.Load("shaders/Circle.glsl");
-		m_Shaders.Load("shaders/Line.glsl");
-		m_Shaders.Load("shaders/Text.glsl");
+		m_Shaders = MakeScope<ShaderLib>();
 
-		m_QuadRender	= MakeScope<QuadRender2D>(m_Shaders.Get("Quad"));
-		m_LineRender	= MakeScope<LineRender2D>(m_Shaders.Get("Line"));
-		m_CircleRender	= MakeScope<CircleRender>(m_Shaders.Get("Circle"));
-		m_TextRender	= MakeScope<QuadRender2D>(m_Shaders.Get("Text"));
-		m_TriRender		= MakeScope<TriRender>(m_Shaders.Get("Triangle")); //TODO: Test to se if works with the same shader
+		m_Shaders->Load("shaders/Quad.glsl");
+		m_Shaders->Load("Triangle", "shaders/Quad.glsl");
+		m_Shaders->Load("shaders/Circle.glsl");
+		m_Shaders->Load("shaders/Line.glsl");
+		m_Shaders->Load("shaders/Text.glsl");
+
+		m_QuadRender	= MakeScope<QuadRender2D>(m_Shaders->Get("Quad"));
+		m_LineRender	= MakeScope<LineRender2D>(m_Shaders->Get("Line"));
+		m_CircleRender	= MakeScope<CircleRender>(m_Shaders->Get("Circle"));
+		m_TextRender	= MakeScope<QuadRender2D>(m_Shaders->Get("Text"));
+		m_TriRender		= MakeScope<TriRender>(m_Shaders->Get("Triangle")); //TODO: Test to se if works with the same shader
 
 		GLCall(glEnable(GL_DEPTH_TEST));
 		GLCall(glEnable(GL_BLEND));
@@ -58,7 +60,7 @@ namespace render
 
 	void Render2D::AddShader(const std::string& path)
 	{
-		m_Shaders.Load(path);
+		m_Shaders->Load(path);
 	}
 	
 	void Render2D::BeginBatch()
@@ -122,6 +124,8 @@ namespace render
 		m_LineRender->Dispose();
 		m_TextRender->Dispose();
 		m_TriRender->Dispose();
+
+		delete m_Shaders.release();
 
 		Texture::DeleteWhiteTexture();
 	}
@@ -244,34 +248,34 @@ namespace render
 		m_LineRender->DrawCurveLine(origin, p1, dest, color, precision);
 	}
 
-	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(position, radius, fill, thick, color, rotation, axis);
+		m_CircleRender->DrawCircle(position, radius, fade, thick, color, rotation, axis);
 	}
 
-	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(position, radius, fill, thick, texture ,color, rotation, axis);
+		m_CircleRender->DrawCircle(position, radius, fade, thick, texture ,color, rotation, axis);
 	}
 
-	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(position, radius, fill, thick, sub_texture, color, rotation, axis);
+		m_CircleRender->DrawCircle(position, radius, fade, thick, sub_texture, color, rotation, axis);
 	}
 
-	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, bool fill, float thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(transform, radius, fill, thick, color, rotation, axis);
+		m_CircleRender->DrawCircle(transform, radius, fade, thick, color, rotation, axis);
 	}
 
-	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(transform, radius, fill, thick, texture, color, rotation, axis);
+		m_CircleRender->DrawCircle(transform, radius, fade, thick, texture, color, rotation, axis);
 	}
 
-	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float fill, float thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		m_CircleRender->DrawCircle(transform, radius, fill, thick, sub_texture, color, rotation, axis);
+		m_CircleRender->DrawCircle(transform, radius, fade, thick, sub_texture, color, rotation, axis);
 	}
 
 	void Render2D::DrawTriangle(const glm::vec3 points[3], const glm::vec4& color)

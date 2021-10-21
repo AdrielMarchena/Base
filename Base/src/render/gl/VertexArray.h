@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include "Base/Base.h"
 namespace Base
 {
 	namespace render
@@ -10,13 +11,13 @@ namespace Base
 			uint32_t m_Id = 0;
 		public:
 			VertexArray() = default;
-			~VertexArray() {}
+			~VertexArray();
 
 			void Bind();
 			void Unbind();
 			void Dispose();
 
-			static VertexArray CreateVertexArray();
+			static Ref<VertexArray> CreateVertexArray();
 		};
 	}
 }

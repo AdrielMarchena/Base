@@ -4,8 +4,6 @@
 #include "utils/base_assert.h"
 namespace Base
 {
-namespace render
-{
 	unsigned int GetType(GL_Type type)
 	{
 		switch (type)
@@ -14,7 +12,7 @@ namespace render
 			return GL_UNSIGNED_INT;
 			break;
 		default:
-			BASE_CORE_ASSERT(false, "Type not reconized");
+			BASE_CORE_ASSERT(false, "GL Type not reconized");
 			break;
 		}
 	}
@@ -32,9 +30,38 @@ namespace render
 			return GL_LINES;
 			break;
 		default:
-			BASE_CORE_ASSERT(false, "Target not reconized");
+			BASE_CORE_ASSERT(false, "GL Target not reconized");
 			break;
 		}
 	}
-}
+
+	unsigned int GL_SwitchClearCommand(GL_ClearCommand command)
+	{
+		switch (command)
+		{
+		case GL_ClearCommand::ClearColor:
+			return GL_COLOR_BUFFER_BIT;
+		case GL_ClearCommand::ClearDepthColor:
+			return GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
+		default:
+			BASE_CORE_ASSERT(false, "Unknown GL Clear Command");
+		}
+		return 0;
+	}
+
+	unsigned int GL_SwitchUsage(GL_Usage usage)
+	{
+		switch (usage)
+		{
+		case GL_Usage::DYNAMIC:
+			return GL_DYNAMIC_DRAW;
+		case GL_Usage::STATIC:
+			return GL_STATIC_DRAW;
+		case GL_Usage::STREAM:
+			return GL_STREAM_DRAW;
+		default:
+			BASE_CORE_ASSERT(false, "Unknow GL_Usage");
+		}
+		return 0;
+	}
 }

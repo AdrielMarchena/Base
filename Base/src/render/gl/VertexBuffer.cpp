@@ -6,40 +6,48 @@ namespace Base
 {
 namespace render
 {
+	
+	VertexBuffer::~VertexBuffer()
+	{
+		if(m_Id)
+			Dispose();
+	}
 	void VertexBuffer::Bind()
 	{
-		assert(m_Id > 0);
+		BASE_ASSERT(m_Id > 0);
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_Id));
 	}
 
 	void VertexBuffer::Unbind()
 	{
-		assert(m_Id > 0);
+		BASE_ASSERT(m_Id > 0);
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
 
 	void VertexBuffer::Dispose()
 	{
-		assert(m_Id > 0);
+		BASE_ASSERT(m_Id > 0);
 		GLCall(glDeleteBuffers(1, &m_Id));
-		m_Id = 0;
+		m_Id = NULL;
 	}
 
 	void VertexBuffer::SubData(size_t size, const void* buffer, int offset)
 	{
-		assert(m_Id > 0);
+		BASE_ASSERT(m_Id > 0);
 		Bind();
 		GLCall(glBufferSubData(GL_ARRAY_BUFFER, offset, size, buffer));
 	}
 
-	VertexBuffer VertexBuffer::CreateVertexBuffer(size_t size)
+	Ref<VertexBuffer> VertexBuffer::CreateVertexBuffer(size_t size, GL_Usage usage)
 	{
-		VertexBuffer new_vb;
-		GLCall(glGenBuffers(1, &new_vb.m_Id));
-		assert(new_vb.m_Id > 0);
-		new_vb.Bind();
-		GLCall(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW));
+		Ref<VertexBuffer> new_vb = MakeRef<VertexBuffer>();
+		new_vb->m_Usage = usage;
+		GLCall(glGenBuffers(1, &new_vb->m_Id));
+		BASE_ASSERT(new_vb->m_Id > 0);
+		new_vb->Bind();
+		GLCall(glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_SwitchUsage(usage)));
 		return new_vb;
 	}
+
 }
 }
