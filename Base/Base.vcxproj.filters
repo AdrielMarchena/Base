@@ -241,6 +241,7 @@
     <ClInclude Include="src\utils\threading.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\utils\parse_args.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Log.cpp" />
@@ -352,5 +353,6 @@
     <ClCompile Include="src\utils\RandomList.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\utils\parse_args.cpp" />
   </ItemGroup>
 </Project>

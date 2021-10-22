@@ -268,6 +268,7 @@
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\ResourceManager.h" />
+    <ClInclude Include="src\utils\parse_args.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h" />
     <ClInclude Include="src\args\AttachArgs.h" />
@@ -336,6 +337,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\utils\parse_args.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp" />
     <ClCompile Include="src\audio\AudioDevice.cpp" />
