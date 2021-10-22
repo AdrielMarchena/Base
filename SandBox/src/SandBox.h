@@ -1,4 +1,5 @@
 #pragma once
+#include "Window.h"
 
 #include <unordered_map>
 #include <vector>
@@ -14,7 +15,6 @@
 #include "scene/SceneCamera.h"
 #include "scene/Components.h"
 
-#include <unordered_map>
 class SandBox : public Base::windowing::Window
 {
 private:
@@ -26,6 +26,7 @@ private:
 	Base::Scope<Base::Scene> m_Scene;
 public:
 	SandBox();
+	SandBox(const char* title, float_t w, float_t h, bool resizeble);
 	~SandBox();
 
 	virtual void OnAttach() override;
@@ -37,5 +38,6 @@ public:
 	virtual void OnResize(const Base::ResizeArgs& args) override;
 	virtual void OnMouseAction(const Base::MouseArgs& args) override {}
 	virtual void OnKeyboardAction(const Base::KeyboardArgs& args) override {}
+
 };
 
