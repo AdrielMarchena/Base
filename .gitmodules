@@ -13,3 +13,4 @@
 [submodule "Base/vendor/assimp"]
 	path = Base/vendor/assimp
 	url = https://github.com/assimp/assimp.git
+	ignore = dirty
