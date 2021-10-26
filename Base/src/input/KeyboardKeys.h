@@ -2,12 +2,10 @@
 
 //Copied from GLFW
 
-#ifndef BASE_RELEASE
-	#define BASE_RELEASE                0
-	#define BASE_PRESS                  1
-	#define BASE_REPEAT                 2
-	#define BASE_KEY_UNKNOWN            -1
-#endif
+#define BASE_BUTTON_RELEASE                0
+#define BASE_PRESS                  1
+#define BASE_REPEAT                 2
+#define BASE_KEY_UNKNOWN            -1
 
 #define BASE_KEY_SPACE              32
 #define BASE_KEY_APOSTROPHE         39  /* ' */

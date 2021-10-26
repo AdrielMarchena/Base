@@ -72,7 +72,7 @@ namespace input
 			keysPressed[key] = true;
 			AnyKey = true;
 			break;
-		case BASE_RELEASE:
+		case BASE_BUTTON_RELEASE:
 			keysPressed[key] = false;
 			singleClickControl[key] = false;
 			AnyKey = false;
