@@ -60,13 +60,10 @@ project "Base"
 			"BASE_STATIC_BUILD"
 		}
 
-		-- postbuildcommands
-		-- {
-		-- 	("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/BaseGame"),
-		-- 	("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Maze"),
-		-- 	("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/PiriquitoAbano"),
-		-- 	("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/SandBox")
-		-- }
+		postbuildcommands
+		{
+			("{COPYDIR} \"./src/**.h\" \"./include/\""),
+		}
 
 	filter "configurations:Debug"
 		defines "BASE_DEBUG"
