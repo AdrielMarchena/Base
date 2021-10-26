@@ -3,12 +3,8 @@
 #include "scene/Components.h"
 #include "scene/CameraScript.h"
 #include "imgui.h"
-#include "utils/Files.h"
 
-#include "utils/Load.h"
-
-Base::utils::Loader<Base::render::ImageInformation>* loader = nullptr;
-
+#include "utils/RandomList.h"
 
 Game::Game()
 	:Base::windowing::Window()
@@ -21,25 +17,10 @@ Game::~Game()
 
 void Game::OnAttach()
 {
-	loader = new Base::utils::Loader<Base::render::ImageInformation>("resources/images");
-
-	//LoadAsync();
-
-	auto dirs = Base::utils::Files::GetPairText("resources/images");
-
-	for (auto& d : dirs)
-	{
-		auto info = Base::render::Texture::GetImageInfo(d.second);
-		info.KeepSourceBuffer = false;
-		info.DeleteSourceBuffer = true;
-		m_Textures.emplace(d.first, Base::MakeRef<Base::render::Texture>(info));
-	}
 
 	m_Scene = Base::MakeScope <Base::Scene>();
 	m_Map = m_Scene->CreateEntity("Map");
 	m_Camera = m_Scene->CreateEntity("Main_Camera3D");
-	m_Camera2D = m_Scene->CreateEntity("Main_Camera2D");
-	m_Sprite = m_Scene->CreateEntity("Sprite");
 
 	auto& scp3D = m_Camera.AddComponent<Base::NativeScriptComponent>();
 	{// 3D Camera
@@ -51,23 +32,8 @@ void Game::OnAttach()
 		c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
 	}
 	
-	{// 2D Camera
-		//auto& scp2D = m_Camera2D.AddComponent<Base::NativeScriptComponent>();
-		//scp2D.Bind<Base::OrthoCameraScript>();
-		auto& c = m_Camera2D.AddComponent<Base::CameraComponent>();
-		auto& camera_transform = m_Camera2D.GetComponent<Base::TransformComponent>();
-
-		c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
-	}
-
-	m_Sprite.AddComponent<Base::TextureComponent>();
-
-	m_Cube = m_Scene->CreateEntity("Cube");
 	
-	auto& cube_transform = m_Cube.GetComponent<Base::TransformComponent>();
-	cube_transform.Translation.z = 3.0f;
 
-	auto& cube_model = m_Cube.AddComponent<Base::ModelComponent>(Base::Model::CreateModel("resources/models/cube/cube.obj"));
 
 	m_Map.AddComponent<Base::TextureComponent>();
 	auto& map_script = m_Map.AddComponent<Base::NativeScriptComponent>();
@@ -79,25 +45,57 @@ void Game::OnAttach()
 	m_Scene->AwakeNativeScript(m_Map);
 
 	auto& map_texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
-	cube_model.Model3D->OverrideTexture(map_texture);
 
-	cube_transform.Scale = { 100.0f,100.0f,100.0f };
+	const int cube_qtd = 25;
+	const float cube_spread = 1.5f;
+	const glm::vec3 cube_size_variation = glm::vec3(1.0f, 1.0f, 1.0f);
+	auto cube_3dmodel = Base::Model::CreateModel("resources/models/cube/cube.obj");
+	for (int i = 0; i < cube_qtd; i++)
+	{
+		const std::string tag_name = "Cube_" + std::to_string(i);
+		m_Cubes[tag_name] = m_Scene->CreateEntity(tag_name);
+
+		auto& cube_transform = m_Cubes[tag_name].GetComponent<Base::TransformComponent>();
+		//Cube position
+		cube_transform.Translation =
+		{
+			(float)(M_random() << 2) * cube_spread,
+			(float)(M_random() << 2) * cube_spread,
+			(float)(M_random() << 2) * cube_spread
+		};
+
+		cube_transform.Rotation =
+		{
+			glm::radians((float)(M_random() << 1)),
+			glm::radians((float)(M_random() << 1)),
+			glm::radians((float)(M_random() << 1))
+		};
+
+		cube_transform.Scale =
+		{
+			(float)M_random() * cube_size_variation.x,
+			(float)M_random() * cube_size_variation.y,
+			(float)M_random() * cube_size_variation.z
+		};
+
+		auto& cube_model = m_Cubes[tag_name].AddComponent<Base::ModelComponent>(cube_3dmodel);
+		cube_model.Model3D->OverrideTexture(map_texture);
+	}
+
+	m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Translation = { 0.0f,0.0f,3.0f };
 
 	m_Scene->StartNativeScript(m_Camera);
-
-	m_Sprite.GetComponent<Base::TransformComponent>().Scale = { 1.0f,1.0f,1.0f };
-
 
 	HideCursor();
 	((Base::PerspectiveScript*)scp3D.Instance)->mouse_is_hide = true;
 
-	//while(!loader->DoAsyncOne<Base::render::Texture>(m_Textures)){}
-	//delete loader;
-	//loader = nullptr;
 }
 
 void Game::OnUpdate(const Base::UpdateArgs& args)
 {
+	if (Base::WindowProps().minimized)
+		return;
+
 	if (Base::input::Keyboard::isClicked(BASE_KEY_H))
 	{
 		HideCursor();
@@ -111,35 +109,22 @@ void Game::OnUpdate(const Base::UpdateArgs& args)
 		((Base::PerspectiveScript*)scp.Instance)->mouse_is_hide = false;
 	}
 
-	if (Base::WindowProps().minimized)
-		return;
-	m_Scene->OnUpdate(args);
-
-	if(loader)
-		if (loader->DoAsyncOne<Base::render::Texture>(m_Textures))
-		{
-			delete loader;
-			loader = nullptr;
-		}
-
 	auto& map_texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
-	auto& cube_model = m_Cube.GetComponent<Base::ModelComponent>();
-	cube_model.Model3D->OverrideTexture(map_texture);
-	m_Map.GetComponent<Base::TransformComponent>().Scale = { 0,00.0f,000.0f };
+	for (auto& pair : m_Cubes)
+	{
+		auto& cube_model = pair.second.GetComponent<Base::ModelComponent>();
+		cube_model.Model3D->OverrideTexture(map_texture);
+	}
 
+	m_Scene->OnUpdate(args);
+	
 }
 
 void Game::OnImGui()
 {
 	ImGui::Begin("Game Grid");
-	//
+
 	auto& q = m_Map.GetComponent<Base::TransformComponent>();
-	auto& cube_transform = m_Cube.GetComponent<Base::TransformComponent>();
-	if (ImGui::SliderFloat("Scale", &cube_transform.Scale.x, 1.0f, 1500.0f))
-	{
-		cube_transform.Scale.y = cube_transform.Scale.x;
-		cube_transform.Scale.z = cube_transform.Scale.x;
-	}
 
 	static int grid = 24, a1 = 2, a2 = 3, rv = 3;
 
@@ -147,7 +132,6 @@ void Game::OnImGui()
 	ImGui::InputInt("To be Alive 1", &a1);
 	ImGui::InputInt("To be Alive 2", &a2);
 	ImGui::InputInt("To Revive", &rv);
-
 	if (ImGui::Button("Reset"))
 	{
 		m_Scene->DestroyNativeScript(m_Map);
@@ -161,7 +145,7 @@ void Game::OnImGui()
 		((MapScript*)s.Instance)->ToRevive = rv;
 		m_Scene->AwakeNativeScript(m_Map);
 	}
-
+	
 	static char text[50] = "Map.png";
 	ImGui::InputText("Path", text, 50);
 	if (ImGui::Button("Save File"))
@@ -169,24 +153,22 @@ void Game::OnImGui()
 		auto& Texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
 		Texture->CreatePng(text);
 	}
+	ImGui::End();
 
-	for (auto& t : m_Textures)
-	{
-		if (ImGui::Button(t.first.c_str()))
-		{
-			auto& tex = m_Sprite.GetComponent<Base::TextureComponent>();
-			tex.Texture = t.second;
-		}
-	}
-	//
+	ImGui::Begin("Camera");
+
+	auto& camera_script = m_Camera.GetComponent<Base::NativeScriptComponent>();
+	float* vel = &((Base::PerspectiveScript*)camera_script.Instance)->default_speed;
+
+	if(ImGui::SliderFloat("Camera Velocity", vel , 1.0f, 400.0f))
+		((Base::PerspectiveScript*)camera_script.Instance)->SyncSpeed();
+
 	ImGui::End();
 }
 
 void Game::Dispose()
 {
 	m_Scene->SceneEnd();
-	if(loader)
-		delete loader;
 }
 
 void Game::OnResize(const Base::ResizeArgs& args)
@@ -195,22 +177,4 @@ void Game::OnResize(const Base::ResizeArgs& args)
 		return;
 	auto& c3D = m_Camera.GetComponent<Base::CameraComponent>();
 	c3D.Camera.SetViewportSize(args.new_w, args.new_h);
-	auto &c2D = m_Camera2D.GetComponent<Base::CameraComponent>();
-	c2D.Camera.SetViewportSize(args.new_w, args.new_h);
-}
-
-bool Game::LoadAsync()
-{
-	loader->LauchAsync([&](const std::string& name, const std::string& path)
-		{
-			Base::render::ImageInformation info = Base::render::Texture::GetImageInfo(path);
-			info.Name = name;
-			info.DeleteSourceBuffer = true;
-			info.KeepSourceBuffer = false;
-			info.CopySourceBuffer = false;
-			//std::lock_guard<std::mutex> lock(VectorMutex);
-			//ImageInfo.push_back(info);
-			return info;
-		});
-	return true;
 }
