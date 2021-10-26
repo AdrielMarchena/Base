@@ -35,7 +35,9 @@
 .vs
 *.vs
 *.sln
-*.vcxproj*
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 
 #idk
 *.ilk
@@ -74,3 +76,7 @@ bin-int
 
 #misc
 */assimp/*
+
+#specific
+	#Base include subdirs
+	./Base/include/*
