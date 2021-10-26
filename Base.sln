@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sandbox", "SandBox\Sandbox.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "Base\Base.vcxproj", "{60EC827C-4C23-840D-F50F-6A10E125000F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Life", "Life\Life.vcxproj", "{8588887C-71BF-890D-1AAC-6F1006C2050F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -39,6 +41,18 @@ Global
 		{60EC827C-4C23-840D-F50F-6A10E125000F}.Release|Win32.Build.0 = Release|Win32
 		{60EC827C-4C23-840D-F50F-6A10E125000F}.Release|x64.ActiveCfg = Release|x64
 		{60EC827C-4C23-840D-F50F-6A10E125000F}.Release|x64.Build.0 = Release|x64
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Debug|Win32.Build.0 = Debug|Win32
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Debug|x64.ActiveCfg = Debug|x64
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Debug|x64.Build.0 = Debug|x64
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Dist|Win32.ActiveCfg = Dist|Win32
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Dist|Win32.Build.0 = Dist|Win32
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Dist|x64.ActiveCfg = Dist|x64
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Dist|x64.Build.0 = Dist|x64
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Release|Win32.ActiveCfg = Release|Win32
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Release|Win32.Build.0 = Release|Win32
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Release|x64.ActiveCfg = Release|x64
+		{8588887C-71BF-890D-1AAC-6F1006C2050F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
