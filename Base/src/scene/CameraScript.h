@@ -88,6 +88,11 @@ namespace Base
 		float Zoom;
 	public:
 
+		void SyncSpeed()
+		{
+			MovementSpeed = default_speed;
+		}
+
 		void ProcessKeyboard(Camera_Movement direction,float dt)
 		{
 			float velocity = MovementSpeed * dt;
