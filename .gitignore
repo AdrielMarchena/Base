@@ -79,4 +79,4 @@ bin-int
 
 #specific
 	#Base include subdirs
-	./Base/include/*
+	Base/include/*
