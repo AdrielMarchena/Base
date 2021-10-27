@@ -8,7 +8,7 @@ namespace Base
 	size_t Render3D::m_CurrentBatchSize;
 	Scope<render::ShaderLib> Render3D::m_Shaders;
 	Scope<std::vector<std::pair<Ref<std::vector<Mesh>>, glm::mat4>>> Render3D::m_Meshes;
-
+	Scope<SkyBox> Render3D::m_SkyBox;
 	void Render3D::Clear(GL_ClearCommand command)
 	{
 		render::GLCommands::GL_Clear(command);
@@ -22,14 +22,27 @@ namespace Base
 
 		m_Shaders = MakeScope< render::ShaderLib>();
 		m_Shaders->Add(render::Shader::CreateShader("shaders/3D.glsl"));
+		m_Shaders->Add(render::Shader::CreateShader("shaders/CubeMap.glsl"));
 
 		m_Meshes = MakeScope<std::vector<std::pair<Ref<std::vector<Mesh>>, glm::mat4>>>();
+
+		std::vector<std::string> faces =
+		{
+			"resources/skybox/right.jpg",
+			"resources/skybox/left.jpg",
+			"resources/skybox/top.jpg",
+			"resources/skybox/bottom.jpg",
+			"resources/skybox/front.jpg",
+			"resources/skybox/back.jpg"
+		};
+		m_SkyBox = MakeScope<SkyBox>(faces,m_Shaders->Get("CubeMap"));
 	}
 
 	void Render3D::Dispose()
 	{
 		delete m_Shaders.release();
 		delete m_Meshes.release();
+		delete m_SkyBox.release();
 	}
 
 	void Render3D::StartScene(const Camera& camera, const glm::mat4& camera_transform)
@@ -38,6 +51,8 @@ namespace Base
 		shader->Bind();
 		shader->SetUniformMat4f("projection", camera.GetProjection());
 		shader->SetUniformMat4f("view", camera_transform);
+
+		m_SkyBox->SetViewProj(camera.GetProjection(), camera_transform);
 	}
 
 	void Render3D::StartBatch()
@@ -66,6 +81,7 @@ namespace Base
 
 	void Render3D::EndScene()
 	{
+		m_SkyBox->Draw();
 	}
 
 	void Render3D::SubmitMesh(Ref<std::vector<Mesh>>& mesh, const glm::mat4& model_matrix)

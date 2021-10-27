@@ -31,9 +31,6 @@ void Game::OnAttach()
 		c.Camera.SetPerspective(45.0f, 0.1f, 1000.0f);
 		c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
 	}
-	
-	
-
 
 	m_Map.AddComponent<Base::TextureComponent>();
 	auto& map_script = m_Map.AddComponent<Base::NativeScriptComponent>();
