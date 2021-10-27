@@ -283,6 +283,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\render\3d\SkyBox.h" />
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\ResourceManager.h" />
@@ -354,6 +355,7 @@
     <ClInclude Include="src\utils\threading.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\render\3d\SkyBox.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp" />

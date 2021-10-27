@@ -5,6 +5,8 @@
 #include "render/gl/Shader.h"
 #include "render/gl/Gl_Commands.h"
 #include "scene/SceneCamera.h"
+#include "SkyBox.h"
+#include "scene/CameraScript.h"
 namespace Base
 {
 	class Render3D
@@ -15,6 +17,7 @@ namespace Base
 		static Scope<render::ShaderLib> m_Shaders;
 		//static Scope<std::unordered_map< Ref<std::vector<Mesh>>, glm::mat4>> m_Meshes;
 		static Scope<std::vector<std::pair<Ref<std::vector<Mesh>>, glm::mat4>>> m_Meshes;
+		static Scope<SkyBox> m_SkyBox;
 	public:
 
 		//Render3D();

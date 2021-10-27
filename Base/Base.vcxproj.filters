@@ -244,6 +244,7 @@
     <ClInclude Include="src\utils\threading.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\3d\SkyBox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Log.cpp" />
@@ -358,5 +359,6 @@
     <ClCompile Include="src\utils\parse_args.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\3d\SkyBox.cpp" />
   </ItemGroup>
 </Project>
