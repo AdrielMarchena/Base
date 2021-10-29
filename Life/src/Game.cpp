@@ -11,6 +11,11 @@ Game::Game()
 {
 }
 
+Game::Game(const char* title, float_t w, float_t h, bool resizeble)
+	: Base::windowing::Window(title,w,h,resizeble)
+{
+}
+
 Game::~Game()
 {
 }
@@ -28,7 +33,7 @@ void Game::OnAttach()
 		auto& c = m_Camera.AddComponent<Base::CameraComponent>();
 		auto& camera_transform = m_Camera.GetComponent<Base::TransformComponent>();
 
-		c.Camera.SetPerspective(45.0f, 0.1f, 1000.0f);
+		c.Camera.SetPerspective(45.0f, 0.1f, 9000.0f);
 		c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
 	}
 
@@ -43,9 +48,10 @@ void Game::OnAttach()
 
 	auto& map_texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
 
-	const int cube_qtd = 25;
-	const float cube_spread = 1.5f;
-	const glm::vec3 cube_size_variation = glm::vec3(1.0f, 1.0f, 1.0f);
+	const int cube_qtd = 3250;
+	const float cube_spread = 0.001f;
+	const float rotation_variation = 0.001f;
+	const glm::vec3 cube_size_variation = glm::vec3(0.005f, 0.005f, 0.005f);
 	auto cube_3dmodel = Base::Model::CreateModel("resources/models/cube/cube.obj");
 	for (int i = 0; i < cube_qtd; i++)
 	{
@@ -54,32 +60,36 @@ void Game::OnAttach()
 
 		auto& cube_transform = m_Cubes[tag_name].GetComponent<Base::TransformComponent>();
 		//Cube position
+		float neg_faq_x = M_random() % 2 == 0 ? 1.0f : -1.0f;
+		float neg_faq_y = M_random() % 2 == 0 ? 1.0f : -1.0f;
+		float neg_faq_z = M_random() % 2 == 0 ? 1.0f : -1.0f;
 		cube_transform.Translation =
 		{
-			(float)(M_random() << 2) * cube_spread,
-			(float)(M_random() << 2) * cube_spread,
-			(float)(M_random() << 2) * cube_spread
+			(float)(M_random() << 2) * neg_faq_x * cube_spread * (i * 1.1f) ,
+			(float)(M_random() << 2) * neg_faq_y * cube_spread * (i * 1.1f) ,
+			(float)(M_random() << 2) * neg_faq_z * cube_spread * (i * 1.1f) 
 		};
 
 		cube_transform.Rotation =
 		{
-			glm::radians((float)(M_random() << 1)),
-			glm::radians((float)(M_random() << 1)),
-			glm::radians((float)(M_random() << 1))
+			glm::radians((float)(M_random() << 1) * rotation_variation),
+			glm::radians((float)(M_random() << 1) * rotation_variation),
+			glm::radians((float)(M_random() << 1) * rotation_variation)
 		};
 
+		auto v = (float)M_random();
 		cube_transform.Scale =
 		{
-			(float)M_random() * cube_size_variation.x,
-			(float)M_random() * cube_size_variation.y,
-			(float)M_random() * cube_size_variation.z
+			cube_size_variation.x * v + (i * 0.01f),
+			cube_size_variation.y * v + (i * 0.01f),
+			cube_size_variation.z * v + (i * 0.01f)
 		};
 
 		auto& cube_model = m_Cubes[tag_name].AddComponent<Base::ModelComponent>(cube_3dmodel);
 		cube_model.Model3D->OverrideTexture(map_texture);
 	}
 
-	m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Translation = { 0.0f,0.0f,3.0f };
+	//m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Translation = { 0.0f,0.0f,3.0f };
 
 	m_Scene->StartNativeScript(m_Camera);
 
@@ -157,7 +167,7 @@ void Game::OnImGui()
 	auto& camera_script = m_Camera.GetComponent<Base::NativeScriptComponent>();
 	float* vel = &((Base::PerspectiveScript*)camera_script.Instance)->default_speed;
 
-	if(ImGui::SliderFloat("Camera Velocity", vel , 1.0f, 400.0f))
+	if(ImGui::SliderFloat("Camera Velocity", vel , 1.0f, 999.0f))
 		((Base::PerspectiveScript*)camera_script.Instance)->SyncSpeed();
 
 	ImGui::End();

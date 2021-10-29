@@ -17,6 +17,7 @@ protected:
 
 public:
 	Game();
+	Game(const char* title, float_t w, float_t h, bool resizeble);
 	~Game();
 
 	virtual void OnAttach() override;
