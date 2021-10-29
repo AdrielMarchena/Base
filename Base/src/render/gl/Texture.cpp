@@ -57,7 +57,6 @@ namespace render
 	{
 		BASE_CORE_ASSERT(info.Width > 0 &&
 			info.Height > 0 &&
-			info.Buffer != nullptr &&
 			info.Channels > 2 &&
 			info.Channels < 5
 		,"Some ImageInformation is wrong");
