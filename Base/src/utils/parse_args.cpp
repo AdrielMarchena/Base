@@ -4,6 +4,20 @@ namespace Base
 {
 namespace utils
 {
+
+	void ConsoleArgsParser::RegistryFlag(const std::string& flag_name)
+	{
+		const std::string lower = utils::ToLower(flag_name);
+		if (m_Flags.find(lower) == m_Flags.end())
+			m_Flags[lower];
+	}
+	void ConsoleArgsParser::RegistryOption(const std::string& opt_name)
+	{
+		const std::string lower = utils::ToLower(opt_name);
+		if (m_Options.find(lower) == m_Options.end())
+			m_Options[lower];
+	}
+
 	float ConsoleArgsParser::GetOptionAsFloat(const std::string& opt) const
 	{
 		const std::string o = GetOptionAsString(opt);
@@ -56,7 +70,7 @@ namespace utils
 		return false;
 	}
 
-	void ConsoleArgsParser::ParseArgs(int argc, char* argv[])
+	void ConsoleArgsParser::P_ParseArgs(int argc, char* argv[])
 	{
 		if (argc > 1)
 		{
@@ -78,28 +92,35 @@ namespace utils
 								std::string optionName = arg.substr(0, equalSignPos);
 								std::string optionValue = arg.substr(equalSignPos + 1);
 
-								//Filter by Options Registred
-								/*auto optionIt = m_Options.find(optionName);
-								if (optionIt != m_Options.end())
+								if (m_RegistryMode)
 								{
-									optionIt->second = optionValue;
-								}*/
+									auto optionIt = m_Options.find(optionName);
+									if (optionIt != m_Options.end())
+									{
+										optionIt->second = optionValue;
+									}
+								}
+								else
+								{
+									m_Options[utils::ToLower(optionName)] = optionValue;
+								}
 
-								//Registry everything
-								m_Options[utils::ToLower(optionName)] = optionValue;
 							}
 						}
 						else
 						{
-							//Filter by Flagds Registred
-							/*auto flagIt = m_Flags.find(arg);
-							if (flagIt != std::end(m_Flags))
+							if (m_RegistryMode)
 							{
-								flagIt->second = true;
-							}*/
-
-							//Registry everything
-							m_Flags[utils::ToLower(arg)] = true;
+								auto flagIt = m_Flags.find(arg);
+								if (flagIt != std::end(m_Flags))
+								{
+									flagIt->second = true;
+								}
+							}
+							else
+							{
+								m_Flags[utils::ToLower(arg)] = true;
+							}
 						}
 					}
 				}
