@@ -28,6 +28,11 @@ namespace Base
 		static void Init();
 		static void Dispose();
 
+		static void SetSkyBox(Ref<render::Shader> shader,const std::vector<std::string>& faces);
+		static void SetSkyBox(Ref<render::Shader> shader,const std::string& dir);
+		static void SetSkyBox(const std::string& shader,const std::vector<std::string>& faces);
+		static void SetSkyBox(const std::string& shader,const std::string& dir);
+
 		static void StartScene(const Camera& camera, const glm::mat4& camera_transform);
 		static void StartBatch();
 		static void Flush();

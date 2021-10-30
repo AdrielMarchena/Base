@@ -69,7 +69,7 @@ namespace Base
 		};
 		float default_yaw = -90.0f;
 		float default_pitch = 0.0f;
-		float default_speed = 155.0f;
+		float default_speed = 3.0f;
 		float default_sensitivity = 0.1f;
 		float default_zoom = 45.0f;
 		bool mouse_is_hide = true;
@@ -91,6 +91,7 @@ namespace Base
 		void SyncSpeed()
 		{
 			MovementSpeed = default_speed;
+			MouseSensitivity = default_sensitivity;
 		}
 
 		void ProcessKeyboard(Camera_Movement direction,float dt)
@@ -132,8 +133,8 @@ namespace Base
 			Zoom -= (float)yoffset;
 			if (Zoom < 1.0f)
 				Zoom = 1.0f;
-			if (Zoom > 45.0f)
-				Zoom = 45.0f;
+			if (Zoom > 90.0f)
+				Zoom = 90.0f;
 
 			auto& camera = GetComponent<CameraComponent>();
 			camera.Camera.SetPerspectiveVerticalFOV(glm::radians(Zoom));

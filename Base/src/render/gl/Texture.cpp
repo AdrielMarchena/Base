@@ -61,18 +61,24 @@ namespace render
 			info.Channels < 5
 		,"Some ImageInformation is wrong");
 
-		GLenum internalFormat = 0, dataFormat = 0;
-		if (info.Channels == 4)
+		if (m_ImageInfo.Channels == 4)
 		{
-			internalFormat = GL_RGBA8;
-			dataFormat = GL_RGBA;
+			if(!m_ImageInfo.InternalFormat)
+				m_ImageInfo.InternalFormat = GL_RGBA8;
+			if(!m_ImageInfo.DataFormat)
+				m_ImageInfo.DataFormat = GL_RGBA;
 		}
-		else if (info.Channels == 3)
+		else if (m_ImageInfo.Channels == 3)
 		{
-			internalFormat = GL_RGB8;
-			dataFormat = GL_RGB;
+			if (!m_ImageInfo.InternalFormat)
+				m_ImageInfo.InternalFormat = GL_RGB8;
+			if (!m_ImageInfo.DataFormat)
+				m_ImageInfo.DataFormat = GL_RGB;
 		}
-		BASE_CORE_ASSERT(internalFormat & dataFormat, "Format not supported");
+		
+		if (!m_ImageInfo.Type)
+			m_ImageInfo.Type = GL_UNSIGNED_BYTE;
+		BASE_CORE_ASSERT(m_ImageInfo.InternalFormat & m_ImageInfo.DataFormat, "Format not supported");
 
 		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, info.UnpackAligment));
 		GLCall(glGenTextures(1, &m_Id));
@@ -86,12 +92,12 @@ namespace render
 
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 
 							0, 
-							internalFormat, 
+							m_ImageInfo.InternalFormat,
 							m_ImageInfo.Width, 
 							m_ImageInfo.Height, 
 							0, 
-							dataFormat, 
-							GL_UNSIGNED_BYTE, 
+							m_ImageInfo.DataFormat,
+							m_ImageInfo.Type,
 							m_ImageInfo.Buffer
 				));
 		if(info.GenerateMipMap)

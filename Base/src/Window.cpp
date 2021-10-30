@@ -168,6 +168,7 @@ namespace Base
 		{
 			WindowProps().width = w;
 			WindowProps().height = h;
+			WindowProps().aspect_ratio = B_GetRatio();
 			WindowProps().minimized = false;
 
 			//Initialize Log system (spdlog)
