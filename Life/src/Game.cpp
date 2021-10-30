@@ -3,8 +3,10 @@
 #include "scene/Components.h"
 #include "scene/CameraScript.h"
 #include "imgui.h"
-
+#include "render/3d/Render3D.h"
 #include "utils/RandomList.h"
+
+float scale_factor = 1.0f;
 
 Game::Game()
 	:Base::windowing::Window()
@@ -22,7 +24,6 @@ Game::~Game()
 
 void Game::OnAttach()
 {
-
 	m_Scene = Base::MakeScope <Base::Scene>();
 	m_Map = m_Scene->CreateEntity("Map");
 	m_Camera = m_Scene->CreateEntity("Main_Camera3D");
@@ -48,7 +49,7 @@ void Game::OnAttach()
 
 	auto& map_texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
 
-	const int cube_qtd = 3250;
+	const int cube_qtd = 3000;
 	const float cube_spread = 0.001f;
 	const float rotation_variation = 0.001f;
 	const glm::vec3 cube_size_variation = glm::vec3(0.005f, 0.005f, 0.005f);
@@ -89,12 +90,28 @@ void Game::OnAttach()
 		cube_model.Model3D->OverrideTexture(map_texture);
 	}
 
-	//m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Translation = { 0.0f,0.0f,3.0f };
+	m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Translation = { 0.0f,0.0f,3.0f };
+	m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Scale = { 0.1f,0.1f,0.1f };
+
+	m_Cubes["Cube_2"].GetComponent<Base::TransformComponent>().Translation = { 10.0f,10.0f,3.0f };
+	m_Cubes["Cube_2"].GetComponent<Base::TransformComponent>().Scale = { 1.0f,1.0f,1.0f };
 
 	m_Scene->StartNativeScript(m_Camera);
 
 	HideCursor();
 	((Base::PerspectiveScript*)scp3D.Instance)->mouse_is_hide = true;
+
+	std::vector<std::string> faces =
+	{
+		"resources/skybox/right.jpg",
+		"resources/skybox/left.jpg",
+		"resources/skybox/top.jpg",
+		"resources/skybox/bottom.jpg",
+		"resources/skybox/front.jpg",
+		"resources/skybox/back.jpg"
+	};
+
+	Base::Render3D::SetSkyBox("shaders/CubeMap.glsl", faces);
 
 }
 
@@ -166,9 +183,22 @@ void Game::OnImGui()
 
 	auto& camera_script = m_Camera.GetComponent<Base::NativeScriptComponent>();
 	float* vel = &((Base::PerspectiveScript*)camera_script.Instance)->default_speed;
+	float* se = &((Base::PerspectiveScript*)camera_script.Instance)->default_sensitivity;
 
-	if(ImGui::SliderFloat("Camera Velocity", vel , 1.0f, 999.0f))
+	if(ImGui::SliderFloat("Camera Velocity", vel , 1.0f, 10.0f))
 		((Base::PerspectiveScript*)camera_script.Instance)->SyncSpeed();
+	if (ImGui::SliderFloat("Camera Mouse S", se, 0.0001f, 1.0f))
+		((Base::PerspectiveScript*)camera_script.Instance)->SyncSpeed();
+	
+
+	auto& cam = m_Camera.GetComponent<Base::CameraComponent>().Camera;
+
+	if (ImGui::SliderFloat("Scale Factor", &scale_factor, 0.05f, 5.0f))
+	{
+		int w = Base::WindowProps().width;
+		int h = Base::WindowProps().height;
+		m_Scene->SetFrameBuff(w, h, scale_factor);
+	}
 
 	ImGui::End();
 }
@@ -184,4 +214,5 @@ void Game::OnResize(const Base::ResizeArgs& args)
 		return;
 	auto& c3D = m_Camera.GetComponent<Base::CameraComponent>();
 	c3D.Camera.SetViewportSize(args.new_w, args.new_h);
+	m_Scene->SetFrameBuff(args.new_w, args.new_h,scale_factor);
 }
