@@ -59,6 +59,9 @@ namespace render
 		bool KeepSourceBuffer = true; // Set to true to Keep the pointer to the source buffer
 		bool CopySourceBuffer = false; // Set to true to Copy the buffer (memcpy_s)
 
+		uint32_t InternalFormat = 0; //If zero, will guess using Channels value
+		uint32_t DataFormat = 0; //If zero, will guess using Channels value
+		uint32_t Type = 0; //If zero, GL_UNSIGNED_BYTE
 	};
 
 	class Texture

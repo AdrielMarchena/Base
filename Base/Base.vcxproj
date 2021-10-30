@@ -133,6 +133,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
@@ -142,6 +143,7 @@
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
+    <VcpkgConfiguration>Release</VcpkgConfiguration>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
@@ -286,6 +288,7 @@
     <ClInclude Include="src\render\3d\SkyBox.h" />
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\render\gl\Framebuffer.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h" />
@@ -355,8 +358,10 @@
     <ClInclude Include="src\utils\threading.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Base\Base.cpp" />
     <ClCompile Include="src\render\3d\SkyBox.cpp" />
     <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\render\gl\Framebuffer.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp" />
     <ClCompile Include="src\audio\AudioDevice.cpp" />
@@ -364,7 +369,6 @@
     <ClCompile Include="src\audio\SoundBuffer.cpp" />
     <ClCompile Include="src\camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\camera\OrthographicCameraController.cpp" />
-    <ClCompile Include="src\definer_Stb.cpp" />
     <ClCompile Include="src\ent\Animator.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\input\Mouse.cpp" />

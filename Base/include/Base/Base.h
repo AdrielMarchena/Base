@@ -37,10 +37,10 @@ namespace Base
 
 	struct WindowsProps
 	{
-		int width = 800;
-		int height = 600;
-		double aspect_ratio = (double)width / (double)height;
-		bool minimized = false;
+		static int width;
+		static int height;
+		static double aspect_ratio;
+		static bool minimized;
 	};
 	static WindowsProps& WindowProps()
 	{

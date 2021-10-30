@@ -245,6 +245,7 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="src\render\3d\SkyBox.h" />
+    <ClInclude Include="src\render\gl\Framebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Log.cpp" />
@@ -267,7 +268,6 @@
     <ClCompile Include="src\camera\OrthographicCameraController.cpp">
       <Filter>camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\definer_Stb.cpp" />
     <ClCompile Include="src\ent\Animator.cpp">
       <Filter>ent</Filter>
     </ClCompile>
@@ -360,5 +360,7 @@
       <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="src\render\3d\SkyBox.cpp" />
+    <ClCompile Include="src\render\gl\Framebuffer.cpp" />
+    <ClCompile Include="src\Base\Base.cpp" />
   </ItemGroup>
 </Project>
