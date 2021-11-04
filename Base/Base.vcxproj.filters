@@ -248,6 +248,8 @@
     <ClInclude Include="src\render\gl\Framebuffer.h" />
     <ClInclude Include="src\render\gl\FramebufferRender.h" />
     <ClInclude Include="src\render\gl\base_gl.h" />
+    <ClInclude Include="src\render\gl\TextureSpecifications.h" />
+    <ClInclude Include="src\render\gl\FramebufferSpecifications.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Log.cpp" />
@@ -365,5 +367,6 @@
     <ClCompile Include="src\render\gl\Framebuffer.cpp" />
     <ClCompile Include="src\Base\Base.cpp" />
     <ClCompile Include="src\render\gl\FramebufferRender.cpp" />
+    <ClCompile Include="src\render\gl\TextureSpecifications.cpp" />
   </ItemGroup>
 </Project>

@@ -49,7 +49,12 @@ void Game::OnAttach()
 
 	auto& map_texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
 
-	const int cube_qtd = 3000;
+	int cube_qtd = 5;
+
+#if defined BASE_RELEASE || BASE_DIST
+	cube_qtd = 1500;
+#endif
+
 	const float cube_spread = 0.001f;
 	const float rotation_variation = 0.001f;
 	const glm::vec3 cube_size_variation = glm::vec3(0.005f, 0.005f, 0.005f);
@@ -89,12 +94,6 @@ void Game::OnAttach()
 		auto& cube_model = m_Cubes[tag_name].AddComponent<Base::ModelComponent>(cube_3dmodel);
 		cube_model.Model3D->OverrideTexture(map_texture);
 	}
-
-	m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Translation = { 0.0f,0.0f,3.0f };
-	m_Cubes["Cube_1"].GetComponent<Base::TransformComponent>().Scale = { 0.1f,0.1f,0.1f };
-
-	m_Cubes["Cube_2"].GetComponent<Base::TransformComponent>().Translation = { 10.0f,10.0f,3.0f };
-	m_Cubes["Cube_2"].GetComponent<Base::TransformComponent>().Scale = { 1.0f,1.0f,1.0f };
 
 	m_Scene->StartNativeScript(m_Camera);
 
@@ -190,7 +189,6 @@ void Game::OnImGui()
 	if (ImGui::SliderFloat("Camera Mouse S", se, 0.0001f, 1.0f))
 		((Base::PerspectiveScript*)camera_script.Instance)->SyncSpeed();
 	
-
 	auto& cam = m_Camera.GetComponent<Base::CameraComponent>().Camera;
 	static bool using_grade = true;
 	if (ImGui::SliderFloat("Scale Factor", &scale_factor, 0.05f, 5.0f) || ImGui::Checkbox("Use Grade",&using_grade))
