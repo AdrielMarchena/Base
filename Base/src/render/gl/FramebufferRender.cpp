@@ -17,14 +17,13 @@ namespace Base
 	FramebufferRender::FramebufferRender(const FrameBufferRenderSpecification& spec)
 		:m_Specs(spec)
 	{
-
 		//Create LookUpTable lut16
 		auto info = render::Texture::GetImageInfo("resources/images/lookup.png");
 		//info.Target = render::GL_TextureTarget::TEXTURE_3D;
-		info.MinFilter = render::GL_TextureFilter::LINEAR;
-		info.MagFilter = render::GL_TextureFilter::LINEAR;
-		info.WrapS = render::GL_TextureWrap::REPEAT;
-		info.WrapT = render::GL_TextureWrap::REPEAT;
+		info.MinFilter = GL_TextureFilter::LINEAR;
+		info.MagFilter = GL_TextureFilter::LINEAR;
+		info.WrapS = GL_TextureWrap::REPEAT;
+		info.WrapT = GL_TextureWrap::REPEAT;
 		//info.WrapR = render::GL_TextureWrap::CLAMP_EDGE;
 		m_CurrentLookUpTable = MakeRef<render::Texture>(info);
 
@@ -124,7 +123,7 @@ namespace Base
 		//render::GL_TextureTarget target = m_Framebuffer->GetColorTexture()->GetInformation().Target;
 
 		GLCall(glActiveTexture(GL_TEXTURE0));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_Framebuffer->GetColorTexture()->GetId()));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_Framebuffer->GetColorTexture(0)));
 
 		GLCall(glActiveTexture(GL_TEXTURE1));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_CurrentLookUpTable->GetId()));

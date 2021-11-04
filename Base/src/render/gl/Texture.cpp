@@ -13,68 +13,17 @@ namespace Base
 {
 namespace render 
 {
-	static inline unsigned int GL_SwithTextureFilter(GL_TextureFilter& filter_type)
-	{
-		switch (filter_type)
-		{
-		case GL_TextureFilter::LINEAR:
-			return GL_LINEAR;
-		case GL_TextureFilter::NEAREST:
-			return GL_NEAREST;
-		case GL_TextureFilter::LINEAR_MIPMAP_LINEAR:
-			return GL_LINEAR_MIPMAP_LINEAR;
-		case GL_TextureFilter::NEAREST_MIPMAP_NEAREST:
-			return GL_NEAREST_MIPMAP_NEAREST;
-		default:
-			BASE_CORE_ASSERT(false, "Unknow Texture Filter");
-			break;
-		}
-		return 0;
-	}
-	static inline unsigned int GL_SwithTextureWrap(GL_TextureWrap& wrap_type)
-	{
-		switch (wrap_type)
-		{
-		case GL_TextureWrap::REPEAT:
-			return GL_REPEAT;
-		case GL_TextureWrap::MIRROR_REPEAT:
-			return GL_MIRRORED_REPEAT;
-		case GL_TextureWrap::CLAMP_EDGE:
-			return GL_CLAMP_TO_EDGE;
-		case GL_TextureWrap::CLAMP_BORDER:
-			return GL_CLAMP_TO_BORDER;
-		default:
-			BASE_CORE_ASSERT(false, "Unknow Texture Wrap");
-			break;
-		}
-		return 0;
-	}
-
-	static inline unsigned int GL_SwithTextureTarget(GL_TextureTarget& wrap_type)
-	{
-		switch (wrap_type)
-		{
-		case GL_TextureTarget::TEXTURE_2D:
-			return GL_TEXTURE_2D;
-		case GL_TextureTarget::TEXTURE_3D:
-			return GL_TEXTURE_3D;
-		default:
-			BASE_CORE_ASSERT(false, "Unknow Texture Target");
-			break;
-		}
-		return 0;
-	}
 
 	Ref<Texture> Texture::m_WhiteTexture;
 
-	Texture::Texture(const ImageInformation& info, const std::string& path)
+	Texture::Texture(const TextureSpecifications& info, const std::string& path)
 		:m_ImageInfo(info),m_Path(path),m_Name(info.Name)
 	{
 		BASE_CORE_ASSERT(info.Width > 0 &&
 			info.Height > 0 &&
 			info.Channels > 2 &&
 			info.Channels < 5
-		,"Some ImageInformation is wrong");
+		,"Some TextureSpecifications is wrong");
 
 		if (m_ImageInfo.Channels == 4)
 		{
@@ -99,17 +48,17 @@ namespace render
 		GLCall(glGenTextures(1, &m_Id));
 		BASE_CORE_ASSERT(m_Id, "Texture Id is 0");
 
-		GLenum target = GL_SwithTextureTarget(m_ImageInfo.Target);
+		uint32_t target = GLSwitch::TextureTarget(m_ImageInfo.Target);
 
 		GLCall(glBindTexture(target, m_Id));
-		GLCall(glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_SwithTextureFilter(m_ImageInfo.MinFilter)));
-		GLCall(glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_SwithTextureFilter(m_ImageInfo.MagFilter)));
-		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_SwithTextureWrap(m_ImageInfo.WrapS)));
-		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_SwithTextureWrap(m_ImageInfo.WrapT)));
+		GLCall(glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GLSwitch::TextureFilter(m_ImageInfo.MagFilter)));
+		GLCall(glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GLSwitch::TextureFilter(m_ImageInfo.MinFilter)));
+		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_S, GLSwitch::TextureWrap(m_ImageInfo.WrapS)));
+		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_T, GLSwitch::TextureWrap(m_ImageInfo.WrapT)));
 
 		if (target == GL_TEXTURE_3D)
 		{
-			GLCall(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_SwithTextureWrap(m_ImageInfo.WrapR)));
+			GLCall(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GLSwitch::TextureWrap(m_ImageInfo.WrapR)));
 			GLCall(glTexImage3D(GL_TEXTURE_3D,
 				0,
 				m_ImageInfo.InternalFormat,
@@ -191,7 +140,7 @@ namespace render
 		}
 	}
 
-	Ref<Texture> Texture::CreateTexture(ImageInformation& info)
+	Ref<Texture> Texture::CreateTexture(TextureSpecifications& info)
 	{
 		return MakeRef<Texture>(info);
 	}
@@ -204,7 +153,7 @@ namespace render
 		return MakeRef<Texture>(GetImageInfo(path),path);
 	}
 
-	void Texture::CreatePng(const std::string& path, const ImageInformation& image_info)
+	void Texture::CreatePng(const std::string& path, const TextureSpecifications& image_info)
 	{
 		BASE_ASSERT(image_info.Width > 0 && image_info.Height > 0 && image_info.Buffer != nullptr && path != "" && image_info.Channels > 2);
 		auto type = image_info.Channels == 4 ? LodePNGColorType::LCT_RGBA : LodePNGColorType::LCT_RGB;
@@ -222,7 +171,7 @@ namespace render
 	{
 		static bool once = [&]()
 		{
-			ImageInformation info;
+			TextureSpecifications info;
 			info.Width = 1;
 			info.Height = 1;
 			info.Channels = 4;
@@ -272,7 +221,7 @@ namespace render
 		m_WhiteTexture.reset();
 	}
 
-	ImageInformation Texture::GetImageInfo(const std::string& path)
+	TextureSpecifications Texture::GetImageInfo(const std::string& path)
 	{
 		const std::string ext = utils::ToLower(path.substr(path.find_last_of('.') + 1));
 		
@@ -284,9 +233,9 @@ namespace render
 		return GetImageInfoStbi(path);
 	}
 
-	ImageInformation Texture::GetImageInfoLodePNG(const std::string& path)
+	TextureSpecifications Texture::GetImageInfoLodePNG(const std::string& path)
 	{
-		ImageInformation info;
+		TextureSpecifications info;
 
 		//TODO: Flip vertically
 		unsigned w = 0, h = 0;
@@ -329,10 +278,10 @@ namespace render
 		return info;
 	}
 
-	ImageInformation Texture::GetImageInfoStbi(const std::string& path)
+	TextureSpecifications Texture::GetImageInfoStbi(const std::string& path)
 	{
 		//TODO: Fix this stbi 'no SOI' bullshit 
-		ImageInformation info;
+		TextureSpecifications info;
 
 		stbi_set_flip_vertically_on_load(1);
 		auto px = stbi_load(path.c_str(), &info.Width, &info.Height, &info.Channels, 0);

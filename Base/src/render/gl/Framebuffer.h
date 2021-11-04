@@ -1,61 +1,29 @@
 #pragma once
 
 #include "Base/Base.h"
+#include "utils/base_assert.h"
 #include "Texture.h"
 #include <vector>
+#include "FramebufferSpecifications.h"
 namespace Base
 {
-
-	enum class FrambufferTextureFormat
-	{
-		NONE = 0,
-		RGBA8,
-		DEPTH24STENCIL8,
-		DEPTH = DEPTH24STENCIL8
-	};
-
-	struct FramebufferTextureSpecification
-	{
-		FrambufferTextureFormat TextureFormat;
-
-		FramebufferTextureSpecification() = default;
-		FramebufferTextureSpecification(FrambufferTextureFormat format)
-			:TextureFormat(format){}
-
-	};
-
-	struct FramebufferAttachmentSpecification
-	{
-		std::vector<FramebufferTextureSpecification> Attachment;
-
-		FramebufferAttachmentSpecification() = default;
-		FramebufferAttachmentSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
-			:Attachment(attachments){}
-
-	};
-
-	struct FramebufferSpecification
-	{
-		uint32_t width;
-		uint32_t height;
-		FramebufferAttachmentSpecification Attachments;
-		bool SwapChainTarget = false;
-	};
-
 	class Framebuffer
 	{
 	private:
 		uint32_t m_Id;
 		uint32_t m_DepthBuffer;
-		Ref<render::Texture> m_ColorTexture;
-		Ref<render::Texture> m_DepthTexture;
+		std::vector<uint32_t> m_ColorTextures;
+		//uint32_t m_DepthTexture;
 		FramebufferSpecification m_Specs;
+
+		std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecs;
+		FramebufferTextureSpecification m_DepthAttachmentSpec;
 	public:
 		Framebuffer(const FramebufferSpecification& specs);
 		~Framebuffer();
 
-		Ref<render::Texture> GetColorTexture() const { return m_ColorTexture; }
-		Ref<render::Texture> GetDepthTexture() const { return m_DepthTexture; }
+		uint32_t GetColorTexture(uint32_t index = 0) const { BASE_ASSERT(index < m_ColorTextures.size()); return m_ColorTextures[index]; }
+		//Ref<render::Texture> GetDepthTexture() const { return m_DepthTexture; }
 		void Invalidate();
 
 		void Bind();
