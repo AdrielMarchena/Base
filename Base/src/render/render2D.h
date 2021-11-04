@@ -63,6 +63,24 @@ namespace render
 		static const Ref<Shader> GetTextShader();
 		static const Ref<Shader> GetTriShader();
 
+		static void FlushQuads() { m_QuadRender->Flush(); }
+		static void FlushTriangles() { m_TriRender->Flush(); }
+		static void FlushLines() { m_LineRender->Flush(); }
+		static void FlushCircles() { m_CircleRender->Flush(); }
+		static void FlushText() { m_TextRender->Flush(); }
+
+		static void EndBatchQuads() { m_QuadRender->EndBatch(); }
+		static void EndBatchTriangles() { m_TriRender->EndBatch(); }
+		static void EndBatchLines() { m_LineRender->EndBatch(); }
+		static void EndBatchCircles() { m_CircleRender->EndBatch(); }
+		static void EndBatchText() { m_TextRender->EndBatch(); }
+
+		static void BeginBatchQuads() { m_QuadRender->BeginBatch(); }
+		static void BeginBatchTriangles() { m_TriRender->BeginBatch(); }
+		static void BeginBatchLines() { m_LineRender->BeginBatch(); }
+		static void BeginBatchCircles() { m_CircleRender->BeginBatch(); }
+		static void BeginBatchText() { m_TextRender->BeginBatch(); }
+
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
 		
