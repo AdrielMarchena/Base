@@ -310,5 +310,9 @@ namespace render
 	{
 		return m_Shaders.find(name) != m_Shaders.end();
 	}
+	Ref<Shader> ShaderLib::operator[](const std::string& name)
+	{
+		return Get(name);
+	}
 }
 }

@@ -2,7 +2,7 @@
 #pragma once
 #include "entt/entt.hpp"
 #include "args/UpdateArgs.h"
-#include "render/gl/Framebuffer.h"
+#include "render/gl/FramebufferRender.h"
 #include "SceneCamera.h"
 namespace Base
 {
@@ -22,15 +22,15 @@ namespace Base
 		void DestroyNativeScript(Entity& ent);
 		void AwakeNativeScript(Entity& ent);
 
-		void SetFrameBuff(unsigned int w, unsigned int h, float scale_factor = 1.0f);
+		void SetFrameBuff(unsigned int w, unsigned int h, float scale_factor = 1.0f,bool using_lut = true);
 
 		//entt::registry& Reg() { return m_Registry; }
 		void OnUpdate(const UpdateArgs& args);
 	private:
 		void DrawScene(float dt);
 
-		Scope<Framebuffer> m_FrameBuffer;
-		SceneCamera m_Camera;
+		Scope<FramebufferRender> m_FrameBufferRender;
+		SceneCamera m_FramebufferCamera;
 		
 		entt::registry m_Registry;
 		friend class Entity;

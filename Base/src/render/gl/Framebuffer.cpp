@@ -7,7 +7,7 @@
 namespace Base
 {
 	Framebuffer::Framebuffer(const FramebufferSpecification& specs)
-		:m_Id(NULL),m_Specs(specs)
+		:m_Id(NULL),m_DepthBuffer(NULL),m_Specs(specs)
 	{
 		Invalidate();
 	}
@@ -45,10 +45,10 @@ namespace Base
 		info.GenerateMipMap = false;
 		m_ColorTexture = render::Texture::CreateTexture(info);
 
-		GLCall(glGenRenderbuffers(1, &m_DepthBuffer));
+		/*GLCall(glGenRenderbuffers(1, &m_DepthBuffer));
 		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_DepthBuffer));
-		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Specs.width, m_Specs.height));
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_DepthBuffer);
+		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Specs.width, m_Specs.height));
+		GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_DepthBuffer));*/
 
 		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorTexture->GetId(), 0));
 		
@@ -60,8 +60,8 @@ namespace Base
 		
 		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture->GetId(), 0));
 		
-		GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-		glDrawBuffers(1, DrawBuffers);
+		//GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+		//GLCall(glDrawBuffers(1, DrawBuffers));
 
 		GLCall(BASE_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE,"Framebuffer incomplete"));
 
@@ -73,7 +73,8 @@ namespace Base
 	{
 		BASE_ASSERT(m_Id);
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_Id));
-		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_DepthBuffer));
+		if(m_DepthBuffer)
+			GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_DepthBuffer));
 	}
 
 	void Framebuffer::Unbind()

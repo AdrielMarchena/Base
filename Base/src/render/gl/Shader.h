@@ -74,6 +74,8 @@ namespace render
 		Ref<Shader> Get(const std::string& name);
 
 		bool Exists(const std::string& name) const;
+
+		Ref<Shader> operator[](const std::string& name);
 	};
 
 }

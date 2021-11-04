@@ -50,6 +50,21 @@ namespace render
 		return 0;
 	}
 
+	static inline unsigned int GL_SwithTextureTarget(GL_TextureTarget& wrap_type)
+	{
+		switch (wrap_type)
+		{
+		case GL_TextureTarget::TEXTURE_2D:
+			return GL_TEXTURE_2D;
+		case GL_TextureTarget::TEXTURE_3D:
+			return GL_TEXTURE_3D;
+		default:
+			BASE_CORE_ASSERT(false, "Unknow Texture Target");
+			break;
+		}
+		return 0;
+	}
+
 	Ref<Texture> Texture::m_WhiteTexture;
 
 	Texture::Texture(const ImageInformation& info, const std::string& path)
@@ -84,26 +99,53 @@ namespace render
 		GLCall(glGenTextures(1, &m_Id));
 		BASE_CORE_ASSERT(m_Id, "Texture Id is 0");
 
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_Id));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_SwithTextureFilter(m_ImageInfo.MinFilter)));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_SwithTextureFilter(m_ImageInfo.MagFilter)));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_SwithTextureWrap(m_ImageInfo.WrapS)));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_SwithTextureWrap(m_ImageInfo.WrapT)));
+		GLenum target = GL_SwithTextureTarget(m_ImageInfo.Target);
 
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 
-							0, 
-							m_ImageInfo.InternalFormat,
-							m_ImageInfo.Width, 
-							m_ImageInfo.Height, 
-							0, 
-							m_ImageInfo.DataFormat,
-							m_ImageInfo.Type,
-							m_ImageInfo.Buffer
-				));
+		GLCall(glBindTexture(target, m_Id));
+		GLCall(glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_SwithTextureFilter(m_ImageInfo.MinFilter)));
+		GLCall(glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_SwithTextureFilter(m_ImageInfo.MagFilter)));
+		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_SwithTextureWrap(m_ImageInfo.WrapS)));
+		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_SwithTextureWrap(m_ImageInfo.WrapT)));
+
+		if (target == GL_TEXTURE_3D)
+		{
+			GLCall(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_SwithTextureWrap(m_ImageInfo.WrapR)));
+			GLCall(glTexImage3D(GL_TEXTURE_3D,
+				0,
+				m_ImageInfo.InternalFormat,
+				m_ImageInfo.Width,
+				m_ImageInfo.Height,
+				m_ImageInfo.Depth,
+				0,
+				m_ImageInfo.DataFormat,
+				m_ImageInfo.Type,
+				0
+			));
+			/*glPixelStorei(GL_UNPACK_ROW_LENGTH, 1024);
+			for (int z = 0; z < 32; ++z) {
+				glPixelStorei(GL_UNPACK_SKIP_PIXELS, 32 * z);
+				glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, z, m_ImageInfo.Width, m_ImageInfo.Height, 1, GL_RGBA, GL_UNSIGNED_BYTE, info.Buffer);
+			}
+			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);*/
+		}
+		else
+		{
+			GLCall(glTexImage2D(target,
+				0,
+				m_ImageInfo.InternalFormat,
+				m_ImageInfo.Width,
+				m_ImageInfo.Height,
+				0,
+				m_ImageInfo.DataFormat,
+				m_ImageInfo.Type,
+				info.Buffer
+			));
+		}
+		
 		if(info.GenerateMipMap)
-			glGenerateMipmap(GL_TEXTURE_2D);
+			glGenerateMipmap(target);
 
-		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		GLCall(glBindTexture(target, 0));
 
 		if (!info.KeepSourceBuffer)
 		{

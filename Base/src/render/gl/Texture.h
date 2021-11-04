@@ -27,6 +27,12 @@ namespace render
 		CLAMP_BORDER,
 	};
 	
+	enum class GL_TextureTarget : uint8_t
+	{
+		TEXTURE_2D = 1,
+		TEXTURE_3D
+	};
+
 	//unsigned int GL_SwithTextureFilter(GL_TextureFilter& filter_type);
 	//unsigned int GL_SwithTextureWrap(GL_TextureWrap& wrap_type);
 
@@ -35,6 +41,7 @@ namespace render
 		//Image details
 		int32_t Width = 1;
 		int32_t Height = 1;
+		int32_t Depth = 1;
 		int32_t Channels = 4;
 		/* 
 		* if empty, will try get the name from the file
@@ -45,10 +52,13 @@ namespace render
 		
 		//Texture details
 		uint32_t UnpackAligment = 1;
+
+		GL_TextureTarget Target = GL_TextureTarget::TEXTURE_2D;
 		GL_TextureFilter MinFilter = GL_TextureFilter::NEAREST;
 		GL_TextureFilter MagFilter = GL_TextureFilter::NEAREST;
 		GL_TextureWrap WrapS = GL_TextureWrap::CLAMP_EDGE;
 		GL_TextureWrap WrapT = GL_TextureWrap::CLAMP_EDGE;
+		GL_TextureWrap WrapR = GL_TextureWrap::CLAMP_EDGE;
 		bool GenerateMipMap = true;
 
 		ImageInformation(const ImageInformation&) = default;

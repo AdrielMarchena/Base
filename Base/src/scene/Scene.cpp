@@ -8,22 +8,34 @@
 #include "utils/Instrumentor.h"
 
 #include "input/Keyboard.h"
-
+#include "glm/gtc/matrix_transform.hpp"
+#include "utils/gl_error_macro_db.h"
 namespace Base
 {
 	//TODO: temp
 	static TransformComponent m_CameraTransform;
 	static TransformComponent m_QuadTransform;
 	static float s_value = 1.0f;
+
 	Scene::Scene()
 	{
 		int width = WindowProps().width;
 		int height = WindowProps().height;
-		SetFrameBuff(width, height);
+		
+		FrameBufferRenderSpecification spec;
+		spec.width = width;
+		spec.height = height;
+		spec.scale_factor = 1.0f;
+		spec.use_grade = true;
+
+		m_FrameBufferRender = MakeScope<FramebufferRender>(spec);
+		SetFrameBuff(width, height, 1.0f);
+		
 	}
 
 	Scene::~Scene()
 	{
+		m_FrameBufferRender.reset();
 	}
 
 	void Scene::SceneBegin()
@@ -91,24 +103,21 @@ namespace Base
 			script.Instance->OnAwake();
 	}
 
-	void Scene::SetFrameBuff(unsigned int w, unsigned int h, float scale_factor)
+	void Scene::SetFrameBuff(unsigned int w, unsigned int h, float scale_factor, bool using_grade)
 	{
-		if (m_FrameBuffer)
-			delete m_FrameBuffer.release();
+
 		s_value = scale_factor;
-		FramebufferSpecification spec;
-		spec.Attachments = { FrambufferTextureFormat::RGBA8, FrambufferTextureFormat::DEPTH };
-		spec.width = w * scale_factor;
-		spec.height = h * scale_factor;
-		m_FrameBuffer = MakeScope<Framebuffer>(spec);
-
-		m_Camera.SetViewportSize(w, h);
-		float s = m_Camera.GetOrthographicSize();
-		
-		m_QuadTransform.Translation = { 0.0f, 0.0f, 0.0f };
-		m_QuadTransform.Rotation = { 0.0f, 0.0f, 0.0f };
-		m_QuadTransform.Scale = { s * 1.0f * Base::B_GetRatio(), s * 1.0f, 1.0f };
-
+		FrameBufferRenderSpecification& spec = m_FrameBufferRender->GetSpec();
+		spec.width = w;
+		spec.height = h;
+		spec.scale_factor = scale_factor;
+		spec.use_grade = using_grade;
+		m_FrameBufferRender->InvalidadeFrameBuffer();
+		int width = WindowProps().width;
+		int height = WindowProps().height;
+		m_FramebufferCamera.SetViewportSize(width, height);
+		float s = m_FramebufferCamera.GetOrthographicSize();
+		m_QuadTransform.Scale = { s * B_GetRatio() * 1.0f,1.0f * s, 0.5f };
 	}
 
 	void Scene::OnUpdate(const UpdateArgs& args)
@@ -127,10 +136,11 @@ namespace Base
 		}
 
 		{//Render Scope
-			m_FrameBuffer->Bind();
+			m_FrameBufferRender->BindFrameBuffer();
 			
 			int w = WindowProps().width;
 			int h = WindowProps().height;
+			 
 			glViewport(0, 0, w * s_value, h * s_value);
 			
 			BASE_PROFILE_SCOPE("Scene Render Scope");
@@ -224,6 +234,8 @@ namespace Base
 							D2D::DrawQuad(position.GetTransform(), sprite, Color::White, anim.Rotation, anim.Axis);
 						}
 					}
+					D2D::EndBatchQuads();
+					D2D::FlushQuads();
 				}
 
 				{// Circle
@@ -250,6 +262,8 @@ namespace Base
 						}
 					
 					}
+					D2D::EndBatchCircles();
+					D2D::FlushCircles();
 				}
 
 				//Finish the rendering
@@ -273,16 +287,18 @@ namespace Base
 				D3D::Flush();
 				D3D::EndScene();
 			}
-		m_FrameBuffer->Unbind();
-		glViewport(0, 0, w, h);
+			m_FrameBufferRender->UnbindFrameBuffer();
+			glViewport(0, 0, w, h);
+			
 		}//End Render Scope
-
-		this->DrawScene(args.dt);
+		
+		Render3D::Clear();
+		m_FrameBufferRender->DrawFrameBuffer(m_QuadTransform.GetTransform(), m_FramebufferCamera, m_CameraTransform.GetTransform());
 	}
 
 	void Scene::DrawScene(float dt)
 	{
-		using kb = input::Keyboard;
+		/*using kb = input::Keyboard;
 
 #if defined BASE_DEBUG
 		if (kb::isPress(BASE_KEY_RIGHT))
@@ -298,13 +314,26 @@ namespace Base
 		using D3D = Render3D;
 
 		D3D::Clear();
-		D2D::BeginScene(m_Camera, m_CameraTransform.GetTransform());
+		D2D::BeginScene(m_CameraTransform, m_CameraTransform.GetTransform());
 		D2D::BeginBatch();
 
-		D2D::DrawQuad(m_QuadTransform.GetTransform(), m_FrameBuffer->GetColorTexture());
-	
-		D2D::EndBatch();
-		D2D::Flush();
 
+		D2D::DrawQuad(m_QuadTransform.GetTransform(), m_FrameBufferRender->GetColorTexture());
+
+		if (using_l)
+		{
+			auto s = m_Shaders->Get("Framebuffer");
+			s->Bind();
+			GLCall(glActiveTexture(GL_TEXTURE2));
+			GLCall(glBindTexture(GL_TEXTURE_2D, m_GradeLutTexture->GetId()));
+			D2D::EndBatchQuads();
+			D2D::FlushQuads();
+		}	
+		else
+		{
+			D2D::EndBatch();
+			D2D::Flush();
+		}
+		*/
 	}
 }
