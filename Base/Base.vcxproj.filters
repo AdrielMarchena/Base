@@ -246,6 +246,8 @@
     </ClInclude>
     <ClInclude Include="src\render\3d\SkyBox.h" />
     <ClInclude Include="src\render\gl\Framebuffer.h" />
+    <ClInclude Include="src\render\gl\FramebufferRender.h" />
+    <ClInclude Include="src\render\gl\base_gl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Log.cpp" />
@@ -362,5 +364,6 @@
     <ClCompile Include="src\render\3d\SkyBox.cpp" />
     <ClCompile Include="src\render\gl\Framebuffer.cpp" />
     <ClCompile Include="src\Base\Base.cpp" />
+    <ClCompile Include="src\render\gl\FramebufferRender.cpp" />
   </ItemGroup>
 </Project>

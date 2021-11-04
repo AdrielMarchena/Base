@@ -288,7 +288,9 @@
     <ClInclude Include="src\render\3d\SkyBox.h" />
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\render\gl\base_gl.h" />
     <ClInclude Include="src\render\gl\Framebuffer.h" />
+    <ClInclude Include="src\render\gl\FramebufferRender.h" />
     <ClInclude Include="src\ResourceManager.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h" />
@@ -362,6 +364,7 @@
     <ClCompile Include="src\render\3d\SkyBox.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\render\gl\Framebuffer.cpp" />
+    <ClCompile Include="src\render\gl\FramebufferRender.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp" />
     <ClCompile Include="src\audio\AudioDevice.cpp" />

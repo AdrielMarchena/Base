@@ -192,12 +192,12 @@ void Game::OnImGui()
 	
 
 	auto& cam = m_Camera.GetComponent<Base::CameraComponent>().Camera;
-
-	if (ImGui::SliderFloat("Scale Factor", &scale_factor, 0.05f, 5.0f))
+	static bool using_grade = true;
+	if (ImGui::SliderFloat("Scale Factor", &scale_factor, 0.05f, 5.0f) || ImGui::Checkbox("Use Grade",&using_grade))
 	{
 		int w = Base::WindowProps().width;
 		int h = Base::WindowProps().height;
-		m_Scene->SetFrameBuff(w, h, scale_factor);
+		m_Scene->SetFrameBuff(w, h, scale_factor, using_grade);
 	}
 
 	ImGui::End();
