@@ -20,7 +20,7 @@ void MapScript::OnAwake()
 	columns = p_Columns;
 	rows = p_Rows;
 
-	Base::render::ImageInformation info;
+	Base::TextureSpecifications info;
 	info.Width = columns;
 	info.Height = rows;
 	info.UnpackAligment = 4;
@@ -28,10 +28,10 @@ void MapScript::OnAwake()
 	info.Channels = 4;
 	info.Buffer = Base::render::Texture::CreateTextureBuffer(info.Width, info.Height, info.Channels);
 	info.DeleteSourceBuffer = false;
-	info.MinFilter = Base::render::GL_TextureFilter::NEAREST;
-	info.MagFilter = Base::render::GL_TextureFilter::NEAREST;
-	info.WrapS = Base::render::GL_TextureWrap::REPEAT;
-	info.WrapT = Base::render::GL_TextureWrap::REPEAT;
+	info.MinFilter = Base::GL_TextureFilter::NEAREST;
+	info.MagFilter = Base::GL_TextureFilter::NEAREST;
+	info.WrapS = Base::GL_TextureWrap::REPEAT;
+	info.WrapT = Base::GL_TextureWrap::REPEAT;
 	info.DeleteSourceBuffer = false; //Delete the source buffer (texture_buffer)
 
 	//3D array
@@ -177,7 +177,7 @@ int cell_map::cell_state(int x, int y)
 void cell_map::next_generation(cell_map& next_map, Base::Ref<Base::render::Texture>& texture)
 {
 
-	static Base::render::ImageInformation info;
+	static Base::TextureSpecifications info;
 	info.Width = width;
 	info.Height = height;
 	info.Channels = 4;
@@ -185,10 +185,10 @@ void cell_map::next_generation(cell_map& next_map, Base::Ref<Base::render::Textu
 	info.Name = "cube";
 	info.Buffer = Base::render::Texture::CreateTextureBuffer(info.Width, info.Height, info.Channels);
 	info.KeepSourceBuffer = true;
-	info.MinFilter = Base::render::GL_TextureFilter::NEAREST;
-	info.MagFilter = Base::render::GL_TextureFilter::NEAREST;
-	info.WrapS = Base::render::GL_TextureWrap::REPEAT;
-	info.WrapT = Base::render::GL_TextureWrap::REPEAT;
+	info.MinFilter = Base::GL_TextureFilter::NEAREST;
+	info.MagFilter = Base::GL_TextureFilter::NEAREST;
+	info.WrapS = Base::GL_TextureWrap::REPEAT;
+	info.WrapT = Base::GL_TextureWrap::REPEAT;
 	info.DeleteSourceBuffer = false; //Delete the source buffer (texture_buffer)
 
 	unsigned int x, y, neighbor_count;
