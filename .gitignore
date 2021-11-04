@@ -78,5 +78,5 @@ bin-int
 */assimp/*
 
 #specific
-	#Base include subdirs
-	Base/include
+#Base include subdirs
+Base/include
