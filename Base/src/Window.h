@@ -37,13 +37,14 @@ namespace Base
 			glm::vec2 m_Resolution = { 800.0f,600.0f };
 			float m_AspectRatio = 1.0f;
 			bool m_Resizeble;
+			bool m_Fullscreen;
 			float m_Wid;
 			float m_Hei;
 
 			bool m_ClampMouse = true;
 		public:
 			
-			Window(const char* title = "Base", float_t w = 800, float_t h = 600, bool resizeble = true);
+			Window(const char* title = "Base", float_t w = 800, float_t h = 600, bool resizeble = true,bool fullscreen = false);
 			virtual ~Window();
 
 			Window(Window&) = delete;

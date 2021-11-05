@@ -163,8 +163,8 @@ namespace Base
 			return glfwGetWindowAttrib(m_Window,GLFW_HOVERED);
 		}
 
-		Window::Window(const char* title, float_t w, float_t h, bool resizeble)
-			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), myWindow(nullptr)
+		Window::Window(const char* title, float_t w, float_t h, bool resizeble,bool fullscreen)
+			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_Fullscreen(fullscreen),myWindow(nullptr)
 		{
 			WindowProps().width = w;
 			WindowProps().height = h;
@@ -190,6 +190,7 @@ namespace Base
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_DECORATED, fullscreen ? GLFW_FALSE : GLFW_TRUE);
 			glfwWindowHint(GLFW_RESIZABLE, resizeble ? GLFW_TRUE : GLFW_FALSE);
 			glfwWindowHint(GLFW_SAMPLES, 4);
 
