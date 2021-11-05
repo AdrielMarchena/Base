@@ -23,6 +23,8 @@ namespace Base
 		void AwakeNativeScript(Entity& ent);
 
 		void SetFrameBuff(unsigned int w, unsigned int h, float scale_factor = 1.0f,bool using_lut = true);
+		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const;
+		void SetPostEffect(const std::string& name);
 
 		//entt::registry& Reg() { return m_Registry; }
 		void OnUpdate(const UpdateArgs& args);

@@ -120,6 +120,16 @@ namespace Base
 		m_QuadTransform.Scale = { s * B_GetRatio() * 1.0f,1.0f * s, 0.5f };
 	}
 
+	void Scene::SetPostEffect(const std::string& name)
+	{
+		m_FrameBufferRender->UsePostEffect(name);
+	}
+
+	const std::unordered_map<std::string, FramebufferPostEffect>& Scene::GetPostEffects() const
+	{
+		return m_FrameBufferRender->GetPostEffects();
+	}
+
 	void Scene::OnUpdate(const UpdateArgs& args)
 	{
 		BASE_PROFILE_FUNCTION();

@@ -23,6 +23,13 @@ namespace Base
 		bool use_grade = true; //if true, use the framebuffer size to create lookup tables
 	};
 
+	struct FramebufferPostEffect
+	{
+		bool active = false;
+		std::vector<glm::vec2> offsets;
+		std::vector<float> kernel;
+	};
+
 	class FramebufferRender
 	{
 	private:
@@ -35,10 +42,14 @@ namespace Base
 		Scope<render::ShaderLib> m_Shaders;
 		Ref<render::Shader> m_CurrentShader;
 		Ref<Framebuffer> m_Framebuffer;
+
 		FramebufferQuad m_Quad;
 
 		FramebufferQuad* m_Buffer = nullptr;
 		FramebufferQuad* m_BufferPtr = nullptr;
+
+		std::unordered_map<std::string, FramebufferPostEffect> m_PostEffects;
+		FramebufferPostEffect* m_CurrentPostEffect = nullptr;
 	public:
 		FramebufferRender(const FrameBufferRenderSpecification& spec);
 		~FramebufferRender();
@@ -61,13 +72,17 @@ namespace Base
 		void AddLookUpTable(const Ref<render::Texture>& texture, const std::string& name = std::string());
 		void UseLookUpTable(const std::string& name);
 
+		void UsePostEffect(const std::string& name);
+		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const { return m_PostEffects; }
+
 		const std::unordered_map<std::string, Ref<render::Texture>>& GetLookUpTables() const { return m_LookUpTables; }
 		Ref <render::Texture> GetCurrentLookTable() const { return m_CurrentLookUpTable; }
 
 		Ref <render::Shader> GetCurrentShader() const { return m_CurrentShader; }
 	private:
 		void SetUpShader();
-
+		void SetUpPostEffects();
+		void UpdatePostEffects();
 	};
 
 }

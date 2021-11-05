@@ -29,17 +29,15 @@ namespace Base
 
 		m_LookUpTables[m_CurrentLookUpTable->GetName()] = m_CurrentLookUpTable;
 
-		//m_CurrentLookUpTable = render::Texture::GetWhiteTexture();
-
 		//Create ShaderLib
 		m_Shaders = MakeScope<render::ShaderLib>();
 		m_Shaders->Add(render::Shader::CreateShader("shaders/Framebuffer.glsl"));
 		m_CurrentShader = m_Shaders->Get("Framebuffer");
 		m_CurrentShader->Bind();
-		SetUpShader();
 
 		//Create FrameBuffer
 		InvalidadeFrameBuffer();
+		UsePostEffect("sharpen");
 
 		m_Buffer = new FramebufferQuad[4];
 		m_BufferPtr = m_Buffer;
@@ -84,6 +82,7 @@ namespace Base
 		frame_spec.height = m_Specs.height * m_Specs.scale_factor;
 		m_Framebuffer = MakeScope<Framebuffer>(frame_spec);
 		SetUpShader();
+		SetUpPostEffects();
 	}
 
 	void FramebufferRender::BindFrameBuffer()
@@ -99,6 +98,8 @@ namespace Base
 	FramebufferRender::~FramebufferRender()
 	{
 		delete m_Shaders.release();
+		if(m_Buffer)
+			delete m_Buffer;
 	}
 
 	void FramebufferRender::DrawFrameBuffer(const glm::mat4& quad_position, const Camera& camera, const glm::mat4& camera_transform)
@@ -156,11 +157,161 @@ namespace Base
 	{
 		m_CurrentLookUpTable = m_LookUpTables[name];
 	}
+	/*Empty string will set to none*/
+	void FramebufferRender::UsePostEffect(const std::string& name)
+	{
+		if (m_CurrentPostEffect)
+			m_CurrentPostEffect->active = false;
+		if (name.empty())
+		{
+			m_CurrentPostEffect = nullptr;
+			return;
+		}
+		m_CurrentPostEffect = &m_PostEffects[name];
+		m_CurrentPostEffect->active = true;
+		UpdatePostEffects();
+	}
+
+	void FramebufferRender::SetUpPostEffects()
+	{
+		//I was getting a small value for the width and height here, 
+		//it was a bug that make a nice effect actually (only with the sharpen kernel tho)
+		float offset_x = 1.0f / m_Framebuffer->GetSpec().width;
+		float offset_y = 1.0f / m_Framebuffer->GetSpec().height;
+
+		std::vector<glm::vec2> offsets = 
+		{
+			glm::vec2(-offset_x, offset_y),  glm::vec2(0.0f, offset_y),  glm::vec2(offset_x,offset_y),
+			glm::vec2(-offset_x, 0.0f),      glm::vec2(0.0f, 0.0f),      glm::vec2(offset_x,0.0f),
+			glm::vec2(-offset_x, -offset_y), glm::vec2(0.0f, -offset_y), glm::vec2(offset_x,-offset_y)
+		};
+
+		FramebufferPostEffect identity;
+		identity.offsets = offsets;
+		identity.kernel =
+		{
+			 0.0f, 0.0f, 0.0f,
+			 0.0f, 1.0f, 0.0f,
+			 0.0f, 0.0f, 0.0f,
+		};
+		m_PostEffects["identity"] = identity;
+
+		FramebufferPostEffect sharpen;
+		sharpen.offsets = offsets;
+		sharpen.kernel = 
+		{
+			 0.0f,-1.0f, 0.0f,
+			-1.0f, 5.0f,-1.0f,
+			 0.0f,-1.0f, 0.0f
+		};
+		m_PostEffects["sharpen"] = sharpen;
+
+		FramebufferPostEffect box_blur;
+		box_blur.offsets = offsets;
+		float dec = 1.0f / 9.0f;
+		box_blur.kernel =
+		{
+			dec,dec,dec,
+			dec,dec,dec,
+			dec,dec,dec
+		};
+		m_PostEffects["box_blur"] = box_blur;
+
+		FramebufferPostEffect edge_detection0;
+		edge_detection0.offsets = offsets;
+		edge_detection0.kernel =
+		{
+			1.0f, 1.0f,1.0f,
+			1.0f,-8.0f,1.0f,
+			1.0f, 1.0f,1.0f
+		};
+		m_PostEffects["edge_detection0"] = edge_detection0;
+
+		FramebufferPostEffect edge_detection1;
+		edge_detection1.offsets = offsets;
+		edge_detection1.kernel =
+		{
+		   -1.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 0.0f,
+		    1.0f, 0.0f,-1.0f
+		};
+		m_PostEffects["edge_detection1"] = edge_detection1;
+
+		FramebufferPostEffect edge_detection2;
+		edge_detection2.offsets = offsets;
+		edge_detection2.kernel =
+		{
+			0.0f,-1.0f, 0.0f,
+		   -1.0f, 4.0f,-1.0f,
+			0.0f,-1.0f, 0.0f
+		};
+		m_PostEffects["edge_detection2"] = edge_detection2;
+
+		FramebufferPostEffect edge_detection3;
+		edge_detection3.offsets = offsets;
+		edge_detection3.kernel =
+		{
+			-1.0f,-1.0f,-1.0f,
+			-1.0f, 8.0f,-1.0f,
+			-1.0f,-1.0f,-1.0f
+		};
+		m_PostEffects["edge_detection3"] = edge_detection3;
+
+		FramebufferPostEffect gaussian_blur3x3;
+		gaussian_blur3x3.offsets = offsets;
+		dec = 1.0f/16.0f;
+		gaussian_blur3x3.kernel =
+		{
+			1.0f * dec, 2.0f * dec, 1.0f * dec,
+			2.0f * dec, 4.0f * dec, 2.0f * dec,
+			1.0f * dec, 2.0f * dec, 1.0f * dec
+		};
+		m_PostEffects["gaussian_blur3x3"] = gaussian_blur3x3;
+
+		FramebufferPostEffect gaussian_blur5x5;
+		gaussian_blur5x5.offsets = offsets;
+		dec = 1.0f / 256.0f;
+		gaussian_blur5x5.kernel =
+		{
+			1.0f * dec, 4.0f * dec, 6.0f * dec, 4.0f * dec, 1.0f * dec,
+			4.0f * dec,16.0f * dec,24.0f * dec,16.0f * dec, 4.0f * dec,
+			6.0f * dec,24.0f * dec,36.0f * dec,24.0f * dec, 6.0f * dec,
+			4.0f * dec,16.0f * dec,24.0f * dec,16.0f * dec, 4.0f * dec,
+			1.0f * dec, 4.0f * dec, 6.0f * dec, 4.0f * dec, 1.0f * dec
+		};
+		m_PostEffects["gaussian_blur5x5"] = gaussian_blur5x5;
+
+		FramebufferPostEffect unsharp_masking;
+		unsharp_masking.offsets = offsets;
+		dec = -(1.0f / 256.0f);
+		unsharp_masking.kernel =
+		{
+			1.0f * dec, 4.0f * dec,  6.0f * dec, 4.0f * dec, 1.0f * dec,
+			4.0f * dec,16.0f * dec, 24.0f * dec,16.0f * dec, 4.0f * dec,
+			6.0f * dec,24.0f * dec,-476.0f *dec,24.0f * dec,6.0f * dec,
+			4.0f * dec,16.0f * dec, 24.0f * dec,16.0f * dec, 4.0f * dec,
+			1.0f * dec, 4.0f * dec,  6.0f * dec, 4.0f * dec, 1.0f * dec
+		};
+		m_PostEffects["unsharp_masking"] = unsharp_masking;
+	}
+
+	void FramebufferRender::UpdatePostEffects()
+	{
+		float offset_x = 1.0f / m_Framebuffer->GetSpec().width;
+		float offset_y = 1.0f / m_Framebuffer->GetSpec().height;
+
+		m_CurrentPostEffect->offsets = {
+			glm::vec2(-offset_x, offset_y),  glm::vec2(0.0f, offset_y),  glm::vec2(offset_x,offset_y),
+			glm::vec2(-offset_x, 0.0f),      glm::vec2(0.0f, 0.0f),      glm::vec2(offset_x,0.0f),
+			glm::vec2(-offset_x, -offset_y), glm::vec2(0.0f, -offset_y), glm::vec2(offset_x,-offset_y)
+		};
+		SetUpShader();
+	}
 
 	void FramebufferRender::SetUpShader()
 	{
-		float u_Width = m_CurrentLookUpTable->GetInformation().Width;
-		float u_Height = m_CurrentLookUpTable->GetInformation().Height;
+		float u_Width = m_Framebuffer->GetSpec().width;
+		float u_Height = m_Framebuffer->GetSpec().height;
 		float u_Colors = 16.0f;
 		int u_UseGrade = m_Specs.use_grade ? 1 : 0;
 
@@ -170,5 +321,16 @@ namespace Base
 		m_CurrentShader->SetUniform1i("u_UseGrade", u_UseGrade);
 		if (m_Specs.use_grade)
 			m_CurrentShader->SetUniform1i("u_GradeLut", 1);
+
+		if (m_CurrentPostEffect)
+		{
+			int kernel_size = m_CurrentPostEffect->kernel.size();
+			m_CurrentShader->SetUniform1i("kernel_size", kernel_size);
+			m_CurrentShader->SetUniform1fv("kernel_5x5_slot", kernel_size, m_CurrentPostEffect->kernel.data());
+
+			int offset_size = m_CurrentPostEffect->offsets.size();
+			m_CurrentShader->SetUniform1i("offset_size", offset_size);
+			m_CurrentShader->SetUniform1fv("offsets", offset_size, &m_CurrentPostEffect->offsets[0][0]);
+		}
 	}
 }
