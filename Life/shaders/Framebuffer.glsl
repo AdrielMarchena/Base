@@ -27,7 +27,70 @@ uniform float u_Width;
 uniform float u_Height;
 uniform int u_UseGrade;
 
+uniform float offsets[25];
+uniform int offset_size;
+
+uniform float kernel_5x5_slot[5*5];
+uniform int kernel_size;
+
 vec4 transform(in vec4 textureColor, in sampler2D lookupTable);
+
+void main()
+{
+    vec3 cl = vec3(0.0f);
+    for(int i = 0; i < kernel_size; i++)
+        cl += vec3(texture(u_Framebuffer, v_TexCoord.st + offsets[i % offset_size])) * kernel_5x5_slot[i];
+    
+    vec4 color = vec4(cl,1.0f);
+	//vec4 color = texture(u_Framebuffer,v_TexCoord);
+    if(u_UseGrade == 1)
+	    o_Color = transform(color,u_GradeLut);
+    else
+        o_Color = color;
+}
+
+vec4 transform(in vec4 textureColor, in sampler2D lookupTable) {
+    #ifndef LUT_NO_CLAMP
+        textureColor = clamp(textureColor, 0.0, 1.0);
+    #endif
+
+    mediump float blueColor = textureColor.b * 63.0;
+
+    mediump vec2 quad1;
+    quad1.y = floor(floor(blueColor) / 8.0);
+    quad1.x = floor(blueColor) - (quad1.y * 8.0);
+
+    mediump vec2 quad2;
+    quad2.y = floor(ceil(blueColor) / 8.0);
+    quad2.x = ceil(blueColor) - (quad2.y * 8.0);
+
+    highp vec2 texPos1;
+    texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);
+    texPos1.y = (quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);
+
+    #ifdef LUT_FLIP_Y
+        texPos1.y = 1.0-texPos1.y;
+    #endif
+
+    highp vec2 texPos2;
+    texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);
+    texPos2.y = (quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);
+
+    #ifdef LUT_FLIP_Y
+        texPos2.y = 1.0-texPos2.y;
+    #endif
+
+    lowp vec4 newColor1 = texture(lookupTable, texPos1);
+    lowp vec4 newColor2 = texture(lookupTable, texPos2);
+
+    lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
+    #ifndef LUT_NO_CLAMP
+        return clamp(newColor, 0.0, 1.0);
+    #endif
+    return newColor;
+}
+
+/*
 
 #define ONE_256 0.00390625
 #define ONE_256N -0.00390625
@@ -94,10 +157,9 @@ float unsharp_masking[25] = float[]
 
 //(1, 2, 1, 2, 4, 2, 1, 2, 1) * 0.0625
 
-void main()
-{
 
-    float offset_x = 1.0f / u_Width;
+//inside main:
+	float offset_x = 1.0f / u_Width;
     float offset_y = 1.0f / u_Height;
 	
     vec2 offsets[9] = vec2[]
@@ -106,58 +168,5 @@ void main()
         vec2(-offset_x, 0.0f),      vec2(0.0f, 0.0f),      vec2(offset_x,0.0f),
         vec2(-offset_x, -offset_y), vec2(0.0f, -offset_y), vec2(offset_x,-offset_y)
     );
-	
-	int size = 9;
-	int size_offset = 9;
-    vec3 cl = vec3(0.0f);
-    for(int i = 0; i < size; i++)
-        cl += vec3(texture(u_Framebuffer, v_TexCoord.st + offsets[i % size_offset])) * sharpen[i];
-    
-    vec4 color = vec4(cl,1.0f);
-	//vec4 color = texture(u_Framebuffer,v_TexCoord);
-    if(u_UseGrade == 1)
-	    o_Color = transform(color,u_GradeLut);
-    else
-        o_Color = color;
-}
 
-vec4 transform(in vec4 textureColor, in sampler2D lookupTable) {
-    #ifndef LUT_NO_CLAMP
-        textureColor = clamp(textureColor, 0.0, 1.0);
-    #endif
-
-    mediump float blueColor = textureColor.b * 63.0;
-
-    mediump vec2 quad1;
-    quad1.y = floor(floor(blueColor) / 8.0);
-    quad1.x = floor(blueColor) - (quad1.y * 8.0);
-
-    mediump vec2 quad2;
-    quad2.y = floor(ceil(blueColor) / 8.0);
-    quad2.x = ceil(blueColor) - (quad2.y * 8.0);
-
-    highp vec2 texPos1;
-    texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);
-    texPos1.y = (quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);
-
-    #ifdef LUT_FLIP_Y
-        texPos1.y = 1.0-texPos1.y;
-    #endif
-
-    highp vec2 texPos2;
-    texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);
-    texPos2.y = (quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);
-
-    #ifdef LUT_FLIP_Y
-        texPos2.y = 1.0-texPos2.y;
-    #endif
-
-    lowp vec4 newColor1 = texture(lookupTable, texPos1);
-    lowp vec4 newColor2 = texture(lookupTable, texPos2);
-
-    lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
-    #ifndef LUT_NO_CLAMP
-        return clamp(newColor, 0.0, 1.0);
-    #endif
-    return newColor;
-}
+*/

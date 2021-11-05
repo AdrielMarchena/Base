@@ -2,16 +2,53 @@
 #include "utils/Instrumentor.h"
 #include "utils/parse_args.h"
 #include <iostream>
+
+void DisplayCommands()
+{
+	std::cout << "--help | -h 'Display this text'" << std::endl;
+	std::cout << "--width=positive_number 'window width'" << std::endl;
+	std::cout << "--height=positive_number 'window height'" << std::endl;
+	std::cout << "--resizeble 'Set window to resizeble or not'" << std::endl;
+	std::cout << "--fullscreen 'Open window in full screen'" << std::endl;
+	//std::cout << "-----------------------------------------" << std::endl;
+	//std::cout << "----------------Advanced-----------------" << std::endl;
+	//std::cout << "-----------------------------------------" << std::endl;
+	//std::cout << "--framebufferScale=positive_float 'Scale of the framebuffer based on window size,\nThe recomended is a number beetween 0.1 and 1.0'" << std::endl;
+
+	std::cout << "\nThanks for using my program :), have a nice day!" << std::endl;
+}
+
 int main(int argc, char* argv[])
 {
-	Base::utils::ConsoleArgsParser parser(argc, argv);
+	float w = 0.0f;
+	float h = 0.0f;
+	bool resizeble = true;
+	bool fullscreen = true;
+	std::string title = "";
+	bool using_example_instance = false;
+	try
+	{
+		Base::utils::ConsoleArgsParser parser(argc, argv);
 
-	std::string title = parser.GetOption("title");
-	float w = parser.GetOptionAsFloat("width");
-	float h = parser.GetOptionAsFloat("height");
-	bool resizeble = parser.GetFlag("resizeble");
+		if (parser.GetFlag("help") || parser.GetFlag("h"))
+		{
+			DisplayCommands();
+			return EXIT_SUCCESS;
+		}
 
-	bool example = parser.GetFlag("example1");
+		title = parser.GetOption("title");
+		w = parser.GetOptionAsFloat("width");
+		h = parser.GetOptionAsFloat("height");
+		resizeble = parser.GetFlag("resizeble");
+		fullscreen = parser.GetFlag("fullscreen");
+
+		using_example_instance = parser.GetFlag("example1");
+	}
+	catch (const std::exception& ex)
+	{
+		std::cerr << "Could not parse command line args, error: " << ex.what() << std::endl;
+		//return EXIT_FAILURE;
+	}
 
 	title = title.empty() ? "Base Engine" : title;
 	w = w <= 0 ? 800.0f : w;
@@ -20,7 +57,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		BASE_PROFILE_BEGIN_SESSION("Startup", "Life_Startup_Profile.json");
-		Game* game = new Game(title.c_str(),w,h,resizeble);
+		Game* game = new Game(title.c_str(), w, h, resizeble, fullscreen);
 		BASE_PROFILE_END_SESSION();
 
 		game->Run();

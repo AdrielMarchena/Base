@@ -13,8 +13,8 @@ Game::Game()
 {
 }
 
-Game::Game(const char* title, float_t w, float_t h, bool resizeble)
-	: Base::windowing::Window(title,w,h,resizeble)
+Game::Game(const char* title, float_t w, float_t h, bool resizeble, bool fullscreen)
+	: Base::windowing::Window(title,w,h,resizeble,fullscreen)
 {
 }
 
@@ -100,7 +100,8 @@ void Game::OnAttach()
 	HideCursor();
 	((Base::PerspectiveScript*)scp3D.Instance)->mouse_is_hide = true;
 
-	std::vector<std::string> faces =
+	std::vector<std::string> faces;
+	faces =
 	{
 		"resources/skybox/right.jpg",
 		"resources/skybox/left.jpg",
@@ -109,6 +110,7 @@ void Game::OnAttach()
 		"resources/skybox/front.jpg",
 		"resources/skybox/back.jpg"
 	};
+
 
 	Base::Render3D::SetSkyBox("shaders/CubeMap.glsl", faces);
 
@@ -198,6 +200,16 @@ void Game::OnImGui()
 		m_Scene->SetFrameBuff(w, h, scale_factor, using_grade);
 	}
 
+	ImGui::End();
+
+	ImGui::Begin("Post Effects");
+
+	const auto& effects = m_Scene->GetPostEffects();
+	for (auto& efx : effects)
+	{
+		if (ImGui::Button(efx.first.c_str()))
+			m_Scene->SetPostEffect(efx.first);
+	}
 	ImGui::End();
 }
 
