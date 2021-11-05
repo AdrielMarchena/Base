@@ -46,6 +46,7 @@ namespace render
 		void SetUniform1i(const std::string& name, int32_t value);
 		void SetUniform1iv(const std::string& name, int32_t size, int32_t* value);
 		void SetUniform1f(const std::string& name, float_t value);
+		void SetUniform1fv(const std::string& name, int32_t size, float_t* value);
 		void SetUniform2f(const std::string& name, float_t v0, float_t v1);
 		void SetUniform3f(const std::string& name, float_t v0, float_t v1, float_t v2);
 		void SetUniform4f(const std::string& name, float_t v0, float_t v1, float_t v2, float_t v3);

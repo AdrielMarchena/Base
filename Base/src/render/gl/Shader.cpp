@@ -247,6 +247,12 @@ namespace render
 		GLCall(glUniform1f(location, value));
 	}
 
+	void Shader::SetUniform1fv(const std::string& name, int32_t size, float_t* value)
+	{
+		GLCall(GLint location = glGetUniformLocation(m_Id, name.c_str()));
+		GLCall(glUniform1fv(location, size, value));
+	}
+
 	void Shader::SetUniform2f(const std::string& name, float_t v0, float_t v1)
 	{
 		GLCall(GLint location = glGetUniformLocation(m_Id, name.c_str()));
