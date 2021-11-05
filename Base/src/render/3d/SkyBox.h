@@ -22,6 +22,7 @@ namespace Base
 
 		Ref<render::VertexBuffer> m_VB;
 		Ref<render::VertexArray> m_VA;
+		Ref<render::IndexBuffer> m_IB;
 		glm::mat4 m_ProjView;
 	public:
 		SkyBox(const std::vector<std::string>& paths, Ref<render::Shader> shader);
