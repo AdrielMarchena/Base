@@ -285,6 +285,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\render\3d\3d_core.h" />
     <ClInclude Include="src\render\3d\SkyBox.h" />
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />

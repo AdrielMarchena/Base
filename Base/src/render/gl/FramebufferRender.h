@@ -20,7 +20,7 @@ namespace Base
 		uint32_t width = 800;
 		uint32_t height = 600;
 		float scale_factor = 1.0f; //Is multiplied by width and height to scale them 
-		bool use_grade = true; //if true, use the framebuffer size to create lookup tables
+		bool clamp_to_one = true;
 	};
 
 	struct FramebufferPostEffect
@@ -37,8 +37,6 @@ namespace Base
 		Ref<render::VertexArray> m_VA;
 		Ref<render::VertexBuffer> m_VB;
 		Ref<render::IndexBuffer> m_IB;
-		std::unordered_map<std::string, Ref<render::Texture>> m_LookUpTables;
-		Ref<render::Texture> m_CurrentLookUpTable;
 		Scope<render::ShaderLib> m_Shaders;
 		Ref<render::Shader> m_CurrentShader;
 		Ref<Framebuffer> m_Framebuffer;
@@ -50,13 +48,18 @@ namespace Base
 
 		std::unordered_map<std::string, FramebufferPostEffect> m_PostEffects;
 		FramebufferPostEffect* m_CurrentPostEffect = nullptr;
+
+		glm::vec3 m_Position = {0.0f,0.0f,0.0f};
+		glm::vec3 m_Scale = {1.0f,1.0f,1.0f};
+		glm::vec3 m_Rotation = {0.0f,0.0f,0.0f};
+		glm::mat4 m_Transform;
 	public:
 		FramebufferRender(const FrameBufferRenderSpecification& spec);
 		~FramebufferRender();
 
-		void DrawFrameBuffer(const glm::mat4& quad_position, const Camera& camera, const glm::mat4& camera_transform);
+		void DrawFrameBuffer(const Camera& camera, const glm::mat4& camera_transform);
 
-		void InvalidadeFrameBuffer();
+		void InvalidateFrameBuffer();
 
 		void BindFrameBuffer();
 		void UnbindFrameBuffer();
@@ -75,11 +78,15 @@ namespace Base
 		void UsePostEffect(const std::string& name);
 		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const { return m_PostEffects; }
 
-		const std::unordered_map<std::string, Ref<render::Texture>>& GetLookUpTables() const { return m_LookUpTables; }
-		Ref <render::Texture> GetCurrentLookTable() const { return m_CurrentLookUpTable; }
+		void SetQuadPosition(const glm::vec3& position) { m_Position = position; CalculateQuadTransform(); }
+		void SetQuadScale(const glm::vec3& scale) {		  m_Scale = scale;		 CalculateQuadTransform(); }
+		void SetQuadRotation(const glm::vec3& rotation) { m_Rotation = rotation; CalculateQuadTransform(); }
 
 		Ref <render::Shader> GetCurrentShader() const { return m_CurrentShader; }
 	private:
+		void CalculateQuadTransform();
+
+		void SetUpFramebuffer();
 		void SetUpShader();
 		void SetUpPostEffects();
 		void UpdatePostEffects();

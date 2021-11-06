@@ -1,6 +1,5 @@
 #pragma once
 
-#include "glm/glm.hpp"
 #include "render/gl/Texture.h"
 #include "render/SubTexture.h"
 #include "glm/glm.hpp"
@@ -9,7 +8,9 @@
 #include "render/Colors.h"
 #include "ent/Animator.h"
 #include "ScriptableEntity.h"
-#include "render/3d/Model.h"
+
+#include "render/3d/3d_core.h"
+
 namespace Base
 {
 	struct TagComponent
@@ -129,7 +130,7 @@ namespace Base
 		bool Active = true;
 		bool Checking = false;
 	};
-
+#ifdef BASE_USING_3D
 	struct ModelComponent
 	{
 		Ref<Model> Model3D;
@@ -139,7 +140,7 @@ namespace Base
 		ModelComponent(Ref<Model> model)
 			:Model3D(model) {}
 	};
-
+#endif
 	struct CameraComponent
 	{
 		Base::SceneCamera Camera;

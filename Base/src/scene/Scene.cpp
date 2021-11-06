@@ -14,7 +14,6 @@ namespace Base
 {
 	//TODO: temp
 	static TransformComponent m_CameraTransform;
-	static TransformComponent m_QuadTransform;
 	static float s_value = 1.0f;
 
 	Scene::Scene()
@@ -26,7 +25,6 @@ namespace Base
 		spec.width = width;
 		spec.height = height;
 		spec.scale_factor = 1.0f;
-		spec.use_grade = true;
 
 		m_FrameBufferRender = MakeScope<FramebufferRender>(spec);
 		SetFrameBuff(width, height, 1.0f);
@@ -103,7 +101,7 @@ namespace Base
 			script.Instance->OnAwake();
 	}
 
-	void Scene::SetFrameBuff(unsigned int w, unsigned int h, float scale_factor, bool using_grade)
+	void Scene::SetFrameBuff(unsigned int w, unsigned int h, float scale_factor)
 	{
 
 		s_value = scale_factor;
@@ -111,13 +109,12 @@ namespace Base
 		spec.width = w;
 		spec.height = h;
 		spec.scale_factor = scale_factor;
-		spec.use_grade = using_grade;
-		m_FrameBufferRender->InvalidadeFrameBuffer();
+		m_FrameBufferRender->InvalidateFrameBuffer();
 		int width = WindowProps().width;
 		int height = WindowProps().height;
 		m_FramebufferCamera.SetViewportSize(width, height);
 		float s = m_FramebufferCamera.GetOrthographicSize();
-		m_QuadTransform.Scale = { s * B_GetRatio() * 1.0f,1.0f * s, 0.5f };
+		m_FrameBufferRender->SetQuadScale({ s * B_GetRatio() * 1.0f,1.0f * s, 0.5f });
 	}
 
 	void Scene::SetPostEffect(const std::string& name)
@@ -146,6 +143,7 @@ namespace Base
 		}
 
 		{//Render Scope
+			BASE_PROFILE_SCOPE("Scene Render Scope");
 			m_FrameBufferRender->BindFrameBuffer();
 			
 			int w = WindowProps().width;
@@ -153,7 +151,6 @@ namespace Base
 			 
 			glViewport(0, 0, w * s_value, h * s_value);
 			
-			BASE_PROFILE_SCOPE("Scene Render Scope");
 			Base::Camera* mainCamera2D = nullptr;
 			glm::mat4 cameraTransform2D;
 
@@ -188,14 +185,12 @@ namespace Base
 				//TODO: for now the 3D clear do the job for 2D as well
 
 				//Start render Scene
-				//SetTransform(800,600); //TODO: Remove this, maybe remove this Transform from everything
 				D2D::BeginScene(*mainCamera2D, cameraTransform2D);
-				D2D::BeginBatch();
 
 				{// Quads
 					
 					D2D::GetQuadShader()->Bind(); //Fix the batch problem, but maybe not the best solution
-					
+					D2D::BeginBatchQuads();
 					{//Draw Sprites
 						//It's a view because a group just breaks
 						auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
@@ -251,7 +246,7 @@ namespace Base
 				{// Circle
 					
 					D2D::GetCircleShader()->Bind();
-					
+					D2D::BeginBatchCircles();
 					{//Draw Color Circles
 						auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
 						for (auto entity : view)
@@ -276,10 +271,11 @@ namespace Base
 					D2D::FlushCircles();
 				}
 
-				//Finish the rendering
-				D2D::EndBatch();
-				D2D::Flush();
+				//Finish the 2D rendering
+				//D2D::EndBatch();
+				//D2D::Flush();
 			}
+#ifdef BASE_USING_3D
 			if (mainCamera3D)
 			{
 				D3D::StartScene(*mainCamera3D, cameraTransform3D);
@@ -297,53 +293,13 @@ namespace Base
 				D3D::Flush();
 				D3D::EndScene();
 			}
+#endif
 			m_FrameBufferRender->UnbindFrameBuffer();
 			glViewport(0, 0, w, h);
 			
 		}//End Render Scope
 		
-		Render3D::Clear();
-		m_FrameBufferRender->DrawFrameBuffer(m_QuadTransform.GetTransform(), m_FramebufferCamera, m_CameraTransform.GetTransform());
-	}
-
-	void Scene::DrawScene(float dt)
-	{
-		/*using kb = input::Keyboard;
-
-#if defined BASE_DEBUG
-		if (kb::isPress(BASE_KEY_RIGHT))
-			m_CameraTransform.Translation.x += 5.0f * dt;
-		if (kb::isPress(BASE_KEY_LEFT))
-			m_CameraTransform.Translation.x -= 5.0f * dt;
-		if (kb::isPress(BASE_KEY_UP))
-			m_CameraTransform.Translation.y += 5.0f * dt;
-		if (kb::isPress(BASE_KEY_DOWN))
-			m_CameraTransform.Translation.y -= 5.0f * dt;
-#endif
-		using D2D = render::Render2D;
-		using D3D = Render3D;
-
-		D3D::Clear();
-		D2D::BeginScene(m_CameraTransform, m_CameraTransform.GetTransform());
-		D2D::BeginBatch();
-
-
-		D2D::DrawQuad(m_QuadTransform.GetTransform(), m_FrameBufferRender->GetColorTexture());
-
-		if (using_l)
-		{
-			auto s = m_Shaders->Get("Framebuffer");
-			s->Bind();
-			GLCall(glActiveTexture(GL_TEXTURE2));
-			GLCall(glBindTexture(GL_TEXTURE_2D, m_GradeLutTexture->GetId()));
-			D2D::EndBatchQuads();
-			D2D::FlushQuads();
-		}	
-		else
-		{
-			D2D::EndBatch();
-			D2D::Flush();
-		}
-		*/
+		//Render3D::Clear();
+		m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
 	}
 }

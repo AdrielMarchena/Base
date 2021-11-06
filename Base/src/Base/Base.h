@@ -7,7 +7,10 @@
 #define BASE_YPOS(x) x[3][1]
 #define BASE_ZPOS(x) x[3][2]
 
-#define BASE_PROFILING //Temp
+#if defined BASE_DEBUG || BASE_RELEASE
+	#define BASE_PROFILING //Temp
+#endif
+
 #ifdef _DEBUG
 	#define BASE_DEBUG_CALL(x) x 
 #else

@@ -7,6 +7,7 @@
 #include "FramebufferSpecifications.h"
 namespace Base
 {
+	class FramebufferRender;
 	class Framebuffer
 	{
 	private:
@@ -32,6 +33,10 @@ namespace Base
 		glm::vec2 GetSize() const { return {(float)m_Specs.width,(float)m_Specs.height}; }
 
 		const FramebufferSpecification& GetSpec() const { return m_Specs; }
+		FramebufferSpecification& GetSpec() { return m_Specs; }
 		static Ref<Framebuffer> CreateFramebuffer(const FramebufferSpecification& specs);
+
+	private:
+		friend FramebufferRender;
 	};
 }

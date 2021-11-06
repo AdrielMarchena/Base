@@ -3,6 +3,9 @@
 #include "gl/glew.h"
 #include "utils/gl_error_macro_db.h"
 
+#include "glm/glm.hpp"
+#include <glm/gtx/quaternion.hpp>
+
 namespace Base
 {
 
@@ -17,18 +20,6 @@ namespace Base
 	FramebufferRender::FramebufferRender(const FrameBufferRenderSpecification& spec)
 		:m_Specs(spec)
 	{
-		//Create LookUpTable lut16
-		auto info = render::Texture::GetImageInfo("resources/images/lookup.png");
-		//info.Target = render::GL_TextureTarget::TEXTURE_3D;
-		info.MinFilter = GL_TextureFilter::LINEAR;
-		info.MagFilter = GL_TextureFilter::LINEAR;
-		info.WrapS = GL_TextureWrap::REPEAT;
-		info.WrapT = GL_TextureWrap::REPEAT;
-		//info.WrapR = render::GL_TextureWrap::CLAMP_EDGE;
-		m_CurrentLookUpTable = MakeRef<render::Texture>(info);
-
-		m_LookUpTables[m_CurrentLookUpTable->GetName()] = m_CurrentLookUpTable;
-
 		//Create ShaderLib
 		m_Shaders = MakeScope<render::ShaderLib>();
 		m_Shaders->Add(render::Shader::CreateShader("shaders/Framebuffer.glsl"));
@@ -36,7 +27,9 @@ namespace Base
 		m_CurrentShader->Bind();
 
 		//Create FrameBuffer
-		InvalidadeFrameBuffer();
+		SetUpFramebuffer();
+		SetUpShader();
+		SetUpPostEffects();
 		UsePostEffect("sharpen");
 
 		m_Buffer = new FramebufferQuad[4];
@@ -73,14 +66,12 @@ namespace Base
 		QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 	}
 
-	void FramebufferRender::InvalidadeFrameBuffer()
+	void FramebufferRender::InvalidateFrameBuffer()
 	{
 		//Create FrameBuffer
-		FramebufferSpecification frame_spec;
-		frame_spec.Attachments = { FrambufferTextureFormat::RGBA8, FrambufferTextureFormat::DEPTH };
-		frame_spec.width = m_Specs.width * m_Specs.scale_factor;
-		frame_spec.height = m_Specs.height * m_Specs.scale_factor;
-		m_Framebuffer = MakeScope<Framebuffer>(frame_spec);
+		m_Framebuffer->m_Specs.width = m_Specs.width * m_Specs.scale_factor;
+		m_Framebuffer->m_Specs.height = m_Specs.height * m_Specs.scale_factor;
+		m_Framebuffer->Invalidate();
 		SetUpShader();
 		SetUpPostEffects();
 	}
@@ -102,32 +93,17 @@ namespace Base
 			delete m_Buffer;
 	}
 
-	void FramebufferRender::DrawFrameBuffer(const glm::mat4& quad_position, const Camera& camera, const glm::mat4& camera_transform)
+	void FramebufferRender::DrawFrameBuffer(const Camera& camera, const glm::mat4& camera_transform)
 	{
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		GLCall(glDisable(GL_DEPTH_TEST));
 		using namespace render;
 		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(camera_transform);
 		m_CurrentShader->Bind();
 		m_CurrentShader->SetUniformMat4f("u_ViewProj", viewProj);
 
-		m_BufferPtr = m_Buffer;
-		for (size_t i = 0; i < 4; i++)
-		{
-			m_BufferPtr->Position = quad_position * QuadVertexPositions[i];
-			m_BufferPtr->TexCoords = tex_coords[i];
-			m_BufferPtr++;
-		}
-		GLsizeiptr size = (uint8_t*)m_BufferPtr - (uint8_t*)m_Buffer;
-
-		m_VB->SubData(size, m_Buffer);
-
-		//render::GL_TextureTarget target = m_Framebuffer->GetColorTexture()->GetInformation().Target;
-
 		GLCall(glActiveTexture(GL_TEXTURE0));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_Framebuffer->GetColorTexture(0)));
-
-		GLCall(glActiveTexture(GL_TEXTURE1));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_CurrentLookUpTable->GetId()));
 
 		m_VA->Bind();
 		GLCommands::GL_DrawElementsCall(GL_Target::TRIANGLES, 6, GL_Type::UNSIGNED_INT);
@@ -147,16 +123,6 @@ namespace Base
 		SetUpShader();
 	}
 
-	void FramebufferRender::AddLookUpTable(const Ref<render::Texture>& texture, const std::string& name)
-	{
-		const std::string tx = name.empty() ? texture->GetName() : name;
-		m_LookUpTables[tx] = texture;
-	}
-	
-	void FramebufferRender::UseLookUpTable(const std::string& name)
-	{
-		m_CurrentLookUpTable = m_LookUpTables[name];
-	}
 	/*Empty string will set to none*/
 	void FramebufferRender::UsePostEffect(const std::string& name)
 	{
@@ -293,6 +259,26 @@ namespace Base
 			1.0f * dec, 4.0f * dec,  6.0f * dec, 4.0f * dec, 1.0f * dec
 		};
 		m_PostEffects["unsharp_masking"] = unsharp_masking;
+
+		FramebufferPostEffect sobel_feldman;
+		sobel_feldman.offsets = offsets;
+		sobel_feldman.kernel =
+		{
+			-1.0f, 0.0f, 1.0f,
+			-2.0f, 0.0f, 2.0f,
+			-1.0f, 0.0f, 1.0f,
+		};
+		m_PostEffects["sobel_feldman"] = sobel_feldman;
+	}
+
+	void FramebufferRender::SetUpFramebuffer()
+	{
+		//Create FrameBuffer
+		FramebufferSpecification frame_spec;
+		frame_spec.Attachments = { FrambufferTextureFormat::RGB, FrambufferTextureFormat::DEPTH };
+		frame_spec.width = m_Specs.width * m_Specs.scale_factor;
+		frame_spec.height = m_Specs.height * m_Specs.scale_factor;
+		m_Framebuffer = MakeScope<Framebuffer>(frame_spec);
 	}
 
 	void FramebufferRender::UpdatePostEffects()
@@ -312,16 +298,10 @@ namespace Base
 	{
 		float u_Width = m_Framebuffer->GetSpec().width;
 		float u_Height = m_Framebuffer->GetSpec().height;
-		float u_Colors = 16.0f;
-		int u_UseGrade = m_Specs.use_grade ? 1 : 0;
 
 		m_CurrentShader->SetUniform1i("u_Framebuffer", 0);
 		m_CurrentShader->SetUniform1f("u_Width", u_Width);
 		m_CurrentShader->SetUniform1f("u_Height", u_Height);
-		m_CurrentShader->SetUniform1i("u_UseGrade", u_UseGrade);
-		if (m_Specs.use_grade)
-			m_CurrentShader->SetUniform1i("u_GradeLut", 1);
-
 		if (m_CurrentPostEffect)
 		{
 			int kernel_size = m_CurrentPostEffect->kernel.size();
@@ -332,5 +312,23 @@ namespace Base
 			m_CurrentShader->SetUniform1i("offset_size", offset_size);
 			m_CurrentShader->SetUniform1fv("offsets", offset_size, &m_CurrentPostEffect->offsets[0][0]);
 		}
+	}
+
+	void FramebufferRender::CalculateQuadTransform()
+	{
+		glm::mat4 rotation = glm::toMat4(glm::quat(m_Rotation));
+		m_Transform = glm::translate(glm::mat4(1.0f), m_Position)
+					  * rotation
+					  * glm::scale(glm::mat4(1.0f), m_Scale);
+
+		m_BufferPtr = m_Buffer;
+		for (size_t i = 0; i < 4; i++)
+		{
+			m_BufferPtr->Position = m_Transform * QuadVertexPositions[i];
+			m_BufferPtr->TexCoords = tex_coords[i];
+			m_BufferPtr++;
+		}
+		GLsizeiptr size = (uint8_t*)m_BufferPtr - (uint8_t*)m_Buffer;
+		m_VB->SubData(size, m_Buffer);
 	}
 }

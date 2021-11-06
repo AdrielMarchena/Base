@@ -250,6 +250,7 @@
     <ClInclude Include="src\render\gl\base_gl.h" />
     <ClInclude Include="src\render\gl\TextureSpecifications.h" />
     <ClInclude Include="src\render\gl\FramebufferSpecifications.h" />
+    <ClInclude Include="src\render\3d\3d_core.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Log.cpp" />

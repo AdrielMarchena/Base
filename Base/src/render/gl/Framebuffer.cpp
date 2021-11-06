@@ -34,7 +34,7 @@ namespace Base
 			GLCall(glBindTexture(TextureTarget2D(multisampled), tex_id));
 		}
 
-		static inline void AttachColorTexture(const ColectionTextureSpecification& tex_spec, uint32_t tex_id, int samples, GLenum format, uint32_t width, uint32_t height, int index)
+		static inline void AttachColorTexture(const ColectionTextureSpecification& tex_spec, uint32_t tex_id, int samples, GLenum format, uint32_t width, uint32_t height, int index,GLenum dataformat)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
@@ -43,7 +43,7 @@ namespace Base
 			}
 			else
 			{
-				GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+				GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, dataformat, GL_UNSIGNED_BYTE, nullptr));
 
 				GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GLSwitch::TextureFilter(tex_spec.MinFilter)));
 				GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GLSwitch::TextureFilter(tex_spec.MagFilter)));
@@ -154,7 +154,10 @@ namespace Base
 				switch (m_ColorAttachmentSpecs[i].TextureFormat)
 				{
 				case FrambufferTextureFormat::RGBA8:
-					utils::AttachColorTexture(texture_specifications, m_ColorTextures[i], m_Specs.samples, GL_RGBA8, m_Specs.width, m_Specs.height, i);
+					utils::AttachColorTexture(texture_specifications, m_ColorTextures[i], m_Specs.samples, GL_RGBA8, m_Specs.width, m_Specs.height, i,GL_RGBA);
+					break;
+				case FrambufferTextureFormat::RGB:
+					utils::AttachColorTexture(texture_specifications, m_ColorTextures[i], m_Specs.samples, GL_RGB, m_Specs.width, m_Specs.height, i, GL_RGB);
 					break;
 				}
 			}
