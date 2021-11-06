@@ -26,6 +26,18 @@ void Game::OnAttach()
 {
 	m_Scene = Base::MakeScope <Base::Scene>();
 	m_Map = m_Scene->CreateEntity("Map");
+
+	m_Map.AddComponent<Base::TextureComponent>();
+	auto& map_script = m_Map.AddComponent<Base::NativeScriptComponent>();
+	
+	map_script.Bind<MapScript>();
+
+	m_Scene->StartNativeScript(m_Map);
+	m_Scene->AwakeNativeScript(m_Map);
+
+#ifdef BASE_USING_3D
+	m_Map.GetComponent<Base::TransformComponent>().Translation = { 1000.f,1000.0f,1000.0f };
+	m_Map.GetComponent<Base::TransformComponent>().Scale = { 0,00.0f,000.0f };
 	m_Camera = m_Scene->CreateEntity("Main_Camera3D");
 
 	auto& scp3D = m_Camera.AddComponent<Base::NativeScriptComponent>();
@@ -38,21 +50,12 @@ void Game::OnAttach()
 		c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
 	}
 
-	m_Map.AddComponent<Base::TextureComponent>();
-	auto& map_script = m_Map.AddComponent<Base::NativeScriptComponent>();
-	m_Map.GetComponent<Base::TransformComponent>().Translation = { 1000.f,1000.0f,1000.0f };
-	m_Map.GetComponent<Base::TransformComponent>().Scale = { 0,00.0f,000.0f };
-	map_script.Bind<MapScript>();
-
-	m_Scene->StartNativeScript(m_Map);
-	m_Scene->AwakeNativeScript(m_Map);
-
 	auto& map_texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
 
-	int cube_qtd = 5;
+	int cube_qtd = 10;
 
 #if defined BASE_RELEASE || BASE_DIST
-	cube_qtd = 1500;
+	cube_qtd = 250;
 #endif
 
 	const float cube_spread = 0.001f;
@@ -111,9 +114,20 @@ void Game::OnAttach()
 		"resources/skybox/back.jpg"
 	};
 
-
 	Base::Render3D::SetSkyBox("shaders/CubeMap.glsl", faces);
 
+#else
+	m_Camera = m_Scene->CreateEntity("Main_Camera2D");
+	auto& scp2D = m_Camera.AddComponent<Base::NativeScriptComponent>();
+	{// 2D Camera
+		scp2D.Bind<Base::OrthoCameraScript>();
+		auto& c = m_Camera.AddComponent<Base::CameraComponent>();
+		auto& camera_transform = m_Camera.GetComponent<Base::TransformComponent>();
+
+		c.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height);
+	}
+	m_Scene->StartNativeScript(m_Camera);
+#endif
 }
 
 void Game::OnUpdate(const Base::UpdateArgs& args)
@@ -121,6 +135,7 @@ void Game::OnUpdate(const Base::UpdateArgs& args)
 	if (Base::WindowProps().minimized)
 		return;
 
+#ifdef BASE_USING_3D
 	if (Base::input::Keyboard::isClicked(BASE_KEY_H))
 	{
 		HideCursor();
@@ -141,15 +156,13 @@ void Game::OnUpdate(const Base::UpdateArgs& args)
 		cube_model.Model3D->OverrideTexture(map_texture);
 	}
 
+#endif	
 	m_Scene->OnUpdate(args);
-	
 }
 
 void Game::OnImGui()
 {
 	ImGui::Begin("Game Grid");
-
-	auto& q = m_Map.GetComponent<Base::TransformComponent>();
 
 	static int grid = 24, a1 = 2, a2 = 3, rv = 3;
 
@@ -170,7 +183,14 @@ void Game::OnImGui()
 		((MapScript*)s.Instance)->ToRevive = rv;
 		m_Scene->AwakeNativeScript(m_Map);
 	}
-	
+
+#ifndef BASE_USING_3D
+	auto& q = m_Map.GetComponent<Base::TransformComponent>();
+	ImGui::SliderFloat3("Map Translation", &q.Translation.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("Map Scale", &q.Scale.x, 0.0f, 20.0f);
+	ImGui::SliderFloat3("Map Rotation", &q.Rotation.x, -10.0f, 10.0f);
+#endif
+
 	static char text[50] = "Map.png";
 	ImGui::InputText("Path", text, 50);
 	if (ImGui::Button("Save File"))
@@ -178,8 +198,10 @@ void Game::OnImGui()
 		auto& Texture = m_Map.GetComponent<Base::TextureComponent>().Texture;
 		Texture->CreatePng(text);
 	}
+
 	ImGui::End();
 
+#ifdef BASE_USING_3D
 	ImGui::Begin("Camera");
 
 	auto& camera_script = m_Camera.GetComponent<Base::NativeScriptComponent>();
@@ -192,18 +214,19 @@ void Game::OnImGui()
 		((Base::PerspectiveScript*)camera_script.Instance)->SyncSpeed();
 	
 	auto& cam = m_Camera.GetComponent<Base::CameraComponent>().Camera;
-	static bool using_grade = true;
-	if (ImGui::SliderFloat("Scale Factor", &scale_factor, 0.05f, 5.0f) || ImGui::Checkbox("Use Grade",&using_grade))
+
+	ImGui::End();
+#endif
+	ImGui::Begin("Framebuffer");
+
+	if (ImGui::SliderFloat("Scale Factor", &scale_factor, 0.05f, 5.0f))
 	{
 		int w = Base::WindowProps().width;
 		int h = Base::WindowProps().height;
-		m_Scene->SetFrameBuff(w, h, scale_factor, using_grade);
-	}
+		m_Scene->SetFrameBuff(w, h, scale_factor);
+}
 
-	ImGui::End();
-
-	ImGui::Begin("Post Effects");
-
+	ImGui::Text("Post effects");
 	const auto& effects = m_Scene->GetPostEffects();
 	for (auto& efx : effects)
 	{
@@ -222,7 +245,7 @@ void Game::OnResize(const Base::ResizeArgs& args)
 {
 	if (Base::WindowProps().minimized)
 		return;
-	auto& c3D = m_Camera.GetComponent<Base::CameraComponent>();
-	c3D.Camera.SetViewportSize(args.new_w, args.new_h);
+	auto& c = m_Camera.GetComponent<Base::CameraComponent>();
+	c.Camera.SetViewportSize(args.new_w, args.new_h);
 	m_Scene->SetFrameBuff(args.new_w, args.new_h,scale_factor);
 }
