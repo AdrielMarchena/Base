@@ -278,6 +278,7 @@
     <ClCompile Include="src\Example1.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\SandBox.cpp" />
+    <ClCompile Include="stb_definer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Base\Base.vcxproj">

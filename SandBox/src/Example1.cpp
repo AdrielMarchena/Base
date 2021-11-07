@@ -14,7 +14,7 @@ glm::vec3 Pos;
 glm::vec3 Scale;
 static inline bool Preprare3DCamera(Base::Scope<Base::Scene>& scene,Base::Entity& camera)
 {
-#if defined USING_3DCAMERA_EXAMPLE
+#if defined BASE_USING_3D
 	camera = scene->CreateEntity("Main3D_Camera");
 
 	auto& Camera_Transform = camera.GetComponent<Base::TransformComponent>();
@@ -38,8 +38,13 @@ Example1::Example1()
 {
 }
 
-Example1::Example1(const char* title, float_t w, float_t h, bool resizeble)
-	:Base::windowing::Window(title,w,h,resizeble)
+Example1::Example1(const char* title, float_t w, float_t h, bool resizeble, bool fullscreen)
+	:Base::windowing::Window(title,w,h,resizeble,fullscreen)
+{
+}
+
+Example1::Example1(const Base::windowing::WindowSpecification& specs)
+	: Base::windowing::Window(specs)
 {
 }
 
@@ -75,7 +80,7 @@ void Example1::OnAttach() //Called before the game loop starts
 	auto& Camera_comp = m_Camera.AddComponent<Base::CameraComponent>(); // Add a camera component, this is what make this entity a camera
 
 	Camera_comp.Camera.SetViewportSize(Base::WindowProps().width, Base::WindowProps().height); //Set the viewport of the camera to the screen size
-
+#if defined BASE_USING_3D
 	if (Preprare3DCamera(m_Scene, m_Camera)) //If USING_3DCAMERA_EXAMPLE is defined the func returns true (see the function for more details)
 	{
 		APP_INFO("3D Camera script enabled");
@@ -89,6 +94,7 @@ void Example1::OnAttach() //Called before the game loop starts
 		this->HideCursor(); //Hide the cursor, in other words, the window will capture the cursor so it does not get out of the window
 	}
 	else // Only bind script on 2DCamera if there is no 3D camera
+#endif
 	{
 		auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>(); // Add the component that will have the script for this camera
 		Camera_Script.Bind<Base::OrthoCameraScript>(); //Bind the Base::OrthoCameraScript to this entity, this need to be started
@@ -160,7 +166,7 @@ void Example1::OnResize(const Base::ResizeArgs& args) //Called when the window i
 	//Updates the viewport of the camera when the window is resized
 	auto& Camera_comp = m_Camera.GetComponent<Base::CameraComponent>();
 	Camera_comp.Camera.SetViewportSize(args.new_w, args.new_h);
-#if defined USING_3DCAMERA_EXAMPLE
+#if defined BASE_USING_3D
 	auto& Camera3D = m_Camera3D.GetComponent<Base::CameraComponent>();
 	Camera3D.Camera.SetViewportSize(args.new_w, args.new_h);
 #endif

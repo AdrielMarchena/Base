@@ -26,7 +26,8 @@ private:
 	Base::Scope<Base::Scene> m_Scene;
 public:
 	SandBox();
-	SandBox(const char* title, float_t w, float_t h, bool resizeble);
+	SandBox(const char* title, float_t w, float_t h, bool resizeble, bool fullscreen);
+	SandBox(const Base::windowing::WindowSpecification& specs);
 	~SandBox();
 
 	virtual void OnAttach() override;

@@ -12,8 +12,13 @@ SandBox::SandBox()
 {
 }
 
-SandBox::SandBox(const char* title, float_t w, float_t h, bool resizeble)
-	: Base::windowing::Window(title, w, h, resizeble)
+SandBox::SandBox(const char* title, float_t w, float_t h, bool resizeble, bool fullscreen)
+	: Base::windowing::Window(title, w, h, resizeble,fullscreen)
+{
+}
+
+SandBox::SandBox(const Base::windowing::WindowSpecification& specs)
+	: Base::windowing::Window(specs)
 {
 }
 

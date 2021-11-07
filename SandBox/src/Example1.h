@@ -27,7 +27,8 @@ private:
 	Base::Scope<Base::Scene> m_Scene;
 public:
 	Example1();
-	Example1(const char* title, float_t w, float_t h, bool resizeble);
+	Example1(const char* title, float_t w, float_t h, bool resizeble,bool fullscreen);
+	Example1(const Base::windowing::WindowSpecification& specs);
 	~Example1();
 
 	virtual void OnAttach() override;
