@@ -5,7 +5,7 @@
 
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>
-
+#include "utils/Generic.h"
 namespace Base
 {
 
@@ -123,16 +123,17 @@ namespace Base
 		SetUpShader();
 	}
 
-	/*Empty string will set to none*/
+	/*Empty string will set to identity*/
 	void FramebufferRender::UsePostEffect(const std::string& name)
 	{
 		if (m_CurrentPostEffect)
 			m_CurrentPostEffect->active = false;
-		if (name.empty())
+		if (name.empty() || utils::ToLower(name) == "none")
 		{
 			m_CurrentPostEffect = nullptr;
 			return;
 		}
+		
 		m_CurrentPostEffect = &m_PostEffects[name];
 		m_CurrentPostEffect->active = true;
 		UpdatePostEffects();
@@ -312,6 +313,8 @@ namespace Base
 			m_CurrentShader->SetUniform1i("offset_size", offset_size);
 			m_CurrentShader->SetUniform1fv("offsets", offset_size, &m_CurrentPostEffect->offsets[0][0]);
 		}
+		else
+			m_CurrentShader->SetUniform1i("kernel_size", 0);
 	}
 
 	void FramebufferRender::CalculateQuadTransform()
