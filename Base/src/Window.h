@@ -13,11 +13,21 @@
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "glm/glm.hpp"
-
+#include "utils/base_exceptions.h"
 namespace Base
 {
 	namespace windowing
 	{
+		struct WindowSpecification
+		{
+			int32_t width;
+			int32_t height;
+			bool resizeble = true;
+			bool fullscreen = false;
+			bool title_bar_off = true;
+			std::string title;
+		};
+
 		//using namespace utils;
 		class Window
 		{
@@ -33,18 +43,14 @@ namespace Base
 
 			} m_ProfileOptions ;
 		protected:
-			std::string m_Title;
-			glm::vec2 m_Resolution = { 800.0f,600.0f };
 			float m_AspectRatio = 1.0f;
-			bool m_Resizeble;
-			bool m_Fullscreen;
-			float m_Wid;
-			float m_Hei;
 
 			bool m_ClampMouse = true;
+			WindowSpecification m_Specs;
 		public:
 			
 			Window(const char* title = "Base", float_t w = 800, float_t h = 600, bool resizeble = true,bool fullscreen = false);
+			Window(const WindowSpecification& specs);
 			virtual ~Window();
 
 			Window(Window&) = delete;
@@ -72,6 +78,8 @@ namespace Base
 			void Run();
 
 		private:
+			bool ValidateWindow();
+			bool Initialization();
 			void WindowOnImGuiDebug();
 			inline void CloseWindow();
 			inline void UpdateWindow();

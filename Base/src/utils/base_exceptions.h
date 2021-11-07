@@ -55,6 +55,27 @@ namespace baseException
 	private:
 		const char* _Path;
 	};
+
+	class WindowCreationException : public std::exception
+	{
+	public:
+		enum class Reasons : uint8_t
+		{
+			NOT_SPECIFIED = 0,
+			GLFW3,
+			GLEW,
+		};
+		WindowCreationException()
+			:exception(), _Reason(Reasons::NOT_SPECIFIED) {}
+		WindowCreationException(const char* _What)
+			:exception(_What),_Reason(Reasons::NOT_SPECIFIED){}
+		WindowCreationException(const char* _What,Reasons reason)
+			:exception(_What), _Reason(reason) {}
+
+		Reasons reason() const { return _Reason; }
+	private:
+		Reasons _Reason;
+	};
 }
 }
 }

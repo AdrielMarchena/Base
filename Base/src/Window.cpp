@@ -163,47 +163,81 @@ namespace Base
 			return glfwGetWindowAttrib(m_Window,GLFW_HOVERED);
 		}
 
-		Window::Window(const char* title, float_t w, float_t h, bool resizeble,bool fullscreen)
-			:m_Title(title), m_Wid(w), m_Hei(h), m_Resizeble(resizeble), m_Fullscreen(fullscreen),myWindow(nullptr)
+		bool Window::Initialization()
 		{
-			WindowProps().width = w;
-			WindowProps().height = h;
-			WindowProps().aspect_ratio = B_GetRatio();
-			WindowProps().minimized = false;
-
+			using namespace utils::baseException;
 			//Initialize Log system (spdlog)
 			Log::Init();
 
-			#ifdef BASE_PROFILING
-						BASE_INFO("Profiling is active");
-			#endif
-
+#ifdef BASE_PROFILING
+			BASE_INFO("Profiling is active");
+#endif
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
 			{
 				BASE_ERROR("Error on glfw initialization");
-				return;
+#ifndef BASE_DISABLE_THROW_EXCEPTIONS
+				throw WindowCreationException("Error on glfw initialization", WindowCreationException::Reasons::GLFW3);
+#endif
+				return false;
 			}
-
 			BASE_TRACE("GLFW Initialized!");
 
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-			glfwWindowHint(GLFW_DECORATED, fullscreen ? GLFW_FALSE : GLFW_TRUE);
-			glfwWindowHint(GLFW_RESIZABLE, resizeble ? GLFW_TRUE : GLFW_FALSE);
 			glfwWindowHint(GLFW_SAMPLES, 4);
-
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-			m_Window = glfwCreateWindow(m_Wid, m_Hei, title, nullptr, nullptr);
+			strcpy_s(m_ProfileOptions.profilePath, "Base_Runtime_Profile.json");
+			strcpy_s(m_ProfileOptions.profileName, "Runtime");
+
+			//Audio
+			//aux::LoadDevices();
+			//p_ALCDevice = aux::GetDevicePtr();
+			//p_ALCContext = aux::GetContextPtr();
+
+			return true;
+		}
+
+		bool Window::ValidateWindow()
+		{
+			using namespace utils::baseException;
+
+			WindowProps().width = m_Specs.width;
+			WindowProps().height = m_Specs.height;
+			WindowProps().aspect_ratio = B_GetRatio();
+			WindowProps().minimized = false;
+
+			glfwWindowHint(GLFW_RESIZABLE, m_Specs.resizeble ? GLFW_TRUE : GLFW_FALSE);
+			
+			if(m_Specs.fullscreen || m_Specs.title_bar_off)
+				glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+
+			int monitors_count;
+			GLFWmonitor** monitors = glfwGetMonitors(&monitors_count);
+			if (m_Specs.fullscreen)
+			{
+				m_Window = glfwCreateWindow(m_Specs.width, m_Specs.height, m_Specs.title.c_str(), monitors[0], nullptr);
+			}
+			else
+			{
+				const GLFWvidmode* vid_mode = glfwGetVideoMode(monitors[0]);
+				BASE_INFO("Monitor size {0}x{1}", vid_mode->width, vid_mode->height);
+				m_Window = glfwCreateWindow(m_Specs.width, m_Specs.height, m_Specs.title.c_str(), nullptr, nullptr);
+				int position_x = (vid_mode->width * 0.5) - (m_Specs.width * 0.5);
+				int position_y = (vid_mode->height * 0.5) - (m_Specs.height * 0.5);
+				glfwSetWindowPos(m_Window, position_x, position_y);
+			}
 
 			if (!m_Window)
 			{
 				glfwTerminate();
-				exit(EXIT_FAILURE);
+#ifndef BASE_DISABLE_THROW_EXCEPTIONS
+				throw WindowCreationException("Window could not be created", WindowCreationException::Reasons::GLFW3);
+#endif
+				return false;
 			}
-
 			BASE_TRACE("Window created!");
 
 			glfwMakeContextCurrent(m_Window);
@@ -212,15 +246,16 @@ namespace Base
 			if (glewInit() != GLEW_OK)
 			{
 				glfwTerminate();
-				exit(EXIT_FAILURE);
+#ifndef BASE_DISABLE_THROW_EXCEPTIONS
+				throw WindowCreationException("Error on glew initialization", WindowCreationException::Reasons::GLEW);
+#endif
+				return false;
 			}
-
-			BASE_TRACE("Glew Init");
+			BASE_TRACE("Glew Initialized!");
 
 			render::Render2D::Init();
-			
 			BASE_TRACE("2D Render created!");
-			
+
 			Render3D::Init();
 			BASE_TRACE("3D Render created!");
 
@@ -247,14 +282,27 @@ namespace Base
 
 			BASE_TRACE("ImGUI Initialized!");
 
-			strcpy_s(m_ProfileOptions.profilePath, "Base_Runtime_Profile.json");
-			strcpy_s(m_ProfileOptions.profileName, "Runtime");
+			return true;
+		}
 
-			//Audio
-			//aux::LoadDevices();
-			//p_ALCDevice = aux::GetDevicePtr();
-			//p_ALCContext = aux::GetContextPtr();
+		Window::Window(const char* title, float_t w, float_t h, bool resizeble,bool fullscreen)
+			:myWindow(nullptr)
+		{
+			m_Specs.title = title;
+			m_Specs.width = w;
+			m_Specs.height = h;
+			m_Specs.resizeble = resizeble;
+			m_Specs.fullscreen = fullscreen;
 
+			Initialization();
+			ValidateWindow();
+		}
+
+		Window::Window(const WindowSpecification& specs)
+			:m_Specs(specs)
+		{
+			Initialization();
+			ValidateWindow();
 		}
 
 		Window::~Window()
@@ -285,7 +333,7 @@ namespace Base
 			double fps_lastFrame = 0.0;
 			uint64_t frame_counter = 0;
 			
-			std::string fps_title = m_Title + " | FPS: " + std::to_string(nbFrame);
+			std::string fps_title = m_Specs.title + " | FPS: " + std::to_string(nbFrame);
 			glfwSetWindowTitle(m_Window, fps_title.c_str());
 
 			BASE_TRACE("Game loop starting!");
@@ -312,7 +360,7 @@ namespace Base
 				}
 				
 				//Game Update 
-				OnUpdate({ (float)deltaTime,m_Wid,m_Hei,m_Resolution.x,m_Resolution.y });
+				OnUpdate({ (float)deltaTime });
 				UpdateWindow();
 				//Call render method
 				//OnRender();
@@ -386,29 +434,31 @@ namespace Base
 
 		void Window::CloseWindow()
 		{
+			glfwSetWindowShouldClose(m_Window, true);
 		}
 
 		void Window::UpdateFpsTitle(double fps)
 		{
 			//Set FPS on window title
 			static std::string fps_title;
-			fps_title = m_Title + " | FPS: " + std::to_string(fps);
+			fps_title = m_Specs.title + " | FPS: " + std::to_string(fps);
 			glfwSetWindowTitle(m_Window, fps_title.c_str());
 		}
 
 		void Window::OnWindowResize(const ResizeArgs& args)
 		{
-			m_Wid = args.new_w;
-			m_Hei = args.new_h;
-			WindowProps().width = m_Wid;
-			WindowProps().height = m_Hei;
+			m_Specs.width = args.new_w;
+			m_Specs.height = args.new_h;
+			WindowProps().width = args.new_w;
+			WindowProps().height = args.new_h;
 
 			WindowProps().minimized = false;
-			if (m_Wid == 0 || m_Hei == 0)
+			if (args.new_w == 0 || args.new_h == 0)
 				WindowProps().minimized = true;
 
-			m_AspectRatio = WindowProps().aspect_ratio = m_Wid/ m_Hei;
-			glViewport(0, 0, m_Wid, m_Hei);
+			m_AspectRatio = WindowProps().aspect_ratio = args.new_w / args.new_h;
+			//Framebuffer deals with it now
+			//glViewport(0, 0, args.new_w, args.new_h);
 
 			OnResize(args);
 		}
@@ -447,8 +497,8 @@ namespace Base
 
 		void Window::SetResizeble(bool resizeble)
 		{
-			m_Resizeble = resizeble;
-			glfwWindowHint(GLFW_RESIZABLE, m_Resizeble ? GLFW_TRUE : GLFW_FALSE);
+			m_Specs.resizeble = resizeble;
+			glfwWindowHint(GLFW_RESIZABLE, resizeble ? GLFW_TRUE : GLFW_FALSE);
 		}
 	}
 }

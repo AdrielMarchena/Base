@@ -15,9 +15,5 @@ namespace Base
 	struct UpdateArgs
 	{
 		float dt;
-		float width;
-		float height;
-		float res_w;
-		float res_h;
 	};
 }
