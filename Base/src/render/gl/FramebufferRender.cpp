@@ -30,7 +30,7 @@ namespace Base
 		SetUpFramebuffer();
 		SetUpShader();
 		SetUpPostEffects();
-		UsePostEffect("sharpen");
+		UsePostEffect("none");
 
 		m_Buffer = new FramebufferQuad[4];
 		m_BufferPtr = m_Buffer;
