@@ -136,8 +136,8 @@ namespace Base
 		bool depth_exist = m_DepthAttachmentSpec.TextureFormat != FrambufferTextureFormat::NONE;
 
 		utils::ColectionTextureSpecification texture_specifications;
-		texture_specifications.MagFilter = GL_TextureFilter::LINEAR;
-		texture_specifications.MinFilter = GL_TextureFilter::LINEAR;
+		texture_specifications.MagFilter = GL_TextureFilter::NEAREST;
+		texture_specifications.MinFilter = GL_TextureFilter::NEAREST;
 		texture_specifications.WrapS = GL_TextureWrap::CLAMP_EDGE;
 		texture_specifications.WrapR = GL_TextureWrap::CLAMP_EDGE;
 		texture_specifications.WrapT = GL_TextureWrap::CLAMP_EDGE;
