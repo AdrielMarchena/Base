@@ -125,11 +125,6 @@ namespace Base
 			:Radius(radius), Thickness(thickness), Fade(fade) {}
 	};
 
-	struct SquareColisionComponent // Use the Position and size
-	{
-		bool Active = true;
-		bool Checking = false;
-	};
 #ifdef BASE_USING_3D
 	struct ModelComponent
 	{
@@ -163,5 +158,36 @@ namespace Base
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* script) { delete script->Instance; script->Instance = nullptr;  };
 		}
+	};
+
+	struct RigidBody2DComponent
+	{
+		enum class BodyType : uint8_t
+		{
+			Static = 0, Dynamic, Kinematic
+		};
+		BodyType Type = BodyType::Static;
+
+		bool FixedRotation = false;
+		void* RuntimeBody = nullptr;
+
+		RigidBody2DComponent() = default;
+		RigidBody2DComponent(const RigidBody2DComponent&) = default;
+	};
+
+	struct BoxColider2DComponent
+	{
+		glm::vec2 Offset = { 0.0f,0.0f };
+		glm::vec2 Size = { 0.5f,0.5f };
+
+		float Density = 1.0f;
+		float Friction = 0.5f;
+		float Restitution = 0.0f;
+		float RestitutionThreshold = 0.5f;
+
+		void* RuntimeFixture = nullptr;
+
+		BoxColider2DComponent() = default;
+		BoxColider2DComponent(const BoxColider2DComponent&) = default;
 	};
 }

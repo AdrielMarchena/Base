@@ -10,11 +10,31 @@
 #include "input/Keyboard.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "utils/gl_error_macro_db.h"
+
+#include "box2d/b2_world.h"
+#include "box2d/b2_body.h"
+#include "box2d/b2_fixture.h"
+#include "box2d/b2_polygon_shape.h"
 namespace Base
 {
 	//TODO: temp
 	static TransformComponent m_CameraTransform;
 	static float s_value = 1.0f;
+
+	namespace utils
+	{
+		static inline b2BodyType Get2DBodyType(RigidBody2DComponent::BodyType type)
+		{
+			switch (type)
+			{
+				case RigidBody2DComponent::BodyType::Static: return b2BodyType::b2_staticBody;
+				case RigidBody2DComponent::BodyType::Dynamic: return b2BodyType::b2_dynamicBody;
+				case RigidBody2DComponent::BodyType::Kinematic: return b2BodyType::b2_kinematicBody;
+			}
+			BASE_CORE_ASSERT(false, "Unknow body type");
+			return b2BodyType::b2_staticBody;
+		}
+	}
 
 	Scene::Scene()
 	{
@@ -122,6 +142,54 @@ namespace Base
 		m_FrameBufferRender->UsePostEffect(name);
 	}
 
+	void Scene::RuntimeInit()
+	{
+		m_PhysicWorld = new b2World({0.0f,-9.8f});
+		auto view = m_Registry.view<RigidBody2DComponent>();
+		for (auto e : view)
+		{
+			Entity entity = { e, this };
+			auto& transform = entity.GetComponent<TransformComponent>();
+			auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
+
+			b2BodyDef bodyDef;
+
+			bodyDef.type = utils::Get2DBodyType(rb2d.Type);
+			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
+			bodyDef.angle = transform.Rotation.z;
+
+
+			b2Body* body = m_PhysicWorld->CreateBody(&bodyDef);
+			body->SetFixedRotation(rb2d.FixedRotation);
+			rb2d.RuntimeBody = body;
+
+			if (entity.HasComponent<BoxColider2DComponent>())
+			{
+				auto& bc2d = entity.GetComponent<BoxColider2DComponent>();
+				
+				b2PolygonShape boxShape;
+				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &boxShape;
+				fixtureDef.density = bc2d.Density;
+				fixtureDef.friction = bc2d.Friction;
+				fixtureDef.restitution = bc2d.Restitution;
+				fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+		}
+	}
+
+	void Scene::RuntimeStop()
+	{
+		if (m_PhysicWorld)
+		{
+			delete m_PhysicWorld;
+			m_PhysicWorld = nullptr;
+		}
+	}
+
 	const std::unordered_map<std::string, FramebufferPostEffect>& Scene::GetPostEffects() const
 	{
 		return m_FrameBufferRender->GetPostEffects();
@@ -135,11 +203,35 @@ namespace Base
 		// Fix: Binding the shader here before rendering things (maybe not the best solution)
 
 		{//Native Scripts
+			BASE_PROFILE_SCOPE("Script Updates");
 			m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto& script)
 			{
 				if (script.Instance)
 					script.Instance->OnUpdate(args);
 			});
+		}
+
+		if (m_PhysicWorld)
+		{//Physics
+			BASE_PROFILE_SCOPE("2D Physic's Updates");
+			const int32_t velocityIterations = 6;
+			const int32_t positionIterations = 2;
+			
+				m_PhysicWorld->Step(args.dt, velocityIterations, positionIterations);
+
+			auto view = m_Registry.view<RigidBody2DComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e, this };
+				auto& rb2d = entity.GetComponent<RigidBody2DComponent>();
+
+				auto& transform = entity.GetTransform();
+				b2Body* body = (b2Body*)rb2d.RuntimeBody;
+				const auto& position = body->GetPosition();
+				transform.Translation.x = position.x;
+				transform.Translation.y = position.y;
+				transform.Rotation.z = body->GetAngle();
+			}
 		}
 
 		{//Render Scope
@@ -149,7 +241,7 @@ namespace Base
 			int w = WindowProps().width;
 			int h = WindowProps().height;
 			 
-			glViewport(0, 0, w * s_value, h * s_value);
+			GLCall(glViewport(0, 0, w * s_value, h * s_value));
 			
 			Base::Camera* mainCamera2D = nullptr;
 			glm::mat4 cameraTransform2D;
@@ -295,7 +387,7 @@ namespace Base
 			}
 #endif
 			m_FrameBufferRender->UnbindFrameBuffer();
-			glViewport(0, 0, w, h);
+			GLCall(glViewport(0, 0, w, h));
 			
 		}//End Render Scope
 		

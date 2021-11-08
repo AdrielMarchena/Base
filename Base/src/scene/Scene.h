@@ -4,6 +4,7 @@
 #include "args/UpdateArgs.h"
 #include "render/gl/FramebufferRender.h"
 #include "SceneCamera.h"
+class b2World;
 namespace Base
 {
 	class Entity;
@@ -26,6 +27,9 @@ namespace Base
 		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const;
 		void SetPostEffect(const std::string& name);
 
+		void RuntimeInit();
+		void RuntimeStop();
+
 		//entt::registry& Reg() { return m_Registry; }
 		void OnUpdate(const UpdateArgs& args);
 	private:
@@ -33,6 +37,8 @@ namespace Base
 		Scope<FramebufferRender> m_FrameBufferRender;
 		SceneCamera m_FramebufferCamera;
 		
+		b2World* m_PhysicWorld = nullptr;
+
 		entt::registry m_Registry;
 		friend class Entity;
 	};

@@ -2,8 +2,11 @@
 #include "Scene.h"
 #include "entt/entt.hpp"
 #include "utils/base_assert.h"
+
 namespace Base
 {
+	struct TransformComponent;
+	struct TagComponent;
 	class Entity
 	{
 	public:
@@ -14,14 +17,17 @@ namespace Base
 		template<typename T, typename... _Args>
 		T& AddComponent(_Args&&... args)
 		{
-			BASE_CORE_ASSERT(!HasComponent<T>(), "Entity already has component!");
+			BASE_CORE_ASSERT(!HasComponent<T>(), "Entity already has component '{0}'! Try use .GetComponent<{0}>()",BASE_GET_PARSE_TYPE_NAME(T));
 			return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<_Args>(args)...);
 		}
+
+		Base::TransformComponent& GetTransform();
+		Base::TagComponent& GetTag();
 
 		template<typename T>
 		T& GetComponent()
 		{
-			BASE_CORE_ASSERT(HasComponent<T>(),"Entity does not have component!");
+			BASE_CORE_ASSERT(HasComponent<T>(), "Entity does not have component '{0}'!", BASE_GET_PARSE_TYPE_NAME(T));
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
 
@@ -35,7 +41,7 @@ namespace Base
 		template<typename T>
 		void RemoveComponent()
 		{
-			BASE_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!");
+			BASE_CORE_ASSERT(HasComponent<T>(), "Entity does not have component '{0}'!", BASE_GET_PARSE_TYPE_NAME(T));
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 
