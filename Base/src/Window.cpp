@@ -434,7 +434,7 @@ namespace Base
 
 		void Window::CloseWindow()
 		{
-			glfwSetWindowShouldClose(m_Window, true);
+			glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
 		}
 
 		void Window::UpdateFpsTitle(double fps)

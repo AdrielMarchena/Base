@@ -81,10 +81,10 @@ namespace Base
 			bool ValidateWindow();
 			bool Initialization();
 			void WindowOnImGuiDebug();
-			inline void CloseWindow();
-			inline void UpdateWindow();
-			inline void UpdateFpsTitle(double fps);
+			void UpdateWindow();
+			void UpdateFpsTitle(double fps);
 		protected:
+			void CloseWindow();
 			
 			//Return a correted position of the cursor, taking in consideration the camera position
 			/*glm::vec2 m_pos(input::Mouse& mouse)
