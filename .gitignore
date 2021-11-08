@@ -46,6 +46,8 @@
 #glew Lib
 */vendor/glew-2.1.0/*
 */vendor/assimp/*
+*/vendor/Box2D/*
+!*/vendor/Box2D/premake5.lua
 
 #audio files
 *.[Mm]4[Aa]

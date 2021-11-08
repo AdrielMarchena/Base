@@ -115,6 +115,9 @@
       <Filter>input</Filter>
     </ClInclude>
     <ClInclude Include="src\no_console_release.h" />
+    <ClInclude Include="src\render\3d\3d_core.h">
+      <Filter>render\3d</Filter>
+    </ClInclude>
     <ClInclude Include="src\render\3d\Mesh.h">
       <Filter>render\3d</Filter>
     </ClInclude>
@@ -122,6 +125,9 @@
       <Filter>render\3d</Filter>
     </ClInclude>
     <ClInclude Include="src\render\3d\Render3D.h">
+      <Filter>render\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\3d\SkyBox.h">
       <Filter>render\3d</Filter>
     </ClInclude>
     <ClInclude Include="src\render\Camera.h">
@@ -157,6 +163,15 @@
     <ClInclude Include="src\render\geo_renders\TriRender.h">
       <Filter>render\geo_renders</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\gl\Framebuffer.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\FramebufferRender.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\FramebufferSpecifications.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
     <ClInclude Include="src\render\gl\GL_Types.h">
       <Filter>render\gl</Filter>
     </ClInclude>
@@ -172,6 +187,9 @@
     <ClInclude Include="src\render\gl\Texture.h">
       <Filter>render\gl</Filter>
     </ClInclude>
+    <ClInclude Include="src\render\gl\TextureSpecifications.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
     <ClInclude Include="src\render\gl\VertexArray.h">
       <Filter>render\gl</Filter>
     </ClInclude>
@@ -179,6 +197,9 @@
       <Filter>render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\VertexBuffer.h">
+      <Filter>render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\base_gl.h">
       <Filter>render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\render2D.h">
@@ -244,15 +265,11 @@
     <ClInclude Include="src\utils\threading.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\3d\SkyBox.h" />
-    <ClInclude Include="src\render\gl\Framebuffer.h" />
-    <ClInclude Include="src\render\gl\FramebufferRender.h" />
-    <ClInclude Include="src\render\gl\base_gl.h" />
-    <ClInclude Include="src\render\gl\TextureSpecifications.h" />
-    <ClInclude Include="src\render\gl\FramebufferSpecifications.h" />
-    <ClInclude Include="src\render\3d\3d_core.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Base\Base.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp">
@@ -273,6 +290,7 @@
     <ClCompile Include="src\camera\OrthographicCameraController.cpp">
       <Filter>camera</Filter>
     </ClCompile>
+    <ClCompile Include="src\definer_Stb.cpp" />
     <ClCompile Include="src\ent\Animator.cpp">
       <Filter>ent</Filter>
     </ClCompile>
@@ -290,6 +308,9 @@
       <Filter>render\3d</Filter>
     </ClCompile>
     <ClCompile Include="src\render\3d\Render3D.cpp">
+      <Filter>render\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\3d\SkyBox.cpp">
       <Filter>render\3d</Filter>
     </ClCompile>
     <ClCompile Include="src\render\ParticleSystem.cpp">
@@ -316,6 +337,12 @@
     <ClCompile Include="src\render\geo_renders\TriRender.cpp">
       <Filter>render\geo_renders</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\gl\Framebuffer.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\FramebufferRender.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
     <ClCompile Include="src\render\gl\GL_Commands.cpp">
       <Filter>render\gl</Filter>
     </ClCompile>
@@ -329,6 +356,9 @@
       <Filter>render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\Texture.cpp">
+      <Filter>render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\TextureSpecifications.cpp">
       <Filter>render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\VertexArray.cpp">
@@ -364,10 +394,6 @@
     <ClCompile Include="src\utils\parse_args.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\3d\SkyBox.cpp" />
-    <ClCompile Include="src\render\gl\Framebuffer.cpp" />
-    <ClCompile Include="src\Base\Base.cpp" />
-    <ClCompile Include="src\render\gl\FramebufferRender.cpp" />
-    <ClCompile Include="src\render\gl\TextureSpecifications.cpp" />
+    <ClCompile Include="src\utils\base_assert.cpp" />
   </ItemGroup>
 </Project>

@@ -13,7 +13,7 @@ void DisplayCommands()
 	std::cout << "--height=positive_number 'window height'" << std::endl;
 	std::cout << "--resizeble 'Set window to resizeble or not'" << std::endl;
 	std::cout << "--fullscreen 'Open window in full screen'" << std::endl;
-	std::cout << "--title_off 'Disable title bar even if fullscreen is not on'" << std::endl;
+	std::cout << "--titleOff 'Disable title bar even if fullscreen is not on'" << std::endl;
 	//std::cout << "-----------------------------------------" << std::endl;
 	//std::cout << "----------------Advanced-----------------" << std::endl;
 	//std::cout << "-----------------------------------------" << std::endl;
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 		specifications.height = parser.GetOptionAsInt("height");
 		specifications.resizeble = parser.GetFlag("resizeble");
 		specifications.fullscreen = parser.GetFlag("fullscreen");
-		specifications.title_bar_off = parser.GetFlag("title_off");
+		specifications.title_bar_off = parser.GetFlag("titleoff");
 
 		using_example_instance = parser.GetFlag("example1");
 	}

@@ -40,6 +40,7 @@ project "Base"
 
 	includedirs
 	{
+		"%{prj.name}/vendor/Box2D/include",
 		"%{prj.name}/vendor/stb_image",
 		"%{prj.name}/vendor/entt/single_include",
 		"%{prj.name}/vendor/libsndfile/include",
@@ -47,6 +48,20 @@ project "Base"
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/glm",
 		"%{prj.name}/vendor/debugbreak"
+	}
+	
+	libdirs 
+	{ 
+		"%{prj.name}/vendor/Box2D/bin/" .. outputdir .. "/Box2D", 
+	}
+	links
+	{
+		"Box2D"
+	}
+
+	postbuildcommands
+	{
+		("{COPYDIR} \"./src/**.h\" \"./include/\""),
 	}
 
 	filter "system:windows"
@@ -58,11 +73,6 @@ project "Base"
 		{
 			"BASE_WINDOWS_BUILD",
 			"BASE_STATIC_BUILD"
-		}
-
-		postbuildcommands
-		{
-			("{COPYDIR} \"./src/**.h\" \"./include/\""),
 		}
 
 	filter "configurations:Debug"
@@ -106,6 +116,7 @@ project "Sandbox"
 
 	includedirs
 	{
+		"Base/vendor/Box2D/include",
 		"Base/vendor/stb_image",
 		"Base/vendor/entt/single_include",
 		"Base/vendor/libsndfile/include",
@@ -170,6 +181,7 @@ project "Life"
 
 	includedirs
 	{
+		"Base/vendor/Box2D/include",
 		"Base/vendor/stb_image",
 		"Base/vendor/entt/single_include",
 		"Base/vendor/libsndfile/include",
@@ -178,7 +190,7 @@ project "Life"
 		"Base/vendor/glm",
 		"Base/vendor/debugbreak",
 	}
-
+	
 	links
 	{
 		"Base"

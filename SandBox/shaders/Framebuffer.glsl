@@ -38,13 +38,16 @@ vec4 transform(in vec4 textureColor, in sampler2D lookupTable);
 
 void main()
 {
-    vec3 cl = vec3(0.0f);
     if(kernel_size > 0)
+    {
+        vec3 cl = vec3(0.0f);
         for(int i = 0; i < kernel_size; i++)
             cl += vec3(texture(u_Framebuffer, v_TexCoord + offsets[i % offset_size])) * kernel_5x5_slot[i];
+        o_Color = vec4(cl,1.0f);
+
+    }
     else
-        cl = texture(u_Framebuffer,v_TexCoord);
-     o_Color = vec4(cl,1.0f);
+        o_Color = texture(u_Framebuffer, v_TexCoord);
 }
 
 /*
