@@ -131,11 +131,12 @@ namespace Base
 		if (name.empty() || utils::ToLower(name) == "none")
 		{
 			m_CurrentPostEffect = nullptr;
-			return;
 		}
-		
-		m_CurrentPostEffect = &m_PostEffects[name];
-		m_CurrentPostEffect->active = true;
+		else
+		{
+			m_CurrentPostEffect = &m_PostEffects[name];
+			m_CurrentPostEffect->active = true;
+		}
 		UpdatePostEffects();
 	}
 
@@ -270,6 +271,16 @@ namespace Base
 			-1.0f, 0.0f, 1.0f,
 		};
 		m_PostEffects["sobel_feldman"] = sobel_feldman;
+
+		FramebufferPostEffect victor_gordan;
+		victor_gordan.offsets = offsets;
+		victor_gordan.kernel =
+		{
+			-2.0f,-1.0f, 0.0f,
+			-1.0f, 1.0f, 1.0f,
+			 0.0f, 1.0f, 2.0f,
+		};
+		m_PostEffects["victor_gordan"] = victor_gordan;
 	}
 
 	void FramebufferRender::SetUpFramebuffer()
@@ -284,14 +295,17 @@ namespace Base
 
 	void FramebufferRender::UpdatePostEffects()
 	{
-		float offset_x = 1.0f / m_Framebuffer->GetSpec().width;
-		float offset_y = 1.0f / m_Framebuffer->GetSpec().height;
+		if (m_CurrentPostEffect)
+		{
+			float offset_x = 1.0f / m_Framebuffer->GetSpec().width;
+			float offset_y = 1.0f / m_Framebuffer->GetSpec().height;
 
-		m_CurrentPostEffect->offsets = {
-			glm::vec2(-offset_x, offset_y),  glm::vec2(0.0f, offset_y),  glm::vec2(offset_x,offset_y),
-			glm::vec2(-offset_x, 0.0f),      glm::vec2(0.0f, 0.0f),      glm::vec2(offset_x,0.0f),
-			glm::vec2(-offset_x, -offset_y), glm::vec2(0.0f, -offset_y), glm::vec2(offset_x,-offset_y)
-		};
+			m_CurrentPostEffect->offsets = {
+				glm::vec2(-offset_x, offset_y),  glm::vec2(0.0f, offset_y),  glm::vec2(offset_x,offset_y),
+				glm::vec2(-offset_x, 0.0f),      glm::vec2(0.0f, 0.0f),      glm::vec2(offset_x,0.0f),
+				glm::vec2(-offset_x, -offset_y), glm::vec2(0.0f, -offset_y), glm::vec2(offset_x,-offset_y)
+			};
+		}
 		SetUpShader();
 	}
 
