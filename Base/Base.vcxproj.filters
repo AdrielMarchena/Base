@@ -265,6 +265,7 @@
     <ClInclude Include="src\utils\threading.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\uuid\UUID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp">
@@ -394,6 +395,6 @@
     <ClCompile Include="src\utils\parse_args.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\base_assert.cpp" />
+    <ClCompile Include="src\uuid\UUID.cpp" />
   </ItemGroup>
 </Project>

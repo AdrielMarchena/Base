@@ -6,8 +6,10 @@
 
 #include "Components.h"
 #include "utils/Instrumentor.h"
+#include "ScriptableEntity.h"
 
 #include "input/Keyboard.h"
+
 #include "glm/gtc/matrix_transform.hpp"
 #include "utils/gl_error_macro_db.h"
 
@@ -87,6 +89,7 @@ namespace Base
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<IDComponent>();
 		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Unnamed Entity" : name;

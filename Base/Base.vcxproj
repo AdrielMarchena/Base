@@ -391,11 +391,11 @@
     <ClInclude Include="src\utils\gl_error_macro_db.h" />
     <ClInclude Include="src\utils\parse_args.h" />
     <ClInclude Include="src\utils\threading.h" />
+    <ClInclude Include="src\uuid\UUID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp" />
     <ClCompile Include="src\Log.cpp" />
-    <ClCompile Include="src\utils\base_assert.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp" />
     <ClCompile Include="src\audio\AudioDevice.cpp" />
@@ -439,6 +439,7 @@
     <ClCompile Include="src\utils\Generic.cpp" />
     <ClCompile Include="src\utils\RandomList.cpp" />
     <ClCompile Include="src\utils\parse_args.cpp" />
+    <ClCompile Include="src\uuid\UUID.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

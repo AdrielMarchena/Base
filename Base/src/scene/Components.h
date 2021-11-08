@@ -2,17 +2,25 @@
 
 #include "render/gl/Texture.h"
 #include "render/SubTexture.h"
-#include "glm/glm.hpp"
-#include <glm/gtx/quaternion.hpp>
 #include "SceneCamera.h"
 #include "render/Colors.h"
 #include "ent/Animator.h"
-#include "ScriptableEntity.h"
+#include "uuid/UUID.h"
 
+#include "glm/glm.hpp"
+#include <glm/gtx/quaternion.hpp>
 #include "render/3d/3d_core.h"
 
 namespace Base
 {
+	struct IDComponent
+	{
+		UUID Id;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+	};
+
 	struct TagComponent
 	{
 		std::string Tag = "";
@@ -144,7 +152,7 @@ namespace Base
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 	};
-
+	class ScriptableEntity;
 	struct NativeScriptComponent
 	{
 		ScriptableEntity* Instance;

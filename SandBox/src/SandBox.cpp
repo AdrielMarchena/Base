@@ -50,6 +50,7 @@ void SandBox::OnAttach() //Called before the game loop starts
 	{
 		m_Entitys["Platform2"] = m_Scene->CreateEntity("Platform2"); //Create the Quad entity
 		m_Entitys["Platform2"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
+		APP_INFO("Platform uuid: {0}", m_Entitys["Platform2"].GetID());
 		auto& plat_tranform = m_Entitys["Platform2"].GetTransform();
 
 		plat_tranform.Translation = { 0.0,-10.5, 0.0f };
@@ -65,6 +66,7 @@ void SandBox::OnAttach() //Called before the game loop starts
 	{
 		m_Entitys["Quad"] = m_Scene->CreateEntity("Quad"); //Create the Quad entity
 		m_Entitys["Quad"].AddComponent<Base::SpriteComponent>(Color::Base_Color); //Add sprite (solid color)
+		APP_INFO("Quad uuid: {0}", m_Entitys["Quad"].GetID());
 
 		auto& quad_rbody = m_Entitys["Quad"].AddComponent<Base::RigidBody2DComponent>();
 		auto& quad_bcol = m_Entitys["Quad"].AddComponent<Base::BoxColider2DComponent>();
