@@ -12,6 +12,5 @@ namespace Base
 {
 	struct ImGuiArgs
 	{
-		render::Render2D& render;
 	};
 }

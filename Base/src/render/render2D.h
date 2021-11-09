@@ -1,46 +1,23 @@
-/*
-*	@file QuadRender2D.h
-*	
-*	The render it self it's here (header)
-*/
-
 #pragma once
-
-
 #include "Base/Base.h"
 
-#include <array>
 #include "glm/glm.hpp"
-#include "gl/Shader.h"
-#include "gl/Texture.h"
-#include "SubTexture.h"
-#include <math.h>
-#include "Colors.h"
+#include "render/gl/Shader.h"
+#include "render/gl/Texture.h"
+#include "render/SubTexture.h"
+#include "render/Colors.h"
 #include "render/Camera.h"
-
-#include "geo_renders/QuadRender.h"
-#include "geo_renders/LineRender.h"
-#include "geo_renders/CircleRender.h"
-#include "geo_renders/TriRender.h"
-
+#include <array>
+#include <math.h>
 namespace Base
-{
-namespace render
 {
 	class Render2D
 	{
 	private:
-		static Scope<QuadRender2D> m_QuadRender;
-		static Scope<CircleRender> m_CircleRender;
-		static Scope<LineRender2D> m_LineRender;
-		static Scope<QuadRender2D> m_TextRender;
-		static Scope<TriRender> m_TriRender;
-		static Scope<ShaderLib> m_Shaders;
+		
 	public:
 		static constexpr GLbitfield Cl_Color = GL_COLOR_BUFFER_BIT;
 		static constexpr GLbitfield Cl_DepthColor = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
-
-		static glm::vec3 m_default_axis;
 
 		static void SetClearColor(const glm::vec4& color);
 		static void ClearColor(GLbitfield clear = Cl_Color);
@@ -49,67 +26,59 @@ namespace render
 
 		static void AddShader(const std::string& path);
 
+		/*static void SampleTex(Ref<render::Shader> shader, int32_t MaxTexture) //TODO: Move to shader class
+		{
+			int32_t* samplers = new int32_t[MaxTexture];
+			for (int i = 0; i < MaxTexture; i++)
+				samplers[i] = i;
+			shader->SetUniform1iv("u_Textures", MaxTexture, samplers);
+			delete[] samplers;
+
+			m_data.TextureSlots = std::vector<uint32_t>(MaxTexture);
+			m_data.TextureSlots[0] = render::Texture::GetWhiteTexture()->GetId();
+			for (size_t i = 1; i < MaxTexture; i++)
+				m_data.TextureSlots[i] = 0;
+		}*/
+
 		static void BeginBatch();
-		static void BeginScene(const Camera& camera,const glm::mat4& transform);
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
 		static void EndBatch();
 		static void Flush();
 		static void Dispose();
 
-		static void Sort();
-
-		static const Ref<Shader> GetQuadShader();
-		static const Ref<Shader> GetLineShader();
-		static const Ref<Shader> GetCircleShader();
-		static const Ref<Shader> GetTextShader();
-		static const Ref<Shader> GetTriShader();
-
-		static void FlushQuads() { m_QuadRender->Flush(); }
-		static void FlushTriangles() { m_TriRender->Flush(); }
-		static void FlushLines() { m_LineRender->Flush(); }
-		static void FlushCircles() { m_CircleRender->Flush(); }
-		static void FlushText() { m_TextRender->Flush(); }
-
-		static void EndBatchQuads() { m_QuadRender->EndBatch(); }
-		static void EndBatchTriangles() { m_TriRender->EndBatch(); }
-		static void EndBatchLines() { m_LineRender->EndBatch(); }
-		static void EndBatchCircles() { m_CircleRender->EndBatch(); }
-		static void EndBatchText() { m_TextRender->EndBatch(); }
-
-		static void BeginBatchQuads() { m_QuadRender->BeginBatch(); }
-		static void BeginBatchTriangles() { m_TriRender->BeginBatch(); }
-		static void BeginBatchLines() { m_LineRender->BeginBatch(); }
-		static void BeginBatchCircles() { m_CircleRender->BeginBatch(); }
-		static void BeginBatchText() { m_TextRender->BeginBatch(); }
+		static const Ref<render::Shader> GetQuadShader();
+		static const Ref<render::Shader> GetCircleShader();
+		static const Ref<render::Shader> GetLineShader();
+		//static const Ref<Shader> GetTextShader();
+		//static const Ref<Shader> GetTriShader();
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
-			float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
-		
+			float_t rotation = NULL, const glm::vec3& axis = {});
+
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4],
-			float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
-
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture,
-			const glm::vec4& color = Color::White,float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
-
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture,
-			const glm::vec4& color = Color::White,float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
-
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color = Color::White,
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4 color[4],
-			float_t rotation = NULL, const glm::vec3& axis = {});
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<render::Texture> texture,
+			const glm::vec4& color = Color::White, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawQuad(const glm::mat4& transform, Ref<Texture> texture, const glm::vec4& color = Color::White,
-			float_t rotation = NULL, const glm::vec3& axis = {});
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const render::SubTexture& sub_texture,
+			const glm::vec4& color = Color::White, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, const glm::vec4& color = Color::White,
-			float_t rotation = NULL, const glm::vec3& axis = {});
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
 
-		static void DrawText_(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture,
-			const glm::vec4& color = Color::White, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4 color[4]);
 
-		static void DrawOutLineQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
-			float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
+		static void DrawQuad(const glm::mat4& transform, Ref<render::Texture> texture, const glm::vec4& color = Color::White);
+
+		static void DrawQuad(const glm::mat4& transform, const render::SubTexture& sub_texture, const glm::vec4& color = Color::White);
+
+		//static void DrawText_(const glm::vec3& position, const glm::vec2& size, Ref<render::Texture> texture,
+		//	const glm::vec4& color = Color::White, float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
+
+		//static void DrawOutLineQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color,
+		//	float_t rotation = NULL, const glm::vec3& axis = m_default_axis);
+
+		static void DrawOutLineQuad(const glm::mat4& transform, const glm::vec4& color);
 
 		static void DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color);
 
@@ -117,53 +86,30 @@ namespace render
 
 		static void DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, float_t precision = 0.01f);
 
-		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const glm::vec4& color,
+		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const glm::vec4& color, 
 			float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, Ref<Texture> texture,
+		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, Ref<render::Texture> texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture,
+		static void DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const render::SubTexture& sub_texture,
 			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
 
-		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const glm::vec4& color,
-			float_t rotation = NULL, const glm::vec3& axis = {});
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const glm::vec4& color);
 
-		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<Texture> texture,
-			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<render::Texture> texture,
+			const glm::vec4& color);
 
-		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture,
-			const glm::vec4& color, float_t rotation = NULL, const glm::vec3& axis = {});
+		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const render::SubTexture& sub_texture,
+			const glm::vec4& color);
 
-		static void DrawTriangle(const glm::vec3 points[3], const glm::vec4& color);
+		//static void DrawTriangle(const glm::vec3 points[3], const glm::vec4& color);
 
-		static void DrawTriangle(const glm::vec3 points[3], const glm::vec4 color[3]);
+		//static void DrawTriangle(const glm::vec3 points[3], const glm::vec4 color[3]);
 
+		static void SetLineWidth(float_t thickness = 1.0f);
 	private:
-		static void QuadBeginBatch();
-		static void QuadEndBatch();
-		static void QuadFlush();
 
-		static void CircleBeginBatch();
-		static void CircleEndBatch();
-		static void CircleFlush();
-
-		static void LineBeginBatch();
-		static void LineEndBatch();
-		static void LineFlush();
-
-		static void TextBeginBatch();
-		static void TextEndBatch();
-		static void TextFlush();
-
-		static void TriBeginBatch();
-		static void TriEndBatch();
-		static void TriFlush();
-
-	public: //deprecated
-		[[deprecated("Use DrawLine() instead")]]
-		static void DrawQuadLine(const glm::vec2& origin, const glm::vec2& dest, const glm::vec4& color, float_t thick,
-			float_t layer = 0.0f);
+	public:
 	};
-}
 }

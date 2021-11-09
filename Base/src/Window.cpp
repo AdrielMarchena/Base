@@ -253,7 +253,7 @@ namespace Base
 			}
 			BASE_TRACE("Glew Initialized!");
 
-			render::Render2D::Init();
+			Render2D::Init();
 			BASE_TRACE("2D Render created!");
 
 			Render3D::Init();
@@ -308,7 +308,7 @@ namespace Base
 		Window::~Window()
 		{
 			Render3D::Dispose();
-			render::Render2D::Dispose();
+			Render2D::Dispose();
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplGlfw_Shutdown();
 			ImGui::DestroyContext();
@@ -321,7 +321,7 @@ namespace Base
 		{
 			using namespace render;
 			using namespace utils;
-			auto render = render::Render2D(); //Temp
+			auto render = Render2D(); //Temp
 
 			SetResizeble(false);
 

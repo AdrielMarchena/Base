@@ -12,7 +12,6 @@ namespace Base
 {
 	struct AttachArgs
 	{
-		render::Render2D& render; //Why this is here?
 		OrthographicCameraController& camera;
 		float width;
 		float height;

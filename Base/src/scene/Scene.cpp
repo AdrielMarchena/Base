@@ -280,7 +280,7 @@ namespace Base
 				}
 			}
 
-			using D2D = render::Render2D;
+			using D2D = Render2D;
 			using D3D = Render3D;
 
 			D3D::Clear();
@@ -291,18 +291,19 @@ namespace Base
 
 				//Start render Scene
 				D2D::BeginScene(*mainCamera2D, cameraTransform2D);
-
+				D2D::BeginBatch();
+				D2D::SetLineWidth();
 				{// Quads
 					
-					D2D::GetQuadShader()->Bind(); //Fix the batch problem, but maybe not the best solution
-					D2D::BeginBatchQuads();
 					{//Draw Sprites
 						//It's a view because a group just breaks
 						auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
 						for (auto entity : view)
 						{
 							auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-							D2D::DrawQuad(position.GetTransform(), spr.Color);
+							//D2D::DrawQuad(position.GetTransform(), spr.Color);
+							glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
+							D2D::DrawOutLineQuad(position.GetTransform(), out_color);
 						}
 					}
 
@@ -344,14 +345,10 @@ namespace Base
 							D2D::DrawQuad(position.GetTransform(), sprite, Color::White);
 						}
 					}
-					D2D::EndBatchQuads();
-					D2D::FlushQuads();
 				}
 
 				{// Circle
 					
-					D2D::GetCircleShader()->Bind();
-					D2D::BeginBatchCircles();
 					{//Draw Color Circles
 						auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
 						for (auto entity : view)
@@ -372,13 +369,11 @@ namespace Base
 						}
 					
 					}
-					D2D::EndBatchCircles();
-					D2D::FlushCircles();
 				}
 
 				//Finish the 2D rendering
-				//D2D::EndBatch();
-				//D2D::Flush();
+				D2D::EndBatch();
+				D2D::Flush();
 			}
 #ifdef BASE_USING_3D
 			if (mainCamera3D)

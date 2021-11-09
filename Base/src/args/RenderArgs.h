@@ -12,7 +12,6 @@ namespace Base{
 	struct RenderArgs
 	{
 		float dt;
-		render::Render2D& render;
 		OrthographicCameraController& camera_ctr;
 		OrthographicCamera& camera;
 		float width;

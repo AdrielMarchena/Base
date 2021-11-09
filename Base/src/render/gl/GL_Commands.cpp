@@ -11,6 +11,10 @@ namespace render
 	{
 		GLCall(glDrawElements(GetTarget(target), size, GetType(type), indices));
 	}
+	void GLCommands::GL_DrawArrayCall(GL_Target mode, int32_t first, int32_t count)
+	{
+		GLCall(glDrawArrays(GetTarget(mode), first, count));
+	}
 	void GLCommands::GL_Clear(GL_ClearCommand command)
 	{
 		GLCall(glClear(GL_SwitchClearCommand(command)));
