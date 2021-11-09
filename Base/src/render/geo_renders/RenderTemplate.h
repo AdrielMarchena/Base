@@ -27,7 +27,7 @@ namespace render
 		return MaxT;
 	}
 
-	inline void rotate(glm::vec3 vertices[4], float rotation, const glm::vec3& rotationCenter, const glm::vec3& axis)
+	inline static void rotate(glm::vec3 vertices[4], float rotation, const glm::vec3& rotationCenter, const glm::vec3& axis)
 	{
 		const glm::mat4 translationMatrix = glm::translate(glm::identity<glm::mat4>(), -rotationCenter);
 		const glm::mat4 rotationMatrix = glm::rotate(glm::identity<glm::mat4>(), rotation, axis);
@@ -47,6 +47,8 @@ namespace render
 			:m_data()
 		{
 		}
+
+		virtual ~Render() { Dispose(); }
 
 		virtual void BeginScene(const glm::mat4& viewProj)
 		{
@@ -96,9 +98,9 @@ namespace render
 		virtual void Dispose()
 		{
 			mShader->Dispose();
-			m_data.VA->Dispose();
-			m_data.VB->Dispose();
-			m_data.IB->Dispose();
+			m_data.VA.reset();
+			m_data.VB.reset();
+			m_data.IB.reset();
 			delete[] m_data.Buffer;
 			m_data.Buffer = nullptr;
 			m_data.BufferPtr = nullptr;

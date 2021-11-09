@@ -58,6 +58,7 @@ namespace Base
 				float_t thick, float_t layer = 0.0f);
 
 		private:
+			friend Render2D;
 		};
 	}
 }

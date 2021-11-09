@@ -15,9 +15,7 @@ namespace Base
 {
 	namespace render
 	{
-
-		static int32_t MaxTexture = MaxTexturesSlots();
-		static const size_t MaxLineCount = 1000;
+		static const size_t MaxLineCount = 100;
 		static const size_t MaxLineVertexCount = MaxLineCount * 2;
 		static const size_t MaxLineIndexCount = MaxLineCount * 2;
 
@@ -28,7 +26,7 @@ namespace Base
 			m_data.Target = GL_Target::LINES;
 			m_data.Buffer = new LineVertex[MaxLineVertexCount];
 			
-			m_data.VerticesNumber = 4;
+			m_data.VerticesNumber = 2;
 
 			m_data.VA = VertexArray::CreateVertexArray();
 
@@ -39,19 +37,19 @@ namespace Base
 
 			layout.AddLayoutFloat(4, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));
 
-			uint32_t* indices = new uint32_t[MaxLineIndexCount]{};
-			uint32_t offset = 0;
-			for (int i = 0; i < MaxLineIndexCount; i += 2)
-			{
-				indices[i + 0] = 0 + offset;
-				indices[i + 1] = 1 + offset;
+		}
 
-				offset += 2;
-			}
+		void LineRender2D::Flush()
+		{
+			if (!m_data.IndexCount)
+				return;
+			m_data.VA->Bind();
+			GLCommands::GL_DrawArrayCall(m_data.Target, 0, m_data.IndexCount);
+			//GLCall(glDrawElements(m_data.Target, m_data.IndexCount, GL_UNSIGNED_INT, nullptr));
+			m_data.RenderStatus.DrawCount++;
 
-			m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
-			delete[] indices;
-
+			m_data.Count = 0;
+			m_data.IndexCount = 0;
 		}
 
 		void LineRender2D::DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color)
@@ -63,15 +61,14 @@ namespace Base
 				BeginBatch();
 			}
 
-			m_data.BufferPtr->Position = { origin.x,origin.y,origin.z };
+			m_data.BufferPtr->Position = origin;
 			m_data.BufferPtr->Color = color;
 			m_data.BufferPtr++;
 
-			m_data.BufferPtr->Position = { dest.x,dest.y,origin.z };
+			m_data.BufferPtr->Position = dest;
 			m_data.BufferPtr->Color = color;
 			m_data.BufferPtr++;
 
-			m_data.Count++;
 			m_data.IndexCount += 2;
 		}
 
@@ -122,6 +119,31 @@ namespace Base
 				//points.push_back(bezier_3order_mix(origin, p1, p2, dest,i));
 			}
 			DrawLine(*acting_origin, dest, color); // Connect the last line with the destination
+		}
+
+		void LineRender2D::DrawQuadLine(const glm::mat4& transform, const glm::vec4& color)
+		{
+			static constexpr glm::vec4 QuadVertexPositions[] =
+			{
+				{ -0.5f, -0.5f, 0.0f, 1.0f },
+				{ 0.5f, -0.5f, 0.0f, 1.0f },
+				{ 0.5f,  0.5f, 0.0f, 1.0f },
+				{ -0.5f,  0.5f, 0.0f, 1.0f }
+			};
+
+			glm::vec3 quadLines[4];
+			for (int i = 0; i < 4; i++)
+				quadLines[i] = transform * QuadVertexPositions[i];
+
+			DrawLine(quadLines[0], quadLines[1], color);
+			DrawLine(quadLines[1], quadLines[2], color);
+			DrawLine(quadLines[2], quadLines[3], color);
+			DrawLine(quadLines[3], quadLines[0], color);
+		}
+
+		void LineRender2D::SetLineWidth(float_t thickness)
+		{
+			GLCall(glLineWidth(thickness));
 		}
 	}
 }

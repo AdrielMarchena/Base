@@ -61,10 +61,11 @@ namespace render
 		Ref<VertexArray> VA;
 		Ref<VertexBuffer> VB;
 		Ref<IndexBuffer> IB;
-		uint32_t IndexCount = 0;
+
 		Vertex* Buffer = nullptr;
 		Vertex* BufferPtr = nullptr;
-		
+		uint32_t IndexCount = 0;
+
 		uint8_t  WhiteTextureSlot = 0;
 		uint32_t Count = 0;
 		GL_Target Target = GL_Target::TRIANGLES;

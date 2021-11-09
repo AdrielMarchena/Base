@@ -41,7 +41,8 @@ namespace render
 		/*//DO nothing
 		void DrawCircle(const glm::mat4& transform,float_t radius ,bool fill, float thick, const glm::vec4& color,
 			float_t rotation = NULL, const glm::vec3& axis = {});*/
-
+	private:
+		friend Render2D;
 	};
 }
 }

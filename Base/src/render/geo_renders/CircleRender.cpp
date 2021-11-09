@@ -46,7 +46,8 @@ namespace render
 
 		layout.AddLayoutFloat(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Fade));
 
-		uint32_t* indices = new uint32_t[MaxIndexCount]{};
+		//Using the same as the quad one
+		/*uint32_t* indices = new uint32_t[MaxIndexCount]{};
 		uint32_t offset = 0;
 		for (int i = 0; i < MaxIndexCount; i += 6)
 		{
@@ -62,7 +63,7 @@ namespace render
 		}
 
 		m_data.IB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
-		delete[] indices;
+		delete[] indices;*/
 
 		SampleTex(MaxTexture);
 
