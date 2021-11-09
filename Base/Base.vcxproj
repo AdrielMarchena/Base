@@ -315,6 +315,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\render\render2D.h" />
     <ClInclude Include="src\scene\SceneSerializer.h" />
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />
@@ -353,12 +354,6 @@
     <ClInclude Include="src\render\ParticleSystem.h" />
     <ClInclude Include="src\render\SubTexture.h" />
     <ClInclude Include="src\render\Text.h" />
-    <ClInclude Include="src\render\geo_renders\CircleRender.h" />
-    <ClInclude Include="src\render\geo_renders\LineRender.h" />
-    <ClInclude Include="src\render\geo_renders\QuadRender.h" />
-    <ClInclude Include="src\render\geo_renders\RenderDatas.h" />
-    <ClInclude Include="src\render\geo_renders\RenderTemplate.h" />
-    <ClInclude Include="src\render\geo_renders\TriRender.h" />
     <ClInclude Include="src\render\gl\Framebuffer.h" />
     <ClInclude Include="src\render\gl\FramebufferRender.h" />
     <ClInclude Include="src\render\gl\FramebufferSpecifications.h" />
@@ -372,7 +367,6 @@
     <ClInclude Include="src\render\gl\VertexAttribute.h" />
     <ClInclude Include="src\render\gl\VertexBuffer.h" />
     <ClInclude Include="src\render\gl\base_gl.h" />
-    <ClInclude Include="src\render\render2D.h" />
     <ClInclude Include="src\scene\CameraScript.h" />
     <ClInclude Include="src\scene\Components.h" />
     <ClInclude Include="src\scene\Entity.h" />
@@ -396,6 +390,7 @@
     <ClInclude Include="src\uuid\UUID.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\render\render2D.cpp" />
     <ClCompile Include="src\scene\SceneSerializer.cpp" />
     <ClCompile Include="src\Base\Base.cpp" />
     <ClCompile Include="src\Log.cpp" />
@@ -418,11 +413,6 @@
     <ClCompile Include="src\render\ParticleSystem.cpp" />
     <ClCompile Include="src\render\SubTexture.cpp" />
     <ClCompile Include="src\render\Text.cpp" />
-    <ClCompile Include="src\render\geo_renders\CircleRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\LineRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\QuadRender.cpp" />
-    <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp" />
-    <ClCompile Include="src\render\geo_renders\TriRender.cpp" />
     <ClCompile Include="src\render\gl\Framebuffer.cpp" />
     <ClCompile Include="src\render\gl\FramebufferRender.cpp" />
     <ClCompile Include="src\render\gl\GL_Commands.cpp" />
@@ -434,7 +424,6 @@
     <ClCompile Include="src\render\gl\VertexArray.cpp" />
     <ClCompile Include="src\render\gl\VertexAttribute.cpp" />
     <ClCompile Include="src\render\gl\VertexBuffer.cpp" />
-    <ClCompile Include="src\render\render2D.cpp" />
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\scene\SceneCamera.cpp" />

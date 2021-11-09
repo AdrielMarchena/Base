@@ -148,24 +148,6 @@
     <ClInclude Include="src\render\Text.h">
       <Filter>render</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\geo_renders\CircleRender.h">
-      <Filter>render\geo_renders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\geo_renders\LineRender.h">
-      <Filter>render\geo_renders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\geo_renders\QuadRender.h">
-      <Filter>render\geo_renders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\geo_renders\RenderDatas.h">
-      <Filter>render\geo_renders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\geo_renders\RenderTemplate.h">
-      <Filter>render\geo_renders</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\geo_renders\TriRender.h">
-      <Filter>render\geo_renders</Filter>
-    </ClInclude>
     <ClInclude Include="src\render\gl\Framebuffer.h">
       <Filter>render\gl</Filter>
     </ClInclude>
@@ -204,9 +186,6 @@
     </ClInclude>
     <ClInclude Include="src\render\gl\base_gl.h">
       <Filter>render\gl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\render2D.h">
-      <Filter>render</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\CameraScript.h">
       <Filter>scene</Filter>
@@ -273,6 +252,7 @@
     </ClInclude>
     <ClInclude Include="src\scene\SceneSerializer.h" />
     <ClInclude Include="src\utils\yaml_specializations.h" />
+    <ClInclude Include="src\render\render2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp">
@@ -330,21 +310,6 @@
     <ClCompile Include="src\render\Text.cpp">
       <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\geo_renders\CircleRender.cpp">
-      <Filter>render\geo_renders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\LineRender.cpp">
-      <Filter>render\geo_renders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\QuadRender.cpp">
-      <Filter>render\geo_renders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\RenderTemplate.cpp">
-      <Filter>render\geo_renders</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\geo_renders\TriRender.cpp">
-      <Filter>render\geo_renders</Filter>
-    </ClCompile>
     <ClCompile Include="src\render\gl\Framebuffer.cpp">
       <Filter>render\gl</Filter>
     </ClCompile>
@@ -378,9 +343,6 @@
     <ClCompile Include="src\render\gl\VertexBuffer.cpp">
       <Filter>render\gl</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\render2D.cpp">
-      <Filter>render</Filter>
-    </ClCompile>
     <ClCompile Include="src\scene\Entity.cpp">
       <Filter>scene</Filter>
     </ClCompile>
@@ -406,5 +368,6 @@
       <Filter>uuid</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\SceneSerializer.cpp" />
+    <ClCompile Include="src\render\render2D.cpp" />
   </ItemGroup>
 </Project>

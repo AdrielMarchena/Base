@@ -38,13 +38,6 @@ void SandBox::OnAttach() //Called before the game loop starts
 	
 	m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
 
-	m_Entitys["Fundo"] = m_Scene->CreateEntity("Fundo");
-	m_Entitys["Fundo"].AddComponent<Base::TextureComponent>(Base::render::Texture::CreateTexture("assets/resources/images/test.PNG"));
-
-	auto& t = m_Entitys["Fundo"].GetTransform();
-	t.Translation = { 0.0f,0.0f,0.0f };
-	t.Scale = { Base::B_GetRatio() * 10.0f * 1.0f, 10.0f,-0.5 };
-
 	{
 		m_Entitys["Platform"] = m_Scene->CreateEntity("Platform"); //Create the Quad entity
 		m_Entitys["Platform"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
