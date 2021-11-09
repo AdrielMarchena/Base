@@ -4,6 +4,7 @@
 #include "render/gl/FramebufferRender.h"
 #include "SceneCamera.h"
 #include "entt/entt.hpp"
+#include "uuid/UUID.h"
 class b2World;
 namespace Base
 {
@@ -19,6 +20,7 @@ namespace Base
 		void SceneEnd();
 
 		Entity CreateEntity(const std::string& name = std::string());
+		Entity CreateEntityWhithUUID(UUID uuid,const std::string& name = std::string());
 		void StartNativeScript(Entity& ent);
 		void DestroyNativeScript(Entity& ent);
 		void AwakeNativeScript(Entity& ent);
@@ -41,6 +43,7 @@ namespace Base
 
 		entt::registry m_Registry;
 		friend class Entity;
+		friend class SceneSerializer;
 	};
 }
 

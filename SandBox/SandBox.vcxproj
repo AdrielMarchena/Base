@@ -159,7 +159,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Base\vendor\Box2D\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Base\vendor\yaml-cpp\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -177,7 +177,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Base\vendor\Box2D\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Base\vendor\yaml-cpp\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -195,7 +195,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Base\vendor\Box2D\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Base\vendor\yaml-cpp\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -217,7 +217,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Base\vendor\Box2D\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Base\vendor\yaml-cpp\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -239,7 +239,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Base\vendor\Box2D\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Base\vendor\yaml-cpp\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -261,7 +261,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Base\vendor\Box2D\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Base\vendor\yaml-cpp\include;..\Base\vendor\stb_image;..\Base\vendor\entt\single_include;..\Base\vendor\libsndfile\include;..\Base\vendor\spdlog\include;..\Base\src;..\Base\vendor\glm;..\Base\vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>

@@ -43,6 +43,9 @@
     <Filter Include="utils">
       <UniqueIdentifier>{169C8510-82B0-ADC1-4B32-5121B705AAF2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="uuid">
+      <UniqueIdentifier>{7C379F7C-686E-A00D-115B-8610FD701C0F}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base\Base.h">
@@ -265,7 +268,11 @@
     <ClInclude Include="src\utils\threading.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\uuid\UUID.h" />
+    <ClInclude Include="src\uuid\UUID.h">
+      <Filter>uuid</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SceneSerializer.h" />
+    <ClInclude Include="src\utils\yaml_specializations.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp">
@@ -395,6 +402,9 @@
     <ClCompile Include="src\utils\parse_args.cpp">
       <Filter>utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\uuid\UUID.cpp" />
+    <ClCompile Include="src\uuid\UUID.cpp">
+      <Filter>uuid</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SceneSerializer.cpp" />
   </ItemGroup>
 </Project>

@@ -7,6 +7,8 @@
 #include "utils/RandomList.h"
 #include "render/gl/Gl_Commands.h"
 
+#include "scene/SceneSerializer.h"
+
 SandBox::SandBox()
 	:Base::windowing::Window()
 {
@@ -28,9 +30,20 @@ SandBox::~SandBox()
 
 void SandBox::OnAttach() //Called before the game loop starts
 {
-	m_Scene = Base::MakeScope<Base::Scene>(); //Create scene
+	m_Scene = Base::MakeRef<Base::Scene>(); //Create scene
 
+	Base::SceneSerializer serializer(m_Scene);
+	if (serializer.Deserialize("assets/scenes/scene1.base"))
+		return;
+	
 	m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
+
+	m_Entitys["Fundo"] = m_Scene->CreateEntity("Fundo");
+	m_Entitys["Fundo"].AddComponent<Base::TextureComponent>(Base::render::Texture::CreateTexture("assets/resources/images/test.PNG"));
+
+	auto& t = m_Entitys["Fundo"].GetTransform();
+	t.Translation = { 0.0f,0.0f,0.0f };
+	t.Scale = { Base::B_GetRatio() * 10.0f * 1.0f, 10.0f,-0.5 };
 
 	{
 		m_Entitys["Platform"] = m_Scene->CreateEntity("Platform"); //Create the Quad entity
@@ -50,7 +63,6 @@ void SandBox::OnAttach() //Called before the game loop starts
 	{
 		m_Entitys["Platform2"] = m_Scene->CreateEntity("Platform2"); //Create the Quad entity
 		m_Entitys["Platform2"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
-		APP_INFO("Platform uuid: {0}", m_Entitys["Platform2"].GetID());
 		auto& plat_tranform = m_Entitys["Platform2"].GetTransform();
 
 		plat_tranform.Translation = { 0.0,-10.5, 0.0f };
@@ -66,7 +78,6 @@ void SandBox::OnAttach() //Called before the game loop starts
 	{
 		m_Entitys["Quad"] = m_Scene->CreateEntity("Quad"); //Create the Quad entity
 		m_Entitys["Quad"].AddComponent<Base::SpriteComponent>(Color::Base_Color); //Add sprite (solid color)
-		APP_INFO("Quad uuid: {0}", m_Entitys["Quad"].GetID());
 
 		auto& quad_rbody = m_Entitys["Quad"].AddComponent<Base::RigidBody2DComponent>();
 		auto& quad_bcol = m_Entitys["Quad"].AddComponent<Base::BoxColider2DComponent>();
@@ -82,7 +93,7 @@ void SandBox::OnAttach() //Called before the game loop starts
 	auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>(); 
 	Camera_Script.Bind<Base::OrthoCameraScript>(); 
 	m_Scene->StartNativeScript(m_Camera); 
-	m_Scene->AwakeNativeScript(m_Camera); 
+	m_Scene->AwakeNativeScript(m_Camera);
 }
 
 void SandBox::OnUpdate(const Base::UpdateArgs& args) //Called each frame
@@ -114,13 +125,12 @@ void SandBox::OnImGui()
 		if(ImGui::Button(efx.first.c_str()))
 			m_Scene->SetPostEffect(efx.first);
 	}
-	auto& color = m_Entitys["Quad"].GetComponent<Base::SpriteComponent>();
-
-	ImGui::SliderFloat3("Quad Color", &color.Color.r,0.0f,1.0f);
+	///auto& color = m_Entitys["Quad"].GetComponent<Base::SpriteComponent>();
+	//ImGui::SliderFloat3("Quad Color", &color.Color.r,0.0f,1.0f);
 
 	ImGui::End();
 
-	ImGui::Begin("Quad Physic");
+	/*ImGui::Begin("Quad Physic");
 
 	if (ImGui::Button("Start Simulation"))
 	{
@@ -142,7 +152,7 @@ void SandBox::OnImGui()
 	ImGui::SliderFloat("Restitution", &quad_bcol.Restitution, 0.0f, 1.0f);
 	ImGui::SliderFloat("RestitutionThreshold", &quad_bcol.RestitutionThreshold, 0.0f, 1.0f);
 
-	ImGui::End();
+	ImGui::End();*/
 
 	if (ImGui::BeginMainMenuBar())
 	{
@@ -157,6 +167,17 @@ void SandBox::OnImGui()
 		{
 			if (ImGui::MenuItem("Start Simulation"))
 				m_Scene->RuntimeInit();
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Scene"))
+		{
+			if (ImGui::MenuItem("Save"))
+			{
+				Base::SceneSerializer serializer(m_Scene);
+				serializer.Serialize("assets/scenes/scene1.base");
+			}
+				
 			ImGui::EndMenu();
 		}
 

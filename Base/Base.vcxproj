@@ -153,7 +153,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -166,8 +166,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\Box2D\bin\Debug-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Debug-windows-x86_64\yaml-cpp;vendor\Box2D\bin\Debug-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
@@ -178,7 +178,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -191,8 +191,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\Box2D\bin\Debug-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Debug-windows-x86\yaml-cpp;vendor\Box2D\bin\Debug-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
@@ -203,7 +203,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -220,8 +220,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\Box2D\bin\Release-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Release-windows-x86_64\yaml-cpp;vendor\Box2D\bin\Release-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
@@ -232,7 +232,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -249,8 +249,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\Box2D\bin\Release-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Release-windows-x86\yaml-cpp;vendor\Box2D\bin\Release-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
@@ -261,7 +261,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -278,8 +278,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\Box2D\bin\Dist-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Dist-windows-x86_64\yaml-cpp;vendor\Box2D\bin\Dist-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
@@ -290,7 +290,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -307,17 +307,19 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\Box2D\bin\Dist-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Dist-windows-x86\yaml-cpp;vendor\Box2D\bin\Dist-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\scene\SceneSerializer.h" />
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\ResourceManager.h" />
+    <ClInclude Include="src\utils\yaml_specializations.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h" />
     <ClInclude Include="src\args\AttachArgs.h" />
@@ -394,6 +396,7 @@
     <ClInclude Include="src\uuid\UUID.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\scene\SceneSerializer.cpp" />
     <ClCompile Include="src\Base\Base.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Window.cpp" />

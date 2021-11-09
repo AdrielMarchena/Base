@@ -96,6 +96,16 @@ namespace Base
 		return entity;
 	}
 
+	Entity Scene::CreateEntityWhithUUID(UUID uuid, const std::string& name)
+	{
+		Entity entity = { m_Registry.create(), this };
+		entity.AddComponent<IDComponent>(uuid);
+		entity.AddComponent<TransformComponent>();
+		auto& tag = entity.AddComponent<TagComponent>();
+		tag.Tag = name.empty() ? "Unnamed Entity" : name;
+		return entity;
+	}
+
 	void Scene::StartNativeScript(Entity& ent)
 	{
 		auto& script = ent.GetComponent<NativeScriptComponent>();
@@ -292,7 +302,7 @@ namespace Base
 						for (auto entity : view)
 						{
 							auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-							D2D::DrawQuad(position.GetTransform(), spr.Color, spr.Rotation, spr.Axis);
+							D2D::DrawQuad(position.GetTransform(), spr.Color);
 						}
 					}
 
@@ -310,7 +320,7 @@ namespace Base
 						{
 							auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
 							if (spr.Texture)
-								D2D::DrawQuad(position.GetTransform(), spr.Texture, Color::White, spr.Rotation, spr.Axis);
+								D2D::DrawQuad(position.GetTransform(), spr.Texture, Color::White);
 						}
 					}
 
@@ -320,7 +330,7 @@ namespace Base
 						{
 							auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
 							if (spr.SubTexture)
-								D2D::DrawQuad(position.GetTransform(), spr.SubTexture, Color::White, spr.Rotation, spr.Axis);
+								D2D::DrawQuad(position.GetTransform(), spr.SubTexture, Color::White);
 						}
 					}
 
@@ -331,7 +341,7 @@ namespace Base
 							//TODO: Test to see if works
 							auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
 							auto& sprite = anim.Animation.Run(args.dt);
-							D2D::DrawQuad(position.GetTransform(), sprite, Color::White, anim.Rotation, anim.Axis);
+							D2D::DrawQuad(position.GetTransform(), sprite, Color::White);
 						}
 					}
 					D2D::EndBatchQuads();

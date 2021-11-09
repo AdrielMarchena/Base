@@ -19,6 +19,8 @@ namespace Base
 
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
+		IDComponent(UUID uuid)
+			:Id(uuid){}
 	};
 
 	struct TagComponent
@@ -60,21 +62,9 @@ namespace Base
 		}
 	};
 
-	struct VelocityComponent
-	{
-		glm::vec3 Velocity = glm::vec3(0.0f);
-
-		VelocityComponent() = default;
-		VelocityComponent(const VelocityComponent&) = default;
-		VelocityComponent(const glm::vec3& velocity)
-			:Velocity(velocity) {}
-	};
-
-	struct TextureComponent
+	struct TextureComponent //TODO: merge with sprite component maybe, no need for 2 components + Serialize
 	{
 		Ref<render::Texture> Texture;
-		float_t Rotation = 0.0f;
-		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
 
 		TextureComponent() = default;
 		TextureComponent(const TextureComponent&) = default;
@@ -83,11 +73,9 @@ namespace Base
 
 	};
 
-	struct AnimateComponent
+	struct AnimateComponent //TODO: This probbly don't work anymore, also, remove this namespace ett + Serialize
 	{
 		ett::Animator Animation;
-		float_t Rotation = 0.0f;
-		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
 
 		AnimateComponent() = default;
 		AnimateComponent(const AnimateComponent&) = default;
@@ -95,11 +83,9 @@ namespace Base
 			:Animation(animation) {}
 	};
 
-	struct SubTextureComponent
+	struct SubTextureComponent //TODO: Check id this works (I think it still) + Serialize
 	{
 		render::SubTexture SubTexture;
-		float_t Rotation = 0.0f;
-		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
 
 		SubTextureComponent() = default;
 		SubTextureComponent(const SubTextureComponent&) = default;
@@ -108,12 +94,9 @@ namespace Base
 
 	};
 
-	struct SpriteComponent
+	struct SpriteComponent //TODO: See TextureComponent todo
 	{
-		float_t Layer = 0.0f;
 		glm::vec4 Color = Color::Base_Color;
-		float_t Rotation = 0.0f;
-		glm::vec3 Axis = { 0.0f,0.0f,1.0f };
 
 		SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent&) = default;
@@ -133,7 +116,7 @@ namespace Base
 			:Radius(radius), Thickness(thickness), Fade(fade) {}
 	};
 
-#ifdef BASE_USING_3D
+#ifdef BASE_USING_3D //Rethink this 3D thing i did
 	struct ModelComponent
 	{
 		Ref<Model> Model3D;
@@ -170,7 +153,7 @@ namespace Base
 
 	struct RigidBody2DComponent
 	{
-		enum class BodyType : uint8_t
+		enum class BodyType
 		{
 			Static = 0, Dynamic, Kinematic
 		};

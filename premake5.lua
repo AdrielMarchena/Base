@@ -40,6 +40,7 @@ project "Base"
 
 	includedirs
 	{
+		"%{prj.name}/vendor/yaml-cpp/include",
 		"%{prj.name}/vendor/Box2D/include",
 		"%{prj.name}/vendor/stb_image",
 		"%{prj.name}/vendor/entt/single_include",
@@ -52,11 +53,13 @@ project "Base"
 	
 	libdirs 
 	{ 
-		"%{prj.name}/vendor/Box2D/bin/" .. outputdir .. "/Box2D", 
+		"%{prj.name}/vendor/yaml-cpp/bin/" .. outputdir .. "/yaml-cpp",
+		"%{prj.name}/vendor/Box2D/bin/" .. outputdir .. "/Box2D",
 	}
 	links
 	{
-		"Box2D"
+		"Box2D",
+		"yaml-cpp"
 	}
 
 	postbuildcommands
@@ -116,7 +119,8 @@ project "Sandbox"
 
 	includedirs
 	{
-		"Base/vendor/Box2D/include",
+		"Base/vendor/yaml-cpp/include",
+		--"Base/vendor/Box2D/include",--
 		"Base/vendor/stb_image",
 		"Base/vendor/entt/single_include",
 		"Base/vendor/libsndfile/include",

@@ -23,7 +23,7 @@ private:
 	std::unordered_map<std::string, Base::Entity> m_Entitys;
 	std::vector<Base::Entity> m_Model;
 
-	Base::Scope<Base::Scene> m_Scene;
+	Base::Ref<Base::Scene> m_Scene;
 public:
 	SandBox();
 	SandBox(const char* title, float_t w, float_t h, bool resizeble, bool fullscreen);
