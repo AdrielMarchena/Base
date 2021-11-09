@@ -78,6 +78,11 @@ project "Base"
 			"BASE_STATIC_BUILD"
 		}
 
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+
 	filter "configurations:Debug"
 		defines "BASE_DEBUG"
 		symbols "On"
@@ -109,7 +114,7 @@ project "Sandbox"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
+	
 	files 
 	{
 		"%{prj.name}/src/**.h",
@@ -144,7 +149,12 @@ project "Sandbox"
 		{
 			"BASE_WINDOWS_BUILD"
 		}
-
+		
+		flags
+		{
+			"MultiProcessorCompile"
+		}
+		
 	filter "configurations:Debug"
 		defines "BASE_DEBUG"
 		symbols "On"
