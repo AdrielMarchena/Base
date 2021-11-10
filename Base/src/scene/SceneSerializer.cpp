@@ -5,6 +5,8 @@
 #include "yaml-cpp/yaml.h"
 #include <fstream>
 
+#include "ScriptableEntity.h"
+
 namespace Base
 {
 	static inline void SerializeEntity(YAML::Emitter& out, Entity entity)
@@ -82,6 +84,7 @@ namespace Base
 			out << YAML::EndMap; //Camera
 			
 			out << YAML::Key << "Primary" << YAML::Value << camera_comp.Primary;
+			out << YAML::Key << "FixedAspectRatio" << YAML::Value << camera_comp.FixedAspectRatio;
 
 			out << YAML::EndMap; //CameraComponent
 		}
@@ -241,6 +244,7 @@ namespace Base
 					cc.Camera.SetViewportSize(WindowProps().width, WindowProps().height);
 
 					cc.Primary = cameraComponent["Primary"].as<bool>();
+					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
 				}
 				
 				//RigidBody2DComponent

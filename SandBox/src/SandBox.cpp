@@ -108,7 +108,7 @@ void SandBox::OnImGui()
 
 	static float frame_buff_scalor = 1.0f;
 	if (ImGui::SliderFloat("Framebuffer scalor", &frame_buff_scalor, 0.05f, 1.0f))
-		m_Scene->SetFrameBuff(m_Specs.width, m_Specs.height, frame_buff_scalor);
+		m_Scene->SetFramebufferScaler(frame_buff_scalor);
 
 	if (ImGui::Button("none"))
 		m_Scene->SetPostEffect("none");
@@ -187,6 +187,5 @@ void SandBox::OnResize(const Base::ResizeArgs& args)
 {
 	if (Base::WindowProps().minimized)
 		return;
-	auto& Camera_comp = m_Camera.GetComponent<Base::CameraComponent>();
-	Camera_comp.Camera.SetViewportSize(args.new_w, args.new_h);
+	m_Scene->OnViewPortResize(args.new_w, args.new_h);
 }

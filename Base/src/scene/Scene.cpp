@@ -21,7 +21,6 @@ namespace Base
 {
 	//TODO: temp
 	static TransformComponent m_CameraTransform;
-	static float s_value = 1.0f;
 
 	namespace utils
 	{
@@ -40,17 +39,16 @@ namespace Base
 
 	Scene::Scene()
 	{
-		int width = WindowProps().width;
-		int height = WindowProps().height;
+		m_ViewPortWidth = WindowProps().width;
+		m_ViewPortHeight = WindowProps().height;
 		
 		FrameBufferRenderSpecification spec;
-		spec.width = width;
-		spec.height = height;
-		spec.scale_factor = 1.0f;
-
+		spec.width = m_ViewPortWidth;
+		spec.height = m_ViewPortHeight;
+		spec.scale_factor = m_FramebufferScaler;
 		m_FrameBufferRender = MakeScope<FramebufferRender>(spec);
-		SetFrameBuff(width, height, 1.0f);
-		
+		SetFrameBuff();
+		OnViewPortResize(m_ViewPortWidth, m_ViewPortHeight);
 	}
 
 	Scene::~Scene()
@@ -134,20 +132,13 @@ namespace Base
 			script.Instance->OnAwake();
 	}
 
-	void Scene::SetFrameBuff(unsigned int w, unsigned int h, float scale_factor)
+	void Scene::SetFrameBuff()
 	{
-
-		s_value = scale_factor;
 		FrameBufferRenderSpecification& spec = m_FrameBufferRender->GetSpec();
-		spec.width = w;
-		spec.height = h;
-		spec.scale_factor = scale_factor;
+		spec.width = m_ViewPortWidth;
+		spec.height = m_ViewPortHeight;
+		spec.scale_factor = m_FramebufferScaler;
 		m_FrameBufferRender->InvalidateFrameBuffer();
-		int width = WindowProps().width;
-		int height = WindowProps().height;
-		m_FramebufferCamera.SetViewportSize(width, height);
-		float s = m_FramebufferCamera.GetOrthographicSize();
-		m_FrameBufferRender->SetQuadScale({ s * B_GetRatio() * 1.0f,1.0f * s, 0.5f });
 	}
 
 	void Scene::SetPostEffect(const std::string& name)
@@ -251,10 +242,7 @@ namespace Base
 			BASE_PROFILE_SCOPE("Scene Render Scope");
 			m_FrameBufferRender->BindFrameBuffer();
 			
-			int w = WindowProps().width;
-			int h = WindowProps().height;
-			 
-			GLCall(glViewport(0, 0, w * s_value, h * s_value));
+			GLCall(glViewport(0, 0, m_ViewPortWidth * m_FramebufferScaler, m_ViewPortHeight * m_FramebufferScaler));
 			
 			Base::Camera* mainCamera2D = nullptr;
 			glm::mat4 cameraTransform2D;
@@ -301,7 +289,7 @@ namespace Base
 						for (auto entity : view)
 						{
 							auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-							//D2D::DrawQuad(position.GetTransform(), spr.Color);
+							D2D::DrawQuad(position.GetTransform(), spr.Color);
 							glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
 							D2D::DrawOutLineQuad(position.GetTransform(), out_color);
 						}
@@ -395,11 +383,39 @@ namespace Base
 			}
 #endif
 			m_FrameBufferRender->UnbindFrameBuffer();
-			GLCall(glViewport(0, 0, w, h));
-			
+			GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
+
 		}//End Render Scope
 		
 		//Render3D::Clear();
 		m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
+	}
+
+	void Scene::OnViewPortResize(uint32_t w, uint32_t h)
+	{
+		auto view = m_Registry.view<CameraComponent>();
+		for (auto entity : view)
+		{
+			auto& camera = view.get<CameraComponent>(entity);
+			if (!camera.FixedAspectRatio)
+			{
+				camera.Camera.SetViewportSize(w, h);
+			}
+		}
+		//Framebuffer Camera
+		m_FramebufferCamera.SetViewportSize(w, h);
+		float s = m_FramebufferCamera.GetOrthographicSize();
+		m_FrameBufferRender->SetQuadScale({ s * B_GetRatio() * 1.0f,1.0f * s, 0.5f });
+
+		m_ViewPortWidth = w;
+		m_ViewPortHeight = h;
+
+		SetFrameBuff();
+	}
+
+	void Scene::SetFramebufferScaler(float scaler)
+	{
+		m_FramebufferScaler = scaler;
+		SetFrameBuff();
 	}
 }

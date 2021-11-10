@@ -25,7 +25,7 @@ namespace Base
 		void DestroyNativeScript(Entity& ent);
 		void AwakeNativeScript(Entity& ent);
 
-		void SetFrameBuff(unsigned int w, unsigned int h, float scale_factor = 1.0f);
+		void SetFrameBuff();
 		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const;
 		void SetPostEffect(const std::string& name);
 
@@ -34,11 +34,19 @@ namespace Base
 
 		//entt::registry& Reg() { return m_Registry; }
 		void OnUpdate(const UpdateArgs& args);
+
+		void OnViewPortResize(uint32_t w, uint32_t h);
+		void SetFramebufferScaler(float scaler);
+		float GetFramebufferScaler() const { return m_FramebufferScaler; }
 	private:
 
 		Scope<FramebufferRender> m_FrameBufferRender;
 		SceneCamera m_FramebufferCamera;
 		
+		float m_FramebufferScaler = 1.0f;
+		uint32_t m_ViewPortWidth;
+		uint32_t m_ViewPortHeight;
+
 		b2World* m_PhysicWorld = nullptr;
 
 		entt::registry m_Registry;

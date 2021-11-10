@@ -19,7 +19,7 @@ namespace Base
 		//Render extra things here without a entity to it
 		virtual void ExtraRender(){}
 		virtual void OnDestroy(){}
-
+		
 	private:
 		Entity m_Entity;
 		friend class Scene;
