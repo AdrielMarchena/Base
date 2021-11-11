@@ -7,7 +7,7 @@ namespace Base
 {
 namespace render
 {
-	void GLCommands::GL_DrawElementsCall(GL_Target target, GLsizei size, GL_Type type, const void* indices)
+	void GLCommands::GL_DrawElementsCall(GL_Target target, int32_t size, GL_Type type, const void* indices)
 	{
 		GLCall(glDrawElements(GetTarget(target), size, GetType(type), indices));
 	}

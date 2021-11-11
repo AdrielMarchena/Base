@@ -2,10 +2,10 @@
 #include <stdint.h>
 
 //TODO: Remove typedefs
-typedef unsigned int GLenum;
-typedef int GLsizei;
-typedef unsigned int GLuint;
-typedef ptrdiff_t GLsizeiptr;
+//typedef unsigned int GLenum;
+//typedef int GLsizei;
+//typedef unsigned int GLuint;
+//typedef ptrdiff_t GLsizeiptr;
 namespace Base
 {
 	//Data types
