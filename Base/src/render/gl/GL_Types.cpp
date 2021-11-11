@@ -1,6 +1,6 @@
 #include "GL_Types.h"
 #include "Log.h"
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "utils/base_assert.h"
 namespace Base
 {

@@ -8,7 +8,7 @@
 
 #include "render2D.h"
 #include "glm/gtc/matrix_transform.hpp"
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "utils/gl_error_macro_db.h"
 #include "utils/Instrumentor.h"
 
@@ -123,6 +123,8 @@ namespace Base
 	{
 		glm::vec3 Position;
 		glm::vec4 Color;
+
+		int32_t entityID;
 	};
 
 	struct LineVertex : public Vertex
@@ -187,9 +189,9 @@ namespace Base
 		GLCall(glClearColor(color.r, color.g, color.b, color.a));
 	}
 
-	void Render2D::ClearColor(GLbitfield clear)
+	void Render2D::ClearColor(GL_ClearCommand clear)
 	{
-		GLCall(glClear(clear));
+		render::GLCommands::GL_Clear(GL_ClearCommand::ClearDepthColor);
 	}
 
 	void Render2D::Init()
@@ -331,6 +333,20 @@ namespace Base
 		m_Shaders->Get("Line")->SetUniformMat4f("u_ViewProj", viewProj);
 	}
 
+	void Render2D::BeginScene(const EditorCamera& camera)
+	{
+		auto viewProj = camera.GetViewProjection();
+
+		m_Shaders->Get("Quad")->Bind();
+		m_Shaders->Get("Quad")->SetUniformMat4f("u_ViewProj", viewProj);
+
+		m_Shaders->Get("Circle")->Bind();
+		m_Shaders->Get("Circle")->SetUniformMat4f("u_ViewProj", viewProj);
+
+		m_Shaders->Get("Line")->Bind();
+		m_Shaders->Get("Line")->SetUniformMat4f("u_ViewProj", viewProj);
+	}
+
 	void Render2D::EndBatch()
 	{
 		if (m_Data.QuadIndexCount)
@@ -454,27 +470,27 @@ namespace Base
 		return m_Shaders->Get("Circle");
 	}
 
-	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int32_t entityID, float_t rotation, const glm::vec3& axis)
 	{
-		DrawQuad(utils::pos_trans(position, size), color);
+		DrawQuad(utils::pos_trans(position, size), color, entityID);
 	}
 
-	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4], float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4], int32_t entityID,float_t rotation, const glm::vec3& axis)
 	{
-		DrawQuad(utils::pos_trans(position, size), color);
+		DrawQuad(utils::pos_trans(position, size), color,entityID);
 	}
 
-	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, int32_t entityID,const glm::vec4& color,float_t rotation, const glm::vec3& axis)
 	{
-		DrawQuad(utils::pos_trans(position, size), texture, color);
+		DrawQuad(utils::pos_trans(position, size), texture, entityID ,color);
 	}
 
-	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture, int32_t entityID,const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		DrawQuad(utils::pos_trans(position, size), sub_texture, color);
+		DrawQuad(utils::pos_trans(position, size), sub_texture, entityID ,color);
 	}
 
-	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color,int32_t entityID)
 	{
 		if (m_Data.QuadIndexCount >= MaxQuadIndexCount)
 		{
@@ -489,13 +505,14 @@ namespace Base
 			m_Data.QuadBufferPtr->Color = color;
 			m_Data.QuadBufferPtr->TexCoords = m_default_tex_coords[i];
 			m_Data.QuadBufferPtr->TexIndex = m_Data.g_WhiteTextureSlot;
+			m_Data.QuadBufferPtr->entityID = entityID;
 			m_Data.QuadBufferPtr++;
 		}
 		m_Data.QuadIndexCount += 6;
 		m_Data.QuadRenderStats.DrawCount++;
 	}
 
-	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4 color[4])
+	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4 color[4], int32_t entityID)
 	{
 		if (m_Data.QuadIndexCount >= MaxQuadIndexCount)
 		{
@@ -510,13 +527,14 @@ namespace Base
 			m_Data.QuadBufferPtr->Color = color[i];
 			m_Data.QuadBufferPtr->TexCoords = m_default_tex_coords[i];
 			m_Data.QuadBufferPtr->TexIndex = m_Data.g_WhiteTextureSlot;
+			m_Data.QuadBufferPtr->entityID = entityID;
 			m_Data.QuadBufferPtr++;
 		}
 		m_Data.QuadIndexCount += 6;
 		m_Data.QuadRenderStats.DrawCount++;
 	}
 
-	void Render2D::DrawQuad(const glm::mat4& transform, Ref<Texture> texture, const glm::vec4& color)
+	void Render2D::DrawQuad(const glm::mat4& transform, Ref<Texture> texture, int32_t entityID, const glm::vec4& color)
 	{
 		if (m_Data.QuadIndexCount >= MaxQuadIndexCount || m_Data.QuadTextureSlotIndex > MaxTexture - 1)
 		{
@@ -550,6 +568,7 @@ namespace Base
 			m_Data.QuadBufferPtr->Color = color;
 			m_Data.QuadBufferPtr->TexCoords = m_default_tex_coords[i];
 			m_Data.QuadBufferPtr->TexIndex = texture_index;
+			m_Data.QuadBufferPtr->entityID = entityID;
 			m_Data.QuadBufferPtr++;
 		}
 
@@ -557,7 +576,7 @@ namespace Base
 		m_Data.QuadRenderStats.DrawCount++;
 	}
 
-	void Render2D::DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, const glm::vec4& color)
+	void Render2D::DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, int32_t entityID, const glm::vec4& color)
 	{
 		if (m_Data.QuadIndexCount >= MaxQuadIndexCount || m_Data.QuadTextureSlotIndex > MaxTexture - 1)
 		{
@@ -593,6 +612,7 @@ namespace Base
 			m_Data.QuadBufferPtr->Color = color;
 			m_Data.QuadBufferPtr->TexCoords = coords[i];
 			m_Data.QuadBufferPtr->TexIndex = texture_index;
+			m_Data.QuadBufferPtr->entityID = entityID;
 			m_Data.QuadBufferPtr++;
 		}
 
@@ -602,19 +622,19 @@ namespace Base
 
 	//LINE RENDERING --------------------------------------------------------------------------------------------------------------------------------------------------
 
-	void Render2D::DrawOutLineQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Render2D::DrawOutLineQuad(const glm::mat4& transform, const glm::vec4& color, int32_t entityID)
 	{
 		glm::vec3 quadLines[4];
 		for (int i = 0; i < 4; i++)
 			quadLines[i] = transform * QuadVertexPositions[i];
 
-		DrawLine(quadLines[0], quadLines[1], color);
-		DrawLine(quadLines[1], quadLines[2], color);
-		DrawLine(quadLines[2], quadLines[3], color);
-		DrawLine(quadLines[3], quadLines[0], color);
+		DrawLine(quadLines[0], quadLines[1], color,entityID);
+		DrawLine(quadLines[1], quadLines[2], color,entityID);
+		DrawLine(quadLines[2], quadLines[3], color,entityID);
+		DrawLine(quadLines[3], quadLines[0], color,entityID);
 	}
 
-	void Render2D::DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color)
+	void Render2D::DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color, int32_t entityID)
 	{
 		if (m_Data.LineCount >= MaxLineIndexCount)
 		{
@@ -625,63 +645,65 @@ namespace Base
 
 		m_Data.LineBufferPtr->Position = origin;
 		m_Data.LineBufferPtr->Color = color;
+		m_Data.LineBufferPtr->entityID = entityID;
 		m_Data.LineBufferPtr++;
 
 		m_Data.LineBufferPtr->Position = dest;
 		m_Data.LineBufferPtr->Color = color;
+		m_Data.LineBufferPtr->entityID = entityID;
 		m_Data.LineBufferPtr++;
 
 		m_Data.LineCount += 2;
 		m_Data.LineRenderStats.DrawCount++;
 	}
 
-	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& dest, const glm::vec4& color, float_t precision)
+	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& dest, const glm::vec4& color, int32_t entityID, float_t precision)
 	{
 		glm::vec3* acting_origin = &const_cast<glm::vec3&>(origin);
 		glm::vec3 acting_interpol{};
 		for (float i = precision; i < 1; i += precision)
 		{
 			acting_interpol = utils::bezier_3order_mix(origin, p1, p2, dest, i);
-			DrawLine(*acting_origin, acting_interpol, color);
+			DrawLine(*acting_origin, acting_interpol, color,entityID);
 			acting_origin = &acting_interpol;
 		}
-		DrawLine(*acting_origin, dest, color); // Connect the last line with the destination
+		DrawLine(*acting_origin, dest, color,entityID); // Connect the last line with the destination
 	}
 
-	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, float_t precision)
+	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, int32_t entityID, float_t precision)
 	{
 		glm::vec3* acting_origin = &const_cast<glm::vec3&>(origin);
 		glm::vec3 acting_interpol{};
 		for (float i = precision; i < 1; i += precision)
 		{
 			acting_interpol = utils::bezier_2order_mix(origin, p1, dest, i);
-			DrawLine(*acting_origin, acting_interpol, color);
+			DrawLine(*acting_origin, acting_interpol, color, entityID);
 			acting_origin = &acting_interpol;
 		}
-		DrawLine(*acting_origin, dest, color); // Connect the last line with the destination
+		DrawLine(*acting_origin, dest, color, entityID); // Connect the last line with the destination
 	}
 
 	//CIRCLE RENDERING OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
-	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const glm::vec4& color, int32_t entityID, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quad_size = { radius, radius,position.z };
-		DrawCircle(utils::pos_trans(position, quad_size), radius, fade, thick, color);
+		DrawCircle(utils::pos_trans(position, quad_size), radius, fade, thick, color, entityID);
 	}
 
-	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, Ref<Texture> texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, Ref<Texture> texture, int32_t entityID, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quad_size = { radius, radius,position.z };
-		DrawCircle(utils::pos_trans(position, quad_size), radius, fade, thick, texture, color);
+		DrawCircle(utils::pos_trans(position, quad_size), radius, fade, thick, texture, entityID, color);
 	}
 
-	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawCircle(const glm::vec3& position, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture, int32_t entityID, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
 		glm::vec3 quad_size = { radius, radius,position.z };
-		DrawCircle(utils::pos_trans(position, quad_size), radius, fade, thick, sub_texture, color);
+		DrawCircle(utils::pos_trans(position, quad_size), radius, fade, thick, sub_texture, entityID, color);
 	}
 
-	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const glm::vec4& color)
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const glm::vec4& color, int32_t entityID)
 	{
 		if (m_Data.CircleIndexCount >= MaxCircleIndexCount)
 		{
@@ -700,6 +722,7 @@ namespace Base
 			m_Data.CircleBufferPtr->Radius = radius;
 			m_Data.CircleBufferPtr->Thickness = thick;
 			m_Data.CircleBufferPtr->Fade = fade;
+			m_Data.CircleBufferPtr->entityID = entityID;
 			m_Data.CircleBufferPtr++;
 		}
 
@@ -707,7 +730,7 @@ namespace Base
 		m_Data.CircleRenderStats.DrawCount++;
 	}
 
-	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<Texture> texture, const glm::vec4& color)
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<Texture> texture, int32_t entityID, const glm::vec4& color)
 	{
 		if (m_Data.CircleIndexCount >= MaxCircleIndexCount || m_Data.CircleTextureSlotIndex > MaxTexture - 1)
 		{
@@ -744,6 +767,7 @@ namespace Base
 			m_Data.CircleBufferPtr->Radius = radius;
 			m_Data.CircleBufferPtr->Thickness = thick;
 			m_Data.CircleBufferPtr->Fade = fade;
+			m_Data.CircleBufferPtr->entityID = entityID;
 			m_Data.CircleBufferPtr++;
 		}
 
@@ -751,7 +775,7 @@ namespace Base
 		m_Data.CircleRenderStats.DrawCount++;
 	}
 
-	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture, const glm::vec4& color)
+	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture, int32_t entityID, const glm::vec4& color)
 	{
 		if (m_Data.CircleIndexCount >= MaxCircleIndexCount || m_Data.CircleTextureSlotIndex > MaxTexture - 1)
 		{
@@ -791,6 +815,7 @@ namespace Base
 			m_Data.CircleBufferPtr->Radius = radius;
 			m_Data.CircleBufferPtr->Thickness = thick;
 			m_Data.CircleBufferPtr->Fade = fade;
+			m_Data.CircleBufferPtr->entityID = entityID;
 			m_Data.CircleBufferPtr++;
 		}
 		m_Data.CircleIndexCount += 6;

@@ -14,7 +14,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "utils/gl_error_macro_db.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "Log.h"

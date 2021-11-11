@@ -9,7 +9,6 @@
 
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>
-#include "render/3d/3d_core.h"
 
 namespace Base
 {
@@ -116,17 +115,6 @@ namespace Base
 			:Radius(radius), Thickness(thickness), Fade(fade) {}
 	};
 
-#ifdef BASE_USING_3D //Rethink this 3D thing i did
-	struct ModelComponent
-	{
-		Ref<Model> Model3D;
-
-		ModelComponent() = default;
-		ModelComponent(const ModelComponent&) = default;
-		ModelComponent(Ref<Model> model)
-			:Model3D(model) {}
-	};
-#endif
 	struct CameraComponent
 	{
 		Base::SceneCamera Camera;

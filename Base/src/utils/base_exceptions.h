@@ -64,6 +64,7 @@ namespace baseException
 			NOT_SPECIFIED = 0,
 			GLFW3,
 			GLEW,
+			GLAD
 		};
 		WindowCreationException()
 			:exception(), _Reason(Reasons::NOT_SPECIFIED) {}

@@ -13,23 +13,18 @@
 
 #include "Window.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "GLFW/glfw3.h"
-
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "render/render2D.h"
-#include "render/3d/Render3D.h"
 
 #include <iostream>
 
 #include "utils/Files.h"
-#include "AL/al.h"
-#include "AL/alc.h"
-#include "audio/AudioDevice.h"
 
 #include "Log.h"
 #include "utils/Instrumentor.h"
@@ -47,10 +42,9 @@ namespace Base
 {
 	namespace windowing
 	{
-
 		void on_resize(GLFWwindow* window, int32_t w, int32_t h)
 		{
-			Window* ptr = CALLBACK_STATIC_CAST(Window, window);
+			Window* ptr = CALLBACK_STATIC_CAST(Window,window);
 			//WindowProps().aspect_ratio = (double)WindowProps().width / (double)WindowProps().height;
 			ResizeArgs args{};
 			args.old_w = WindowProps().width;
@@ -135,8 +129,6 @@ namespace Base
 
 		using namespace utils;
 		GLFWwindow* m_Window = nullptr;
-		ALCdevice* p_ALCDevice = nullptr;
-		ALCcontext* p_ALCContext = nullptr;
 		ImGuiIO* m_IO = nullptr;
 
 		void Window::ClampTMouse()
@@ -161,6 +153,20 @@ namespace Base
 		bool Window::CursorHoveredWindow()
 		{
 			return glfwGetWindowAttrib(m_Window,GLFW_HOVERED);
+		}
+
+		void Window::SetVSync(bool enable)
+		{
+			if (enable)
+				glfwSwapInterval(1);
+			else
+				glfwSwapInterval(0);
+			m_Specs.v_sync_on = enable;
+		}
+
+		bool Window::GetVSync()
+		{
+			return m_Specs.v_sync_on;
 		}
 
 		bool Window::Initialization()
@@ -241,13 +247,14 @@ namespace Base
 			BASE_TRACE("Window created!");
 
 			glfwMakeContextCurrent(m_Window);
-			glfwSwapInterval(1);
+			SetVSync(m_Specs.v_sync_on);
 
-			if (glewInit() != GLEW_OK)
+			int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+			if (!status)
 			{
 				glfwTerminate();
 #ifndef BASE_DISABLE_THROW_EXCEPTIONS
-				throw WindowCreationException("Error on glew initialization", WindowCreationException::Reasons::GLEW);
+				throw WindowCreationException("Error on glad initialization", WindowCreationException::Reasons::GLAD);
 #endif
 				return false;
 			}
@@ -255,9 +262,6 @@ namespace Base
 
 			Render2D::Init();
 			BASE_TRACE("2D Render created!");
-
-			Render3D::Init();
-			BASE_TRACE("3D Render created!");
 
 			//Set callback and pointer to this very window
 			myWindow = this;
@@ -276,7 +280,7 @@ namespace Base
 			m_IO = &ImGui::GetIO();
 			// Setup Platform/Renderer bindings
 			ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
-			ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+			ImGui_ImplOpenGL3_Init("#version 330");
 			// Setup Dear ImGui style
 			ImGui::StyleColorsDark();
 
@@ -307,7 +311,6 @@ namespace Base
 
 		Window::~Window()
 		{
-			Render3D::Dispose();
 			Render2D::Dispose();
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplGlfw_Shutdown();

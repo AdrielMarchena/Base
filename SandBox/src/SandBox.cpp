@@ -3,11 +3,11 @@
 #include "utils/Files.h"
 #include "scene/Components.h"
 #include "scene/CameraScript.h"
-#include "imgui.h"
 #include "utils/RandomList.h"
-#include "render/gl/Gl_Commands.h"
 
 #include "scene/SceneSerializer.h"
+
+#include "imgui.h"
 
 SandBox::SandBox()
 	:Base::windowing::Window()
@@ -32,9 +32,12 @@ void SandBox::OnAttach() //Called before the game loop starts
 {
 	m_Scene = Base::MakeRef<Base::Scene>(); //Create scene
 
+	editor_camera = Base::EditorCamera(45.0f, m_Specs.width / m_Specs.height, 0.01f, 1000.0f);
+	m_Scene->OnViewPortResize(m_Specs.width, m_Specs.height);
+	editor_camera.SetViewportSize(m_Specs.width, m_Specs.height);
 	Base::SceneSerializer serializer(m_Scene);
-	if (serializer.Deserialize("assets/scenes/scene1.base"))
-		return;
+	//if (serializer.Deserialize("assets/scenes/scene1.base"))
+	//	return;
 	
 	m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
 
@@ -94,8 +97,9 @@ void SandBox::OnUpdate(const Base::UpdateArgs& args) //Called each frame
 	using kb = Base::input::Keyboard;
 	using ms = Base::input::Mouse;
 
+	editor_camera.OnUpdate(args);
 	if (!Base::WindowProps().minimized) 
-		m_Scene->OnUpdate(args);
+		m_Scene->OnUpdateEditor(args,editor_camera);
 }
 
 void SandBox::OnRender()
@@ -153,6 +157,14 @@ void SandBox::OnImGui()
 		{
 			static bool quit_selected = false;
 			ImGui::MenuItem("Quit", "", &quit_selected); if (quit_selected) CloseWindow();
+			
+			static std::string lab = "VSync = " + std::string(GetVSync() ? "Enabled" : "Disabled");
+			if(ImGui::MenuItem(lab.c_str(), ""))
+			{
+				SetVSync(!GetVSync());
+				std::string lab = "VSync = " + std::string(GetVSync() ? "Enabled" : "Disabled");
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -188,4 +200,10 @@ void SandBox::OnResize(const Base::ResizeArgs& args)
 	if (Base::WindowProps().minimized)
 		return;
 	m_Scene->OnViewPortResize(args.new_w, args.new_h);
+	editor_camera.SetViewportSize(args.new_w, args.new_h);
+}
+
+void SandBox::OnMouseAction(const Base::MouseArgs& args)
+{
+	editor_camera.OnMouseScroll(args);
 }

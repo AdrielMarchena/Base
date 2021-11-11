@@ -7,7 +7,6 @@
 
 #pragma once
 #include <array>
-#include "gl/glew.h"
 #include "glm/glm.hpp"
 #include "KeyboardKeys.h"
 

@@ -1,6 +1,6 @@
 #include "VertexAttribute.h"
 
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "utils/gl_error_macro_db.h"
 
 namespace Base

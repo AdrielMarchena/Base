@@ -7,7 +7,6 @@ namespace Base
 {
 namespace render
 {
-
 	class GLCommands
 	{
 	public:

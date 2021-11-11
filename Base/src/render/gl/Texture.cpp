@@ -1,7 +1,7 @@
 #include "Texture.h"
 
 #include "utils/gl_error_macro_db.h"
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "utils/base_assert.h"
 
 #include "stb_image.h"

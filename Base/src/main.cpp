@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include <exception>
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "Window.h"
 
 int main()

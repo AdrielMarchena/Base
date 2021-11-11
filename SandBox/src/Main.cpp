@@ -1,4 +1,3 @@
-#include "Example1.h"
 #include "SandBox.h"
 #include "Base/Base.h"
 #include "utils/Instrumentor.h"
@@ -13,6 +12,7 @@ void DisplayCommands()
 	std::cout << "--height=positive_number 'window height'" << std::endl;
 	std::cout << "--resizeble 'Set window to resizeble or not'" << std::endl;
 	std::cout << "--fullscreen 'Open window in full screen'" << std::endl;
+	std::cout << "--vSync-off 'Disable VSync'" << std::endl;
 	std::cout << "--titleOff 'Disable title bar even if fullscreen is not on'" << std::endl;
 	//std::cout << "-----------------------------------------" << std::endl;
 	//std::cout << "----------------Advanced-----------------" << std::endl;
@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
 	specifications.fullscreen = true;
 	specifications.title = "";
 	specifications.title_bar_off = false;
+	specifications.v_sync_on = true;
 	bool using_example_instance = false;
 	try
 	{
@@ -49,7 +50,7 @@ int main(int argc, char* argv[])
 		specifications.resizeble = parser.GetFlag("resizeble");
 		specifications.fullscreen = parser.GetFlag("fullscreen");
 		specifications.title_bar_off = parser.GetFlag("titleoff");
-
+		specifications.v_sync_on = parser.GetFlag("vSync-off");
 		using_example_instance = parser.GetFlag("example1");
 	}
 	catch (const std::exception& ex)
@@ -67,7 +68,7 @@ int main(int argc, char* argv[])
 		BASE_PROFILE_BEGIN_SESSION("Starting", "SandBox_Start_Profile.json");
 		Base::windowing::Window* app = nullptr;
 		if(using_example_instance)
-			app = new Example1(specifications);
+			app = new SandBox(specifications);
 		else
 			app = new SandBox(specifications);
 		BASE_PROFILE_END_SESSION();

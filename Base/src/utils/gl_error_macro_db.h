@@ -1,6 +1,6 @@
 #pragma once
-#include <gl/glew.h>
 #include "Log.h"
+#include "glad/glad.h"
 
 #ifndef GL_DEBUG_STUFF
 #define GL_DEBUG_STUFF
@@ -25,17 +25,17 @@ static char const* gl_error_string(GLenum const err) noexcept
     case GL_INVALID_OPERATION:
         return "GL_INVALID_OPERATION";
 
-    case GL_STACK_OVERFLOW:
-        return "GL_STACK_OVERFLOW";
-
-    case GL_STACK_UNDERFLOW:
-        return "GL_STACK_UNDERFLOW";
+    //case GL_STACK_OVERFLOW:
+    //    return "GL_STACK_OVERFLOW";
+    //
+    //case GL_STACK_UNDERFLOW:
+    //    return "GL_STACK_UNDERFLOW";
 
     case GL_OUT_OF_MEMORY:
         return "GL_OUT_OF_MEMORY";
 
-    case GL_TABLE_TOO_LARGE:
-        return "GL_TABLE_TOO_LARGE";
+   // case GL_TABLE_TOO_LARGE:
+   //     return "GL_TABLE_TOO_LARGE";
 
         // opengl 3 errors (1)
     case GL_INVALID_FRAMEBUFFER_OPERATION:

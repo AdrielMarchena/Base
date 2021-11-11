@@ -35,7 +35,7 @@ namespace render
 		return SubTexture(texture, min, max);
 	}
 
-	GLuint SubTexture::GetId() const
+	uint32_t SubTexture::GetId() const
 	{
 		if (!m_Texture)
 		{

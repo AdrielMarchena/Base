@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "utils/gl_error_macro_db.h"
 #include "utils/base_assert.h"
 

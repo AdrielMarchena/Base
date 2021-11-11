@@ -1,7 +1,7 @@
 #include "TextureSpecifications.h"
 
 #include "utils/base_assert.h"
-#include "gl/glew.h"
+#include "glad/glad.h"
 
 namespace Base
 {

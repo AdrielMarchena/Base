@@ -1,373 +1,372 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Base">
-      <UniqueIdentifier>{60EC827C-4C23-840D-F50F-6A10E125000F}</UniqueIdentifier>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="amb">
-      <UniqueIdentifier>{F55D880B-6167-887C-EAE2-9E7C56EB937C}</UniqueIdentifier>
+    <Filter Include="src\Base">
+      <UniqueIdentifier>{D70B1CCF-C3D8-76DA-ECF1-6482D81DAC68}</UniqueIdentifier>
     </Filter>
-    <Filter Include="args">
-      <UniqueIdentifier>{F232947C-DE69-950D-8756-7B10736C110F}</UniqueIdentifier>
+    <Filter Include="src\amb">
+      <UniqueIdentifier>{8CEA2FA9-F8C9-AE44-01E2-391B6D4015A6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="audio">
-      <UniqueIdentifier>{B7281C0F-233D-44C0-ECBE-E71F589240F1}</UniqueIdentifier>
+    <Filter Include="src\args">
+      <UniqueIdentifier>{69522DCF-551F-88DA-7E38-76826A64BD68}</UniqueIdentifier>
     </Filter>
-    <Filter Include="camera">
-      <UniqueIdentifier>{EE85E6F5-DA27-11CC-C3E2-2420AF23981C}</UniqueIdentifier>
+    <Filter Include="src\camera">
+      <UniqueIdentifier>{255F4553-1117-87A0-7A1E-60FC66F52191}</UniqueIdentifier>
     </Filter>
-    <Filter Include="colision">
-      <UniqueIdentifier>{8502433D-71CF-9D48-9AE8-8BF08614D3D6}</UniqueIdentifier>
+    <Filter Include="src\colision">
+      <UniqueIdentifier>{7C05BD6D-6868-4C12-11EE-84C8FD2F1895}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ent">
-      <UniqueIdentifier>{2C6F880B-9878-887C-21F4-9E7C8DFC937C}</UniqueIdentifier>
+    <Filter Include="src\ent">
+      <UniqueIdentifier>{C3FB2FA9-2FDB-AE44-38F3-391BA45115A6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="input">
-      <UniqueIdentifier>{B54AA90F-215F-D1C0-EAE0-742056B4CDF1}</UniqueIdentifier>
+    <Filter Include="src\input">
+      <UniqueIdentifier>{0C5966B5-78C3-1A2C-C101-CCD12DABF880}</UniqueIdentifier>
     </Filter>
-    <Filter Include="render">
-      <UniqueIdentifier>{E5CF2C19-D171-57EF-BA2C-6B43A66DDE3F}</UniqueIdentifier>
+    <Filter Include="src\render">
+      <UniqueIdentifier>{1CA98B76-0861-CDC3-7168-A61F5D3F68B4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="render\3d">
-      <UniqueIdentifier>{ABD0AC0B-173B-6182-6079-1228CC223FD7}</UniqueIdentifier>
+    <Filter Include="src\render\gl">
+      <UniqueIdentifier>{3E39674B-AAF9-E281-7334-2CFFDFB3275E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="render\geo_renders">
-      <UniqueIdentifier>{E1516FBA-CD35-3010-3696-2A6322991A92}</UniqueIdentifier>
+    <Filter Include="src\scene">
+      <UniqueIdentifier>{2A1615B6-9680-C92C-DFBE-7AD24B68A781}</UniqueIdentifier>
     </Filter>
-    <Filter Include="render\gl">
-      <UniqueIdentifier>{67D7AC0B-D341-6182-1C80-122888293FD7}</UniqueIdentifier>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{6DAA42B6-D914-F72C-2253-A8D28EFCD481}</UniqueIdentifier>
     </Filter>
-    <Filter Include="scene">
-      <UniqueIdentifier>{D3075810-3F1C-80C1-089E-232174717CF2}</UniqueIdentifier>
+    <Filter Include="src\uuid">
+      <UniqueIdentifier>{F35638CF-DF23-93DA-083D-8182F468C868}</UniqueIdentifier>
     </Filter>
-    <Filter Include="utils">
-      <UniqueIdentifier>{169C8510-82B0-ADC1-4B32-5121B705AAF2}</UniqueIdentifier>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
-    <Filter Include="uuid">
-      <UniqueIdentifier>{7C379F7C-686E-A00D-115B-8610FD701C0F}</UniqueIdentifier>
+    <Filter Include="vendor\lodepng">
+      <UniqueIdentifier>{EBAA2651-D778-1A57-C00C-8B7DAC79F6BB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base\Base.h">
-      <Filter>Base</Filter>
+      <Filter>src\Base</Filter>
     </ClInclude>
-    <ClInclude Include="src\Log.h" />
-    <ClInclude Include="src\ResourceManager.h" />
-    <ClInclude Include="src\Window.h" />
+    <ClInclude Include="src\Log.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Window.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\amb\Ambient.h">
-      <Filter>amb</Filter>
+      <Filter>src\amb</Filter>
     </ClInclude>
     <ClInclude Include="src\args\AttachArgs.h">
-      <Filter>args</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\ImGuiArgs.h">
-      <Filter>args</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\KeyboardArgs.h">
-      <Filter>args</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\MouseArgs.h">
-      <Filter>args</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\RenderArgs.h">
-      <Filter>args</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\ResizeArgs.h">
-      <Filter>args</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\UpdateArgs.h">
-      <Filter>args</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\args\VirtualArgs.h">
-      <Filter>args</Filter>
-    </ClInclude>
-    <ClInclude Include="src\audio\Al_Error.h">
-      <Filter>audio</Filter>
-    </ClInclude>
-    <ClInclude Include="src\audio\AudioDevice.h">
-      <Filter>audio</Filter>
-    </ClInclude>
-    <ClInclude Include="src\audio\AudioSource.h">
-      <Filter>audio</Filter>
-    </ClInclude>
-    <ClInclude Include="src\audio\SoundBuffer.h">
-      <Filter>audio</Filter>
+      <Filter>src\args</Filter>
     </ClInclude>
     <ClInclude Include="src\camera\OrthographicCamera.h">
-      <Filter>camera</Filter>
+      <Filter>src\camera</Filter>
     </ClInclude>
     <ClInclude Include="src\camera\OrthographicCameraController.h">
-      <Filter>camera</Filter>
+      <Filter>src\camera</Filter>
     </ClInclude>
     <ClInclude Include="src\colision\Colisions.h">
-      <Filter>colision</Filter>
+      <Filter>src\colision</Filter>
     </ClInclude>
     <ClInclude Include="src\ent\Animator.h">
-      <Filter>ent</Filter>
+      <Filter>src\ent</Filter>
     </ClInclude>
     <ClInclude Include="src\input\Keyboard.h">
-      <Filter>input</Filter>
+      <Filter>src\input</Filter>
     </ClInclude>
     <ClInclude Include="src\input\KeyboardKeys.h">
-      <Filter>input</Filter>
+      <Filter>src\input</Filter>
     </ClInclude>
     <ClInclude Include="src\input\Mouse.h">
-      <Filter>input</Filter>
+      <Filter>src\input</Filter>
     </ClInclude>
     <ClInclude Include="src\input\MouseKeys.h">
-      <Filter>input</Filter>
+      <Filter>src\input</Filter>
     </ClInclude>
-    <ClInclude Include="src\no_console_release.h" />
-    <ClInclude Include="src\render\3d\3d_core.h">
-      <Filter>render\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\3d\Mesh.h">
-      <Filter>render\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\3d\Model.h">
-      <Filter>render\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\3d\Render3D.h">
-      <Filter>render\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="src\render\3d\SkyBox.h">
-      <Filter>render\3d</Filter>
+    <ClInclude Include="src\no_console_release.h">
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\render\Camera.h">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClInclude>
     <ClInclude Include="src\render\Colors.h">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClInclude>
     <ClInclude Include="src\render\ParticleSystem.h">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClInclude>
     <ClInclude Include="src\render\SubTexture.h">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClInclude>
     <ClInclude Include="src\render\Text.h">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\Framebuffer.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\FramebufferRender.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\FramebufferSpecifications.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\GL_Types.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\Gl_Commands.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\IndexBuffer.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\Shader.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\Texture.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\TextureSpecifications.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\VertexArray.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\VertexAttribute.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\VertexBuffer.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\base_gl.h">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\render2D.h">
+      <Filter>src\render</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\CameraScript.h">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\Components.h">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\EditorCamera.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\Entity.h">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\Scene.h">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\SceneCamera.h">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SceneSerializer.h">
+      <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\ScriptableEntity.h">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\Files.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\Generic.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\Instrumentor.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\Load.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\NameCaps.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\RandomList.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\Timer.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\al_error_marcro_db.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\alc_error_macro_db.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\base_assert.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\base_exceptions.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\gl_error_macro_db.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\parse_args.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\utils\threading.h">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\utils\yaml_specializations.h">
+      <Filter>src\utils</Filter>
     </ClInclude>
     <ClInclude Include="src\uuid\UUID.h">
-      <Filter>uuid</Filter>
+      <Filter>src\uuid</Filter>
     </ClInclude>
-    <ClInclude Include="src\scene\SceneSerializer.h" />
-    <ClInclude Include="src\utils\yaml_specializations.h" />
-    <ClInclude Include="src\render\render2D.h" />
+    <ClInclude Include="vendor\lodepng\lodepng.h">
+      <Filter>vendor\lodepng</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\stb_image\stb_image.h">
+      <Filter>vendor\stb_image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp">
-      <Filter>Base</Filter>
+      <Filter>src\Base</Filter>
     </ClCompile>
-    <ClCompile Include="src\Log.cpp" />
-    <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\Log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\amb\Ambient.cpp">
-      <Filter>amb</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AudioDevice.cpp">
-      <Filter>audio</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\AudioSource.cpp">
-      <Filter>audio</Filter>
-    </ClCompile>
-    <ClCompile Include="src\audio\SoundBuffer.cpp">
-      <Filter>audio</Filter>
+      <Filter>src\amb</Filter>
     </ClCompile>
     <ClCompile Include="src\camera\OrthographicCamera.cpp">
-      <Filter>camera</Filter>
+      <Filter>src\camera</Filter>
     </ClCompile>
     <ClCompile Include="src\camera\OrthographicCameraController.cpp">
-      <Filter>camera</Filter>
+      <Filter>src\camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\definer_Stb.cpp" />
+    <ClCompile Include="src\definer_Stb.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\ent\Animator.cpp">
-      <Filter>ent</Filter>
+      <Filter>src\ent</Filter>
     </ClCompile>
     <ClCompile Include="src\input\Keyboard.cpp">
-      <Filter>input</Filter>
+      <Filter>src\input</Filter>
     </ClCompile>
     <ClCompile Include="src\input\Mouse.cpp">
-      <Filter>input</Filter>
+      <Filter>src\input</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\render\3d\Mesh.cpp">
-      <Filter>render\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\3d\Model.cpp">
-      <Filter>render\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\3d\Render3D.cpp">
-      <Filter>render\3d</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\3d\SkyBox.cpp">
-      <Filter>render\3d</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\render\ParticleSystem.cpp">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClCompile>
     <ClCompile Include="src\render\SubTexture.cpp">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClCompile>
     <ClCompile Include="src\render\Text.cpp">
-      <Filter>render</Filter>
+      <Filter>src\render</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\Framebuffer.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\FramebufferRender.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\GL_Commands.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\GL_Types.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\IndexBuffer.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\Shader.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\Texture.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\TextureSpecifications.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\VertexArray.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\VertexAttribute.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\VertexBuffer.cpp">
-      <Filter>render\gl</Filter>
+      <Filter>src\render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\render2D.cpp">
+      <Filter>src\render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\EditorCamera.cpp">
+      <Filter>src\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\Entity.cpp">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\Scene.cpp">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\SceneCamera.cpp">
-      <Filter>scene</Filter>
+      <Filter>src\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SceneSerializer.cpp">
+      <Filter>src\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\Files.cpp">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\Generic.cpp">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\RandomList.cpp">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\utils\parse_args.cpp">
-      <Filter>utils</Filter>
+      <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\uuid\UUID.cpp">
-      <Filter>uuid</Filter>
+      <Filter>src\uuid</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\SceneSerializer.cpp" />
-    <ClCompile Include="src\render\render2D.cpp" />
+    <ClCompile Include="vendor\lodepng\lodepng.cpp">
+      <Filter>vendor\lodepng</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+      <Filter>vendor\stb_image</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

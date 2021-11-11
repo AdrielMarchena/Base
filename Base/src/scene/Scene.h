@@ -5,6 +5,7 @@
 #include "SceneCamera.h"
 #include "entt/entt.hpp"
 #include "uuid/UUID.h"
+#include "EditorCamera.h"
 class b2World;
 namespace Base
 {
@@ -19,26 +20,30 @@ namespace Base
 		void SceneBegin();
 		void SceneEnd();
 
+		//Entity Stuff
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWhithUUID(UUID uuid,const std::string& name = std::string());
 		void StartNativeScript(Entity& ent);
 		void DestroyNativeScript(Entity& ent);
 		void AwakeNativeScript(Entity& ent);
 
-		void SetFrameBuff();
-		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const;
-		void SetPostEffect(const std::string& name);
-
+		//Runtime
 		void RuntimeInit();
 		void RuntimeStop();
 
-		//entt::registry& Reg() { return m_Registry; }
-		void OnUpdate(const UpdateArgs& args);
+		//Updates
+		void OnUpdateEditor(const UpdateArgs& args, EditorCamera& camera);
+		void OnUpdateRuntime(const UpdateArgs& args);
 
+		//ViewPort and frambuffer
 		void OnViewPortResize(uint32_t w, uint32_t h);
 		void SetFramebufferScaler(float scaler);
 		float GetFramebufferScaler() const { return m_FramebufferScaler; }
+
+		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const;
+		void SetPostEffect(const std::string& name);
 	private:
+		void SetFrameBuff();
 
 		Scope<FramebufferRender> m_FrameBufferRender;
 		SceneCamera m_FramebufferCamera;

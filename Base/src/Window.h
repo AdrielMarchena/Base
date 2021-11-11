@@ -6,14 +6,16 @@
 */
 
 #pragma once
-#include <memory>
-#include <algorithm>
-#include <string>
+
 #include "args/VirtualArgs.h" //TODO: Change the args, probably remove
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "glm/glm.hpp"
 #include "utils/base_exceptions.h"
+
+#include <memory>
+#include <algorithm>
+#include <string>
 namespace Base
 {
 	namespace windowing
@@ -25,6 +27,7 @@ namespace Base
 			bool resizeble = true;
 			bool fullscreen = false;
 			bool title_bar_off = true;
+			bool v_sync_on = true;
 			std::string title;
 		};
 
@@ -102,6 +105,9 @@ namespace Base
 			bool CursorHoveredWindow();
 
 		public:
+			void SetVSync(bool enable);
+			bool GetVSync();
+
 			void OnWindowResize(const ResizeArgs& args);
 			void OnWindowMouseAction(const MouseArgs& args);
 			void OnWindowKeyboardAction(const KeyboardArgs& args);

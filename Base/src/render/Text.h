@@ -1,7 +1,7 @@
 /*#pragma once
 #include <string>
 #include <mutex>
-#include "gl/glew.h"
+#include "glad/glad.h"
 #include "glm/glm.hpp"
 #include <unordered_map>
 #include "ft2build.h"

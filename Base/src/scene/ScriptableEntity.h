@@ -16,8 +16,6 @@ namespace Base
 		virtual void OnCreate(){}
 		virtual void OnAwake(){}
 		virtual void OnUpdate(const UpdateArgs& args){}
-		//Render extra things here without a entity to it
-		virtual void ExtraRender(){}
 		virtual void OnDestroy(){}
 		
 	private:

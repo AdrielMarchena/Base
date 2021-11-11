@@ -93,84 +93,63 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\bin\Debug-windows-x86_64\Base\</OutDir>
-    <IntDir>..\bin-int\Debug-windows-x86_64\Base\</IntDir>
+    <OutDir>bin\Debug-windows-x86_64\Base\</OutDir>
+    <IntDir>bin-int\Debug-windows-x86_64\Base\</IntDir>
     <TargetName>Base</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\bin\Debug-windows-x86\Base\</OutDir>
-    <IntDir>..\bin-int\Debug-windows-x86\Base\</IntDir>
+    <OutDir>bin\Debug-windows-x86\Base\</OutDir>
+    <IntDir>bin-int\Debug-windows-x86\Base\</IntDir>
     <TargetName>Base</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\bin\Release-windows-x86_64\Base\</OutDir>
-    <IntDir>..\bin-int\Release-windows-x86_64\Base\</IntDir>
+    <OutDir>bin\Release-windows-x86_64\Base\</OutDir>
+    <IntDir>bin-int\Release-windows-x86_64\Base\</IntDir>
     <TargetName>Base</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\bin\Release-windows-x86\Base\</OutDir>
-    <IntDir>..\bin-int\Release-windows-x86\Base\</IntDir>
+    <OutDir>bin\Release-windows-x86\Base\</OutDir>
+    <IntDir>bin-int\Release-windows-x86\Base\</IntDir>
     <TargetName>Base</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
-    <OutDir>..\bin\Dist-windows-x86_64\Base\</OutDir>
-    <IntDir>..\bin-int\Dist-windows-x86_64\Base\</IntDir>
+    <OutDir>bin\Dist-windows-x86_64\Base\</OutDir>
+    <IntDir>bin-int\Dist-windows-x86_64\Base\</IntDir>
     <TargetName>Base</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
-    <OutDir>..\bin\Dist-windows-x86\Base\</OutDir>
-    <IntDir>..\bin-int\Dist-windows-x86\Base\</IntDir>
+    <OutDir>bin\Dist-windows-x86\Base\</OutDir>
+    <IntDir>bin-int\Dist-windows-x86\Base\</IntDir>
     <TargetName>Base</TargetName>
     <TargetExt>.lib</TargetExt>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgConfiguration>Release</VcpkgConfiguration>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
-    <VcpkgConfiguration>Release</VcpkgConfiguration>
-  </PropertyGroup>
-  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgUseStatic>true</VcpkgUseStatic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalOptions>/MTd %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Debug-windows-x86_64\yaml-cpp;vendor\Box2D\bin\Debug-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
+      <Command>xcopy /Q /E /Y /I "src\**.h" "include\Base"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -178,24 +157,23 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalOptions>/MTd %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Debug-windows-x86\yaml-cpp;vendor\Box2D\bin\Debug-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
+      <Command>xcopy /Q /E /Y /I "src\**.h" "include\Base"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -203,16 +181,15 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -220,11 +197,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Release-windows-x86_64\yaml-cpp;vendor\Box2D\bin\Release-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
+      <Command>xcopy /Q /E /Y /I "src\**.h" "include\Base"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -232,16 +208,15 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -249,11 +224,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Release-windows-x86\yaml-cpp;vendor\Box2D\bin\Release-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
+      <Command>xcopy /Q /E /Y /I "src\**.h" "include\Base"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -261,16 +235,15 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -278,11 +251,10 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Dist-windows-x86_64\yaml-cpp;vendor\Box2D\bin\Dist-windows-x86_64\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
+      <Command>xcopy /Q /E /Y /I "src\**.h" "include\Base"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
@@ -290,16 +262,15 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\libsndfile\include;vendor\spdlog\include;src;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -307,20 +278,16 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>Box2D.lib;yaml-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>vendor\yaml-cpp\bin\Dist-windows-x86\yaml-cpp;vendor\Box2D\bin\Dist-windows-x86\Box2D;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>xcopy /Q /E /Y /I "src\**.h" "include\"</Command>
+      <Command>xcopy /Q /E /Y /I "src\**.h" "include\Base"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\render\render2D.h" />
-    <ClInclude Include="src\scene\SceneSerializer.h" />
     <ClInclude Include="src\Base\Base.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\ResourceManager.h" />
-    <ClInclude Include="src\utils\yaml_specializations.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h" />
     <ClInclude Include="src\args\AttachArgs.h" />
@@ -331,10 +298,6 @@
     <ClInclude Include="src\args\ResizeArgs.h" />
     <ClInclude Include="src\args\UpdateArgs.h" />
     <ClInclude Include="src\args\VirtualArgs.h" />
-    <ClInclude Include="src\audio\Al_Error.h" />
-    <ClInclude Include="src\audio\AudioDevice.h" />
-    <ClInclude Include="src\audio\AudioSource.h" />
-    <ClInclude Include="src\audio\SoundBuffer.h" />
     <ClInclude Include="src\camera\OrthographicCamera.h" />
     <ClInclude Include="src\camera\OrthographicCameraController.h" />
     <ClInclude Include="src\colision\Colisions.h" />
@@ -344,11 +307,6 @@
     <ClInclude Include="src\input\Mouse.h" />
     <ClInclude Include="src\input\MouseKeys.h" />
     <ClInclude Include="src\no_console_release.h" />
-    <ClInclude Include="src\render\3d\3d_core.h" />
-    <ClInclude Include="src\render\3d\Mesh.h" />
-    <ClInclude Include="src\render\3d\Model.h" />
-    <ClInclude Include="src\render\3d\Render3D.h" />
-    <ClInclude Include="src\render\3d\SkyBox.h" />
     <ClInclude Include="src\render\Camera.h" />
     <ClInclude Include="src\render\Colors.h" />
     <ClInclude Include="src\render\ParticleSystem.h" />
@@ -367,11 +325,14 @@
     <ClInclude Include="src\render\gl\VertexAttribute.h" />
     <ClInclude Include="src\render\gl\VertexBuffer.h" />
     <ClInclude Include="src\render\gl\base_gl.h" />
+    <ClInclude Include="src\render\render2D.h" />
     <ClInclude Include="src\scene\CameraScript.h" />
     <ClInclude Include="src\scene\Components.h" />
+    <ClInclude Include="src\scene\EditorCamera.h" />
     <ClInclude Include="src\scene\Entity.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\scene\SceneCamera.h" />
+    <ClInclude Include="src\scene\SceneSerializer.h" />
     <ClInclude Include="src\scene\ScriptableEntity.h" />
     <ClInclude Include="src\utils\Files.h" />
     <ClInclude Include="src\utils\Generic.h" />
@@ -387,18 +348,16 @@
     <ClInclude Include="src\utils\gl_error_macro_db.h" />
     <ClInclude Include="src\utils\parse_args.h" />
     <ClInclude Include="src\utils\threading.h" />
+    <ClInclude Include="src\utils\yaml_specializations.h" />
     <ClInclude Include="src\uuid\UUID.h" />
+    <ClInclude Include="vendor\lodepng\lodepng.h" />
+    <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\render\render2D.cpp" />
-    <ClCompile Include="src\scene\SceneSerializer.cpp" />
     <ClCompile Include="src\Base\Base.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp" />
-    <ClCompile Include="src\audio\AudioDevice.cpp" />
-    <ClCompile Include="src\audio\AudioSource.cpp" />
-    <ClCompile Include="src\audio\SoundBuffer.cpp" />
     <ClCompile Include="src\camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\camera\OrthographicCameraController.cpp" />
     <ClCompile Include="src\definer_Stb.cpp" />
@@ -406,10 +365,6 @@
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\input\Mouse.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\render\3d\Mesh.cpp" />
-    <ClCompile Include="src\render\3d\Model.cpp" />
-    <ClCompile Include="src\render\3d\Render3D.cpp" />
-    <ClCompile Include="src\render\3d\SkyBox.cpp" />
     <ClCompile Include="src\render\ParticleSystem.cpp" />
     <ClCompile Include="src\render\SubTexture.cpp" />
     <ClCompile Include="src\render\Text.cpp" />
@@ -424,14 +379,36 @@
     <ClCompile Include="src\render\gl\VertexArray.cpp" />
     <ClCompile Include="src\render\gl\VertexAttribute.cpp" />
     <ClCompile Include="src\render\gl\VertexBuffer.cpp" />
+    <ClCompile Include="src\render\render2D.cpp" />
+    <ClCompile Include="src\scene\EditorCamera.cpp" />
     <ClCompile Include="src\scene\Entity.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\scene\SceneCamera.cpp" />
+    <ClCompile Include="src\scene\SceneSerializer.cpp" />
     <ClCompile Include="src\utils\Files.cpp" />
     <ClCompile Include="src\utils\Generic.cpp" />
     <ClCompile Include="src\utils\RandomList.cpp" />
     <ClCompile Include="src\utils\parse_args.cpp" />
     <ClCompile Include="src\uuid\UUID.cpp" />
+    <ClCompile Include="vendor\lodepng\lodepng.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="vendor\Box2D\Box2D.vcxproj">
+      <Project>{A434E80C-1049-10BE-D9CA-B31D459E0CEF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\yaml-cpp\yaml-cpp.vcxproj">
+      <Project>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\glad\Glad.vcxproj">
+      <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\glfw\GLFW.vcxproj">
+      <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
