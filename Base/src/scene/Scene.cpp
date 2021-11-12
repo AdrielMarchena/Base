@@ -200,6 +200,7 @@ namespace Base
 
 	void Scene::OnUpdateEditor(const UpdateArgs& args, EditorCamera& camera)
 	{
+		BASE_PROFILE_FUNCTION();
 		using D2D = Render2D;
 
 		m_FrameBufferRender->BindFrameBuffer();
@@ -212,7 +213,7 @@ namespace Base
 		GLCall(glViewport(0, 0, m_ViewPortWidth * m_FramebufferScaler, m_ViewPortHeight * m_FramebufferScaler));
 
 		{// Quads
-
+			BASE_PROFILE_SCOPE("Render (Editor)");
 			{//Draw Sprites
 				//It's a view because a group just breaks
 				auto view = m_Registry.view<TransformComponent, SpriteComponent>(entt::exclude<CircleComponent>);
@@ -291,10 +292,12 @@ namespace Base
 		D2D::EndBatch();
 		D2D::Flush();
 
-		m_FrameBufferRender->UnbindFrameBuffer();
-		GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
-
-		m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
+		{//Frame buffer drawing
+			BASE_PROFILE_SCOPE("Framebuffer Drawing (Editor)");
+			m_FrameBufferRender->UnbindFrameBuffer();
+			GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
+			m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
+		}
 	}
 
 	void Scene::OnUpdateRuntime(const UpdateArgs& args)
@@ -450,12 +453,15 @@ namespace Base
 				D2D::EndBatch();
 				D2D::Flush();
 			}
-			m_FrameBufferRender->UnbindFrameBuffer();
-			GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
 
 		}//End Render Scope
-		
-		m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
+
+		{//Frame buffer drawing
+			BASE_PROFILE_SCOPE("Framebuffer Drawing");
+			m_FrameBufferRender->UnbindFrameBuffer();
+			GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
+			m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
+		}
 	}
 
 	void Scene::OnViewPortResize(uint32_t w, uint32_t h)

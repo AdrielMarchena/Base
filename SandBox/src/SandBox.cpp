@@ -9,6 +9,8 @@
 
 #include "imgui.h"
 
+#include "utils/Instrumentor.h"
+
 SandBox::SandBox()
 	:Base::windowing::Window()
 {
@@ -108,6 +110,7 @@ void SandBox::OnRender()
 
 void SandBox::OnImGui() 
 {
+	BASE_PROFILE_FUNCTION();
 	ImGui::Begin("Framebuffer and post effects");
 
 	static float frame_buff_scalor = 1.0f;

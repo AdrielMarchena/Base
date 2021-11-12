@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 		specifications.resizeble = parser.GetFlag("resizeble");
 		specifications.fullscreen = parser.GetFlag("fullscreen");
 		specifications.title_bar_off = parser.GetFlag("titleoff");
-		specifications.v_sync_on = parser.GetFlag("vSync-off");
+		specifications.v_sync_on = !parser.GetFlag("vSync-off");
 		using_example_instance = parser.GetFlag("example1");
 	}
 	catch (const std::exception& ex)
