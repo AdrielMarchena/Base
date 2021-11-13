@@ -39,6 +39,7 @@ namespace Base
 		void OnViewPortResize(uint32_t w, uint32_t h);
 		void SetFramebufferScaler(float scaler);
 		float GetFramebufferScaler() const { return m_FramebufferScaler; }
+		uint32_t GetFramebufferImage() const;
 
 		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const;
 		void SetPostEffect(const std::string& name);

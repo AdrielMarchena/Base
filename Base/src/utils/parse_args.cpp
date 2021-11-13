@@ -2,8 +2,6 @@
 
 namespace Base
 {
-namespace utils
-{
 
 	void ConsoleArgsParser::RegistryFlag(const std::string& flag_name)
 	{
@@ -127,5 +125,4 @@ namespace utils
 			}
 		}
 	}
-}
 }

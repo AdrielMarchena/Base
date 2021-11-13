@@ -43,6 +43,9 @@
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\ImGuizmo">
+      <UniqueIdentifier>{73BF7F4C-DF4A-ED10-E85B-700554664911}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor\lodepng">
       <UniqueIdentifier>{EBAA2651-D778-1A57-C00C-8B7DAC79F6BB}</UniqueIdentifier>
     </Filter>
@@ -58,9 +61,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceManager.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Window.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\amb\Ambient.h">
@@ -246,21 +246,32 @@
     <ClInclude Include="src\uuid\UUID.h">
       <Filter>src\uuid</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
+      <Filter>vendor\ImGuizmo</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\lodepng\lodepng.h">
       <Filter>vendor\lodepng</Filter>
     </ClInclude>
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\application\Application.h" />
+    <ClInclude Include="src\Base.h" />
+    <ClInclude Include="src\event\Events.h" />
+    <ClInclude Include="src\event\KeyEvent.h" />
+    <ClInclude Include="src\event\MouseEvent.h" />
+    <ClInclude Include="src\event\ApplicationEvent.h" />
+    <ClInclude Include="src\window\Window.h" />
+    <ClInclude Include="src\window\WindowsWindow.h" />
+    <ClInclude Include="src\render\gl\GLContext.h" />
+    <ClInclude Include="src\application\Layer.h" />
+    <ClInclude Include="src\application\LayerStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp">
       <Filter>src\Base</Filter>
     </ClCompile>
     <ClCompile Include="src\Log.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Window.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\amb\Ambient.cpp">
@@ -283,9 +294,6 @@
     </ClCompile>
     <ClCompile Include="src\input\Mouse.cpp">
       <Filter>src\input</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\render\ParticleSystem.cpp">
       <Filter>src\render</Filter>
@@ -362,11 +370,21 @@
     <ClCompile Include="src\uuid\UUID.cpp">
       <Filter>src\uuid</Filter>
     </ClCompile>
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <Filter>vendor\ImGuizmo</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\lodepng\lodepng.cpp">
       <Filter>vendor\lodepng</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\application\Application.cpp" />
+    <ClCompile Include="src\application\Entry.h" />
+    <ClCompile Include="src\window\Window.cpp" />
+    <ClCompile Include="src\window\WindowsWindow.cpp" />
+    <ClCompile Include="src\render\gl\GLContext.cpp" />
+    <ClCompile Include="src\application\Layer.cpp" />
+    <ClCompile Include="src\application\LayerStack.cpp" />
   </ItemGroup>
 </Project>

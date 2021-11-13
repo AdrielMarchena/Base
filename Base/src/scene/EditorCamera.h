@@ -1,6 +1,6 @@
 #pragma once
 #include "args/UpdateArgs.h"
-#include "args/MouseArgs.h"
+#include "event/MouseEvent.h"
 
 #include "render/Camera.h"
 
@@ -52,7 +52,7 @@ namespace Base
 
 		float GetPitch() const { return m_Pitch; }
 		float GetYaw() const { return m_Yaw; }
-		void OnMouseScroll(const MouseArgs& mouseAction);
+		void OnMouseScroll(MouseScrollEvent& e);
 	private:
 		void UpdateProjection();
 		void UpdateView();

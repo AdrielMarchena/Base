@@ -82,6 +82,8 @@ namespace Base
 		void SetQuadScale(const glm::vec3& scale) {		  m_Scale = scale;		 CalculateQuadTransform(); }
 		void SetQuadRotation(const glm::vec3& rotation) { m_Rotation = rotation; CalculateQuadTransform(); }
 
+		uint32_t GetFramebufferImage() const { return m_Framebuffer->GetColorTexture(); }
+
 		Ref <render::Shader> GetCurrentShader() const { return m_CurrentShader; }
 	private:
 		void CalculateQuadTransform();

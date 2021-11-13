@@ -15,7 +15,10 @@ project "Base"
 		"vendor/lodepng/lodepng.cpp",
 
 		"vendor/stb_image/**.h",
-		"vendor/stb_image/**.cpp"
+		"vendor/stb_image/**.cpp",
+
+		"vendor/ImGuizmo/ImGuizmo.h",
+		"vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 
 	includedirs
@@ -25,6 +28,7 @@ project "Base"
 		"%{IncludeDirectories.Glad}",
 		"%{IncludeDirectories.LodePng}",
 		"%{IncludeDirectories.ImGui}",
+		"%{IncludeDirectories.ImGuizmo}",
 		"%{IncludeDirectories.yaml}",
 		"%{IncludeDirectories.Box2D}",
 		"%{IncludeDirectories.stb_image}",

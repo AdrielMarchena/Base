@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Components.h"
+#include "input/Keyboard.h"
+#include "input/Mouse.h"
 #include "ScriptableEntity.h"
 #include <glm/gtc/matrix_transform.hpp>
 namespace Base

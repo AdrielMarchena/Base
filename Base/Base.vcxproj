@@ -133,7 +133,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\ImGuizmo;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -157,7 +157,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\ImGuizmo;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -181,7 +181,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\ImGuizmo;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -208,7 +208,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\ImGuizmo;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -235,7 +235,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\ImGuizmo;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -262,7 +262,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>BASE_WINDOWS_BUILD;BASE_STATIC_BUILD;BASE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\glfw\include;vendor\glad\include;vendor\lodepng;vendor\imgui;vendor\ImGuizmo;vendor\yaml-cpp\include;vendor\Box2D\include;vendor\stb_image;vendor\entt\single_include;vendor\spdlog\include;vendor\glm;vendor\debugbreak;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -285,10 +285,18 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\application\LayerStack.h" />
+    <ClInclude Include="src\application\Layer.h" />
+    <ClInclude Include="src\render\gl\GLContext.h" />
+    <ClInclude Include="src\application\Application.h" />
+    <ClInclude Include="src\Base.h" />
     <ClInclude Include="src\Base\Base.h" />
+    <ClInclude Include="src\event\ApplicationEvent.h" />
+    <ClInclude Include="src\event\Events.h" />
+    <ClInclude Include="src\event\KeyEvent.h" />
+    <ClInclude Include="src\event\MouseEvent.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\ResourceManager.h" />
-    <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\amb\Ambient.h" />
     <ClInclude Include="src\args\AttachArgs.h" />
     <ClInclude Include="src\args\ImGuiArgs.h" />
@@ -350,13 +358,20 @@
     <ClInclude Include="src\utils\threading.h" />
     <ClInclude Include="src\utils\yaml_specializations.h" />
     <ClInclude Include="src\uuid\UUID.h" />
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="vendor\lodepng\lodepng.h" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\window\Window.h" />
+    <ClInclude Include="src\window\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\application\LayerStack.cpp" />
+    <ClCompile Include="src\application\Layer.cpp" />
+    <ClCompile Include="src\render\gl\GLContext.cpp" />
+    <ClCompile Include="src\application\Application.cpp" />
+    <ClCompile Include="src\application\Entry.h" />
     <ClCompile Include="src\Base\Base.cpp" />
     <ClCompile Include="src\Log.cpp" />
-    <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\amb\Ambient.cpp" />
     <ClCompile Include="src\camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\camera\OrthographicCameraController.cpp" />
@@ -364,7 +379,6 @@
     <ClCompile Include="src\ent\Animator.cpp" />
     <ClCompile Include="src\input\Keyboard.cpp" />
     <ClCompile Include="src\input\Mouse.cpp" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\render\ParticleSystem.cpp" />
     <ClCompile Include="src\render\SubTexture.cpp" />
     <ClCompile Include="src\render\Text.cpp" />
@@ -390,8 +404,11 @@
     <ClCompile Include="src\utils\RandomList.cpp" />
     <ClCompile Include="src\utils\parse_args.cpp" />
     <ClCompile Include="src\uuid\UUID.cpp" />
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="vendor\lodepng\lodepng.cpp" />
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\window\Window.cpp" />
+    <ClCompile Include="src\window\WindowsWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\Box2D\Box2D.vcxproj">

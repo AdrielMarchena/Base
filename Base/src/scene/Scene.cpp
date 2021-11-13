@@ -296,6 +296,7 @@ namespace Base
 			BASE_PROFILE_SCOPE("Framebuffer Drawing (Editor)");
 			m_FrameBufferRender->UnbindFrameBuffer();
 			GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
+			D2D::ClearColor();
 			m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
 		}
 	}
@@ -490,5 +491,9 @@ namespace Base
 	{
 		m_FramebufferScaler = scaler;
 		SetFrameBuff();
+	}
+	uint32_t Scene::GetFramebufferImage() const
+	{
+		return m_FrameBufferRender->GetFramebufferImage();
 	}
 }

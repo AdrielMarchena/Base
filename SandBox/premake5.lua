@@ -21,7 +21,8 @@ project "Sandbox"
 		"%{IncludeDirectories.entt}",
 		"%{IncludeDirectories.spdlog}",
 		"%{IncludeDirectories.glm}",
-		"%{IncludeDirectories.debugbreak}"
+		"%{IncludeDirectories.debugbreak}",
+		"%{IncludeDirectories.ImGuizmo}"
 	}
 	
 	links

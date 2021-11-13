@@ -1,6 +1,7 @@
 #include "EditorCamera.h"
 
 #include "input/Keyboard.h"
+#include "input/Mouse.h"
 
 namespace Base
 {
@@ -63,11 +64,9 @@ namespace Base
 		m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
 	}
 
-	void EditorCamera::OnMouseScroll(const MouseArgs& mouseAction)
+	void EditorCamera::OnMouseScroll(MouseScrollEvent& e)
 	{
-		if (mouseAction.m_action != MouseAction::SCROLL)
-			return;
-		float delta = mouseAction.Yoffset * 0.1f;
+		float delta = e.GetYOffset() * 0.1f;
 		MouseZoom(delta);
 		UpdateView();
 	}

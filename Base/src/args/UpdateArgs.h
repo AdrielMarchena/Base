@@ -7,13 +7,12 @@
 
 #pragma once
 
-#include "input/Mouse.h"
-#include "input/Keyboard.h"
-
-namespace Base
+struct UpdateArgs
 {
-	struct UpdateArgs
-	{
-		float dt;
-	};
-}
+	float dt;
+
+	UpdateArgs() = default;
+	UpdateArgs(float deltaTime)
+		:dt(deltaTime){}
+	UpdateArgs(const UpdateArgs&) = default;
+};

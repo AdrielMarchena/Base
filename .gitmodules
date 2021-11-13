@@ -25,3 +25,6 @@
 [submodule "Base/vendor/glfw"]
 	path = Base/vendor/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "Base/vendor/ImGuizmo"]
+	path = Base/vendor/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git
