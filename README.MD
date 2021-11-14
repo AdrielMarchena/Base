@@ -18,7 +18,9 @@ i'm using vcpkg for some libs, so you will need to enable vcpkg on your visual s
 ```bash
 Project Properties > vcpkg > 'Use Static Libraries'
 ```
-In the near future i will list all the dependences and libraries i'm current using, and check if i'm using the licences correctly.
+## Dependencies
+
+Are all listed on de 'Dependencies.lua' file
 
 ## Usage
 

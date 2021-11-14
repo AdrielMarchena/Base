@@ -28,3 +28,6 @@
 [submodule "Base/vendor/ImGuizmo"]
 	path = Base/vendor/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
+[submodule "Base/vendor/debugbreak"]
+	path = Base/vendor/debugbreak
+	url = https://github.com/scottt/debugbreak.git
