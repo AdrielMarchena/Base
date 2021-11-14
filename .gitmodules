@@ -10,9 +10,6 @@
 [submodule "Base/vendor/entt"]
 	path = Base/vendor/entt
 	url = https://github.com/skypjack/entt
-[submodule "Base/vendor/Box2D"]
-	path = Base/vendor/Box2D
-	url = https://github.com/erincatto/box2d
 [submodule "Base/vendor/yaml-cpp"]
 	path = Base/vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
@@ -31,3 +28,6 @@
 [submodule "Base/vendor/debugbreak"]
 	path = Base/vendor/debugbreak
 	url = https://github.com/scottt/debugbreak.git
+[submodule "Base/vendor/Box2D"]
+	path = Base/vendor/Box2D
+	url = https://github.com/erincatto/box2d.git
