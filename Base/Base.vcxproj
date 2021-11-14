@@ -285,6 +285,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\application\ImGuiLayer.h" />
     <ClInclude Include="src\application\LayerStack.h" />
     <ClInclude Include="src\application\Layer.h" />
     <ClInclude Include="src\render\gl\GLContext.h" />
@@ -365,6 +366,7 @@
     <ClInclude Include="src\window\WindowsWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\application\ImGuiLayer.cpp" />
     <ClCompile Include="src\application\LayerStack.cpp" />
     <ClCompile Include="src\application\Layer.cpp" />
     <ClCompile Include="src\render\gl\GLContext.cpp" />

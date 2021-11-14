@@ -16,6 +16,8 @@
 //
 #pragma once
 
+#ifdef BASE_PROFILING
+
 #include "Base/Base.h"
 
 #include <algorithm>
@@ -218,7 +220,7 @@ namespace Base
 		}
 	}
 }
-
+#endif
 #ifdef BASE_PROFILING
 #define BASE_PROFILE_BEGIN_SESSION(name,filepath) ::Base::Instrumentor::Get().BeginSession(name,filepath)
 #define BASE_PROFILE_END_SESSION() ::Base::Instrumentor::Get().EndSession()

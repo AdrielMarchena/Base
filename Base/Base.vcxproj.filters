@@ -266,6 +266,7 @@
     <ClInclude Include="src\render\gl\GLContext.h" />
     <ClInclude Include="src\application\Layer.h" />
     <ClInclude Include="src\application\LayerStack.h" />
+    <ClInclude Include="src\application\ImGuiLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp">
@@ -386,5 +387,6 @@
     <ClCompile Include="src\render\gl\GLContext.cpp" />
     <ClCompile Include="src\application\Layer.cpp" />
     <ClCompile Include="src\application\LayerStack.cpp" />
+    <ClCompile Include="src\application\ImGuiLayer.cpp" />
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
 
 #include "input/Mouse.h"
 #include "input/Keyboard.h"
-
+#include "utils/Instrumentor.h"
 #define CALLBACK_STATIC_CAST(type,window) static_cast<type*>(glfwGetWindowUserPointer(window))
 
 namespace Base
@@ -48,6 +48,8 @@ namespace Base
 
 	void WindowsWindow::Init(const WindowSpecifications& specs)
 	{
+		BASE_PROFILE_FUNCTION();
+
 		m_Data.Title = specs.Title;
 		m_Data.Width = specs.Width;
 		m_Data.Height = specs.Height;
@@ -198,6 +200,8 @@ namespace Base
 
 	void WindowsWindow::Shutdown()
 	{
+		BASE_PROFILE_FUNCTION();
+
 		m_OpenGLContext->Shutdown();
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();

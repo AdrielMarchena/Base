@@ -36,6 +36,7 @@ namespace Base
 		void SetVSync(bool enabled) override;
 		bool GetVSync() const override;
 		bool IsMinimized() const { return m_Data.Minimized; }
+		void* GetNative() const override { return (void*)m_Window; }
 	private:
 		virtual void Init(const WindowSpecifications& specs);
 		virtual void Shutdown();

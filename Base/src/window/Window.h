@@ -36,6 +36,8 @@ public:
 	virtual void SetVSync(bool enabled) = 0;
 	virtual bool GetVSync() const = 0;
 
+	virtual void* GetNative() const = 0;
+
 	static Scope<Window> Create(const WindowSpecifications& specs = WindowSpecifications());
 };
 

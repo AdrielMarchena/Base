@@ -69,10 +69,10 @@ void TestLayer::OnAttach()
 
 	Camera_comp.Camera.SetViewportSize(w,h);
 
-	//auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
-	//Camera_Script.Bind<Base::OrthoCameraScript>();
-	//m_Scene->StartNativeScript(m_Camera);
-	//m_Scene->AwakeNativeScript(m_Camera);
+	auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
+	Camera_Script.Bind<Base::OrthoCameraScript>();
+	m_Scene->StartNativeScript(m_Camera);
+	m_Scene->AwakeNativeScript(m_Camera);
 }
 
 void TestLayer::OnUpdate(UpdateArgs args)
@@ -80,9 +80,14 @@ void TestLayer::OnUpdate(UpdateArgs args)
 	using kb = Base::input::Keyboard;
 	using ms = Base::input::Mouse;
 
-	m_EditorCamera.OnUpdate(args);
 	if (!Base::WindowProps().minimized)
-		m_Scene->OnUpdateEditor(args, m_EditorCamera);
+	{
+		m_EditorCamera.OnUpdate(args);
+		if (m_Runtime)
+			m_Scene->OnUpdateRuntime(args);
+		else
+			m_Scene->OnUpdateEditor(args, m_EditorCamera);
+	}
 }
 
 void TestLayer::OnDetach()

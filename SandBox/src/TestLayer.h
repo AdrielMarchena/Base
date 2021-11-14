@@ -11,6 +11,7 @@ private:
 	Base::EditorCamera m_EditorCamera;
 	Base::Entity m_Camera;
 	std::unordered_map<std::string, Base::Entity> m_Entitys;
+	bool m_Runtime = false;
 public:
 	TestLayer(const std::string& name = "TestLayer");
 
