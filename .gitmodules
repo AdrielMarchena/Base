@@ -13,15 +13,18 @@
 [submodule "Base/vendor/yaml-cpp"]
 	path = Base/vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+	ignore = dirty
 [submodule "Base/vendor/lodepng"]
 	path = Base/vendor/lodepng
 	url = https://github.com/lvandeve/lodepng.git
 [submodule "Base/vendor/imgui"]
 	path = Base/vendor/imgui
 	url = https://github.com/ocornut/imgui
+	ignore = dirty
 [submodule "Base/vendor/glfw"]
 	path = Base/vendor/glfw
 	url = https://github.com/glfw/glfw.git
+	ignore = dirty
 [submodule "Base/vendor/ImGuizmo"]
 	path = Base/vendor/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
@@ -31,3 +34,4 @@
 [submodule "Base/vendor/Box2D"]
 	path = Base/vendor/Box2D
 	url = https://github.com/erincatto/box2d.git
+	ignore = dirty
