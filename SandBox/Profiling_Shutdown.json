@@ -1,1 +1,0 @@
-{"otherData": {},"traceEvents":[{},{"cat":"function","dur":81167,"name":"void __cdecl Base::WindowsWindow::Shutdown(void)","ph":"X","pid":0,"tid":8236,"ts":31251120326.600}]}
