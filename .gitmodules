@@ -4,34 +4,24 @@
 [submodule "Base/vendor/glm"]
 	path = Base/vendor/glm
 	url = https://github.com/g-truc/glm
-[submodule "Base/vendor/libsndfile"]
-	path = Base/vendor/libsndfile
-	url = https://github.com/libsndfile/libsndfile
 [submodule "Base/vendor/entt"]
 	path = Base/vendor/entt
 	url = https://github.com/skypjack/entt
+[submodule "Base/vendor/Box2D"]
+	path = Base/vendor/Box2D
+	url = https://github.com/erincatto/box2d
 [submodule "Base/vendor/yaml-cpp"]
 	path = Base/vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
-	ignore = dirty
 [submodule "Base/vendor/lodepng"]
 	path = Base/vendor/lodepng
 	url = https://github.com/lvandeve/lodepng.git
 [submodule "Base/vendor/imgui"]
 	path = Base/vendor/imgui
 	url = https://github.com/ocornut/imgui
-	ignore = dirty
 [submodule "Base/vendor/glfw"]
 	path = Base/vendor/glfw
 	url = https://github.com/glfw/glfw.git
-	ignore = dirty
 [submodule "Base/vendor/ImGuizmo"]
 	path = Base/vendor/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo.git
-[submodule "Base/vendor/debugbreak"]
-	path = Base/vendor/debugbreak
-	url = https://github.com/scottt/debugbreak.git
-[submodule "Base/vendor/Box2D"]
-	path = Base/vendor/Box2D
-	url = https://github.com/erincatto/box2d.git
-	ignore = dirty

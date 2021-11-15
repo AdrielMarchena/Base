@@ -10,6 +10,9 @@
     <Filter Include="src\amb">
       <UniqueIdentifier>{8CEA2FA9-F8C9-AE44-01E2-391B6D4015A6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\application">
+      <UniqueIdentifier>{90BAE972-FC45-5737-0557-DA2B7161B337}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\args">
       <UniqueIdentifier>{69522DCF-551F-88DA-7E38-76826A64BD68}</UniqueIdentifier>
     </Filter>
@@ -21,6 +24,9 @@
     </Filter>
     <Filter Include="src\ent">
       <UniqueIdentifier>{C3FB2FA9-2FDB-AE44-38F3-391BA45115A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\event">
+      <UniqueIdentifier>{5E2A22B5-CA94-D62B-13D3-87D17F7CB480}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\input">
       <UniqueIdentifier>{0C5966B5-78C3-1A2C-C101-CCD12DABF880}</UniqueIdentifier>
@@ -40,6 +46,9 @@
     <Filter Include="src\uuid">
       <UniqueIdentifier>{F35638CF-DF23-93DA-083D-8182F468C868}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\window">
+      <UniqueIdentifier>{94D77D82-808F-BFCF-E996-982BD56D5AC0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -54,6 +63,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Base.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\Base\Base.h">
       <Filter>src\Base</Filter>
     </ClInclude>
@@ -65,6 +77,21 @@
     </ClInclude>
     <ClInclude Include="src\amb\Ambient.h">
       <Filter>src\amb</Filter>
+    </ClInclude>
+    <ClInclude Include="src\application\Application.h">
+      <Filter>src\application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\application\Entry.h">
+      <Filter>src\application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\application\ImGuiLayer.h">
+      <Filter>src\application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\application\Layer.h">
+      <Filter>src\application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\application\LayerStack.h">
+      <Filter>src\application</Filter>
     </ClInclude>
     <ClInclude Include="src\args\AttachArgs.h">
       <Filter>src\args</Filter>
@@ -101,6 +128,18 @@
     </ClInclude>
     <ClInclude Include="src\ent\Animator.h">
       <Filter>src\ent</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\ApplicationEvent.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\Events.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\KeyEvent.h">
+      <Filter>src\event</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\MouseEvent.h">
+      <Filter>src\event</Filter>
     </ClInclude>
     <ClInclude Include="src\input\Keyboard.h">
       <Filter>src\input</Filter>
@@ -139,6 +178,9 @@
       <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\FramebufferSpecifications.h">
+      <Filter>src\render\gl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\gl\GLContext.h">
       <Filter>src\render\gl</Filter>
     </ClInclude>
     <ClInclude Include="src\render\gl\GL_Types.h">
@@ -246,6 +288,12 @@
     <ClInclude Include="src\uuid\UUID.h">
       <Filter>src\uuid</Filter>
     </ClInclude>
+    <ClInclude Include="src\window\Window.h">
+      <Filter>src\window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window\WindowsWindow.h">
+      <Filter>src\window</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h">
       <Filter>vendor\ImGuizmo</Filter>
     </ClInclude>
@@ -255,18 +303,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\application\Application.h" />
-    <ClInclude Include="src\Base.h" />
-    <ClInclude Include="src\event\Events.h" />
-    <ClInclude Include="src\event\KeyEvent.h" />
-    <ClInclude Include="src\event\MouseEvent.h" />
-    <ClInclude Include="src\event\ApplicationEvent.h" />
-    <ClInclude Include="src\window\Window.h" />
-    <ClInclude Include="src\window\WindowsWindow.h" />
-    <ClInclude Include="src\render\gl\GLContext.h" />
-    <ClInclude Include="src\application\Layer.h" />
-    <ClInclude Include="src\application\LayerStack.h" />
-    <ClInclude Include="src\application\ImGuiLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base\Base.cpp">
@@ -277,6 +313,18 @@
     </ClCompile>
     <ClCompile Include="src\amb\Ambient.cpp">
       <Filter>src\amb</Filter>
+    </ClCompile>
+    <ClCompile Include="src\application\Application.cpp">
+      <Filter>src\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\application\ImGuiLayer.cpp">
+      <Filter>src\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\application\Layer.cpp">
+      <Filter>src\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\application\LayerStack.cpp">
+      <Filter>src\application</Filter>
     </ClCompile>
     <ClCompile Include="src\camera\OrthographicCamera.cpp">
       <Filter>src\camera</Filter>
@@ -309,6 +357,9 @@
       <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\FramebufferRender.cpp">
+      <Filter>src\render\gl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\gl\GLContext.cpp">
       <Filter>src\render\gl</Filter>
     </ClCompile>
     <ClCompile Include="src\render\gl\GL_Commands.cpp">
@@ -371,6 +422,12 @@
     <ClCompile Include="src\uuid\UUID.cpp">
       <Filter>src\uuid</Filter>
     </ClCompile>
+    <ClCompile Include="src\window\Window.cpp">
+      <Filter>src\window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window\WindowsWindow.cpp">
+      <Filter>src\window</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
       <Filter>vendor\ImGuizmo</Filter>
     </ClCompile>
@@ -380,13 +437,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\application\Application.cpp" />
-    <ClCompile Include="src\application\Entry.h" />
-    <ClCompile Include="src\window\Window.cpp" />
-    <ClCompile Include="src\window\WindowsWindow.cpp" />
-    <ClCompile Include="src\render\gl\GLContext.cpp" />
-    <ClCompile Include="src\application\Layer.cpp" />
-    <ClCompile Include="src\application\LayerStack.cpp" />
-    <ClCompile Include="src\application\ImGuiLayer.cpp" />
   </ItemGroup>
 </Project>

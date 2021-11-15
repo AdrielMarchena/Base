@@ -255,16 +255,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Base\Base.vcxproj">
-      <Project>{60EC827C-4C23-840D-F50F-6A10E125000F}</Project>
-    </ProjectReference>
+    <ClInclude Include="src\TestLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\SandBox.cpp" />
     <ClCompile Include="src\TestLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\TestLayer.h" />
+    <ProjectReference Include="..\Base\Base.vcxproj">
+      <Project>{60EC827C-4C23-840D-F50F-6A10E125000F}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
