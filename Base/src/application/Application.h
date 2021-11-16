@@ -8,6 +8,7 @@
 #include "LayerStack.h"
 #include "ImGuiLayer.h"
 #include <string>
+#include "script/LuaContext.h"
 
 int main(int argc, char** argv);
 
@@ -22,6 +23,7 @@ namespace Base
 		ImGuiLayer m_ImGuiLayer;
 		bool m_Running = false;
 		uint64_t m_FrameCount;
+		LuaContext m_LuaContext;
 	public:
 		Application(int argc, char** argv);
 		virtual ~Application();

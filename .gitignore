@@ -70,8 +70,10 @@ bin-int
 #Gimp File
 *.[Xx][Cc][Ff]
 
+Base/vendor/Lua/*
 #add all .lua
 !*.lua
+
 
 #misc
 

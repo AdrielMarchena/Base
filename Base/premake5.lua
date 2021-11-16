@@ -18,7 +18,10 @@ project "Base"
 		"vendor/stb_image/**.cpp",
 
 		"vendor/ImGuizmo/ImGuizmo.h",
-		"vendor/ImGuizmo/ImGuizmo.cpp"
+		"vendor/ImGuizmo/ImGuizmo.cpp",
+
+		"vendor/Lua/src/lua.h",
+		"vendor/Lua/src/lua.c"
 	}
 
 	includedirs
@@ -35,7 +38,8 @@ project "Base"
 		"%{IncludeDirectories.entt}",
 		"%{IncludeDirectories.spdlog}",
 		"%{IncludeDirectories.glm}",
-		"%{IncludeDirectories.debugbreak}"
+		"%{IncludeDirectories.debugbreak}",
+		"%{IncludeDirectories.Lua}"
 	}
 
 	links
@@ -45,7 +49,8 @@ project "Base"
 		"Glad",
 		"ImGui",
 		"GLFW",
-		"opengl32.lib"
+		"opengl32.lib",
+		"Lua"
 	}
 
 	postbuildcommands

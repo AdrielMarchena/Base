@@ -15,14 +15,19 @@ namespace Base
 	{
 		BASE_PROFILE_FUNCTION();
 
+		m_LuaContext.CreateLuaState();
+
 		WindowSpecifications specs;
-		specs.Title = m_ConsoleArgs.GetOptionAsString("title");
-		specs.Width = m_ConsoleArgs.GetOptionAsInt("width");
-		specs.Height = m_ConsoleArgs.GetOptionAsInt("height");
-		specs.Fullscreen = m_ConsoleArgs.GetFlag("fullscreen");
-		specs.Decorated = !m_ConsoleArgs.GetFlag("title-off");
-		specs.VSync_On = !m_ConsoleArgs.GetFlag("vsync-off");
-		specs.Resizeble = !m_ConsoleArgs.GetFlag("not-resizeble");
+		if (m_LuaContext.ExecuteFromFile("configurations.lua"))
+		{
+			specs.Title = m_LuaContext.GetGlobal<std::string>("title");
+			specs.Width = m_LuaContext.GetGlobal<int>("width");
+			specs.Height = m_LuaContext.GetGlobal<int>("height");
+			specs.Fullscreen = m_LuaContext.GetGlobal<bool>("fullscreen");
+			specs.Decorated = !m_LuaContext.GetGlobal<bool>("title_off");
+			specs.VSync_On = !m_LuaContext.GetGlobal<bool>("vsync_off");
+			specs.Resizeble = !m_LuaContext.GetGlobal<bool>("not_resizeble");
+		}
 
 		specs.Title = specs.Title != "" ? specs.Title : "Base";
 		specs.Width = specs.Width > -1 ? specs.Width : 1366;

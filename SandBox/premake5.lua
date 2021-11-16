@@ -22,12 +22,14 @@ project "Sandbox"
 		"%{IncludeDirectories.spdlog}",
 		"%{IncludeDirectories.glm}",
 		"%{IncludeDirectories.debugbreak}",
-		"%{IncludeDirectories.ImGuizmo}"
+		"%{IncludeDirectories.ImGuizmo}",
+		"%{IncludeDirectories.Lua}"
 	}
 	
 	links
 	{
-		"Base"
+		"Base",
+		"Lua"
 	}
 
 	filter "system:windows"
