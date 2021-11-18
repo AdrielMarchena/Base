@@ -75,6 +75,9 @@ namespace Base
 		void AddLookUpTable(const Ref<render::Texture>& texture, const std::string& name = std::string());
 		void UseLookUpTable(const std::string& name);
 
+		int ReadPixel(uint32_t index, int x, int y) { return m_Framebuffer->ReadPixel(index, x, y); }
+		void ClearAttachment(uint32_t index, int value) { m_Framebuffer->ClearAttachment(index,value); }
+
 		void UsePostEffect(const std::string& name);
 		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const { return m_PostEffects; }
 

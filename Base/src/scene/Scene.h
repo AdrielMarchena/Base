@@ -26,6 +26,8 @@ namespace Base
 		void StartNativeScript(Entity& ent);
 		void DestroyNativeScript(Entity& ent);
 		void AwakeNativeScript(Entity& ent);
+		/* Return the fist Primary camera it finds */
+		Entity GetPrimaryCamera();
 
 		//Runtime
 		void RuntimeInit();
@@ -35,21 +37,11 @@ namespace Base
 		void OnUpdateEditor(const UpdateArgs& args, EditorCamera& camera);
 		void OnUpdateRuntime(const UpdateArgs& args);
 
-		//ViewPort and frambuffer
+		//ViewPort
 		void OnViewPortResize(uint32_t w, uint32_t h);
-		void SetFramebufferScaler(float scaler);
-		float GetFramebufferScaler() const { return m_FramebufferScaler; }
-		uint32_t GetFramebufferImage() const;
 
-		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const;
-		void SetPostEffect(const std::string& name);
 	private:
-		void SetFrameBuff();
 
-		Scope<FramebufferRender> m_FrameBufferRender;
-		SceneCamera m_FramebufferCamera;
-		
-		float m_FramebufferScaler = 1.0f;
 		uint32_t m_ViewPortWidth;
 		uint32_t m_ViewPortHeight;
 

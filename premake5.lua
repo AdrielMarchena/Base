@@ -1,8 +1,7 @@
 include "Dependencies.lua"
 
 workspace "Base"
-	
-	startproject "Sandbox"
+	startproject "Basetor"
 
 	platforms
 	{
@@ -45,4 +44,5 @@ group ""
 
 --Projects
 include "Base"
-include "Sandbox"
+include "Basetor"
+--include "Sandbox"

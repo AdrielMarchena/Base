@@ -18,9 +18,6 @@
 #include "box2d/b2_polygon_shape.h"
 namespace Base
 {
-	//TODO: temp
-	static TransformComponent m_CameraTransform;
-
 	namespace utils
 	{
 		static inline b2BodyType Get2DBodyType(RigidBody2DComponent::BodyType type)
@@ -41,18 +38,11 @@ namespace Base
 		m_ViewPortWidth = WindowProps().width;
 		m_ViewPortHeight = WindowProps().height;
 		
-		FrameBufferRenderSpecification spec;
-		spec.width = m_ViewPortWidth;
-		spec.height = m_ViewPortHeight;
-		spec.scale_factor = m_FramebufferScaler;
-		m_FrameBufferRender = MakeScope<FramebufferRender>(spec);
-		SetFrameBuff();
 		OnViewPortResize(m_ViewPortWidth, m_ViewPortHeight);
 	}
 
 	Scene::~Scene()
 	{
-		m_FrameBufferRender.reset();
 	}
 
 	void Scene::SceneBegin()
@@ -131,18 +121,20 @@ namespace Base
 			script.Instance->OnAwake();
 	}
 
-	void Scene::SetFrameBuff()
+	Entity Scene::GetPrimaryCamera()
 	{
-		FrameBufferRenderSpecification& spec = m_FrameBufferRender->GetSpec();
-		spec.width = m_ViewPortWidth;
-		spec.height = m_ViewPortHeight;
-		spec.scale_factor = m_FramebufferScaler;
-		m_FrameBufferRender->InvalidateFrameBuffer();
-	}
-
-	void Scene::SetPostEffect(const std::string& name)
-	{
-		m_FrameBufferRender->UsePostEffect(name);
+		auto view = m_Registry.view<CameraComponent>();
+		Entity cam = {};
+		for (auto en : view)
+		{
+			Entity handler = { en,this };
+			if (handler.GetComponent<CameraComponent>().Primary)
+			{
+				cam = handler;
+				break;
+			}
+		}
+		return cam;
 	}
 
 	void Scene::RuntimeInit()
@@ -193,24 +185,14 @@ namespace Base
 		}
 	}
 
-	const std::unordered_map<std::string, FramebufferPostEffect>& Scene::GetPostEffects() const
-	{
-		return m_FrameBufferRender->GetPostEffects();
-	}
-
 	void Scene::OnUpdateEditor(const UpdateArgs& args, EditorCamera& camera)
 	{
 		BASE_PROFILE_FUNCTION();
 		using D2D = Render2D;
 
-		m_FrameBufferRender->BindFrameBuffer();
-
-		D2D::ClearColor();
-		
 		D2D::BeginScene(camera);
 		D2D::BeginBatch();
 		//D2D::SetLineWidth(2.0f);
-		GLCall(glViewport(0, 0, m_ViewPortWidth * m_FramebufferScaler, m_ViewPortHeight * m_FramebufferScaler));
 
 		{// Quads
 			BASE_PROFILE_SCOPE("Render (Editor)");
@@ -220,10 +202,9 @@ namespace Base
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-					auto& uuid = m_Registry.get<IDComponent>(entity);
-					D2D::DrawQuad(position.GetTransform(), spr.Color, uuid.Id);
+					D2D::DrawQuad(position.GetTransform(), spr.Color, (int)entity);
 					glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
-					D2D::DrawOutLineQuad(position.GetTransform(), out_color, uuid.Id);
+					D2D::DrawOutLineQuad(position.GetTransform(), out_color, (int)entity);
 				}
 			}
 
@@ -232,9 +213,8 @@ namespace Base
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
-					auto& uuid = m_Registry.get<IDComponent>(entity);
 					if (spr.Texture)
-						D2D::DrawQuad(position.GetTransform(), spr.Texture, uuid.Id);
+						D2D::DrawQuad(position.GetTransform(), spr.Texture, (int)entity);
 				}
 			}
 
@@ -243,9 +223,8 @@ namespace Base
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
-					auto& uuid = m_Registry.get<IDComponent>(entity);
 					if (spr.SubTexture)
-						D2D::DrawQuad(position.GetTransform(), spr.SubTexture, uuid.Id);
+						D2D::DrawQuad(position.GetTransform(), spr.SubTexture, (int)entity);
 				}
 			}
 
@@ -255,9 +234,8 @@ namespace Base
 				{
 					//TODO: Test to see if works
 					auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
-					auto& uuid = m_Registry.get<IDComponent>(entity);
 					auto& sprite = anim.Animation.Run(args.dt);
-					D2D::DrawQuad(position.GetTransform(), sprite, uuid.Id);
+					D2D::DrawQuad(position.GetTransform(), sprite, (int)entity);
 				}
 			}
 		}
@@ -269,9 +247,8 @@ namespace Base
 				for (auto entity : view)
 				{
 					auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
-					auto& uuid = m_Registry.get<IDComponent>(entity);
 					trans.Scale = glm::vec3(circle_def.Radius);
-					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color, uuid.Id);
+					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color, (int)entity);
 				}
 			}
 
@@ -280,9 +257,8 @@ namespace Base
 				for (auto entity : view)
 				{
 					auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-					auto& uuid = m_Registry.get<IDComponent>(entity);
 					trans.Scale = glm::vec3(circle_def.Radius);
-					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, uuid.Id);
+					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, (int)entity);
 				}
 
 			}
@@ -292,13 +268,6 @@ namespace Base
 		D2D::EndBatch();
 		D2D::Flush();
 
-		{//Frame buffer drawing
-			BASE_PROFILE_SCOPE("Framebuffer Drawing (Editor)");
-			m_FrameBufferRender->UnbindFrameBuffer();
-			GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
-			D2D::ClearColor();
-			m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
-		}
 	}
 
 	void Scene::OnUpdateRuntime(const UpdateArgs& args)
@@ -339,9 +308,6 @@ namespace Base
 
 		{//Render Scope
 			BASE_PROFILE_SCOPE("Scene Render Scope");
-			m_FrameBufferRender->BindFrameBuffer();
-			
-			GLCall(glViewport(0, 0, m_ViewPortWidth * m_FramebufferScaler, m_ViewPortHeight * m_FramebufferScaler));
 			
 			Base::Camera* mainCamera2D = nullptr;
 			glm::mat4 cameraTransform2D;
@@ -382,10 +348,9 @@ namespace Base
 						for (auto entity : view)
 						{
 							auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-							auto& uuid = m_Registry.get<IDComponent>(entity);
-							D2D::DrawQuad(position.GetTransform(), spr.Color,uuid.Id);
+							D2D::DrawQuad(position.GetTransform(), spr.Color, (int)entity);
 							glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
-							D2D::DrawOutLineQuad(position.GetTransform(), out_color, uuid.Id);
+							D2D::DrawOutLineQuad(position.GetTransform(), out_color, (int)entity);
 						}
 					}
 
@@ -394,9 +359,8 @@ namespace Base
 						for (auto entity : view)
 						{
 							auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
-							auto& uuid = m_Registry.get<IDComponent>(entity);
 							if (spr.Texture)
-								D2D::DrawQuad(position.GetTransform(), spr.Texture, uuid.Id);
+								D2D::DrawQuad(position.GetTransform(), spr.Texture, (int)entity);
 						}
 					}
 
@@ -405,9 +369,8 @@ namespace Base
 						for (auto entity : view)
 						{
 							auto&& [position, spr] = view.get<TransformComponent, SubTextureComponent>(entity);
-							auto& uuid = m_Registry.get<IDComponent>(entity);
 							if (spr.SubTexture)
-								D2D::DrawQuad(position.GetTransform(), spr.SubTexture, uuid.Id);
+								D2D::DrawQuad(position.GetTransform(), spr.SubTexture, (int)entity);
 						}
 					}
 
@@ -417,9 +380,8 @@ namespace Base
 						{
 							//TODO: Test to see if works
 							auto&& [position, anim] = view.get<TransformComponent, AnimateComponent>(entity);
-							auto& uuid = m_Registry.get<IDComponent>(entity);
 							auto& sprite = anim.Animation.Run(args.dt);
-							D2D::DrawQuad(position.GetTransform(), sprite, uuid.Id);
+							D2D::DrawQuad(position.GetTransform(), sprite, (int)entity);
 						}
 					}
 				}
@@ -431,9 +393,8 @@ namespace Base
 						for (auto entity : view)
 						{
 							auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
-							auto& uuid = m_Registry.get<IDComponent>(entity);
 							trans.Scale = glm::vec3(circle_def.Radius);
-							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color,uuid.Id);
+							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color, (int)entity);
 						}
 					}
 
@@ -442,9 +403,8 @@ namespace Base
 						for (auto entity : view)
 						{
 							auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-							auto& uuid = m_Registry.get<IDComponent>(entity);
 							trans.Scale = glm::vec3(circle_def.Radius);
-							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, uuid.Id);
+							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, (int)entity);
 						}
 					
 					}
@@ -456,13 +416,6 @@ namespace Base
 			}
 
 		}//End Render Scope
-
-		{//Frame buffer drawing
-			BASE_PROFILE_SCOPE("Framebuffer Drawing");
-			m_FrameBufferRender->UnbindFrameBuffer();
-			GLCall(glViewport(0, 0, m_ViewPortWidth, m_ViewPortHeight));
-			m_FrameBufferRender->DrawFrameBuffer(m_FramebufferCamera, m_CameraTransform.GetTransform());
-		}
 	}
 
 	void Scene::OnViewPortResize(uint32_t w, uint32_t h)
@@ -476,24 +429,8 @@ namespace Base
 				camera.Camera.SetViewportSize(w, h);
 			}
 		}
-		//Framebuffer Camera
-		m_FramebufferCamera.SetViewportSize(w, h);
-		float s = m_FramebufferCamera.GetOrthographicSize();
-		m_FrameBufferRender->SetQuadScale({ s * B_GetRatio() * 1.0f,1.0f * s, 0.5f });
 
 		m_ViewPortWidth = w;
 		m_ViewPortHeight = h;
-
-		SetFrameBuff();
-	}
-
-	void Scene::SetFramebufferScaler(float scaler)
-	{
-		m_FramebufferScaler = scaler;
-		SetFrameBuff();
-	}
-	uint32_t Scene::GetFramebufferImage() const
-	{
-		return m_FrameBufferRender->GetFramebufferImage();
 	}
 }

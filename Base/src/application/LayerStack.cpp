@@ -4,7 +4,6 @@ namespace Base
 {
 	LayerStack::LayerStack()
 	{
-		m_LayerInsert = m_Layers.begin();
 	}
 
 	LayerStack::~LayerStack()
@@ -15,7 +14,8 @@ namespace Base
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		m_LayerInsert = m_Layers.insert(m_LayerInsert, layer);
+		m_Layers.insert(m_Layers.begin() + m_LayerInsert, layer);
+		m_LayerInsert++;
 	}
 
 	void LayerStack::PushOverlay(Layer* overlayer)

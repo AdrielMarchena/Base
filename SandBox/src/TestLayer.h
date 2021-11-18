@@ -17,6 +17,7 @@ public:
 
 	void OnAttach() override;
 	void OnUpdate(UpdateArgs args) override;
+	void OnImGuiRender() override;
 	void OnDetach() override;
 	void OnEvent(Base::Event& e) override;
 

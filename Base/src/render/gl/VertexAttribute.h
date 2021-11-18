@@ -16,6 +16,7 @@ namespace render
 
 		void AddLayoutFloat(int32_t size, uint32_t stride,const void* pointer);
 		void AddLayoutUint(int32_t size, uint32_t stride,const void* pointer);
+		void AddLayoutInt(int32_t size, uint32_t stride,const void* pointer);
 	};
 }
 }

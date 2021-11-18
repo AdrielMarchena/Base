@@ -14,6 +14,8 @@ namespace Base
 		uint32_t m_Id;
 		uint32_t m_DepthBuffer;
 		std::vector<uint32_t> m_ColorTextures;
+		std::vector<uint8_t> m_EmptyData;
+		int m_EmptyValue = -1;
 		//uint32_t m_DepthTexture;
 		FramebufferSpecification m_Specs;
 
@@ -31,6 +33,9 @@ namespace Base
 		void Unbind();
 
 		glm::vec2 GetSize() const { return {(float)m_Specs.width,(float)m_Specs.height}; }
+
+		int ReadPixel(uint32_t index, int x, int y);
+		void ClearAttachment(uint32_t index, int value);
 
 		const FramebufferSpecification& GetSpec() const { return m_Specs; }
 		FramebufferSpecification& GetSpec() { return m_Specs; }

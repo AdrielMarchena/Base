@@ -16,6 +16,7 @@ namespace Base
 
 		virtual void OnAttach(){}
 		virtual void OnUpdate(UpdateArgs args){}
+		virtual void OnImGuiRender(){}
 		virtual void OnDetach(){}
 		virtual void OnEvent(Event& e){}
 

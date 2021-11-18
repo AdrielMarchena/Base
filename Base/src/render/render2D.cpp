@@ -7,12 +7,13 @@
 */
 
 #include "render2D.h"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glad/glad.h"
 #include "utils/gl_error_macro_db.h"
 #include "utils/Instrumentor.h"
-
 #include "render/gl/base_gl.h"
+#include "gl/GLContext.h"
+
+#include "glm/gtc/matrix_transform.hpp"
+#include "glad/glad.h"
 namespace Base
 {
 	namespace utils
@@ -46,7 +47,7 @@ namespace Base
 		inline static int32_t MaxTexturesSlots()
 		{
 			static int32_t MaxT = 8;
-			//GLCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS , &MaxT));
+			MaxT = GLContext::GetFragmetShaderMaxTextureUnits();
 			return MaxT;
 		}
 
@@ -113,12 +114,6 @@ namespace Base
 
 	static int32_t MaxTexture = utils::MaxTexturesSlots();
 
-	struct Stats
-	{
-		uint32_t DrawCount = 0;
-		uint32_t QuadCount = 0;
-	};
-
 	struct Vertex
 	{
 		glm::vec3 Position;
@@ -127,21 +122,36 @@ namespace Base
 		int32_t entityID;
 	};
 
-	struct LineVertex : public Vertex
+	struct LineVertex
 	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+
+		int32_t entityID;
 	};
 
-	struct QuadVertex : public Vertex
+	struct QuadVertex
 	{
+		glm::vec3 Position;
+		glm::vec4 Color;
 		glm::vec2 TexCoords;
 		float_t TexIndex;
+
+		int32_t entityID;
 	};
 
-	struct CircleVertex : public QuadVertex
+	struct CircleVertex
 	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoords;
+		float_t TexIndex;
+
 		float_t Radius;
 		float_t Thickness;
 		float_t Fade;
+
+		int32_t entityID;
 	};
 
 	struct RenderData
@@ -156,7 +166,7 @@ namespace Base
 		uint32_t QuadIndexCount = 0;
 		uint8_t QuadTextureSlotIndex = 1;
 		std::vector<uint32_t> QuadTextureSlots;
-		Stats QuadRenderStats;
+		RenderStats QuadRenderStats;
 
 		//Circles
 		Ref<VertexArray> CircleVA;
@@ -168,13 +178,13 @@ namespace Base
 		uint32_t CircleIndexCount = 0;
 		uint8_t CircleTextureSlotIndex = 1;
 		std::vector<uint32_t> CircleTextureSlots;
-		Stats CircleRenderStats;
+		RenderStats CircleRenderStats;
 
 		//Lines
 		Ref<VertexArray> LineVA;
 		Ref<VertexBuffer> LineVB;
 		uint32_t LineCount = 0;
-		Stats LineRenderStats;
+		RenderStats LineRenderStats;
 
 		LineVertex* LineBuffer = nullptr;
 		LineVertex* LineBufferPtr = nullptr;
@@ -205,8 +215,9 @@ namespace Base
 		m_Shaders->Load("shaders/Circle.glsl");
 		m_Shaders->Load("shaders/Line.glsl");
 		m_Shaders->Load("shaders/Text.glsl");
-
+		
 		//Do Render stuff
+		MaxTexture = utils::MaxTexturesSlots();
 
 		//Quad preparation
 		m_Shaders->Get("Quad")->Bind();
@@ -226,6 +237,8 @@ namespace Base
 		quad_layout.AddLayoutFloat(2, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexCoords));
 
 		quad_layout.AddLayoutFloat(1, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, TexIndex));
+
+		quad_layout.AddLayoutInt(1, sizeof(QuadVertex), (const void*)offsetof(QuadVertex, entityID));
 
 		uint32_t* indices = new uint32_t[MaxQuadIndexCount]{};
 		uint32_t offset = 0;
@@ -271,6 +284,8 @@ namespace Base
 
 		circle_layout.AddLayoutFloat(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Fade));
 
+		circle_layout.AddLayoutInt(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, entityID));
+
 		m_Data.CircleIB = m_Data.QuadIB;
 		m_Data.CircleIB->Bind();
 		
@@ -288,6 +303,8 @@ namespace Base
 		line_layout.AddLayoutFloat(3, sizeof(LineVertex), (const void*)offsetof(LineVertex, Position));
 
 		line_layout.AddLayoutFloat(4, sizeof(LineVertex), (const void*)offsetof(LineVertex, Color));
+
+		line_layout.AddLayoutInt(1, sizeof(LineVertex), (const void*)offsetof(LineVertex, entityID));
 
 		m_Data.LineVA->Unbind();
 
@@ -309,13 +326,16 @@ namespace Base
 		m_Data.QuadBufferPtr = m_Data.QuadBuffer;
 		m_Data.QuadIndexCount = 0;
 		m_Data.QuadTextureSlotIndex = 1;
+		m_Data.QuadRenderStats.DrawCount = 0;
 
 		m_Data.CircleBufferPtr = m_Data.CircleBuffer;
 		m_Data.CircleIndexCount = 0;
 		m_Data.CircleTextureSlotIndex = 1;
+		m_Data.CircleRenderStats.DrawCount = 0;
 
 		m_Data.LineBufferPtr = m_Data.LineBuffer;
 		m_Data.LineCount = 0;
+		m_Data.LineRenderStats.DrawCount = 0;
 	}
 
 	void Render2D::BeginScene(const Camera& camera, const glm::mat4& transform)
@@ -465,6 +485,21 @@ namespace Base
 		return m_Shaders->Get("Line");
 	}
 
+	RenderStats Render2D::GetQuadStats()
+	{
+		return m_Data.QuadRenderStats;
+	}
+
+	RenderStats Render2D::GetCircleStats()
+	{
+		return m_Data.CircleRenderStats;
+	}
+
+	RenderStats Render2D::GetLineStats()
+	{
+		return m_Data.LineRenderStats;
+	}
+
 	const Ref<Shader> Render2D::GetCircleShader()
 	{
 		return m_Shaders->Get("Circle");
@@ -510,6 +545,7 @@ namespace Base
 		}
 		m_Data.QuadIndexCount += 6;
 		m_Data.QuadRenderStats.DrawCount++;
+		m_Data.QuadRenderStats.TotalCount++;
 	}
 
 	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4 color[4], int32_t entityID)
@@ -532,6 +568,7 @@ namespace Base
 		}
 		m_Data.QuadIndexCount += 6;
 		m_Data.QuadRenderStats.DrawCount++;
+		m_Data.QuadRenderStats.TotalCount++;
 	}
 
 	void Render2D::DrawQuad(const glm::mat4& transform, Ref<Texture> texture, int32_t entityID, const glm::vec4& color)
@@ -574,6 +611,7 @@ namespace Base
 
 		m_Data.QuadIndexCount += 6;
 		m_Data.QuadRenderStats.DrawCount++;
+		m_Data.QuadRenderStats.TotalCount++;
 	}
 
 	void Render2D::DrawQuad(const glm::mat4& transform, const SubTexture& sub_texture, int32_t entityID, const glm::vec4& color)
@@ -618,6 +656,7 @@ namespace Base
 
 		m_Data.QuadIndexCount += 6;
 		m_Data.QuadRenderStats.DrawCount++;
+		m_Data.QuadRenderStats.TotalCount++;
 	}
 
 	//LINE RENDERING --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -655,6 +694,7 @@ namespace Base
 
 		m_Data.LineCount += 2;
 		m_Data.LineRenderStats.DrawCount++;
+		m_Data.LineRenderStats.TotalCount++;
 	}
 
 	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& dest, const glm::vec4& color, int32_t entityID, float_t precision)
@@ -728,6 +768,7 @@ namespace Base
 
 		m_Data.CircleIndexCount += 6;
 		m_Data.CircleRenderStats.DrawCount++;
+		m_Data.CircleRenderStats.TotalCount++;
 	}
 
 	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, Ref<Texture> texture, int32_t entityID, const glm::vec4& color)
@@ -773,6 +814,7 @@ namespace Base
 
 		m_Data.CircleIndexCount += 6;
 		m_Data.CircleRenderStats.DrawCount++;
+		m_Data.CircleRenderStats.TotalCount++;
 	}
 
 	void Render2D::DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const SubTexture& sub_texture, int32_t entityID, const glm::vec4& color)
@@ -820,6 +862,7 @@ namespace Base
 		}
 		m_Data.CircleIndexCount += 6;
 		m_Data.CircleRenderStats.DrawCount++;
+		m_Data.CircleRenderStats.TotalCount++;
 	}
 
 	void Render2D::SetLineWidth(float_t thickness)

@@ -1,7 +1,7 @@
 #include "TestLayer.h"
 
 #include "scene/Components.h"
-
+#include "imgui.h"
 TestLayer::TestLayer(const std::string& name)
 	:Base::Layer(name)
 {
@@ -88,6 +88,12 @@ void TestLayer::OnUpdate(UpdateArgs args)
 		else
 			m_Scene->OnUpdateEditor(args, m_EditorCamera);
 	}
+}
+
+void TestLayer::OnImGuiRender()
+{
+	static bool demo = true;
+	ImGui::ShowDemoWindow(&demo);
 }
 
 void TestLayer::OnDetach()

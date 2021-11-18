@@ -78,7 +78,7 @@ namespace Base
 	}
 
 	Framebuffer::Framebuffer(const FramebufferSpecification& specs)
-		:m_Id(NULL),m_Specs(specs)
+		:m_Id(NULL),m_DepthBuffer(NULL),m_Specs(specs)
 	{
 		
 		for (auto format : m_Specs.Attachments.Attachment)
@@ -136,8 +136,8 @@ namespace Base
 		bool depth_exist = m_DepthAttachmentSpec.TextureFormat != FrambufferTextureFormat::NONE;
 
 		utils::ColectionTextureSpecification texture_specifications;
-		texture_specifications.MagFilter = GL_TextureFilter::NEAREST;
-		texture_specifications.MinFilter = GL_TextureFilter::NEAREST;
+		texture_specifications.MagFilter = GL_TextureFilter::LINEAR;
+		texture_specifications.MinFilter = GL_TextureFilter::LINEAR;
 		texture_specifications.WrapS = GL_TextureWrap::CLAMP_EDGE;
 		texture_specifications.WrapR = GL_TextureWrap::CLAMP_EDGE;
 		texture_specifications.WrapT = GL_TextureWrap::CLAMP_EDGE;
@@ -159,6 +159,9 @@ namespace Base
 				case FrambufferTextureFormat::RGB:
 					utils::AttachColorTexture(texture_specifications, m_ColorTextures[i], m_Specs.samples, GL_RGB, m_Specs.width, m_Specs.height, i, GL_RGB);
 					break;
+				case FrambufferTextureFormat::RED_INTEGER:
+					utils::AttachColorTexture(texture_specifications, m_ColorTextures[i], m_Specs.samples, GL_R32I, m_Specs.width, m_Specs.height, i, GL_RED_INTEGER);
+					break;
 				}
 			}
 		}
@@ -175,7 +178,7 @@ namespace Base
 			}
 		}
 
-		if (m_ColorTextures.size())
+		if (m_ColorTextures.size() > 1)
 		{
 			BASE_ASSERT(m_ColorTextures.size() <= 4);
 			GLenum buffers[4] = { GL_COLOR_ATTACHMENT0,GL_COLOR_ATTACHMENT1 ,GL_COLOR_ATTACHMENT2 ,GL_COLOR_ATTACHMENT3 };
@@ -191,6 +194,7 @@ namespace Base
 		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, 0));
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 
+		m_EmptyData = std::vector<uint8_t>(m_Specs.width * m_Specs.height * 4, m_EmptyValue);
 	}
 
 	void Framebuffer::Bind()
@@ -205,6 +209,25 @@ namespace Base
 	{
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 		//GLCall(glBindRenderbuffer(GL_RENDERBUFFER, 0));
+	}
+
+	int Framebuffer::ReadPixel(uint32_t index, int x, int y)
+	{
+		BASE_ASSERT(index < m_ColorTextures.size());
+		GLCall(glEnable(GL_MULTISAMPLE));
+		int pixel;
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixel);
+		return pixel;
+	}
+
+	void Framebuffer::ClearAttachment(uint32_t index, int value)
+	{
+		BASE_ASSERT(index < m_ColorTextures.size());
+
+		auto& spec = m_ColorAttachmentSpecs[index];
+		utils::BindTexture(false, m_ColorTextures[index]);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Specs.width, m_Specs.height, GL_RED_INTEGER, GL_INT, &m_EmptyData[0]);
 	}
 
 	Ref<Framebuffer> Framebuffer::CreateFramebuffer(const FramebufferSpecification& specs)

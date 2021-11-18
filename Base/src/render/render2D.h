@@ -16,6 +16,12 @@
 #include <math.h>
 namespace Base
 {
+	struct RenderStats
+	{
+		uint64_t TotalCount = 0;
+		uint32_t DrawCount = 0;
+	};
+
 	class Render2D
 	{
 	private:
@@ -41,6 +47,10 @@ namespace Base
 		static const Ref<render::Shader> GetLineShader();
 		//static const Ref<Shader> GetTextShader();
 		//static const Ref<Shader> GetTriShader();
+
+		static RenderStats GetQuadStats();
+		static RenderStats GetCircleStats();
+		static RenderStats GetLineStats();
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int32_t entityID,
 			float_t rotation = NULL, const glm::vec3& axis = {});

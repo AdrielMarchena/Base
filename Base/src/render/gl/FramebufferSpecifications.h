@@ -10,6 +10,7 @@ namespace Base
 		NONE = 0,
 		RGBA8,
 		RGB,
+		RED_INTEGER,
 		DEPTH24STENCIL8,
 		DEPTH = DEPTH24STENCIL8
 	};

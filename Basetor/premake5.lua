@@ -1,4 +1,4 @@
-project "Sandbox"
+project "Basetor"
 	kind "ConsoleApp"
 	language "C++"
 

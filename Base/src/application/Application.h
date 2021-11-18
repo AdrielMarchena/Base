@@ -20,7 +20,7 @@ namespace Base
 		ConsoleArgsParser m_ConsoleArgs;
 		Scope<Window> m_Window;
 		LayerStack m_LayerStack;
-		ImGuiLayer m_ImGuiLayer;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = false;
 		uint64_t m_FrameCount;
 		LuaContext m_LuaContext;
@@ -39,7 +39,7 @@ namespace Base
 
 		Window& GetWindow() { return *m_Window; }
 		static Application& Get() { return *m_AppInstance; }
-		ImGuiLayer& GetImGuiLayer() { return m_ImGuiLayer; }
+		ImGuiLayer& GetImGuiLayer() { return *m_ImGuiLayer; }
 	private:
 		static Application* m_AppInstance;
 		bool OnWindowClose(WindowCloseEvent& e);

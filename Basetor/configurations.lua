@@ -1,4 +1,4 @@
-title = "Sandbox"
+title = "Basetor"
 width = 1366
 height = 768
 fullscreen = false

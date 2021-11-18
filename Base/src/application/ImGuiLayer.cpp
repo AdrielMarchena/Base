@@ -13,40 +13,6 @@ namespace Base
 {
 	static bool s_ImGuiInitialized = false;
 
-	static void ProfileMenuItem()
-	{
-		static int count = 0;
-		static int frames_count = 0;
-		static bool profiling = false;
-
-		if (ImGui::BeginMenu("Profile"))
-		{
-			ImGui::InputInt("Frames:", &frames_count);
-			if (ImGui::Button("Profile") && !profiling)
-			{
-				count = frames_count;
-				profiling = true;
-				const std::string filepath = "Runtime_count_" + std::to_string(count) + ".json";
-				BASE_PROFILE_BEGIN_SESSION("Runtime_count", filepath);
-			}
-			if (profiling)
-				ImGui::TextColored(ImVec4(0.1f, 1.0f, 0.1f, 1.0f), "Profiling");
-			ImGui::EndMenu();
-		}
-		
-
-		if (profiling)
-		{
-			if (--count <= 0)
-			{
-				BASE_PROFILE_END_SESSION();
-				profiling = false;
-				count = 0;
-			}
-		}
-
-	}
-
 	ImGuiLayer::ImGuiLayer(const std::string& name)
 		:Layer(name)
 	{
@@ -63,7 +29,8 @@ namespace Base
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
 			ImGuiIO& io = ImGui::GetIO(); (void)io;
-			//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+			io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 			// Setup Platform/Renderer bindings
 			ImGui_ImplGlfw_InitForOpenGL(window, true);
 			ImGui_ImplOpenGL3_Init("#version 330");
@@ -73,31 +40,10 @@ namespace Base
 		}
 	}
 
-	void ImGuiLayer::OnUpdate(UpdateArgs args)
+	void ImGuiLayer::OnImGuiRender()
 	{
 		BASE_PROFILE_FUNCTION();
 
-		if (ImGui::BeginMainMenuBar())
-		{
-			if (ImGui::BeginMenu("General"))
-			{
-				static bool quit_selected = false;
-				ImGui::MenuItem("Quit", "", &quit_selected); if (quit_selected) Application::Get().Close();
-
-				std::string lab = "VSync = " + std::string(Application::Get().GetWindow().GetVSync() ? "Enabled" : "Disabled");
-				if (ImGui::MenuItem(lab.c_str(), ""))
-				{
-					Application::Get().GetWindow().SetVSync(!Application::Get().GetWindow().GetVSync());
-				}
-
-				ImGui::EndMenu();
-			}
-
-#ifdef BASE_PROFILING
-			ProfileMenuItem();
-#endif
-			ImGui::EndMainMenuBar();
-		}
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -109,6 +55,12 @@ namespace Base
 
 	void ImGuiLayer::OnEvent(Event& e)
 	{
+		if (m_Blockevents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			e.Handled |= e.IsInCategory(EVENT_CATEGORY_MOUSE) & io.WantCaptureMouse;
+			e.Handled |= e.IsInCategory(EVENT_CATEGORY_KEYBOARD) & io.WantCaptureKeyboard;
+		}
 	}
 
 	void ImGuiLayer::ImGuiInitFrame()
@@ -121,7 +73,19 @@ namespace Base
 
 	void ImGuiLayer::ImGuiEndFrame()
 	{
+		ImGuiIO& io = ImGui::GetIO();
+		Application& app = Application::Get();
+		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_context);
+		}
 	}
 }

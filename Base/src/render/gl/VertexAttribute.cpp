@@ -26,5 +26,14 @@ namespace Base
 			current_index++;
 			Vb->Unbind();
 		}
+
+		void VertexAttribute::AddLayoutInt(int32_t size, uint32_t stride, const void* pointer)
+		{
+			Vb->Bind();
+			GLCall(glEnableVertexAttribArray(current_index));
+			GLCall(glVertexAttribIPointer(current_index, size, GL_INT, stride, pointer));
+			current_index++;
+			Vb->Unbind();
+		}
 	}
 }

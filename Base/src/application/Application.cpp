@@ -21,8 +21,8 @@ namespace Base
 		if (m_LuaContext.ExecuteFromFile("configurations.lua"))
 		{
 			specs.Title = m_LuaContext.GetGlobal<std::string>("title");
-			specs.Width = m_LuaContext.GetGlobal<int>("width");
-			specs.Height = m_LuaContext.GetGlobal<int>("height");
+			specs.Width = (unsigned int)m_LuaContext.GetGlobal<int>("width");
+			specs.Height = (unsigned int)m_LuaContext.GetGlobal<int>("height");
 			specs.Fullscreen = m_LuaContext.GetGlobal<bool>("fullscreen");
 			specs.Decorated = !m_LuaContext.GetGlobal<bool>("title_off");
 			specs.VSync_On = !m_LuaContext.GetGlobal<bool>("vsync_off");
@@ -30,8 +30,6 @@ namespace Base
 		}
 
 		specs.Title = specs.Title != "" ? specs.Title : "Base";
-		specs.Width = specs.Width > -1 ? specs.Width : 1366;
-		specs.Height = specs.Height > -1 ? specs.Height : 768;
 
 		WindowProps().width = specs.Width;
 		WindowProps().height = specs.Height;
@@ -46,7 +44,8 @@ namespace Base
 		glm::vec3 darker = glm::vec3(Color::Base_Analogous_2.r, Color::Base_Analogous_2.g, Color::Base_Analogous_2.b) * 0.128f;
 		Render2D::SetClearColor(glm::vec4(darker,1.0f));
 
-		m_ImGuiLayer.OnAttach();
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
 	}
 
 	Application::~Application()
@@ -78,11 +77,12 @@ namespace Base
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(deltaTime);
 			
-			m_ImGuiLayer.ImGuiInitFrame();
+			m_ImGuiLayer->ImGuiInitFrame();
 
-			m_ImGuiLayer.OnUpdate(deltaTime);
+			for (Layer* layer : m_LayerStack)
+				layer->OnImGuiRender();
 
-			m_ImGuiLayer.ImGuiEndFrame();
+			m_ImGuiLayer->ImGuiEndFrame();
 			m_FrameCount++;
 		}
 		BASE_TRACE("Game loop Ended! {0} Frames", m_FrameCount);
@@ -94,7 +94,7 @@ namespace Base
 		
 		disp.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 
-		m_ImGuiLayer.OnEvent(e);
+		//m_ImGuiLayer->OnEvent(e);
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
 		{
 			if (e.Handled)

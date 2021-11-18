@@ -79,11 +79,13 @@ namespace Base
 	void FramebufferRender::BindFrameBuffer()
 	{
 		m_Framebuffer->Bind();
+		GLCall(glViewport(0, 0, m_Specs.width * m_Specs.scale_factor, m_Specs.height * m_Specs.scale_factor));
 	}
 
 	void FramebufferRender::UnbindFrameBuffer()
 	{
 		m_Framebuffer->Unbind();
+		GLCall(glViewport(0, 0, m_Specs.width, m_Specs.height));
 	}
 
 	FramebufferRender::~FramebufferRender()
@@ -287,7 +289,7 @@ namespace Base
 	{
 		//Create FrameBuffer
 		FramebufferSpecification frame_spec;
-		frame_spec.Attachments = { FrambufferTextureFormat::RGB, FrambufferTextureFormat::DEPTH };
+		frame_spec.Attachments = { FrambufferTextureFormat::RGBA8,FrambufferTextureFormat::RED_INTEGER,FrambufferTextureFormat::DEPTH };
 		frame_spec.width = m_Specs.width * m_Specs.scale_factor;
 		frame_spec.height = m_Specs.height * m_Specs.scale_factor;
 		m_Framebuffer = MakeScope<Framebuffer>(frame_spec);
@@ -313,7 +315,8 @@ namespace Base
 	{
 		float u_Width = m_Framebuffer->GetSpec().width;
 		float u_Height = m_Framebuffer->GetSpec().height;
-
+		
+		m_CurrentShader->Bind();
 		m_CurrentShader->SetUniform1i("u_Framebuffer", 0);
 		m_CurrentShader->SetUniform1f("u_Width", u_Width);
 		m_CurrentShader->SetUniform1f("u_Height", u_Height);
