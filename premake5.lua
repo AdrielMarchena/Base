@@ -9,6 +9,12 @@ workspace "Base"
 		"x86"
 	}
 
+	system
+	(
+		"Windows",
+		"Unix"
+	)
+
 	configurations
 	{
 		"Debug",
@@ -27,7 +33,11 @@ workspace "Base"
 	filter "platforms:x86"
 		architecture "x86"
 
-	
+	filter "system:Windows"
+		system "windows"
+		
+	filter "system:Unix"
+		system "linux"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 

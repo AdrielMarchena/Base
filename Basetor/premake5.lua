@@ -33,7 +33,7 @@ project "Basetor"
 		"ImGui"
 	}
 
-	filter "system:windows"
+	filter "system:Windows"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
@@ -42,7 +42,18 @@ project "Basetor"
 		{
 			"BASE_WINDOWS_BUILD"
 		}
-		
+	
+	filter "system:Unix"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines
+		{
+			"BASE_UNIX_BUILD",
+			"BASE_STATIC_BUILD"
+		}
+	
 	filter "configurations:Debug"
 		defines "BASE_DEBUG"
 		symbols "On"

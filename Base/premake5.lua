@@ -58,7 +58,7 @@ project "Base"
 		("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
 	}
 
-	filter "system:windows"
+	filter "system:Windows"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
@@ -66,6 +66,17 @@ project "Base"
 		defines
 		{
 			"BASE_WINDOWS_BUILD",
+			"BASE_STATIC_BUILD"
+		}
+
+	filter "system:Unix"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines
+		{
+			"BASE_UNIX_BUILD",
 			"BASE_STATIC_BUILD"
 		}
 
