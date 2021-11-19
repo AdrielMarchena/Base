@@ -21,8 +21,8 @@ namespace Base
 		if (m_LuaContext.ExecuteFromFile("configurations.lua"))
 		{
 			specs.Title = m_LuaContext.GetGlobal<std::string>("title");
-			specs.Width = (unsigned int)m_LuaContext.GetGlobal<int>("width");
-			specs.Height = (unsigned int)m_LuaContext.GetGlobal<int>("height");
+			specs.Width = m_LuaContext.GetGlobal<int>("width");
+			specs.Height = m_LuaContext.GetGlobal<int>("height");
 			specs.Fullscreen = m_LuaContext.GetGlobal<bool>("fullscreen");
 			specs.Decorated = !m_LuaContext.GetGlobal<bool>("title_off");
 			specs.VSync_On = !m_LuaContext.GetGlobal<bool>("vsync_off");

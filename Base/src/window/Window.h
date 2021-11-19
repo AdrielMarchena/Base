@@ -11,8 +11,8 @@ namespace Base
 	struct WindowSpecifications
 	{
 		std::string Title = "Base";
-		uint32_t Width = 800;
-		uint32_t Height = 600;
+		int32_t Width = 800;
+		int32_t Height = 600;
 		bool VSync_On = true;
 		bool Fullscreen = false;
 		bool Decorated = true;
@@ -29,12 +29,20 @@ public:
 	virtual ~Window() {}
 	virtual void OnUpdate() = 0;
 
-	virtual uint32_t GetWidth() const = 0;
-	virtual uint32_t GetHeight() const = 0;
+	virtual int32_t GetWidth() const = 0;
+	virtual int32_t GetHeight() const = 0;
 
 	virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 	virtual void SetVSync(bool enabled) = 0;
 	virtual bool GetVSync() const = 0;
+
+	virtual void SetFullscreen(bool enabled) = 0;
+	virtual void SetTitleBar(bool enabled) = 0;
+	virtual void SetResizeble(bool enabled) = 0;
+
+	virtual bool IsFullscreen() const = 0;
+	virtual bool IsTitleBar() const = 0;
+	virtual bool IsResizeble() const = 0;
 
 	virtual void* GetNative() const = 0;
 

@@ -24,6 +24,7 @@ namespace Base
 		bool m_ViewportFocused = false;
 		bool m_ViewportHovered= false;
 		bool m_MousePickingEnabled = true;
+		bool m_SyncCameraZoom = true;
 		int m_GizmoType = -1;
 
 

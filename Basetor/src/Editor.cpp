@@ -48,11 +48,12 @@ namespace Base
 		:Layer(name)
 	{
 		BASE_PROFILE_FUNCTION();
+		Random::Init();
 	}
 
 	static inline int IntRandomThing()
 	{
-		return ((int)(P_random() * 1.19165f) % 10);
+		return std::clamp(P_random() * ((Random::Float() - 0.5f)), 0.0f, 1.0f);
 	}
 
 	static Entity CreateQuad(Ref<Scene> scene)
@@ -322,6 +323,28 @@ namespace Base
 				if (ImGui::MenuItem("Exit")) Application::Get().Close();
 				if (ImGui::MenuItem("Serialize")) m_Serializer->Serialize("assets/scenes/scene2.base");
 
+				if (ImGui::BeginMenu("Window"))
+				{
+					auto& window = Application::Get().GetWindow();
+					static bool enable_fullscreen = window.IsFullscreen();
+					if (ImGui::Checkbox("Fullscreen", &enable_fullscreen))
+						window.SetFullscreen(enable_fullscreen);
+
+					bool enable_vsync = window.GetVSync();
+					if (ImGui::Checkbox("VSync", &enable_vsync))
+						window.SetVSync(enable_vsync);
+
+					bool enable_titlebar = window.IsTitleBar();
+					if (ImGui::Checkbox("Title Bar", &enable_titlebar))
+						window.SetTitleBar(enable_titlebar);
+
+					bool enable_resize = window.IsResizeble();
+					if (ImGui::Checkbox("Resizeble", &enable_resize))
+						window.SetResizeble(enable_resize);
+
+					ImGui::EndMenu();
+				}
+
 				ImGui::EndMenu();
 			}
 
@@ -356,6 +379,19 @@ namespace Base
 					m_MousePickingEnabled = false;
 					if(p_on)
 						m_Scene->RuntimeInit();
+					if (m_SyncCameraZoom)
+					{
+						float dist = m_EditorCamera.GetDistance();
+						auto& main_runtime_cam = m_Scene->GetPrimaryCamera();
+						if (main_runtime_cam)
+						{
+							auto& Camera = main_runtime_cam.GetComponent<CameraComponent>();
+							float zoom_cam = Camera.Camera.GetOrthographicSize();
+							zoom_cam += dist;
+							zoom_cam = std::clamp(zoom_cam, 1.0f, 45.0f);
+							Camera.Camera.SetOrthographicSize(dist);
+						}
+					}
 				}
 
 				if (ImGui::Button("End Runtime"))
@@ -451,10 +487,10 @@ namespace Base
 			auto& ent_rbody = m_SelectedEntity.GetComponent<Base::RigidBody2DComponent>();
 			auto& ent_bcol = m_SelectedEntity.GetComponent<Base::BoxColider2DComponent>();
 
-			ImGui::SliderFloat("Friction", &ent_bcol.Friction, 0.0f, 10.0f);
-			ImGui::SliderFloat("Density", &ent_bcol.Density, 0.0f, 10.0f);
-			ImGui::SliderFloat("Restitution", &ent_bcol.Restitution, 0.0f, 10.0f);
-			ImGui::SliderFloat("RestitutionThreshold", &ent_bcol.RestitutionThreshold, 0.0f, 10.0f);
+			ImGui::SliderFloat("Friction", &ent_bcol.Friction, 0.0f, 1.0f);
+			ImGui::SliderFloat("Density", &ent_bcol.Density, 0.0f, 1.0f);
+			ImGui::SliderFloat("Restitution", &ent_bcol.Restitution, 0.0f, 1.0f);
+			ImGui::SliderFloat("RestitutionThreshold", &ent_bcol.RestitutionThreshold, 0.0f, 1.0f);
 		}
 
 		ImGui::End();

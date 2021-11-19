@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "event/Events.h"
 namespace Base
 {
 	class ScriptableEntity
@@ -17,7 +18,7 @@ namespace Base
 		virtual void OnAwake(){}
 		virtual void OnUpdate(const UpdateArgs& args){}
 		virtual void OnDestroy(){}
-		
+		virtual void OnEvent(Event& e){}
 	private:
 		Entity m_Entity;
 		friend class Scene;

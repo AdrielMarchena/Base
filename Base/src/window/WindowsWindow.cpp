@@ -35,15 +35,79 @@ namespace Base
 		m_OpenGLContext->SwapBuffer();
 	}
 
-	void WindowsWindow::SetVSync(bool enabled)
-	{
-		m_Data.VSync_On = enabled;
-		m_Data.VSync_On ? glfwSwapInterval(1) : glfwSwapInterval(0);
-	}
-
 	bool WindowsWindow::GetVSync() const
 	{
 		return m_Data.VSync_On;
+	}
+
+	void WindowsWindow::SetVSync(bool enabled)
+	{
+		m_Data.VSync_On = enabled;
+		if (enabled)
+			glfwSwapInterval(1);
+		else
+			glfwSwapInterval(0);
+	}
+
+	void WindowsWindow::SetFullscreen(bool enabled)
+	{
+		if (enabled && !glfwIsFullScreen())
+		{
+			glfwGetWindowPos(m_Window, &m_Data.XPos, &m_Data.YPos);
+			glfwGetWindowSize(m_Window, &m_Data.Back_Width, &m_Data.Back_Height);
+
+			const GLFWvidmode* mode = glfwGetVideoMode(m_Monitors[m_CurrentMonitorIndice]);
+
+			glfwSetWindowAttrib(m_Window, GLFW_DECORATED, GL_FALSE);
+			glfwSetWindowAttrib(m_Window, GLFW_RESIZABLE, GL_FALSE);
+			glfwSetWindowMonitor(m_Window, m_Monitors[m_CurrentMonitorIndice], 0, 0, mode->width, mode->height, 0);
+		}
+		else
+		{
+			glfwSetWindowMonitor(m_Window, nullptr, m_Data.XPos, m_Data.YPos, m_Data.Back_Width, m_Data.Back_Height, 0);
+			SetTitleBar(IsTitleBar());
+			SetResizeble(IsResizeble());
+		}
+		
+		m_Data.Fullscreen = enabled;
+	}
+
+	bool WindowsWindow::glfwIsFullScreen() const
+	{
+		return glfwGetWindowMonitor(m_Window) != nullptr;
+	}
+
+	bool WindowsWindow::IsFullscreen() const
+	{
+		return m_Data.Fullscreen;
+	}
+
+	bool WindowsWindow::IsTitleBar() const
+	{
+		return m_Data.TitleBar;
+	}
+
+	bool WindowsWindow::IsResizeble() const
+	{
+		return m_Data.Resizeble;
+	}
+
+	void WindowsWindow::SetTitleBar(bool enabled)
+	{
+		m_Data.TitleBar = enabled;
+		if (enabled)
+			glfwSetWindowAttrib(m_Window, GLFW_DECORATED, GL_TRUE);
+		else
+			glfwSetWindowAttrib(m_Window, GLFW_DECORATED, GL_FALSE);
+	}
+
+	void WindowsWindow::SetResizeble(bool enabled)
+	{
+		m_Data.Resizeble = enabled;
+		if (enabled)
+			glfwSetWindowAttrib(m_Window, GLFW_RESIZABLE, GL_TRUE);
+		else
+			glfwSetWindowAttrib(m_Window, GLFW_RESIZABLE, GL_FALSE);
 	}
 
 	void WindowsWindow::Init(const WindowSpecifications& specs)
@@ -53,6 +117,9 @@ namespace Base
 		m_Data.Title = specs.Title;
 		m_Data.Width = specs.Width;
 		m_Data.Height = specs.Height;
+		m_Data.Fullscreen = specs.Fullscreen;
+		m_Data.Resizeble = specs.Resizeble;
+		m_Data.TitleBar = specs.Decorated;
 
 		if (!s_GLFWInitialized)
 		{
@@ -75,23 +142,25 @@ namespace Base
 			s_GLFWInitialized = true;
 		}
 
-		int monitors_count;
-		GLFWmonitor** monitors = glfwGetMonitors(&monitors_count);
+		m_Monitors = glfwGetMonitors(&m_MonitorCount);
+		m_CurrentMonitorIndice = std::clamp(m_CurrentMonitorIndice, 0, m_MonitorCount);
 		if (m_Specs.Fullscreen)
 		{
 			glfwWindowHint(GLFW_DECORATED, GL_FALSE);
-			m_Window = glfwCreateWindow(m_Specs.Width, m_Specs.Height, m_Specs.Title.c_str(), monitors[0], nullptr);
-			glfwGetMonitorPos(monitors[0],(int*) &m_Data.Width, (int*)&m_Data.Height);
+			m_Window = glfwCreateWindow(m_Specs.Width, m_Specs.Height, m_Specs.Title.c_str(), m_Monitors[m_CurrentMonitorIndice], nullptr);
 		}
 		else
 		{
-			const GLFWvidmode* vid_mode = glfwGetVideoMode(monitors[0]);
+			const GLFWvidmode* vid_mode = glfwGetVideoMode(m_Monitors[m_CurrentMonitorIndice]);
 			m_Window = glfwCreateWindow(m_Specs.Width, m_Specs.Height, m_Specs.Title.c_str(), nullptr, nullptr);
-			int position_x = (vid_mode->width * 0.5f) - (m_Specs.Width * 0.5f);
-			int position_y = (vid_mode->height * 0.5f) - (m_Specs.Height * 0.5f);
-			glfwSetWindowPos(m_Window, position_x, position_y);
+			m_Data.XPos = (vid_mode->width * 0.5f) - (m_Specs.Width * 0.5f);
+			m_Data.YPos = (vid_mode->height * 0.5f) - (m_Specs.Height * 0.5f);
+			glfwSetWindowPos(m_Window, m_Data.XPos, m_Data.YPos);
 		}
-		BASE_INFO("Window Created, size is {0}x{1}", m_Data.Width, m_Data.Height);
+		if(!m_Specs.Fullscreen)
+			BASE_TRACE("Window Created, size is {0}x{1}", m_Data.Width, m_Data.Height);
+		else
+			BASE_TRACE("Window Created, in fullscreen", m_Data.Width, m_Data.Height);
 
 		m_OpenGLContext = MakeScope<GLContext>(m_Window);
 		m_OpenGLContext->Init();

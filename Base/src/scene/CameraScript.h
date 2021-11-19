@@ -4,6 +4,7 @@
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 #include "ScriptableEntity.h"
+#include "event/MouseEvent.h"
 #include <glm/gtc/matrix_transform.hpp>
 namespace Base
 {
@@ -49,12 +50,22 @@ namespace Base
 			using kb = Base::input::Keyboard;
 			using ms = Base::input::Mouse;
 
-			float offvalue = ms::goffValue().y;
-			if (offvalue && zoom_enable)
-				ProcessMouseScroll(offvalue);
-
 			if (movement_enable)
 				ProcessMovement(args.dt);
+		}
+
+		virtual void OnEvent(Event& e)
+		{
+			EventDispatcher dispatch(e);
+
+			dispatch.Dispatch<MouseScrollEvent>(BIND_EVENT_FN(OrthoCameraScript::OnMouseScroll));
+		}
+
+		bool OnMouseScroll(MouseScrollEvent& e)
+		{
+			if(zoom_enable)
+				ProcessMouseScroll(e.GetYOffset());
+			return true;
 		}
 	};
 

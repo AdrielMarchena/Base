@@ -8,6 +8,7 @@ namespace Base
 	{
 	private:
 		bool m_Blockevents = false;
+		int m_FontSize = 18;
 	public:
 		ImGuiLayer(const std::string& name = "ImGuiLayer");
 

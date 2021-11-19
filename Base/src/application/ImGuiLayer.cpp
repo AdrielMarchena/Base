@@ -36,6 +36,9 @@ namespace Base
 			ImGui_ImplOpenGL3_Init("#version 330");
 			// Setup Dear ImGui style
 			ImGui::StyleColorsDark();
+
+			io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Consola.ttf", m_FontSize);
+
 			s_ImGuiInitialized = true;
 		}
 	}
