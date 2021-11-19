@@ -97,32 +97,32 @@ namespace Base
 		m_Scene->OnViewPortResize(w, h);
 		m_EditorCamera.SetViewportSize(w, h);
 
-		if (m_Serializer->Deserialize("assets/scenes/scene4.base"))
-		{
-			auto scene_camera = m_Scene->GetPrimaryCamera();
-			if (scene_camera)
-				m_Camera = scene_camera;
-			else
-				m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
-			
-			auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
+		//if (m_Serializer->Deserialize("assets/scenes/scene4.base"))
+		//{
+		//	auto scene_camera = m_Scene->GetPrimaryCamera();
+		//	if (scene_camera)
+		//		m_Camera = scene_camera;
+		//	else
+		//		m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
+		//	
+		//	auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
 
-			if (!m_Camera.HasComponent< CameraComponent>())
-			{
-				m_Camera.AddComponent<Base::CameraComponent>();
-			}
+		//	if (!m_Camera.HasComponent< CameraComponent>())
+		//	{
+		//		m_Camera.AddComponent<Base::CameraComponent>();
+		//	}
 
-			auto& Camera_comp = m_Camera.GetComponent<Base::CameraComponent>();
-			Camera_comp.Camera.SetViewportSize(w, h);
+		//	auto& Camera_comp = m_Camera.GetComponent<Base::CameraComponent>();
+		//	Camera_comp.Camera.SetViewportSize(w, h);
 
-			Camera_Script.Bind<Base::OrthoCameraScript>();
-			
-			auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
+		//	Camera_Script.Bind<Base::OrthoCameraScript>();
+		//	
+		//	auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
 
-			m_Scene->StartNativeScript(m_Camera);
-			m_Scene->AwakeNativeScript(m_Camera);
-			return;
-		}
+		//	m_Scene->StartNativeScript(m_Camera);
+		//	m_Scene->AwakeNativeScript(m_Camera);
+		//	return;
+		//}
 
 		{
 			m_Entitys["Platform"] = m_Scene->CreateEntity("Platform"); //Create the Quad entity
@@ -189,6 +189,7 @@ namespace Base
 		
 			//circle.Add
 			auto& circle_comp =	circle.AddComponent<CircleComponent>();
+			circle.AddComponent<SpriteComponent>(Color::Base_SplitComplementary_2);
 		
 			circle_comp.Thickness = 1.0f;
 
@@ -196,7 +197,7 @@ namespace Base
 		}
 
 		{
-			for (int i = 0; i < 15; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				Entity quad = CreateQuad(m_Scene);
 				m_Entitys[quad.GetTag()] = quad;
@@ -483,15 +484,24 @@ namespace Base
 		ImGui::Begin("Quad physics");
 
 		if (m_SelectedEntity)
-		{
-			auto& ent_rbody = m_SelectedEntity.GetComponent<Base::RigidBody2DComponent>();
-			auto& ent_bcol = m_SelectedEntity.GetComponent<Base::BoxColider2DComponent>();
+			if(m_SelectedEntity.HasComponent< RigidBody2DComponent>() && m_SelectedEntity.HasComponent<BoxColider2DComponent>())
+			{
+				auto& ent_rbody = m_SelectedEntity.GetComponent<Base::RigidBody2DComponent>();
+				auto& ent_bcol = m_SelectedEntity.GetComponent<Base::BoxColider2DComponent>();
 
-			ImGui::SliderFloat("Friction", &ent_bcol.Friction, 0.0f, 1.0f);
-			ImGui::SliderFloat("Density", &ent_bcol.Density, 0.0f, 1.0f);
-			ImGui::SliderFloat("Restitution", &ent_bcol.Restitution, 0.0f, 1.0f);
-			ImGui::SliderFloat("RestitutionThreshold", &ent_bcol.RestitutionThreshold, 0.0f, 1.0f);
-		}
+				ImGui::SliderFloat("Friction", &ent_bcol.Friction, 0.0f, 1.0f);
+				ImGui::SliderFloat("Density", &ent_bcol.Density, 0.0f, 1.0f);
+				ImGui::SliderFloat("Restitution", &ent_bcol.Restitution, 0.0f, 1.0f);
+				ImGui::SliderFloat("RestitutionThreshold", &ent_bcol.RestitutionThreshold, 0.0f, 1.0f);
+			}
+			else if (m_SelectedEntity.HasComponent<CircleComponent>())
+			{
+				auto& circle = m_SelectedEntity.GetComponent<CircleComponent>();
+
+				ImGui::SliderFloat("Thickness", &circle.Thickness, 0.0f, 1.0f);
+				ImGui::SliderFloat("Fade", &circle.Fade, 0.0f, 1.0f);
+				ImGui::SliderFloat("Radius", &circle.Radius, 0.0f, 1.0f);
+			}
 
 		ImGui::End();
 

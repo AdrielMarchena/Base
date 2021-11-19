@@ -147,7 +147,7 @@ namespace Base
 		glm::vec2 TexCoords;
 		float_t TexIndex;
 
-		float_t Radius;
+		glm::vec3 LocalPosition;
 		float_t Thickness;
 		float_t Fade;
 
@@ -278,7 +278,7 @@ namespace Base
 
 		circle_layout.AddLayoutFloat(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, TexIndex));
 
-		circle_layout.AddLayoutFloat(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Radius));
+		circle_layout.AddLayoutFloat(3, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, LocalPosition));
 
 		circle_layout.AddLayoutFloat(1, sizeof(CircleVertex), (const void*)offsetof(CircleVertex, Thickness));
 
@@ -289,7 +289,7 @@ namespace Base
 		m_Data.CircleIB = m_Data.QuadIB;
 		m_Data.CircleIB->Bind();
 		
-		utils::SampleTextureOnShader(m_Shaders->Get("Circle"), MaxTexture, m_Data.QuadTextureSlots);
+		utils::SampleTextureOnShader(m_Shaders->Get("Circle"), MaxTexture, m_Data.CircleTextureSlots);
 
 		//Lines
 		m_Shaders->Get("Line")->Bind();
@@ -759,7 +759,7 @@ namespace Base
 			m_Data.CircleBufferPtr->Color = color;
 			m_Data.CircleBufferPtr->TexCoords = m_default_tex_coords[i];
 			m_Data.CircleBufferPtr->TexIndex = tex_index;
-			m_Data.CircleBufferPtr->Radius = radius;
+			m_Data.CircleBufferPtr->LocalPosition = QuadVertexPositions[i] * 2.0f;
 			m_Data.CircleBufferPtr->Thickness = thick;
 			m_Data.CircleBufferPtr->Fade = fade;
 			m_Data.CircleBufferPtr->entityID = entityID;
@@ -805,7 +805,7 @@ namespace Base
 			m_Data.CircleBufferPtr->Color = color;
 			m_Data.CircleBufferPtr->TexCoords = m_default_tex_coords[i];
 			m_Data.CircleBufferPtr->TexIndex = texture_index;
-			m_Data.CircleBufferPtr->Radius = radius;
+			m_Data.CircleBufferPtr->LocalPosition = QuadVertexPositions[i] * 2.0f;
 			m_Data.CircleBufferPtr->Thickness = thick;
 			m_Data.CircleBufferPtr->Fade = fade;
 			m_Data.CircleBufferPtr->entityID = entityID;
@@ -854,7 +854,7 @@ namespace Base
 			m_Data.CircleBufferPtr->Color = color;
 			m_Data.CircleBufferPtr->TexCoords = coords[i];
 			m_Data.CircleBufferPtr->TexIndex = texture_index;
-			m_Data.CircleBufferPtr->Radius = radius;
+			m_Data.CircleBufferPtr->LocalPosition = QuadVertexPositions[i] * 2.0f;
 			m_Data.CircleBufferPtr->Thickness = thick;
 			m_Data.CircleBufferPtr->Fade = fade;
 			m_Data.CircleBufferPtr->entityID = entityID;

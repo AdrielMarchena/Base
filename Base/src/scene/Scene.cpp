@@ -247,7 +247,7 @@ namespace Base
 				for (auto entity : view)
 				{
 					auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
-					trans.Scale = glm::vec3(circle_def.Radius);
+					//trans.Scale = glm::vec3(circle_def.Radius);
 					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color, (int)entity);
 				}
 			}
@@ -257,7 +257,7 @@ namespace Base
 				for (auto entity : view)
 				{
 					auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-					trans.Scale = glm::vec3(circle_def.Radius);
+					//trans.Scale = glm::vec3(circle_def.Radius);
 					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, (int)entity);
 				}
 

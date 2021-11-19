@@ -40,6 +40,7 @@ namespace Base
 		Window& GetWindow() { return *m_Window; }
 		static Application& Get() { return *m_AppInstance; }
 		ImGuiLayer& GetImGuiLayer() { return *m_ImGuiLayer; }
+		LuaContext& GetLuaContext() { return m_LuaContext; }
 	private:
 		static Application* m_AppInstance;
 		bool OnWindowClose(WindowCloseEvent& e);
