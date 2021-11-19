@@ -190,8 +190,18 @@ namespace Base
 			//circle.Add
 			auto& circle_comp =	circle.AddComponent<CircleComponent>();
 			circle.AddComponent<SpriteComponent>(Color::Base_SplitComplementary_2);
-		
+			auto& circle_colider = circle.AddComponent<CircleColider2DComponent>();
+			auto& circle_body = circle.AddComponent<Base::RigidBody2DComponent>();
+
+			circle_body.Type = RigidBody2DComponent::BodyType::Dynamic;
+
 			circle_comp.Thickness = 1.0f;
+
+			circle_colider.Density = IntRandomThing();
+			circle_colider.Friction = IntRandomThing();
+			circle_colider.Restitution = IntRandomThing();
+			circle_colider.RestitutionThreshold = IntRandomThing();
+			circle_colider.Radius = 0.5f;
 
 			m_Entitys["Circle"] = circle;
 		}
@@ -501,6 +511,18 @@ namespace Base
 				ImGui::SliderFloat("Thickness", &circle.Thickness, 0.0f, 1.0f);
 				ImGui::SliderFloat("Fade", &circle.Fade, 0.0f, 1.0f);
 				ImGui::SliderFloat("Radius", &circle.Radius, 0.0f, 1.0f);
+
+				if (m_SelectedEntity.HasComponent<RigidBody2DComponent>() && m_SelectedEntity.HasComponent<CircleColider2DComponent>())
+				{
+					auto& ent_rbody = m_SelectedEntity.GetComponent<Base::RigidBody2DComponent>();
+					auto& ent_ccol = m_SelectedEntity.GetComponent<Base::CircleColider2DComponent>();
+
+					ImGui::SliderFloat("Friction", &ent_ccol.Friction, 0.0f, 1.0f);
+					ImGui::SliderFloat("Density", &ent_ccol.Density, 0.0f, 1.0f);
+					ImGui::SliderFloat("Restitution", &ent_ccol.Restitution, 0.0f, 1.0f);
+					ImGui::SliderFloat("RestitutionThreshold", &ent_ccol.RestitutionThreshold, 0.0f, 1.0f);
+					ImGui::SliderFloat("Radius", &ent_ccol.Radius, 0.0f, 1.0f);
+				}
 			}
 
 		ImGui::End();
