@@ -7,20 +7,26 @@ project "Lua"
 
 	files 
 	{
-		"src/**.h",
-		"src/**.c",
-		"src/**.hpp",
+		"**.h",
+		"**.c",
+		"**.hpp",
 	}
 	removefiles
 	{
 		--"src/lua.h",
-		"src/lua.c",
-		"src/luac.c",
+		"lua.c",
+		"luac.c",
 	}
 
 	includedirs
 	{
-		"src"
+		"src",
+		"./"
+	}
+
+	defines
+	{
+		"MAKE_LIB"
 	}
 
 	filter "configurations:Debug"

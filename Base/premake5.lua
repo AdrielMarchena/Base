@@ -20,8 +20,8 @@ project "Base"
 		"vendor/ImGuizmo/ImGuizmo.h",
 		"vendor/ImGuizmo/ImGuizmo.cpp",
 
-		"vendor/Lua/src/lua.h",
-		"vendor/Lua/src/lua.c"
+		"vendor/Lua/lua.h",
+		"vendor/Lua/lua.c"
 	}
 
 	includedirs
