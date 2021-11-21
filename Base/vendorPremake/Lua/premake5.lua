@@ -23,13 +23,6 @@ project "Lua"
 		"src"
 	}
 
-	postbuildcommands
-	{
-		("{COPYDIR} \"./src/**.h\" \"./include/Lua\""),
-		("{COPYDIR} \"./src/**.hpp\" \"./include/Lua\""),
-
-	}
-
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
