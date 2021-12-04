@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SceneSerializer.h"
 #include "Entity.h"
 #include "utils/yaml_specializations.h"
@@ -6,7 +7,6 @@
 #include <fstream>
 
 #include "ScriptableEntity.h"
-
 namespace Base
 {
 	static inline void SerializeEntity(YAML::Emitter& out, Entity entity)

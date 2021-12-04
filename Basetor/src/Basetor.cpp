@@ -1,5 +1,4 @@
-#pragma once
-
+#include "pch.h"
 #include "Base/Base.h"
 #include "Base.h"
 #include "application/Entry.h"

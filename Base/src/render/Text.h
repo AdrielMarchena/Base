@@ -1,66 +1,70 @@
-/*#pragma once
-#include <string>
-#include <mutex>
-#include "glad/glad.h"
-#include "glm/glm.hpp"
+#pragma once
+
+#include "Base/Base.h"
+
 #include <unordered_map>
-#include "ft2build.h"
-#include "args/RenderArgs.h"
-#include <algorithm>
-#include "ResourceManager.h"
-#include FT_FREETYPE_H
+#include <string>
+#include "render/gl/Texture.h"
+namespace msdfgen
+{
+class FontHandle;
+}
 namespace Base
 {
-	namespace render
+
+	struct FontSpecifications
 	{
-		struct loadCharacter
-		{
-			FT_Face face;
-		};
-		struct Character
-		{
-			public:
-			GLuint TextureID = 0;
-			glm::ivec2 Size = {0,0};
-			glm::ivec2 Bearing = {0,0};
-			GLuint Advance = 0;
-			Character() = default;
-			Character(GLuint texID, glm::ivec2 size, glm::ivec2 bearing, GLuint advance)
-			:TextureID(texID),Size(size),Bearing(bearing),Advance(advance)
-			{}
-		};
+		int32_t width = 32;
+		int32_t height = 32;
+	};
 
-		class Text
-		{
-		private:
-			std::unordered_map<char, Character> m_Characters;
-			float m_Layer = 5.0f;
-			//FT_Library ft;
-			//FT_Face face;
-		public:
-			Text() = default;
-			Text(const char* font);
-			Text(loadCharacter faces);
-			~Text();
-			void Dispose();
-			void RenderText(const Base::RenderArgs& args, const std::string& text, float x, float y, float scale, glm::vec3 color) const;
-			float PreviewWid(const std::string& text, float scale) const;
+	struct Glyph
+	{
+		double Advance;
+	};
 
-			static ResourceManager<Text> LoadFontsAsync(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE, uint8_t batchLimit = 10);
-			static ResourceManager<Text> LoadFonts(const std::vector<std::pair<std::string, std::string>>& names, const utils::NameCaps& nameCaps = utils::NameCaps::NONE);
+	class Font
+	{
+	private:
+		msdfgen::FontHandle* m_FontHandler = nullptr;
+		FontSpecifications m_Specs;
+		std::string m_Name;
+		std::string m_Path;
+	public:
+		
+		Font() = default;
+		Font(const Font&) = default;
+		~Font();
+		Font(const std::string& path,const FontSpecifications& specs, const std::string& name = std::string());
 
-			//Defauted to 5.0f, and clamp in -1.0f to 10.0f interval
-			inline void SetLayer(float layer)
-			{
-				m_Layer = std::clamp(layer, -1.0f, 10.0f);
-			}
+		Ref<render::Texture> GetGlyph(char character,int wid, int hei);
+	};
 
-		private:
-			static loadCharacter GetText(const char* font, std::mutex& mt);
-		};
-	}
+	class FontLibrary
+	{
+	private:
+		std::unordered_map<std::string, Ref<Font>> m_Texts;
+	public:
+		FontLibrary() = default;
+		FontLibrary(const FontLibrary&) = default;
+		~FontLibrary() = default;
+
+		/* Store a Ref Font */
+		void Add(Ref<Font> text, const std::string& name = std::string());
+
+		bool Exists(const std::string& name);
+
+		/* Create, store and return new Ref Font if does not exist */
+		Ref<Font> Create(const std::string& path, int32_t size ,const std::string& name = std::string());
+
+		/* Return a Ref font if exists */
+		Ref<Font> Get(const std::string& name);
+		
+		/* Delete the Ref Font from this library */
+		void Delete(const std::string& name);
+
+		/* Delete the Ref Font from this library and return it */
+		Ref<Font> Pop(const std::string& name);
+
+	};
 }
-
-
-
-*/

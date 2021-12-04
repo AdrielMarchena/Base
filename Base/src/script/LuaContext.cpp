@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "LuaContext.h"
 #include "utils/base_assert.h"
 #include "utils/Instrumentor.h"

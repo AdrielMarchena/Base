@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Scene.h"
 #include "render/render2D.h"
 #include "Entity.h"
@@ -222,7 +223,7 @@ namespace Base
 					auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
 					D2D::DrawQuad(position.GetTransform(), spr.Color, (int)entity);
 					glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
-					D2D::DrawOutLineQuad(position.GetTransform(), out_color, (int)entity);
+					//D2D::DrawOutLineQuad(position.GetTransform(), out_color, (int)entity);
 				}
 			}
 

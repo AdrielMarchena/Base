@@ -6,6 +6,7 @@
 #include "render/SubTexture.h"
 #include "render/Colors.h"
 #include "render/Camera.h"
+#include "render/Text.h"
 
 #include "gl/Gl_Commands.h"
 
@@ -39,6 +40,7 @@ namespace Base
 		static void BeginScene(const Camera& camera, const glm::mat4& transform);
 		static void BeginScene(const EditorCamera& camera);
 		static void EndBatch();
+		static void EndScene();
 		static void Flush();
 		static void Dispose();
 
@@ -51,6 +53,7 @@ namespace Base
 		static RenderStats GetQuadStats();
 		static RenderStats GetCircleStats();
 		static RenderStats GetLineStats();
+		static uint64_t GetDrawCallsCount();
 
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int32_t entityID,
 			float_t rotation = NULL, const glm::vec3& axis = {});
@@ -102,6 +105,8 @@ namespace Base
 
 		static void DrawCircle(const glm::mat4& transform, float_t radius, float_t fade, float_t thick, const render::SubTexture& sub_texture, int32_t entityID,
 			const glm::vec4& color = Color::White);
+
+		static void DrawFont(const glm::mat4& transform, const std::string& text, Ref<Font> font, const glm::vec4& color, int32_t entityID);
 
 		//static void DrawTriangle(const glm::vec3 points[3], const glm::vec4& color);
 

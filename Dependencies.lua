@@ -13,3 +13,12 @@ IncludeDirectories["stb_image"] = "%{wks.location}/Base/vendor/stb_image"
 IncludeDirectories["yaml"] = "%{wks.location}/Base/vendor/yaml-cpp/include"
 IncludeDirectories["ImGuizmo"] = "%{wks.location}/Base/vendor/ImGuizmo"
 IncludeDirectories["Lua"] = "%{wks.location}/Base/vendor/Lua"
+IncludeDirectories["msdfgen"] = "%{wks.location}/Base/vendor/msdfgen"
+
+LibDirectories = {}
+
+filter "platforms:x64"
+	LibDirectories["freetype"] = "%{wks.location}/Base/vendor/msdfgen/freetype/win64"
+	
+filter "platforms:x86"
+	LibDirectories["freetype"] = "%{wks.location}/Base/vendor/msdfgen/freetype/win32"

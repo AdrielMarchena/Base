@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Window.h"
 #include "WindowsWindow.h"
 namespace Base

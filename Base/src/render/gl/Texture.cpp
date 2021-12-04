@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Texture.h"
 
 #include "utils/gl_error_macro_db.h"

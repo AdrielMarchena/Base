@@ -5,6 +5,9 @@ project "Base"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "pch.h"
+	pchsource ( "src/pch.cpp" )
+
 	files 
 	{
 		"src/**.h",
@@ -39,7 +42,8 @@ project "Base"
 		"%{IncludeDirectories.spdlog}",
 		"%{IncludeDirectories.glm}",
 		"%{IncludeDirectories.debugbreak}",
-		"%{IncludeDirectories.Lua}"
+		"%{IncludeDirectories.Lua}",
+		"%{IncludeDirectories.msdfgen}"
 	}
 
 	links
@@ -50,13 +54,51 @@ project "Base"
 		"ImGui",
 		"GLFW",
 		"opengl32.lib",
-		"Lua"
+		"Lua",
+		"msdfgen",
+		"freetype.lib"
 	}
 
 	postbuildcommands
 	{
 		("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
 	}
+
+	filter { 'files:vendor/Lua/lua.c' }
+		flags { 'NoPCH' }
+
+	filter { 'files:vendor/Lua/lua.h' }
+		flags { 'NoPCH' }
+
+	filter { 'files:vendor/lodepng/lodepng.h' }
+		flags { 'NoPCH' }
+
+	filter { 'files:vendor/lodepng/lodepng.cpp' }
+		flags { 'NoPCH' }
+
+	filter { 'files:vendor/ImGuizmo/ImGuizmo.h' }
+		flags { 'NoPCH' }
+
+	filter { 'files:vendor/ImGuizmo/ImGuizmo.cpp' }
+		flags { 'NoPCH' }
+
+	filter { 'files:vendor/stb_image/**.h' }
+		flags { 'NoPCH' }
+
+	filter { 'files:vendor/stb_image/**.cpp' }
+		flags { 'NoPCH' }
+
+	filter "platforms:x64"
+		libdirs
+		{
+			"%{wks.location}/Base/vendor/msdfgen/freetype/win64"
+		}
+	
+	filter "platforms:x86"
+		libdirs
+		{
+			"%{wks.location}/Base/vendor/msdfgen/freetype/win32"
+		}
 
 	filter "system:Windows"
 		cppdialect "C++17"

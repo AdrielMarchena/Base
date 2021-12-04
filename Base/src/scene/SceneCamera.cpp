@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "SceneCamera.h"
 
 #include "utils/base_assert.h"

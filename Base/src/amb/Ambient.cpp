@@ -7,7 +7,7 @@
 *	
 *	Implementation File
 */
-
+#include "pch.h"
 #include "Ambient.h"
 #include "Log.h"
 namespace Base

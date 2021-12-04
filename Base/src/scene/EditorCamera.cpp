@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "EditorCamera.h"
 
 #include "input/Keyboard.h"

@@ -6,7 +6,7 @@
 *
 * 	Implementation File
 */
-
+#include "pch.h"
 #include "OrthographicCameraController.h"
 #include "input/Keyboard.h"
 namespace Base {

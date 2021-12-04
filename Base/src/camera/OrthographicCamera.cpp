@@ -6,7 +6,7 @@
 *
 *	Implementation File
 */
-
+#include "pch.h"
 #include "OrthographicCamera.h"
 #include "glm/gtc/matrix_transform.hpp"
 

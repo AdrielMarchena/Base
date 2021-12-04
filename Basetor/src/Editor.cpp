@@ -1,9 +1,12 @@
+#include "pch.h"
 #include "Editor.h"
 
 #include "scene/Components.h"
 #include "render/render2D.h"
 #include "utils/Instrumentor.h"
 #include "utils/RandomList.h"
+#include "render/Text.h"
+
 #include "imgui.h"
 #include "ImGuizmo.h"
 #include "glm/gtc/type_ptr.hpp"
@@ -61,7 +64,8 @@ namespace Base
 		static int count = 0;
 		Entity ent = scene->CreateEntity("Quad_" + std::to_string(count));
 
-		ent.AddComponent<Base::SpriteComponent>(Color::Base_Color + (1.0f / count)); //Add sprite (solid color)
+		glm::vec4 f_col = glm::vec4(glm::vec3(Color::Base_Color * (1.0f + (1.0f / M_random()))),1.0f);
+		ent.AddComponent<Base::SpriteComponent>(f_col); //Add sprite (solid color)
 
 		auto& quad_rbody = ent.AddComponent<Base::RigidBody2DComponent>();
 		auto& quad_bcol = ent.AddComponent<Base::BoxColider2DComponent>();
@@ -73,6 +77,10 @@ namespace Base
 		quad_bcol.Restitution = IntRandomThing();
 		quad_bcol.RestitutionThreshold = IntRandomThing();
 
+		ent.GetTransform().Translation = { P_random() % 10,P_random() % 10 ,1.0f };
+		ent.GetTransform().Scale = { P_random() % 4 + 0.01f,P_random() % 4 + 0.01f ,1.0f };
+		ent.GetTransform().Rotation = { 0.0f,0.0f ,P_random() % 10 };
+
 		count++;
 		return ent;
 	}
@@ -80,6 +88,8 @@ namespace Base
 	void Editor::OnAttach()
 	{
 		BASE_PROFILE_FUNCTION();
+
+		//Font font_consola("assets/fonts/consola.ttf", { 0 });
 
 		m_Scene = MakeRef<Scene>(); //Create scene
 
@@ -184,7 +194,7 @@ namespace Base
 			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
 		}
 
-		{
+		/* {
 			Entity circle = m_Scene->CreateEntity("Circle");
 		
 			//circle.Add
@@ -204,10 +214,10 @@ namespace Base
 			circle_colider.Radius = 0.5f;
 
 			m_Entitys["Circle"] = circle;
-		}
+		}*/
 
 		{
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 500; i++)
 			{
 				Entity quad = CreateQuad(m_Scene);
 				m_Entitys[quad.GetTag()] = quad;
@@ -376,6 +386,7 @@ namespace Base
 				ImGui::Text("Quads in scene: %d", Render2D::GetQuadStats().DrawCount);
 				ImGui::Text("Circle in scene: %d", Render2D::GetCircleStats().DrawCount);
 				ImGui::Text("Lines in scene: %d", Render2D::GetLineStats().DrawCount);
+				ImGui::Text("Draw Calls for this scene: %d", Render2D::GetDrawCallsCount());
 			
 				ImGui::EndMenu();
 			}

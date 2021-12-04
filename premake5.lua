@@ -1,5 +1,4 @@
 include "Dependencies.lua"
-
 workspace "Base"
 	startproject "Basetor"
 
@@ -50,6 +49,7 @@ include "Base/vendor/glad"
 include "Base/vendor/yaml-cpp"
 include "Base/vendor/Box2D"
 include "Base/vendor/Lua"
+include "Base/vendor/msdfgen"
 group ""
 
 --Projects

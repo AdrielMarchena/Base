@@ -5,7 +5,7 @@
 *
 *	Implementation File
 */
-
+#include "pch.h"
 #include "ParticleSystem.h"
 #include "utils/RandomList.h"
 

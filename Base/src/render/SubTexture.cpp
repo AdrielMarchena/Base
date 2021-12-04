@@ -5,7 +5,7 @@
 *
 *	Implementation File
 */
-
+#include "pch.h"
 #include "SubTexture.h"
 
 #include <iostream>

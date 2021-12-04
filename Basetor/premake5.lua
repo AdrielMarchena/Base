@@ -5,11 +5,14 @@ project "Basetor"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 	
+	pchheader "pch.h"
+	pchsource "src/pch.cpp"
+
 	files 
 	{
 		"src/**.h",
 		"src/**.cpp",
-		"src/**.c"
+		"src/**.c",
 	}
 
 	includedirs
@@ -24,14 +27,30 @@ project "Basetor"
 		"%{IncludeDirectories.debugbreak}",
 		"%{IncludeDirectories.ImGuizmo}",
 		"%{IncludeDirectories.Lua}",
+		"%{IncludeDirectories.msdfgen}",
+		"src/"
 	}
-	
+
 	links
 	{
 		"Base",
 		"Lua",
-		"ImGui"
+		"ImGui",
+		"msdfgen",
+		"freetype.lib"
 	}
+
+	filter "platforms:x64"
+		libdirs
+		{
+			"%{wks.location}/Base/vendor/msdfgen/freetype/win64"
+		}
+	
+	filter "platforms:x86"
+		libdirs
+		{
+			"%{wks.location}/Base/vendor/msdfgen/freetype/win32"
+		}
 
 	filter "system:Windows"
 		cppdialect "C++17"

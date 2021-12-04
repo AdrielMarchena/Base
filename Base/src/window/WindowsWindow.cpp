@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Log.h"
 #include "utils/base_assert.h"
 #include "WindowsWindow.h"

@@ -31,3 +31,6 @@
 [submodule "Base/vendor/debugbreak"]
 	path = Base/vendor/debugbreak
 	url = https://github.com/scottt/debugbreak
+[submodule "Base/vendor/msdfgen"]
+	path = Base/vendor/msdfgen
+	url = https://github.com/Chlumsky/msdfgen.git

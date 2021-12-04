@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "TextureSpecifications.h"
 
 #include "utils/base_assert.h"

@@ -5,7 +5,7 @@
 *
 *	Implementation File
 */
-
+#include "pch.h"
 #include "render2D.h"
 #include "utils/gl_error_macro_db.h"
 #include "utils/Instrumentor.h"
@@ -140,6 +140,16 @@ namespace Base
 		int32_t entityID;
 	};
 
+	struct TextVertex
+	{
+		glm::vec3 Position;
+		glm::vec4 Color;
+		glm::vec2 TexCoords;
+		float_t TexIndex;
+
+		int32_t entityID;
+	};
+
 	struct CircleVertex
 	{
 		glm::vec3 Position;
@@ -189,9 +199,22 @@ namespace Base
 		LineVertex* LineBuffer = nullptr;
 		LineVertex* LineBufferPtr = nullptr;
 
+		//Text
+		Ref<VertexArray> TextVA;
+		Ref<VertexBuffer> TextVB;
+		Ref<IndexBuffer> TextIB;
+
+		TextVertex* TextBuffer = nullptr;
+		TextVertex* TextBufferPtr = nullptr;
+		uint32_t TextIndexCount = 0;
+		uint8_t  TextTextureSlotIndex = 1;
+		std::vector<uint32_t> TextTextureSlots;
+		RenderStats TextRenderStats;
+
 		//Global
 		uint8_t g_WhiteTextureSlot = 0;
 		
+		uint64_t DrawCalls = 0;
 	} m_Data;
 
 	void Render2D::SetClearColor(const glm::vec4& color)
@@ -214,8 +237,8 @@ namespace Base
 		m_Shaders->Load("Triangle", "shaders/Quad.glsl");
 		m_Shaders->Load("shaders/Circle.glsl");
 		m_Shaders->Load("shaders/Line.glsl");
-		m_Shaders->Load("shaders/Text.glsl");
-		
+		m_Shaders->Load("Text", "shaders/Quad.glsl");
+
 		//Do Render stuff
 		MaxTexture = utils::MaxTexturesSlots();
 
@@ -308,6 +331,31 @@ namespace Base
 
 		m_Data.LineVA->Unbind();
 
+		//Text
+		m_Shaders->Get("Text")->Bind();
+
+		m_Data.TextBuffer = new TextVertex[MaxQuadVertexCount];
+
+		m_Data.TextVA = VertexArray::CreateVertexArray();
+
+		m_Data.TextVB = VertexBuffer::CreateVertexBuffer(MaxQuadVertexCount * sizeof(TextVertex));
+
+		VertexAttribute text_layout(m_Data.TextVB);
+
+		text_layout.AddLayoutFloat(3, sizeof(TextVertex), (const void*)offsetof(TextVertex, Position));
+
+		text_layout.AddLayoutFloat(4, sizeof(TextVertex), (const void*)offsetof(TextVertex, Color));
+
+		text_layout.AddLayoutFloat(2, sizeof(TextVertex), (const void*)offsetof(TextVertex, TexCoords));
+
+		text_layout.AddLayoutFloat(1, sizeof(TextVertex), (const void*)offsetof(TextVertex, TexIndex));
+
+		text_layout.AddLayoutInt(1, sizeof(TextVertex), (const void*)offsetof(TextVertex, entityID));
+
+		m_Data.TextIB = m_Data.QuadIB;
+
+		m_Data.TextVA->Unbind();
+
 		//GLOBAL GL CONFIGS
 		GLCall(glEnable(GL_DEPTH_TEST));
 		GLCall(glEnable(GL_BLEND));
@@ -321,26 +369,27 @@ namespace Base
 		m_Shaders->Load(path);
 	}
 
-	void Render2D::BeginBatch()
+	void Render2D::BeginBatch() //TODO: Move metric stuff to other place, this will only count per batch and not per frame
 	{
 		m_Data.QuadBufferPtr = m_Data.QuadBuffer;
 		m_Data.QuadIndexCount = 0;
 		m_Data.QuadTextureSlotIndex = 1;
-		m_Data.QuadRenderStats.DrawCount = 0;
 
 		m_Data.CircleBufferPtr = m_Data.CircleBuffer;
 		m_Data.CircleIndexCount = 0;
 		m_Data.CircleTextureSlotIndex = 1;
-		m_Data.CircleRenderStats.DrawCount = 0;
+		
+		m_Data.TextBufferPtr = m_Data.TextBuffer;
+		m_Data.TextIndexCount = 0;
+		m_Data.TextTextureSlotIndex = 1;
 
 		m_Data.LineBufferPtr = m_Data.LineBuffer;
 		m_Data.LineCount = 0;
-		m_Data.LineRenderStats.DrawCount = 0;
 	}
 
 	void Render2D::BeginScene(const Camera& camera, const glm::mat4& transform)
 	{
-		//BASE_PROFILE_FUNCTION();
+		BASE_PROFILE_FUNCTION();
 		glm::mat4 viewProj = camera.GetProjection() * glm::inverse(transform);
 
 		m_Shaders->Get("Quad")->Bind();
@@ -351,6 +400,15 @@ namespace Base
 
 		m_Shaders->Get("Line")->Bind();
 		m_Shaders->Get("Line")->SetUniformMat4f("u_ViewProj", viewProj);
+
+		m_Shaders->Get("Text")->Bind();
+		m_Shaders->Get("Text")->SetUniformMat4f("u_ViewProj", viewProj);
+
+		m_Data.QuadRenderStats.DrawCount = 0;
+		m_Data.CircleRenderStats.DrawCount = 0;
+		m_Data.LineRenderStats.DrawCount = 0;
+		m_Data.TextRenderStats.DrawCount = 0;
+		m_Data.DrawCalls = 0;
 	}
 
 	void Render2D::BeginScene(const EditorCamera& camera)
@@ -365,6 +423,15 @@ namespace Base
 
 		m_Shaders->Get("Line")->Bind();
 		m_Shaders->Get("Line")->SetUniformMat4f("u_ViewProj", viewProj);
+
+		m_Shaders->Get("Text")->Bind();
+		m_Shaders->Get("Text")->SetUniformMat4f("u_ViewProj", viewProj);
+
+		m_Data.QuadRenderStats.DrawCount = 0;
+		m_Data.CircleRenderStats.DrawCount = 0;
+		m_Data.LineRenderStats.DrawCount = 0;
+		m_Data.TextRenderStats.DrawCount = 0;
+		m_Data.DrawCalls = 0;
 	}
 
 	void Render2D::EndBatch()
@@ -392,6 +459,19 @@ namespace Base
 			m_Data.LineVB->Bind();
 			m_Data.LineVB->SubData(size, m_Data.LineBuffer);
 		}
+
+		if (m_Data.TextIndexCount)
+		{
+			GLsizeiptr size = (uint8_t*)m_Data.TextBufferPtr - (uint8_t*)m_Data.TextBuffer;
+			m_Data.TextVB->Bind();
+			m_Data.TextVB->SubData(size, m_Data.TextBuffer);
+		}
+	}
+
+	void Render2D::EndScene()
+	{
+		//TODO: implement
+		BASE_CORE_ASSERT(false, "Not implemented!");
 	}
 
 	void Render2D::Flush()
@@ -410,7 +490,8 @@ namespace Base
 			m_Data.QuadVA->Bind();
 
 			GLCall(glDrawElements(GL_TRIANGLES, m_Data.QuadIndexCount, GL_UNSIGNED_INT, nullptr));
-			
+			m_Data.DrawCalls++;
+
 			m_Data.QuadTextureSlotIndex = 1;
 			m_Data.QuadIndexCount = 0;
 			m_Data.QuadRenderStats.DrawCount++;
@@ -430,6 +511,7 @@ namespace Base
 			m_Data.CircleVA->Bind();
 
 			GLCall(glDrawElements(GL_TRIANGLES, m_Data.CircleIndexCount, GL_UNSIGNED_INT, nullptr));
+			m_Data.DrawCalls++;
 
 			m_Data.CircleTextureSlotIndex = 1;
 			m_Data.CircleIndexCount = 0;
@@ -444,9 +526,31 @@ namespace Base
 			m_Data.LineVA->Bind();
 
 			GLCall(glDrawArrays(GL_LINES, 0 , m_Data.LineCount));
+			m_Data.DrawCalls++;
 
 			m_Data.LineCount = 0;
 			m_Data.LineRenderStats.DrawCount++;
+		}
+
+		if (m_Data.QuadIndexCount)
+		{
+			//Draw Quads
+			m_Shaders->Get("Text")->Bind();
+
+			for (size_t i = 0; i < m_Data.TextTextureSlotIndex; i++)
+			{
+				GLCall(glActiveTexture(GL_TEXTURE0 + i));
+				GLCall(glBindTexture(GL_TEXTURE_2D, m_Data.TextTextureSlots[i]));
+			}
+
+			m_Data.TextVA->Bind();
+
+			GLCall(glDrawElements(GL_TRIANGLES, m_Data.TextIndexCount, GL_UNSIGNED_INT, nullptr));
+			m_Data.DrawCalls++;
+
+			m_Data.TextTextureSlotIndex = 1;
+			m_Data.TextIndexCount = 0;
+			m_Data.TextRenderStats.DrawCount++;
 		}
 	}
 
@@ -498,6 +602,11 @@ namespace Base
 	RenderStats Render2D::GetLineStats()
 	{
 		return m_Data.LineRenderStats;
+	}
+
+	uint64_t Render2D::GetDrawCallsCount()
+	{
+		return m_Data.DrawCalls;
 	}
 
 	const Ref<Shader> Render2D::GetCircleShader()
@@ -863,6 +972,50 @@ namespace Base
 		m_Data.CircleIndexCount += 6;
 		m_Data.CircleRenderStats.DrawCount++;
 		m_Data.CircleRenderStats.TotalCount++;
+	}
+
+	void Render2D::DrawFont(const glm::mat4& transform, const std::string& text, Ref<Font> font, const glm::vec4& color, int32_t entityID)
+	{
+		BASE_CORE_ASSERT(false, "Not implemented");
+		/*if (m_Data.QuadIndexCount >= MaxQuadIndexCount || m_Data.QuadTextureSlotIndex > MaxTexture - 1)
+		{
+			EndBatch();
+			Flush();
+			BeginBatch();
+		}
+
+		int8_t texture_index = 0;
+		if (texture->GetId())
+			for (int8_t i = 1; i < m_Data.QuadTextureSlotIndex; i++)
+			{
+				if (m_Data.QuadTextureSlots[i] == texture->GetId())
+				{
+					texture_index = i;
+					break;
+				}
+			}
+
+		if (texture->GetId())
+			if (!texture_index)
+			{
+				texture_index = m_Data.QuadTextureSlotIndex;
+				m_Data.QuadTextureSlots[m_Data.QuadTextureSlotIndex] = texture->GetId();
+				m_Data.QuadTextureSlotIndex++;
+			}
+
+		for (size_t i = 0; i < 4; i++)
+		{
+			m_Data.QuadBufferPtr->Position = transform * QuadVertexPositions[i];
+			m_Data.QuadBufferPtr->Color = color;
+			m_Data.QuadBufferPtr->TexCoords = m_default_tex_coords[i];
+			m_Data.QuadBufferPtr->TexIndex = texture_index;
+			m_Data.QuadBufferPtr->entityID = entityID;
+			m_Data.QuadBufferPtr++;
+		}
+
+		m_Data.QuadIndexCount += 6;
+		m_Data.QuadRenderStats.DrawCount++;
+		m_Data.QuadRenderStats.TotalCount++;*/
 	}
 
 	void Render2D::SetLineWidth(float_t thickness)

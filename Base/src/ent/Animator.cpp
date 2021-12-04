@@ -6,7 +6,7 @@
 *
 * 	Implementation File
 */
-
+#include "pch.h"
 #include "Animator.h"
 
 #include <limits>

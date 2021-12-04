@@ -13,7 +13,7 @@
 * 	Implementation File
 */
 
-
+#include "pch.h"
 #include "Files.h"
 
 #include <sstream>
