@@ -41,8 +41,6 @@ namespace render
 				m_ImageInfo.DataFormat = GL_RGB;
 		}
 		
-		if (!m_ImageInfo.Type)
-			m_ImageInfo.Type = GL_UNSIGNED_BYTE;
 		BASE_CORE_ASSERT(m_ImageInfo.InternalFormat & m_ImageInfo.DataFormat, "Format not supported");
 
 		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, info.UnpackAligment));
@@ -57,6 +55,9 @@ namespace render
 		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_S, GLSwitch::TextureWrap(m_ImageInfo.WrapS)));
 		GLCall(glTexParameteri(target, GL_TEXTURE_WRAP_T, GLSwitch::TextureWrap(m_ImageInfo.WrapT)));
 
+		if(info.TextureLodBias > -1.0f)
+			GLCall(glTexParameterf(target, GL_TEXTURE_LOD_BIAS, info.TextureLodBias));
+
 		if (target == GL_TEXTURE_3D)
 		{
 			GLCall(glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GLSwitch::TextureWrap(m_ImageInfo.WrapR)));
@@ -68,7 +69,7 @@ namespace render
 				m_ImageInfo.Depth,
 				0,
 				m_ImageInfo.DataFormat,
-				m_ImageInfo.Type,
+				GLSwitch::TextureType(m_ImageInfo.Type),
 				0
 			));
 			/*glPixelStorei(GL_UNPACK_ROW_LENGTH, 1024);
@@ -87,7 +88,7 @@ namespace render
 				m_ImageInfo.Height,
 				0,
 				m_ImageInfo.DataFormat,
-				m_ImageInfo.Type,
+				GLSwitch::TextureType(m_ImageInfo.Type),
 				info.Buffer
 			));
 		}
@@ -136,7 +137,8 @@ namespace render
 		}
 		if (m_ImageInfo.Buffer)
 		{
-			DeleteTextureBuffer(m_ImageInfo.Buffer);
+			if(m_ImageInfo.CopySourceBuffer || m_ImageInfo.KeepSourceBuffer)
+				DeleteTextureBuffer(m_ImageInfo.Buffer);
 			m_ImageInfo.Buffer = nullptr;
 		}
 	}

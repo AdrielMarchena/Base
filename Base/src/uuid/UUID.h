@@ -17,6 +17,7 @@ namespace Base
 		UUID(const UUID&) = default;
 
 		operator UUID_T() const { return m_UUID; }
+		static bool MetaInit();
 	private:
 		UUID_T m_UUID = NULL;
 	};

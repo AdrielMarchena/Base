@@ -34,3 +34,9 @@
 [submodule "Base/vendor/msdfgen"]
 	path = Base/vendor/msdfgen
 	url = https://github.com/Chlumsky/msdfgen.git
+[submodule "Base/vendor/meta"]
+	path = Base/vendor/meta
+	url = https://github.com/skypjack/meta.git
+[submodule "Base/vendor/msdf-atlas-gen"]
+	path = Base/vendor/msdf-atlas-gen
+	url = https://github.com/Chlumsky/msdf-atlas-gen.git

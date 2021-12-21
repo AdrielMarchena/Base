@@ -107,6 +107,8 @@ namespace Base
 			const glm::vec4& color = Color::White);
 
 		static void DrawFont(const glm::mat4& transform, const std::string& text, Ref<Font> font, const glm::vec4& color, int32_t entityID);
+		
+		static void DrawGlyph(const glm::mat4& transform, unsigned char c, Ref<Font> font, const glm::vec4& color, int32_t entityID);
 
 		//static void DrawTriangle(const glm::vec3 points[3], const glm::vec4& color);
 

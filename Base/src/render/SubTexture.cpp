@@ -35,6 +35,24 @@ namespace render
 		return SubTexture(texture, min, max);
 	}
 
+	SubTexture SubTexture::CreateFromAtlas(Ref<Texture> texture, const glm::vec2 size, const glm::vec2& position, const glm::vec2& atlasSize)
+	{
+
+		glm::vec2 min{};
+		glm::vec2 max{};
+
+		float normw = 1.0 / atlasSize.x;
+		float normh = 1.0 / atlasSize.y;
+
+		min.x = position.x * normw;
+		min.y = position.y * normh;
+
+		max.x = min.x + (size.x * normw);
+		max.y = min.y + (size.y * normw);
+
+		return SubTexture(texture, min, max);
+	}
+
 	uint32_t SubTexture::GetId() const
 	{
 		if (!m_Texture)

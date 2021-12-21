@@ -53,4 +53,23 @@ namespace Base
 		}
 		return 0;
 	}
+
+	uint32_t GLSwitch::TextureType(GL_TexType type)
+	{
+		switch (type)
+		{
+		case GL_TexType::NONE:
+		case GL_TexType::UNSIGNED_INT:
+			return GL_UNSIGNED_INT;
+		case GL_TexType::FLOAT:
+			return GL_FLOAT;
+		case GL_TexType::BYTE:
+			return GL_BYTE;
+		default:
+			BASE_CORE_ASSERT(false, "Unknow Texture Type");
+			break;
+		}
+		return 0;
+	}
+
 }

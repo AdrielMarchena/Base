@@ -10,12 +10,12 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 #include "glm/gtc/type_ptr.hpp"
+
 namespace Base
 {
-
+#ifdef BASE_PROFILING
 	static void ProfileMenuItem()
 	{
-#ifdef BASE_PROFILING
 		if (ImGui::BeginMenu("Profile"))
 		{
 			static int count = 0;
@@ -44,8 +44,8 @@ namespace Base
 			}
 			ImGui::EndMenu();
 		}
-#endif
 	}
+#endif
 
 	Editor::Editor(const std::string& name)
 		:Layer(name)
@@ -54,42 +54,16 @@ namespace Base
 		Random::Init();
 	}
 
-	static inline int IntRandomThing()
-	{
-		return std::clamp(P_random() * ((Random::Float() - 0.5f)), 0.0f, 1.0f);
-	}
-
-	static Entity CreateQuad(Ref<Scene> scene)
-	{
-		static int count = 0;
-		Entity ent = scene->CreateEntity("Quad_" + std::to_string(count));
-
-		glm::vec4 f_col = glm::vec4(glm::vec3(Color::Base_Color * (1.0f + (1.0f / M_random()))),1.0f);
-		ent.AddComponent<Base::SpriteComponent>(f_col); //Add sprite (solid color)
-
-		auto& quad_rbody = ent.AddComponent<Base::RigidBody2DComponent>();
-		auto& quad_bcol = ent.AddComponent<Base::BoxColider2DComponent>();
-
-		quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Dynamic;
-
-		quad_bcol.Density = IntRandomThing();
-		quad_bcol.Friction = IntRandomThing();
-		quad_bcol.Restitution = IntRandomThing();
-		quad_bcol.RestitutionThreshold = IntRandomThing();
-
-		ent.GetTransform().Translation = { P_random() % 10,P_random() % 10 ,1.0f };
-		ent.GetTransform().Scale = { P_random() % 4 + 0.01f,P_random() % 4 + 0.01f ,1.0f };
-		ent.GetTransform().Rotation = { 0.0f,0.0f ,P_random() % 10 };
-
-		count++;
-		return ent;
-	}
-
 	void Editor::OnAttach()
 	{
 		BASE_PROFILE_FUNCTION();
 
-		//Font font_consola("assets/fonts/consola.ttf", { 0 });
+		//FontSpecifications font_specs;
+		//font_specs.width = 32;
+		//font_specs.height = 32;
+		//font_specs.LoadAsync = true;
+		//Ref<Font> font_con;
+		//font_con = MakeRef<Font>("assets/fonts/consola.ttf", font_specs);
 
 		m_Scene = MakeRef<Scene>(); //Create scene
 
@@ -133,6 +107,16 @@ namespace Base
 		//	m_Scene->AwakeNativeScript(m_Camera);
 		//	return;
 		//}
+
+		{
+			//m_Entitys["Text"] = m_Scene->CreateEntity("Text");
+			//auto& tex = m_Entitys["Text"].AddComponent<Base::Text2DComponent>();
+			//tex.Font = font_con;
+			//tex.Text = "Adriel";
+			//m_Entitys["Text"].GetTransform().Scale ={ 1.0f, 1.0f, 1.0f };
+			//m_Entitys["Text"].GetTransform().Translation ={ 0.0f, 0.0f, 0.0f };
+			//m_Entitys["Text"].GetTransform().Rotation ={ 0.0f, 0.0f, 0.0f };
+		}
 
 		{
 			m_Entitys["Platform"] = m_Scene->CreateEntity("Platform"); //Create the Quad entity
@@ -194,39 +178,11 @@ namespace Base
 			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
 		}
 
-		/* {
-			Entity circle = m_Scene->CreateEntity("Circle");
-		
-			//circle.Add
-			auto& circle_comp =	circle.AddComponent<CircleComponent>();
-			circle.AddComponent<SpriteComponent>(Color::Base_SplitComplementary_2);
-			auto& circle_colider = circle.AddComponent<CircleColider2DComponent>();
-			auto& circle_body = circle.AddComponent<Base::RigidBody2DComponent>();
-
-			circle_body.Type = RigidBody2DComponent::BodyType::Dynamic;
-
-			circle_comp.Thickness = 1.0f;
-
-			circle_colider.Density = IntRandomThing();
-			circle_colider.Friction = IntRandomThing();
-			circle_colider.Restitution = IntRandomThing();
-			circle_colider.RestitutionThreshold = IntRandomThing();
-			circle_colider.Radius = 0.5f;
-
-			m_Entitys["Circle"] = circle;
-		}*/
-
-		{
-			for (int i = 0; i < 500; i++)
-			{
-				Entity quad = CreateQuad(m_Scene);
-				m_Entitys[quad.GetTag()] = quad;
-			}
-				
-		}
+		//Create Runtime Camera
 		m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
 		auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
 		auto& Camera_comp = m_Camera.AddComponent<Base::CameraComponent>();
+		Camera_comp.Primary = true;
 
 		Camera_comp.Camera.SetViewportSize(w, h);
 
@@ -257,9 +213,14 @@ namespace Base
 			m_Scene->OnUpdateEditor(args, m_EditorCamera);
 		}
 
+		
+		if (input::Keyboard::isPress(BASE_KEY_C))
+			m_SelectedEntity = m_Scene->GetPrimaryCamera();
+		else
 		if(input::Mouse::isPress(BASE_MOUSE_BUTTON_LEFT) && input::Keyboard::isPress(BASE_KEY_LEFT_SHIFT))
 			if (m_MousePickingEnabled && m_ViewportFocused && m_ViewportHovered)
 			{
+				//Select entity using id from pixel info
 				auto [mx, my] = ImGui::GetMousePos();
 				mx -= m_ViewportBounds[0].x;
 				my -= m_ViewportBounds[0].y;
@@ -275,7 +236,6 @@ namespace Base
 						m_SelectedEntity = { (entt::entity)pixel_data, m_Scene.get() };
 					else
 						m_SelectedEntity = {}; //Invalid Entity
-						//BASE_INFO("Mouse {0}x{1} | Value {2}", mouseX, mouseY, pixel_data);
 				}
 			}
 
@@ -387,7 +347,9 @@ namespace Base
 				ImGui::Text("Circle in scene: %d", Render2D::GetCircleStats().DrawCount);
 				ImGui::Text("Lines in scene: %d", Render2D::GetLineStats().DrawCount);
 				ImGui::Text("Draw Calls for this scene: %d", Render2D::GetDrawCallsCount());
-			
+				
+
+
 				ImGui::EndMenu();
 			}
 
@@ -425,9 +387,9 @@ namespace Base
 
 				ImGui::EndMenu();
 			}
-
+#ifdef BASE_PROFILING
 			ProfileMenuItem();
-
+#endif
 			ImGui::EndMenuBar();
 		}
 

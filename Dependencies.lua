@@ -14,6 +14,8 @@ IncludeDirectories["yaml"] = "%{wks.location}/Base/vendor/yaml-cpp/include"
 IncludeDirectories["ImGuizmo"] = "%{wks.location}/Base/vendor/ImGuizmo"
 IncludeDirectories["Lua"] = "%{wks.location}/Base/vendor/Lua"
 IncludeDirectories["msdfgen"] = "%{wks.location}/Base/vendor/msdfgen"
+IncludeDirectories["msdf_atlas_gen"] = "%{wks.location}/Base/vendor/msdf-atlas-gen"
+IncludeDirectories["meta"] = "%{wks.location}/Base/vendor/meta/src"
 
 LibDirectories = {}
 

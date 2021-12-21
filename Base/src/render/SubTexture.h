@@ -24,10 +24,12 @@ namespace render
 		SubTexture() = default;
 		SubTexture(Ref<Texture> texture , const glm::vec2& pos, const glm::vec2& size);
 		static SubTexture CreateFromCoords(Ref<Texture> texture, const glm::vec2 size, const glm::vec2& coords, const glm::vec2& spriteSize);
+		static SubTexture CreateFromAtlas(Ref<Texture> texture, const glm::vec2 size, const glm::vec2& position, const glm::vec2& atlasSize);
 		uint32_t GetId() const;
 		/* 4 */
 		const glm::vec2* GetTexCoords() const { return m_TexCoords; };
-
+		const Ref<Texture>& GetTexture() const { return m_Texture; }
+		Ref<Texture> GetTexture() { return m_Texture; }
 		operator bool() const 
 		{ 
 			if(m_Texture) return m_Texture->GetId(); 

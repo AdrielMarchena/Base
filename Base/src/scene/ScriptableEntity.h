@@ -6,6 +6,7 @@ namespace Base
 	class ScriptableEntity
 	{
 	public:
+		ScriptableEntity();
 		virtual ~ScriptableEntity(){}
 		template<typename T>
 		T& GetComponent()

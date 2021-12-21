@@ -112,6 +112,10 @@ namespace Base
 	static const size_t MaxLineVertexCount = MaxLineCount * 2;
 	static const size_t MaxLineIndexCount = MaxLineCount * 2;
 
+	static const size_t MaxTextCount = 500;
+	static const size_t MaxTextVertexCount = MaxTextCount * 4;
+	static const size_t MaxTextIndexCount = MaxTextCount * 6;
+
 	static int32_t MaxTexture = utils::MaxTexturesSlots();
 
 	struct Vertex
@@ -234,10 +238,10 @@ namespace Base
 		m_Shaders = MakeScope<render::ShaderLib>();
 
 		m_Shaders->Load("shaders/Quad.glsl");
+		m_Shaders->Load("shaders/Text.glsl");
 		m_Shaders->Load("Triangle", "shaders/Quad.glsl");
 		m_Shaders->Load("shaders/Circle.glsl");
 		m_Shaders->Load("shaders/Line.glsl");
-		m_Shaders->Load("Text", "shaders/Quad.glsl");
 
 		//Do Render stuff
 		MaxTexture = utils::MaxTexturesSlots();
@@ -334,11 +338,11 @@ namespace Base
 		//Text
 		m_Shaders->Get("Text")->Bind();
 
-		m_Data.TextBuffer = new TextVertex[MaxQuadVertexCount];
+		m_Data.TextBuffer = new TextVertex[MaxTextVertexCount];
 
 		m_Data.TextVA = VertexArray::CreateVertexArray();
 
-		m_Data.TextVB = VertexBuffer::CreateVertexBuffer(MaxQuadVertexCount * sizeof(TextVertex));
+		m_Data.TextVB = VertexBuffer::CreateVertexBuffer(MaxTextVertexCount * sizeof(TextVertex));
 
 		VertexAttribute text_layout(m_Data.TextVB);
 
@@ -353,8 +357,9 @@ namespace Base
 		text_layout.AddLayoutInt(1, sizeof(TextVertex), (const void*)offsetof(TextVertex, entityID));
 
 		m_Data.TextIB = m_Data.QuadIB;
+		m_Data.TextIB->Bind();
 
-		m_Data.TextVA->Unbind();
+		utils::SampleTextureOnShader(m_Shaders->Get("Text"), MaxTexture, m_Data.TextTextureSlots);
 
 		//GLOBAL GL CONFIGS
 		GLCall(glEnable(GL_DEPTH_TEST));
@@ -442,6 +447,7 @@ namespace Base
 			GLsizeiptr size = (uint8_t*)m_Data.QuadBufferPtr - (uint8_t*)m_Data.QuadBuffer;
 			m_Data.QuadVB->Bind();
 			m_Data.QuadVB->SubData(size,m_Data.QuadBuffer);
+			m_Data.QuadVB->Unbind();
 		}
 
 		if (m_Data.CircleIndexCount)
@@ -450,6 +456,7 @@ namespace Base
 			GLsizeiptr size = (uint8_t*)m_Data.CircleBufferPtr - (uint8_t*)m_Data.CircleBuffer;
 			m_Data.CircleVB->Bind();
 			m_Data.CircleVB->SubData(size, m_Data.CircleBuffer);
+			m_Data.CircleVB->Unbind();
 		}
 
 		if (m_Data.LineCount)
@@ -458,6 +465,7 @@ namespace Base
 			GLsizeiptr size = (uint8_t*)m_Data.LineBufferPtr - (uint8_t*)m_Data.LineBuffer;
 			m_Data.LineVB->Bind();
 			m_Data.LineVB->SubData(size, m_Data.LineBuffer);
+			m_Data.LineVB->Unbind();
 		}
 
 		if (m_Data.TextIndexCount)
@@ -465,6 +473,7 @@ namespace Base
 			GLsizeiptr size = (uint8_t*)m_Data.TextBufferPtr - (uint8_t*)m_Data.TextBuffer;
 			m_Data.TextVB->Bind();
 			m_Data.TextVB->SubData(size, m_Data.TextBuffer);
+			m_Data.TextVB->Unbind();
 		}
 	}
 
@@ -532,7 +541,7 @@ namespace Base
 			m_Data.LineRenderStats.DrawCount++;
 		}
 
-		if (m_Data.QuadIndexCount)
+		if (m_Data.TextIndexCount)
 		{
 			//Draw Quads
 			m_Shaders->Get("Text")->Bind();
@@ -559,15 +568,18 @@ namespace Base
 		delete m_Shaders.release();
 
 		m_Data.QuadVA.reset();
+		m_Data.TextVA.reset();
 		m_Data.CircleVA.reset();
 		m_Data.LineVA.reset();
 
 		m_Data.QuadVB.reset();
+		m_Data.TextVB.reset();
 		m_Data.CircleVB.reset();
 		m_Data.LineVB.reset();
 
 		m_Data.QuadIB.reset();
 		m_Data.CircleIB.reset();
+		m_Data.TextIB.reset();
 
 		if (m_Data.QuadBuffer)
 			delete m_Data.QuadBuffer;
@@ -575,6 +587,8 @@ namespace Base
 			delete m_Data.CircleBuffer;
 		if (m_Data.LineBuffer)
 			delete m_Data.LineBuffer;
+		if (m_Data.TextBuffer)
+			delete m_Data.TextBuffer;
 
 		Texture::DeleteWhiteTexture();
 	}
@@ -976,19 +990,45 @@ namespace Base
 
 	void Render2D::DrawFont(const glm::mat4& transform, const std::string& text, Ref<Font> font, const glm::vec4& color, int32_t entityID)
 	{
-		BASE_CORE_ASSERT(false, "Not implemented");
-		/*if (m_Data.QuadIndexCount >= MaxQuadIndexCount || m_Data.QuadTextureSlotIndex > MaxTexture - 1)
+		//BASE_CORE_ASSERT(false, "Not implemented");
+		if (m_Data.TextIndexCount >= MaxTextIndexCount || m_Data.TextTextureSlotIndex > MaxTexture - 1)
+		{
+			EndBatch();
+			Flush();
+			BeginBatch();
+		}
+		//Temp
+
+		auto& glyphs = font->GetGlyphsList();
+		std::vector<Ref<render::Texture>> texs;
+		texs.reserve(text.size());
+		for (auto c : text)
+		{
+			DrawGlyph(transform,c,font,color,entityID);
+		}
+	}
+
+	void Render2D::DrawGlyph(const glm::mat4& transform, unsigned char c, Ref<Font> font, const glm::vec4& color, int32_t entityID)
+	{
+		if (m_Data.TextIndexCount >= MaxTextIndexCount || m_Data.TextTextureSlotIndex > MaxTexture - 1)
 		{
 			EndBatch();
 			Flush();
 			BeginBatch();
 		}
 
+		auto& glyphs = font->GetGlyphsList();
+		auto& texture = glyphs[c].Texture;
+		const glm::vec2* coords = glyphs[c].Texture->GetTexCoords();
+
+		if (!texture)
+			return;
+
 		int8_t texture_index = 0;
 		if (texture->GetId())
-			for (int8_t i = 1; i < m_Data.QuadTextureSlotIndex; i++)
+			for (int8_t i = 1; i < m_Data.TextTextureSlotIndex; i++)
 			{
-				if (m_Data.QuadTextureSlots[i] == texture->GetId())
+				if (m_Data.TextTextureSlots[i] == texture->GetId())
 				{
 					texture_index = i;
 					break;
@@ -998,24 +1038,25 @@ namespace Base
 		if (texture->GetId())
 			if (!texture_index)
 			{
-				texture_index = m_Data.QuadTextureSlotIndex;
-				m_Data.QuadTextureSlots[m_Data.QuadTextureSlotIndex] = texture->GetId();
-				m_Data.QuadTextureSlotIndex++;
+				texture_index = m_Data.TextTextureSlotIndex;
+				m_Data.TextTextureSlots[m_Data.TextTextureSlotIndex] = texture->GetId();
+				m_Data.TextTextureSlotIndex++;
 			}
 
 		for (size_t i = 0; i < 4; i++)
 		{
-			m_Data.QuadBufferPtr->Position = transform * QuadVertexPositions[i];
-			m_Data.QuadBufferPtr->Color = color;
-			m_Data.QuadBufferPtr->TexCoords = m_default_tex_coords[i];
-			m_Data.QuadBufferPtr->TexIndex = texture_index;
-			m_Data.QuadBufferPtr->entityID = entityID;
-			m_Data.QuadBufferPtr++;
+			m_Data.TextBufferPtr->Position = transform * QuadVertexPositions[i];
+			m_Data.TextBufferPtr->Color = color;
+			m_Data.TextBufferPtr->TexCoords = coords[i];
+			m_Data.TextBufferPtr->TexIndex = texture_index;
+			m_Data.TextBufferPtr->entityID = entityID;
+			m_Data.TextBufferPtr++;
 		}
 
-		m_Data.QuadIndexCount += 6;
-		m_Data.QuadRenderStats.DrawCount++;
-		m_Data.QuadRenderStats.TotalCount++;*/
+		m_Data.TextIndexCount += 6;
+		m_Data.TextRenderStats.DrawCount++;
+		m_Data.TextRenderStats.TotalCount++;
+
 	}
 
 	void Render2D::SetLineWidth(float_t thickness)

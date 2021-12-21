@@ -6,10 +6,9 @@
 #include "render/Colors.h"
 #include "ent/Animator.h"
 #include "uuid/UUID.h"
-
+#include "render/Text.h"
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>
-
 namespace Base
 {
 	struct IDComponent
@@ -38,21 +37,16 @@ namespace Base
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Rotation =	{ 0.0f, 0.0f, 0.0f };
 		glm::vec3 Scale =		{ 1.0f, 1.0f, 1.0f };
-		//TODO: Maybe Temp
-		glm::mat4 Manual_Transform = glm::mat4(0.0f);
 
 		TransformComponent()
-			:Translation(glm::vec3(0.0f, 0.0f, 0.0f)), Manual_Transform(glm::mat4(0.0f)) {}
+			:Translation(glm::vec3(0.0f, 0.0f, 0.0f)) {}
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& translation)
-			: Translation(translation), Manual_Transform(glm::mat4(0.0f)) {}
+			: Translation(translation) {}
 
 
 		glm::mat4 GetTransform() const
 		{
-			if (Manual_Transform != glm::mat4(0.0f))
-				return Manual_Transform;
-
 			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
 			return glm::translate(glm::mat4(1.0f), Translation)
@@ -186,5 +180,21 @@ namespace Base
 
 		CircleColider2DComponent() = default;
 		CircleColider2DComponent(const CircleColider2DComponent&) = default;
+	};
+
+	struct Text2DComponent
+	{
+		std::string Text;
+		Ref<Font> Font;
+
+		Text2DComponent() = default;
+		Text2DComponent(const Text2DComponent&) = default;
+	};
+
+	//Temp
+	class Init
+	{
+	public:
+		static void InitComponentsReflection();
 	};
 }

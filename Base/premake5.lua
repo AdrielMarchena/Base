@@ -43,7 +43,9 @@ project "Base"
 		"%{IncludeDirectories.glm}",
 		"%{IncludeDirectories.debugbreak}",
 		"%{IncludeDirectories.Lua}",
-		"%{IncludeDirectories.msdfgen}"
+		"%{IncludeDirectories.msdfgen}",
+		"%{IncludeDirectories.msdf_atlas_gen}",
+		"%{IncludeDirectories.meta}",
 	}
 
 	links
@@ -56,6 +58,7 @@ project "Base"
 		"opengl32.lib",
 		"Lua",
 		"msdfgen",
+		"msdf-atlas-gen",
 		"freetype.lib"
 	}
 

@@ -18,6 +18,9 @@
 #include "box2d/b2_fixture.h"
 #include "box2d/b2_polygon_shape.h"
 #include "box2d/b2_circle_shape.h"
+
+#include "meta/factory.hpp"
+#include "meta/meta.hpp"
 namespace Base
 {
 	namespace utils
@@ -37,10 +40,23 @@ namespace Base
 
 	Scene::Scene()
 	{
+		Init::InitComponentsReflection();
+
 		m_ViewPortWidth = WindowProps().width;
 		m_ViewPortHeight = WindowProps().height;
 		
 		OnViewPortResize(m_ViewPortWidth, m_ViewPortHeight);
+
+		static bool once = []() 
+		{
+			std::hash<std::string_view> hash{};
+			auto factory = entt::meta<Scene>().type(hash("Scene"));
+			factory.
+				data<&Scene::m_ViewPortWidth>(hash("m_ViewPortWidth")).
+				data<&Scene::m_ViewPortHeight>(hash("m_ViewPortHeight"));
+			return true; 
+		}();
+		
 	}
 
 	Scene::~Scene()
@@ -213,6 +229,27 @@ namespace Base
 		D2D::BeginBatch();
 		//D2D::SetLineWidth(2.0f);
 
+		{// Text
+			BASE_PROFILE_SCOPE("Text Render (Editor)");
+			{// Text2D
+				auto view = m_Registry.view<TransformComponent, Text2DComponent>();
+				for (auto entity : view)
+				{
+					auto&& [transform, text] = view.get<TransformComponent, Text2DComponent>(entity);
+
+					TransformComponent com = transform;
+					for (auto c : text.Text)
+					{
+						D2D::DrawGlyph(com.GetTransform(),c,text.Font, Color::White, (int)entity);
+
+						double adv = text.Font->GetGlyphsList()[c].Advance;
+						if(adv!=0.0)
+							com.Translation.x += (adv / adv) * com.Scale.x;
+					}
+				}
+			}
+		}
+
 		{// Quads
 			BASE_PROFILE_SCOPE("Render (Editor)");
 			{//Draw Sprites
@@ -359,6 +396,19 @@ namespace Base
 				//Start render Scene
 				D2D::BeginScene(*mainCamera2D, cameraTransform2D);
 				D2D::BeginBatch();
+
+				{// Text
+					{// Text2D
+						auto view = m_Registry.view<TransformComponent, Text2DComponent>();
+						for (auto entity : view)
+						{
+							auto&& [transform, text] = view.get<TransformComponent, Text2DComponent>(entity);
+
+							D2D::DrawFont(transform.GetTransform(), text.Text, text.Font, Color::White, (int)entity);
+						}
+					}
+				}
+
 				{// Quads
 
 					{//Draw Sprites
@@ -428,6 +478,8 @@ namespace Base
 					
 					}
 				}
+
+				
 
 				//Finish the 2D rendering
 				D2D::EndBatch();

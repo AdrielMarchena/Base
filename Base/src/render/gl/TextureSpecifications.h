@@ -28,6 +28,14 @@ namespace Base
 		TEXTURE_3D
 	};
 
+	enum class GL_TexType
+	{
+		NONE,
+		UNSIGNED_INT = 1,
+		BYTE,
+		FLOAT
+	};
+
 	typedef uint8_t TextureBufferType;
 	struct TextureSpecifications
 	{
@@ -52,6 +60,7 @@ namespace Base
 		GL_TextureWrap WrapS = GL_TextureWrap::CLAMP_EDGE;
 		GL_TextureWrap WrapT = GL_TextureWrap::CLAMP_EDGE;
 		GL_TextureWrap WrapR = GL_TextureWrap::CLAMP_EDGE;
+		float TextureLodBias = -1.0f;
 		bool GenerateMipMap = true;
 
 		TextureSpecifications(const TextureSpecifications&) = default;
@@ -64,7 +73,7 @@ namespace Base
 
 		uint32_t InternalFormat = 0; //If zero, will guess using Channels value
 		uint32_t DataFormat = 0; //If zero, will guess using Channels value
-		uint32_t Type = 0; //If zero, GL_UNSIGNED_BYTE
+		GL_TexType Type = GL_TexType::UNSIGNED_INT; //If zero, GL_UNSIGNED_BYTE
 	};
 
 	class GLSwitch
@@ -73,5 +82,6 @@ namespace Base
 		static uint32_t TextureFilter(GL_TextureFilter filter_type);
 		static uint32_t TextureWrap(GL_TextureWrap wrap_type);
 		static uint32_t TextureTarget(GL_TextureTarget wrap_type);
+		static uint32_t TextureType(GL_TexType type);
 	};
 }
