@@ -65,6 +65,8 @@ namespace Base
 			return GL_FLOAT;
 		case GL_TexType::BYTE:
 			return GL_BYTE;
+		case GL_TexType::UNSIGNED_BYTE:
+			return GL_UNSIGNED_BYTE;
 		default:
 			BASE_CORE_ASSERT(false, "Unknow Texture Type");
 			break;

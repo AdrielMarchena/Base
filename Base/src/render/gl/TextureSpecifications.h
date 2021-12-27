@@ -33,6 +33,7 @@ namespace Base
 		NONE,
 		UNSIGNED_INT = 1,
 		BYTE,
+		UNSIGNED_BYTE,
 		FLOAT
 	};
 

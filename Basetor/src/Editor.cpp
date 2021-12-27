@@ -10,7 +10,7 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 #include "glm/gtc/type_ptr.hpp"
-
+#include "misc/PerlinNoise.h"
 namespace Base
 {
 #ifdef BASE_PROFILING
@@ -118,13 +118,18 @@ namespace Base
 			//m_Entitys["Text"].GetTransform().Rotation ={ 0.0f, 0.0f, 0.0f };
 		}
 
+		PerlinNoise2D noise2d;
+		noise2d.GenerateNoise(8);
+
 		{
+			
+
 			m_Entitys["Platform"] = m_Scene->CreateEntity("Platform"); //Create the Quad entity
-			m_Entitys["Platform"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
+			m_Entitys["Platform"].AddComponent<Base::TextureComponent>(noise2d.GenerateNoiseTexture()); //Add sprite (solid color)
 			auto& plat_tranform = m_Entitys["Platform"].GetTransform();
 
-			plat_tranform.Translation = { 0.0,-10.5, 0.0f };
-			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
+			plat_tranform.Translation = { 0.0f,0.0f,0.0f };
+			plat_tranform.Scale = { 1.0f, 1.0f, 1.0f };
 			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
 
 			auto& quad_rbody = m_Entitys["Platform"].AddComponent<Base::RigidBody2DComponent>();
@@ -135,11 +140,11 @@ namespace Base
 
 		{
 			m_Entitys["Platform2"] = m_Scene->CreateEntity("Platform2"); //Create the Quad entity
-			m_Entitys["Platform2"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
+			m_Entitys["Platform2"].AddComponent<Base::TextureComponent>(noise2d.GenerateSeedTexture()); //Add sprite (solid color)
 			auto& plat_tranform = m_Entitys["Platform2"].GetTransform();
 
-			plat_tranform.Translation = { 0.0,-10.5, 0.0f };
-			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
+			plat_tranform.Translation = { 0.0f,0.0f, 0.0f };
+			plat_tranform.Scale = { 1.0f, 1.0f, 1.0f };
 			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
 
 			auto& quad_rbody = m_Entitys["Platform2"].AddComponent<Base::RigidBody2DComponent>();
@@ -148,7 +153,7 @@ namespace Base
 			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
 		}
 
-		{
+		/* {
 			m_Entitys["Platform3"] = m_Scene->CreateEntity("Platform3"); //Create the Quad entity
 			m_Entitys["Platform3"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
 			auto& plat_tranform = m_Entitys["Platform3"].GetTransform();
@@ -176,7 +181,7 @@ namespace Base
 			auto& quad_bcol = m_Entitys["Platform4"].AddComponent<Base::BoxColider2DComponent>();
 
 			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}
+		}*/
 
 		//Create Runtime Camera
 		m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity

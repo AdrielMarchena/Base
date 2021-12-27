@@ -22,7 +22,7 @@ namespace render
 	{
 		BASE_CORE_ASSERT(info.Width > 0 &&
 			info.Height > 0 &&
-			info.Channels > 2 &&
+			info.Channels > 0 &&
 			info.Channels < 5
 		,"Some TextureSpecifications is wrong");
 
@@ -39,6 +39,13 @@ namespace render
 				m_ImageInfo.InternalFormat = GL_RGB8;
 			if (!m_ImageInfo.DataFormat)
 				m_ImageInfo.DataFormat = GL_RGB;
+		}
+		else if (m_ImageInfo.Channels == 1)
+		{
+			if (!m_ImageInfo.InternalFormat)
+				m_ImageInfo.InternalFormat = GL_RED;
+			if (!m_ImageInfo.DataFormat)
+				m_ImageInfo.DataFormat = GL_RED;
 		}
 		
 		BASE_CORE_ASSERT(m_ImageInfo.InternalFormat & m_ImageInfo.DataFormat, "Format not supported");
@@ -103,7 +110,7 @@ namespace render
 			m_ImageInfo.Buffer = nullptr;
 		}
 
-		if (info.CopySourceBuffer)
+		if (info.CopySourceBuffer && info.KeepSourceBuffer)
 		{
 			size_t buffer_size = static_cast<size_t>(info.Width) * info.Height * info.Channels * sizeof(TextureBufferType);
 			m_ImageInfo.Buffer = CreateTextureBuffer(buffer_size);
