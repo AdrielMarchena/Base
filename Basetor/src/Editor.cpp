@@ -11,6 +11,7 @@
 #include "ImGuizmo.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "misc/PerlinNoise.h"
+
 namespace Base
 {
 #ifdef BASE_PROFILING
@@ -46,6 +47,43 @@ namespace Base
 		}
 	}
 #endif
+	
+	struct EditorKeyBindingsFunctions
+	{
+		static void Key_Q_Callback(Editor* ed)
+		{
+			if (!ImGuizmo::IsUsing())
+				ed->m_GizmoType = -1;
+		}
+		static void Key_W_Callback(Editor* ed)
+		{
+			if (!ImGuizmo::IsUsing())
+				ed->m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+		}
+		static void Key_E_Callback(Editor* ed)
+		{
+			if (!ImGuizmo::IsUsing())
+				ed->m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+		}
+		static void Key_R_Callback(Editor* ed)
+		{
+			if (!ImGuizmo::IsUsing())
+				ed->m_GizmoType = ImGuizmo::OPERATION::SCALE;
+		}
+		static void Key_C_Callback(Editor* ed)
+		{
+			ed->m_SelectedEntity = ed->m_Scene->GetPrimaryCamera();
+		}
+	};
+
+	static inline void RegisterKeysMapFunctions(std::unordered_map<int, Editor::KeyMapperFunction>& map)
+	{
+		map.emplace(BASE_KEY_Q, &EditorKeyBindingsFunctions::Key_Q_Callback);
+		map.emplace(BASE_KEY_W, &EditorKeyBindingsFunctions::Key_W_Callback);
+		map.emplace(BASE_KEY_E, &EditorKeyBindingsFunctions::Key_E_Callback);
+		map.emplace(BASE_KEY_R, &EditorKeyBindingsFunctions::Key_R_Callback);
+		map.emplace(BASE_KEY_C, &EditorKeyBindingsFunctions::Key_C_Callback);
+	}
 
 	Editor::Editor(const std::string& name)
 		:Layer(name)
@@ -119,11 +157,9 @@ namespace Base
 		}
 
 		PerlinNoise2D noise2d;
-		noise2d.GenerateNoise(8);
+		noise2d.GenerateNoise(4);
 
 		{
-			
-
 			m_Entitys["Platform"] = m_Scene->CreateEntity("Platform"); //Create the Quad entity
 			m_Entitys["Platform"].AddComponent<Base::TextureComponent>(noise2d.GenerateNoiseTexture()); //Add sprite (solid color)
 			auto& plat_tranform = m_Entitys["Platform"].GetTransform();
@@ -153,48 +189,24 @@ namespace Base
 			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
 		}
 
-		/* {
-			m_Entitys["Platform3"] = m_Scene->CreateEntity("Platform3"); //Create the Quad entity
-			m_Entitys["Platform3"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Platform3"].GetTransform();
-
-			plat_tranform.Translation = { 0.0,-10.5, 0.0f };
-			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Platform3"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Platform3"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}
-
-		{
-			m_Entitys["Platform4"] = m_Scene->CreateEntity("Platform4"); //Create the Quad entity
-			m_Entitys["Platform4"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Platform4"].GetTransform();
-
-			plat_tranform.Translation = { 0.0,-10.5, 0.0f };
-			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Platform4"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Platform4"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}*/
-
 		//Create Runtime Camera
 		m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
 		auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
 		auto& Camera_comp = m_Camera.AddComponent<Base::CameraComponent>();
+		Camera_comp.Camera.SetOrthographicFarClip(100.0f);
+		Camera_comp.Camera.SetOrthographicNearClip(-2.0f);
 		Camera_comp.Primary = true;
 
 		Camera_comp.Camera.SetViewportSize(w, h);
+
+		m_SyncCameraZoom = false;
 
 		auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
 		Camera_Script.Bind<Base::OrthoCameraScript>();
 		m_Scene->StartNativeScript(m_Camera);
 		m_Scene->AwakeNativeScript(m_Camera);
+
+		RegisterKeysMapFunctions(m_KeysMapFunction);
 	}
 
 	void Editor::OnUpdate(UpdateArgs args)
@@ -218,10 +230,6 @@ namespace Base
 			m_Scene->OnUpdateEditor(args, m_EditorCamera);
 		}
 
-		
-		if (input::Keyboard::isPress(BASE_KEY_C))
-			m_SelectedEntity = m_Scene->GetPrimaryCamera();
-		else
 		if(input::Mouse::isPress(BASE_MOUSE_BUTTON_LEFT) && input::Keyboard::isPress(BASE_KEY_LEFT_SHIFT))
 			if (m_MousePickingEnabled && m_ViewportFocused && m_ViewportHovered)
 			{
@@ -353,8 +361,6 @@ namespace Base
 				ImGui::Text("Lines in scene: %d", Render2D::GetLineStats().DrawCount);
 				ImGui::Text("Draw Calls for this scene: %d", Render2D::GetDrawCallsCount());
 				
-
-
 				ImGui::EndMenu();
 			}
 
@@ -362,6 +368,9 @@ namespace Base
 			{
 				static bool p_on = false;
 				ImGui::Checkbox("Physics", &p_on);
+				ImGui::Checkbox("Sync Runtime Camera with Scene", &m_SyncCameraZoom);
+				//ImGui::Checkbox("Show Runtime Camera Quad", &m_ShowCameraQuad);
+
 				if(ImGui::Button("Start Runtime"))
 				{
 					m_Runtime = true;
@@ -535,35 +544,10 @@ namespace Base
 
 	bool Editor::OnKeyboardPressed(Base::KeyPressedEvent& e)
 	{
-		switch (e.GetKeyCode())
-		{
-			// Gizmos
-			case BASE_KEY_Q:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = -1;
-				break;
-			}
-			case BASE_KEY_W:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-				break;
-			}
-			case BASE_KEY_E:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-				break;
-			}
-			case BASE_KEY_R:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = ImGuizmo::OPERATION::SCALE;
-				break;
-			}
-		}
+		auto it = m_KeysMapFunction.find(e.GetKeyCode());
+		if (it != m_KeysMapFunction.end())
+			(*it->second)(this);
+
 		return false;
 	}
-
 }
