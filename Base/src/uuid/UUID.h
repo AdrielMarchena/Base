@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-#ifdef GAME_WINDOWS_BUILD
+#ifdef BASE_WINDOWS_BUILD
 
 #include <xhash>
 

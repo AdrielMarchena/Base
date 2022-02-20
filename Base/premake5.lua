@@ -59,6 +59,11 @@ project "Base"
 		"lodepng"
 	}
 
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE"
+	}
+
 	postbuildcommands
 	{
 		--("{COPYDIR} \"./src/**.h\" \"./include/Base\""),

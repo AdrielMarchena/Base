@@ -49,6 +49,11 @@ project "Basetor"
 		"lodepng"
 	}
 
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE"
+	}
+
 	filter { "platforms:x64", "system:windows" }
 		libdirs
 		{
