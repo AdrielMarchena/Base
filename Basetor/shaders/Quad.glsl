@@ -1,19 +1,19 @@
 #type vertex
-#version 420 core
+#version 400 core
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TexCoord;
 layout(location = 3) in float a_TexIndex;
 layout(location = 4) in int a_EntityID;
 
-layout(location = 0) out flat int v_EntityID;
+//layout(location = 0) flat out int v_EntityID;
 uniform mat4 u_ViewProj;
 
 out vec4 v_Color;
 out vec2 v_TexCoord;
 out float v_TexIndex;
 out vec3 v_Pos;
-//flat out int v_EntityID;
+flat out int v_EntityID;
 
 void main()
 {
@@ -26,18 +26,18 @@ void main()
 }
 
 #type fragment
-#version 420 core
+#version 400 core
 #define MAX_TEXTURES_SLOTS 16
 
 layout(location = 0) out vec4 o_Color;
 layout(location = 1) out int o_EntityID;
-layout(location = 0) in flat int v_EntityID;
+//layout(location = 0) flat in int v_EntityID;
 
 in vec4 v_Color;
 in vec2 v_TexCoord;
 in float v_TexIndex;
 in vec3 v_Pos;
-//flat in int v_EntityID;
+flat in int v_EntityID;
 
 uniform sampler2D u_Textures[MAX_TEXTURES_SLOTS];
 

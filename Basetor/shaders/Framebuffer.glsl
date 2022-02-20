@@ -32,10 +32,6 @@ uniform int offset_size;
 uniform float kernel_5x5_slot[5*5];
 uniform int kernel_size;
 
-vec4 transform(in vec4 textureColor, in sampler2D lookupTable);
-
-#define LUT_NO_CLAMP
-
 void main()
 {
     if(kernel_size > 0)
