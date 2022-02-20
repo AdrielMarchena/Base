@@ -240,9 +240,9 @@ namespace Base
 					TransformComponent com = transform;
 					for (auto c : text.Text)
 					{
-						D2D::DrawGlyph(com.GetTransform(),c,text.Font, Color::White, (int)entity);
+						D2D::DrawGlyph(com.GetTransform(),c,text.font, Color::White, (int)entity);
 
-						double adv = text.Font->GetGlyphsList()[c].Advance;
+						double adv = text.font->GetGlyphsList()[c].Advance;
 						if(adv!=0.0)
 							com.Translation.x += (adv / adv) * com.Scale.x;
 					}
@@ -404,7 +404,7 @@ namespace Base
 						{
 							auto&& [transform, text] = view.get<TransformComponent, Text2DComponent>(entity);
 
-							D2D::DrawFont(transform.GetTransform(), text.Text, text.Font, Color::White, (int)entity);
+							D2D::DrawFont(transform.GetTransform(), text.Text, text.font, Color::White, (int)entity);
 						}
 					}
 				}

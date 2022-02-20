@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base/base.h"
+#include "Base/Base.h"
 #include "Scene.h"
 namespace Base
 {

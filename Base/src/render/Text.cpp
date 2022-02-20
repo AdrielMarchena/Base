@@ -258,7 +258,8 @@ namespace Base
 				aglyph.character = character;
 				size_t s = m_Specs.width * m_Specs.height * 3;
 				aglyph.pixels = new float[s];
-				memcpy_s(aglyph.pixels, s * sizeof(float), msdf.operator float* (), s * sizeof(float));
+				//memcpy_s(aglyph.pixels, s * sizeof(float), msdf.operator float* (), s * sizeof(float));
+				memcpy(aglyph.pixels,msdf.operator float* (),s * sizeof(float));
 			}
 			else
 				BASE_TRACE("Coluld not load glyph {0}", character);
@@ -302,7 +303,8 @@ namespace Base
 		//TODO: Remove copy
 		size_t s = m.width * m.height * 3;
 		float* buffer = new float[s];
-		memcpy_s(buffer, s * sizeof(float), m.pixels, s * sizeof(float));
+		//memcpy_s(buffer, s * sizeof(float), m.pixels, s * sizeof(float));
+		memcpy(buffer,m.pixels,s * sizeof(float));
 
 		spec.Buffer = reinterpret_cast<TextureBufferType*>(buffer);
 
@@ -388,7 +390,8 @@ namespace Base
 		//TODO: Remove copy
 		size_t s = bitmap.width * bitmap.height * 3;
 		float* buffer = new float[s];
-		memcpy_s(buffer, s * sizeof(float), bitmap.pixels, s * sizeof(float));
+		//memcpy_s(buffer, s * sizeof(float), bitmap.pixels, s * sizeof(float));
+		memcpy(buffer,bitmap.pixels,s * sizeof(float));
 
 		spec.Buffer = reinterpret_cast<TextureBufferType*>(buffer);
 		m_Atlas = render::Texture::CreateTexture(spec);

@@ -41,19 +41,19 @@ namespace Base
 			m_Scene->m_Registry.remove<T>(m_EntityHandle);
 		}
 
-		TransformComponent& Entity::GetTransform()
+		TransformComponent& GetTransform()
 		{
 			BASE_CORE_ASSERT(HasComponent<Base::TransformComponent>(), "Entity has no TransformComponent!");
 			return m_Scene->m_Registry.get<Base::TransformComponent>(m_EntityHandle);
 		}
 
-		const std::string& Entity::GetTag()
+		const std::string& GetTag()
 		{
 			BASE_CORE_ASSERT(HasComponent<Base::TagComponent>(), "Entity has no TagComponent!");
 			return m_Scene->m_Registry.get<Base::TagComponent>(m_EntityHandle).Tag;
 		}
 
-		UUID_T Entity::GetID()
+		UUID_T GetID()
 		{
 			BASE_CORE_ASSERT(HasComponent<Base::IDComponent>(), "Entity has no IDComponent!");
 			return m_Scene->m_Registry.get<Base::IDComponent>(m_EntityHandle).Id;

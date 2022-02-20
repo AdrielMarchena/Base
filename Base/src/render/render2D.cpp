@@ -30,7 +30,7 @@ namespace Base
 			}
 		}
 
-		inline static void SampleTextureOnShader(Ref<render::Shader>& shader, int32_t max_textures, std::vector<uint32_t>& slots)
+		inline static void SampleTextureOnShader(Ref<render::Shader> shader, int32_t max_textures, std::vector<uint32_t>& slots)
 		{
 			int32_t* samplers = new int32_t[max_textures];
 			for (int i = 0; i < max_textures; i++)
@@ -282,7 +282,7 @@ namespace Base
 			offset += 4;
 		}
 
-		m_Data.QuadIB = IndexBuffer::CreateIndexBuffer(_msize(indices), indices);
+		m_Data.QuadIB = IndexBuffer::CreateIndexBuffer(sizeof(uint32_t) * MaxQuadIndexCount, indices);
 		delete[] indices;
 
 		utils::SampleTextureOnShader(m_Shaders->Get("Quad"), MaxTexture, m_Data.QuadTextureSlots);

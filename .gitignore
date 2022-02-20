@@ -73,7 +73,7 @@ bin-int
 Base/vendor/Lua/*
 #add all .lua
 !*.lua
-
+!*/assets/*
 
 #misc
 

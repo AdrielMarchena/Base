@@ -185,7 +185,7 @@ namespace Base
 	struct Text2DComponent
 	{
 		std::string Text;
-		Ref<Font> Font;
+		Ref<Font> font;
 
 		Text2DComponent() = default;
 		Text2DComponent(const Text2DComponent&) = default;

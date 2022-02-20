@@ -371,7 +371,7 @@ namespace Base
 					if (m_SyncCameraZoom)
 					{
 						float dist = m_EditorCamera.GetDistance();
-						auto& main_runtime_cam = m_Scene->GetPrimaryCamera();
+						auto main_runtime_cam = m_Scene->GetPrimaryCamera();
 						if (main_runtime_cam)
 						{
 							auto& Camera = main_runtime_cam.GetComponent<CameraComponent>();

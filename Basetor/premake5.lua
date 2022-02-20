@@ -1,6 +1,7 @@
 project "Basetor"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++17"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -34,25 +35,33 @@ project "Basetor"
 	links
 	{
 		"Base",
-		"Lua",
+		"Box2D",
+		"yaml-cpp",
+		"Glad",
 		"ImGui",
+		"GLFW",
+		--"opengl32.lib",
+		"Lua",
 		"msdfgen",
-		"freetype.lib"
+		"msdf-atlas-gen",
+		--"freetype.lib",
+		"stb_image",
+		"lodepng"
 	}
 
-	filter "platforms:x64"
+	filter { "platforms:x64", "system:windows" }
 		libdirs
 		{
 			"%{wks.location}/Base/vendor/msdfgen/freetype/win64"
 		}
 	
-	filter "platforms:x86"
+	filter { "platforms:x86", "system:windows" }
 		libdirs
 		{
 			"%{wks.location}/Base/vendor/msdfgen/freetype/win32"
 		}
 
-	filter "system:Windows"
+	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
@@ -62,7 +71,7 @@ project "Basetor"
 			"BASE_WINDOWS_BUILD"
 		}
 	
-	filter "system:Unix"
+	filter "system:linux"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
@@ -73,6 +82,12 @@ project "Basetor"
 			"BASE_STATIC_BUILD"
 		}
 	
+		links
+		{
+			"pthread",
+			"dl"
+		}
+
 	filter "configurations:Debug"
 		defines "BASE_DEBUG"
 		symbols "On"
