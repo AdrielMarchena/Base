@@ -1,31 +1,23 @@
-project "yaml-cpp"
+project "stb_image"
 	kind "StaticLib"
-	language "C++"
+	language "C"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files 
 	{
-		"src/**.h",
-		"src/**.cpp",
-		"include/**.h"
+		"stb_image/stb_image.cpp"
 	}
-
-	includedirs
-	{
-		"include"
-	}
-
-	filter "system:windows"
-		systemversion "latest"
-		cppdialect "C++17"
-		staticruntime "On"
 
 	filter "system:linux"
 		pic "On"
+
 		systemversion "latest"
-		cppdialect "C++17"
+		staticruntime "On"
+
+	filter "system:windows"
+		systemversion "latest"
 		staticruntime "On"
 
 	filter "configurations:Debug"

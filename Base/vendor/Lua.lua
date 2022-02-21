@@ -2,26 +2,27 @@ project "Lua"
 	kind "StaticLib"
 	language "C"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Lua/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("Lua/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files 
 	{
-		"**.h",
-		"**.c",
-		"**.hpp",
+		--"Lua/**.h",
+		--"Lua/**.c",
+		--"Lua/**.hpp",
+		"Lua/onelua.c"
 	}
 	removefiles
 	{
 		--"src/lua.h",
-		"lua.c",
-		"luac.c",
+		"Lua/lua.c",
+		"Lua/luac.c",
 	}
 
 	includedirs
 	{
-		"src",
-		"./"
+		"Lua/src",
+		"Lua/"
 	}
 
 	defines

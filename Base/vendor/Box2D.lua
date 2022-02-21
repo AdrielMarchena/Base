@@ -1,49 +1,25 @@
-project "msdfgen"
+project "Box2D"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++11"
 	staticruntime "off"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("Box2D/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("Box2D/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files 
 	{
-		"core/**.h",
-		"core/**.cpp",
-		"ext/**.h",
-		"ext/**.hpp",
-		"include/**.h",
-		"ext/*.cpp",
-		"lib/*.cpp"
+		"Box2D/src/**.h",
+		"Box2D/src/**.cpp",
+		"Box2D/include/**.h"
 	}
 	
 	includedirs
 	{
-		"include",
-		"core",
-		"ext",
-		"lib",
-		"freetype/include"
+		"Box2D/include",
+		"Box2D/src"
 	}
-	
-	filter "platforms:x64"
-		libdirs
-		{
-			"./freetype/win32"
-		}
-	
-	filter "platforms:x86"
-		libdirs
-		{
-			"./freetype/win64"
-		}
-	
-	links
-	{
-		"freetype.lib"
-	}	
-	
+
 	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"

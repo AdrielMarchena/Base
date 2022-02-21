@@ -14,46 +14,32 @@ namespace baseException
 	class directory_not_found : public std::exception
 	{
 	public:
-		directory_not_found()
-			:exception(), _Path("")
-		{}
-		directory_not_found(const char* _What)
-			:exception(_What), _Path("")
-		{}
-		directory_not_found(const char* _What, const char* _Path)
-			:exception(_What), _Path(_Path)
-		{}
-
-		_NODISCARD virtual char const* path() const
+		directory_not_found() noexcept
 		{
-			return _Path ? _Path : "Unknown path";
+		}
+
+		directory_not_found(const char* what) noexcept
+		{
+			_What = _What;
+		}
+
+		directory_not_found(const char* what, const char* path) noexcept
+		{
+			_What = what;
+			_Path = path;
+		}
+
+		virtual char const* path() const noexcept
+		{
+			return _Path.c_str();
+		}
+		virtual const char* what() const noexcept override
+		{
+			return _What.c_str();
 		}
 	private:
-		const char* _Path;
-	};
-
-	/**
-	* Exception throw when a stb_image return no SOI error
-	*/
-	class no_soi : public std::exception
-	{
-	public:
-		no_soi()
-			:exception(), _Path("")
-		{}
-		no_soi(const char* _What)
-			:exception(_What), _Path("")
-		{}
-		no_soi(const char* _What, const char* _Path)
-			:exception(_What), _Path(_Path)
-		{}
-
-		_NODISCARD virtual char const* path() const
-		{
-			return _Path ? _Path : "Unknown path";
-		}
-	private:
-		const char* _Path;
+		std::string _Path = "Unknown path";
+		std::string _What = "";
 	};
 
 	class WindowCreationException : public std::exception
@@ -66,16 +52,30 @@ namespace baseException
 			GLEW,
 			GLAD
 		};
-		WindowCreationException()
-			:exception(), _Reason(Reasons::NOT_SPECIFIED) {}
-		WindowCreationException(const char* _What)
-			:exception(_What),_Reason(Reasons::NOT_SPECIFIED){}
-		WindowCreationException(const char* _What,Reasons reason)
-			:exception(_What), _Reason(reason) {}
+		WindowCreationException() noexcept
+		{ 
+			_What = "";
+			_Reason = Reasons::NOT_SPECIFIED;
+		}
+		WindowCreationException(const char* what) noexcept
+		{ 
+			_What = what;
+			_Reason = Reasons::NOT_SPECIFIED;
+		}
+		WindowCreationException(const char* what,Reasons reason) noexcept
+		{ 
+			_What = what;
+			_Reason = reason;
+		}
 
-		Reasons reason() const { return _Reason; }
+		Reasons reason() const noexcept { return _Reason; }
+		virtual const char* what() const noexcept override
+		{
+			return _What.c_str();
+		}
 	private:
 		Reasons _Reason;
+		std::string _What = "";
 	};
 }
 }

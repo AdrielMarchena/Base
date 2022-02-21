@@ -81,6 +81,7 @@ namespace render
 		{
 			BASE_ERROR("Could not open file {0}", path);
 		}
+		m_Path = path;
 		return res;
 	}
 
@@ -111,7 +112,7 @@ namespace render
 
 	void Shader::CreateProgram()
 	{
-		static const char* er_msg = "Shader Error: ";
+		static const char* er_msg = "Shader '{0}' on path '{1}' \nError: ";
 
 		GLCall(GLuint program = glCreateProgram());
 
@@ -124,21 +125,21 @@ namespace render
 		GLCall(glCompileShader(vs));
 		error = VerifyShaderError(vs);
 
-		BASE_CORE_ASSERT(error.empty(), er_msg + error);
+		BASE_CORE_ASSERT(error.empty(), er_msg + error,m_Name,m_Path);
 
 		GLCall(GLuint fs = glCreateShader(GL_FRAGMENT_SHADER));
 		GLCall(glShaderSource(fs, 1, &fsource, NULL));
 		GLCall(glCompileShader(fs));
 		error = VerifyShaderError(fs);
 
-		BASE_CORE_ASSERT(error.empty(), er_msg + error);
+		BASE_CORE_ASSERT(error.empty(), er_msg + error,m_Name,m_Path);
 
 		GLCall(glAttachShader(program, vs));
 		GLCall(glAttachShader(program, fs));
 		GLCall(glLinkProgram(program));
 		error = VerifyProgramError(program);
 
-		BASE_CORE_ASSERT(error.empty(), er_msg + error);
+		BASE_CORE_ASSERT(error.empty(), er_msg + error,m_Name,m_Path);
 
 		GLCall(glDetachShader(program, vs));
 		GLCall(glDeleteShader(vs));

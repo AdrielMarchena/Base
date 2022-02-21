@@ -8,12 +8,12 @@
 #include "LayerStack.h"
 #include "ImGuiLayer.h"
 #include <string>
-#include "script/LuaContext.h"
 
 int main(int argc, char** argv);
 
 namespace Base
 {
+	class LuaContext;
 	class Application
 	{
 	private:
@@ -23,7 +23,7 @@ namespace Base
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = false;
 		uint64_t m_FrameCount;
-		LuaContext m_LuaContext;
+		LuaContext* m_LuaContext;
 	public:
 		Application(int argc, char** argv);
 		virtual ~Application();
@@ -40,7 +40,7 @@ namespace Base
 		Window& GetWindow() { return *m_Window; }
 		static Application& Get() { return *m_AppInstance; }
 		ImGuiLayer& GetImGuiLayer() { return *m_ImGuiLayer; }
-		LuaContext& GetLuaContext() { return m_LuaContext; }
+		LuaContext& GetLuaContext() { return *m_LuaContext; }
 	private:
 		static Application* m_AppInstance;
 		bool OnWindowClose(WindowCloseEvent& e);

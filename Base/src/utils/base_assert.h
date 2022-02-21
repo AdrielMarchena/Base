@@ -40,7 +40,7 @@ static std::string BaseParseTypeIDName(const std::string& name)
 	#endif
 
 	#ifndef BASE_CORE_ASSERT
-		#define BASE_CORE_ASSERT(x,message)
+		#define BASE_CORE_ASSERT(x,...)
 	#endif
 	#ifndef BASE_PARSE_TYPE_NAME
 		#define BASE_PARSE_TYPE_NAME(name)

@@ -149,7 +149,7 @@ namespace Base
 				auto factory = entt::meta<Text2DComponent>().type(hash("Text2DComponent"));
 				factory.
 					data<&Text2DComponent::Text>(hash("Offset")).
-					data<&Text2DComponent::Font>(hash("RuntimeFixture"));
+					data<&Text2DComponent::font>(hash("RuntimeFixture"));
 			}
 
 			s_Init = true;

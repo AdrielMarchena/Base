@@ -6,5 +6,5 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "GL_Types.h"
-#include "GL_Commands.h"
+#include "Gl_Commands.h"
 #include "Framebuffer.h"

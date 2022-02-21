@@ -1,5 +1,5 @@
 #type vertex
-#version 330 core
+#version 400 core
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec2 a_TexCoord;
 
@@ -15,7 +15,7 @@ void main()
 }
 
 #type fragment
-#version 330 core
+#version 400 core
 
 layout(location = 0) out vec4 o_Color;
 
@@ -31,10 +31,6 @@ uniform int offset_size;
 
 uniform float kernel_5x5_slot[5*5];
 uniform int kernel_size;
-
-vec4 transform(in vec4 textureColor, in sampler2D lookupTable);
-
-#define LUT_NO_CLAMP
 
 void main()
 {

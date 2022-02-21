@@ -1,7 +1,15 @@
 #pragma once
 #include <stdint.h>
 
+#ifdef BASE_WINDOWS_BUILD
+
 #include <xhash>
+
+#else
+
+#include <bits/functional_hash.h>
+
+#endif
 #include <unordered_map>
 
 namespace Base

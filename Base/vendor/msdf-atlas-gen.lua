@@ -4,39 +4,39 @@ project "msdf-atlas-gen"
 	cppdialect "C++11"
 	staticruntime "off"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("msdf-atlas-gen/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("msdf-atlas-gen/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	files 
 	{
 
-		"msdf-atlas-gen/*.h",
-		"msdf-atlas-gen/*.hpp",
-		"msdf-atlas-gen/*.cpp"
+		"msdf-atlas-gen/msdf-atlas-gen/*.h",
+		"msdf-atlas-gen/msdf-atlas-gen/*.hpp",
+		"msdf-atlas-gen/msdf-atlas-gen/*.cpp"
 	}
 	
 	removefiles
 	{
-		"msdf-atlas-gen/main.cpp"
+		"msdf-atlas-gen/msdf-atlas-gen/main.cpp"
 	}
 
 	includedirs
 	{
 		"%{IncludeDirectories.msdfgen}",
-		"msdfgen/include",
-		"artery-font-format",
+		"msdf-atlas-gen/msdfgen/include",
+		"msdf-atlas-gen/artery-font-format",
 	}
 	
 	filter "platforms:x64"
 		libdirs
 		{
-			"./freetype/win32"
+			"msdf-atlas-gen/freetype/win32"
 		}
 	
 	filter "platforms:x86"
 		libdirs
 		{
-			"./freetype/win64"
+			"msdf-atlas-gen/freetype/win64"
 		}
 	
 	links

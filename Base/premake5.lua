@@ -1,7 +1,8 @@
 project "Base"
 	kind "StaticLib"
 	language "C++"
-
+	cppdialect "C++17"
+	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
@@ -14,16 +15,10 @@ project "Base"
 		"src/**.c",
 		"src/**.cpp",
 
-		"vendor/lodepng/lodepng.h",
-		"vendor/lodepng/lodepng.cpp",
-
-		"vendor/stb_image/**.h",
-		"vendor/stb_image/**.cpp",
-
 		"vendor/ImGuizmo/ImGuizmo.h",
 		"vendor/ImGuizmo/ImGuizmo.cpp",
 
-		"vendor/Lua/lua.h",
+		--"vendor/Lua/lua.h",
 		"vendor/Lua/lua.c"
 	}
 
@@ -59,12 +54,19 @@ project "Base"
 		"Lua",
 		"msdfgen",
 		"msdf-atlas-gen",
-		"freetype.lib"
+		"freetype.lib",
+		"stb_image",
+		"lodepng"
+	}
+
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	postbuildcommands
 	{
-		("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
+		--("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
 	}
 
 	filter { 'files:vendor/Lua/lua.c' }
@@ -91,13 +93,13 @@ project "Base"
 	filter { 'files:vendor/stb_image/**.cpp' }
 		flags { 'NoPCH' }
 
-	filter "platforms:x64"
+	filter { "platforms:x64", "system:Windows" }
 		libdirs
 		{
 			"%{wks.location}/Base/vendor/msdfgen/freetype/win64"
 		}
 	
-	filter "platforms:x86"
+	filter { "platforms:x86", "system:Windows" }
 		libdirs
 		{
 			"%{wks.location}/Base/vendor/msdfgen/freetype/win32"
@@ -114,7 +116,7 @@ project "Base"
 			"BASE_STATIC_BUILD"
 		}
 
-	filter "system:Unix"
+	filter "system:linux"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
@@ -123,6 +125,12 @@ project "Base"
 		{
 			"BASE_UNIX_BUILD",
 			"BASE_STATIC_BUILD"
+		}
+
+		links
+		{
+			"pthread",
+			"dl"
 		}
 
 	filter "configurations:Debug"

@@ -59,7 +59,7 @@
 *.[Jj][Pp][Ee][Gg]
 
 #fonts
-*.[Tt][Tt][Ff]
+#*.[Tt][Tt][Ff]
 
 #Bin folder or something
 [Dd][Ee][Bb][Uu][Gg]/
@@ -73,7 +73,7 @@ bin-int
 Base/vendor/Lua/*
 #add all .lua
 !*.lua
-
+!*/Basetor/assets/font/
 
 #misc
 

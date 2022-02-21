@@ -3,11 +3,13 @@
 
 #include "input/Keyboard.h"
 
+#include "script/LuaContext.h"
 #include "utils/Instrumentor.h"
 #include "render/render2D.h"
 #include "args/UpdateArgs.h"
 #include "render/Colors.h"
 #include "GLFW/glfw3.h"
+
 namespace Base
 {
 	Application* Application::m_AppInstance = nullptr;
@@ -16,18 +18,20 @@ namespace Base
 	{
 		BASE_PROFILE_FUNCTION();
 
-		m_LuaContext.CreateLuaState();
+		m_LuaContext = new LuaContext();
+
+		m_LuaContext->CreateLuaState();
 
 		WindowSpecifications specs;
-		if (m_LuaContext.ExecuteFromFile("configurations.lua"))
+		if (m_LuaContext->ExecuteFromFile("configurations.lua"))
 		{
-			specs.Title = m_LuaContext.GetGlobal<std::string>("title");
-			specs.Width = m_LuaContext.GetGlobal<int>("width");
-			specs.Height = m_LuaContext.GetGlobal<int>("height");
-			specs.Fullscreen = m_LuaContext.GetGlobal<bool>("fullscreen");
-			specs.Decorated = !m_LuaContext.GetGlobal<bool>("title_off");
-			specs.VSync_On = !m_LuaContext.GetGlobal<bool>("vsync_off");
-			specs.Resizeble = !m_LuaContext.GetGlobal<bool>("not_resizeble");
+			specs.Title = m_LuaContext->GetGlobal<std::string>("title");
+			specs.Width = m_LuaContext->GetGlobal<int>("width");
+			specs.Height = m_LuaContext->GetGlobal<int>("height");
+			specs.Fullscreen = m_LuaContext->GetGlobal<bool>("fullscreen");
+			specs.Decorated = !m_LuaContext->GetGlobal<bool>("title_off");
+			specs.VSync_On = !m_LuaContext->GetGlobal<bool>("vsync_off");
+			specs.Resizeble = !m_LuaContext->GetGlobal<bool>("not_resizeble");
 		}
 
 		specs.Title = specs.Title != "" ? specs.Title : "Base";
@@ -51,6 +55,8 @@ namespace Base
 
 	Application::~Application()
 	{
+		if(m_LuaContext)
+			delete m_LuaContext;
 		Render2D::Dispose();
 	}
 

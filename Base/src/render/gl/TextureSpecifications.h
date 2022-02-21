@@ -1,9 +1,9 @@
 #pragma once
 #include <stdint.h>
-#include <string_view>
+//#include <string_view>
 namespace Base
 {
-	constexpr std::string_view Base_Unamed_Texture = "Unamed_Texture";
+	constexpr const char* Base_Unamed_Texture = "Unamed_Texture";
 
 	//TODO: Add enum to specify mipmap things (maybe)
 	enum class GL_TextureFilter
