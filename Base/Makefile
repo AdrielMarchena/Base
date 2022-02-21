@@ -38,7 +38,7 @@ ifeq ($(config),debug_x64)
 TARGETDIR = bin/Debug-linux-x86_64/Base
 TARGET = $(TARGETDIR)/libBase.a
 OBJDIR = bin-int/Debug-linux-x86_64/Base
-DEFINES += -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DEBUG
+DEFINES += -DYAML_CPP_STATIC_DEFINE -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -g -std=c++17
 LIBS += vendor/Box2D/bin/Debug-linux-x86_64/Box2D/libBox2D.a vendor/yaml-cpp/bin/Debug-linux-x86_64/yaml-cpp/libyaml-cpp.a vendor/glad/bin/Debug-linux-x86_64/Glad/libGlad.a vendor/imgui/bin/Debug-linux-x86_64/ImGui/libImGui.a vendor/glfw/bin/Debug-linux-x86_64/GLFW/libGLFW.a vendor/Lua/bin/Debug-linux-x86_64/Lua/libLua.a vendor/msdfgen/bin/Debug-linux-x86_64/msdfgen/libmsdfgen.a vendor/msdf-atlas-gen/bin/Debug-linux-x86_64/msdf-atlas-gen/libmsdf-atlas-gen.a vendor/bin/Debug-linux-x86_64/stb_image/libstb_image.a vendor/bin/Debug-linux-x86_64/lodepng/liblodepng.a -lopengl32.lib -lfreetype.lib -lpthread -ldl
@@ -49,7 +49,7 @@ else ifeq ($(config),debug_x86)
 TARGETDIR = bin/Debug-linux-x86/Base
 TARGET = $(TARGETDIR)/libBase.a
 OBJDIR = bin-int/Debug-linux-x86/Base
-DEFINES += -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DEBUG
+DEFINES += -DYAML_CPP_STATIC_DEFINE -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -g -std=c++17
 LIBS += vendor/Box2D/bin/Debug-linux-x86/Box2D/libBox2D.a vendor/yaml-cpp/bin/Debug-linux-x86/yaml-cpp/libyaml-cpp.a vendor/glad/bin/Debug-linux-x86/Glad/libGlad.a vendor/imgui/bin/Debug-linux-x86/ImGui/libImGui.a vendor/glfw/bin/Debug-linux-x86/GLFW/libGLFW.a vendor/Lua/bin/Debug-linux-x86/Lua/libLua.a vendor/msdfgen/bin/Debug-linux-x86/msdfgen/libmsdfgen.a vendor/msdf-atlas-gen/bin/Debug-linux-x86/msdf-atlas-gen/libmsdf-atlas-gen.a vendor/bin/Debug-linux-x86/stb_image/libstb_image.a vendor/bin/Debug-linux-x86/lodepng/liblodepng.a -lopengl32.lib -lfreetype.lib -lpthread -ldl
@@ -60,7 +60,7 @@ else ifeq ($(config),release_x64)
 TARGETDIR = bin/Release-linux-x86_64/Base
 TARGET = $(TARGETDIR)/libBase.a
 OBJDIR = bin-int/Release-linux-x86_64/Base
-DEFINES += -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_RELEASE
+DEFINES += -DYAML_CPP_STATIC_DEFINE -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_RELEASE
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
 LIBS += vendor/Box2D/bin/Release-linux-x86_64/Box2D/libBox2D.a vendor/yaml-cpp/bin/Release-linux-x86_64/yaml-cpp/libyaml-cpp.a vendor/glad/bin/Release-linux-x86_64/Glad/libGlad.a vendor/imgui/bin/Release-linux-x86_64/ImGui/libImGui.a vendor/glfw/bin/Release-linux-x86_64/GLFW/libGLFW.a vendor/Lua/bin/Release-linux-x86_64/Lua/libLua.a vendor/msdfgen/bin/Release-linux-x86_64/msdfgen/libmsdfgen.a vendor/msdf-atlas-gen/bin/Release-linux-x86_64/msdf-atlas-gen/libmsdf-atlas-gen.a vendor/bin/Release-linux-x86_64/stb_image/libstb_image.a vendor/bin/Release-linux-x86_64/lodepng/liblodepng.a -lopengl32.lib -lfreetype.lib -lpthread -ldl
@@ -71,7 +71,7 @@ else ifeq ($(config),release_x86)
 TARGETDIR = bin/Release-linux-x86/Base
 TARGET = $(TARGETDIR)/libBase.a
 OBJDIR = bin-int/Release-linux-x86/Base
-DEFINES += -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_RELEASE
+DEFINES += -DYAML_CPP_STATIC_DEFINE -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_RELEASE
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -O2 -std=c++17
 LIBS += vendor/Box2D/bin/Release-linux-x86/Box2D/libBox2D.a vendor/yaml-cpp/bin/Release-linux-x86/yaml-cpp/libyaml-cpp.a vendor/glad/bin/Release-linux-x86/Glad/libGlad.a vendor/imgui/bin/Release-linux-x86/ImGui/libImGui.a vendor/glfw/bin/Release-linux-x86/GLFW/libGLFW.a vendor/Lua/bin/Release-linux-x86/Lua/libLua.a vendor/msdfgen/bin/Release-linux-x86/msdfgen/libmsdfgen.a vendor/msdf-atlas-gen/bin/Release-linux-x86/msdf-atlas-gen/libmsdf-atlas-gen.a vendor/bin/Release-linux-x86/stb_image/libstb_image.a vendor/bin/Release-linux-x86/lodepng/liblodepng.a -lopengl32.lib -lfreetype.lib -lpthread -ldl
@@ -82,7 +82,7 @@ else ifeq ($(config),dist_x64)
 TARGETDIR = bin/Dist-linux-x86_64/Base
 TARGET = $(TARGETDIR)/libBase.a
 OBJDIR = bin-int/Dist-linux-x86_64/Base
-DEFINES += -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DIST
+DEFINES += -DYAML_CPP_STATIC_DEFINE -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DIST
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -std=c++17
 LIBS += vendor/Box2D/bin/Dist-linux-x86_64/Box2D/libBox2D.a vendor/yaml-cpp/bin/Dist-linux-x86_64/yaml-cpp/libyaml-cpp.a vendor/glad/bin/Dist-linux-x86_64/Glad/libGlad.a vendor/imgui/bin/Dist-linux-x86_64/ImGui/libImGui.a vendor/glfw/bin/Dist-linux-x86_64/GLFW/libGLFW.a vendor/Lua/bin/Dist-linux-x86_64/Lua/libLua.a vendor/msdfgen/bin/Dist-linux-x86_64/msdfgen/libmsdfgen.a vendor/msdf-atlas-gen/bin/Dist-linux-x86_64/msdf-atlas-gen/libmsdf-atlas-gen.a vendor/bin/Dist-linux-x86_64/stb_image/libstb_image.a vendor/bin/Dist-linux-x86_64/lodepng/liblodepng.a -lopengl32.lib -lfreetype.lib -lpthread -ldl
@@ -93,7 +93,7 @@ else ifeq ($(config),dist_x86)
 TARGETDIR = bin/Dist-linux-x86/Base
 TARGET = $(TARGETDIR)/libBase.a
 OBJDIR = bin-int/Dist-linux-x86/Base
-DEFINES += -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DIST
+DEFINES += -DYAML_CPP_STATIC_DEFINE -DBASE_UNIX_BUILD -DBASE_STATIC_BUILD -DBASE_DIST
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -O2 -std=c++17
 LIBS += vendor/Box2D/bin/Dist-linux-x86/Box2D/libBox2D.a vendor/yaml-cpp/bin/Dist-linux-x86/yaml-cpp/libyaml-cpp.a vendor/glad/bin/Dist-linux-x86/Glad/libGlad.a vendor/imgui/bin/Dist-linux-x86/ImGui/libImGui.a vendor/glfw/bin/Dist-linux-x86/GLFW/libGLFW.a vendor/Lua/bin/Dist-linux-x86/Lua/libLua.a vendor/msdfgen/bin/Dist-linux-x86/msdfgen/libmsdfgen.a vendor/msdf-atlas-gen/bin/Dist-linux-x86/msdf-atlas-gen/libmsdf-atlas-gen.a vendor/bin/Dist-linux-x86/stb_image/libstb_image.a vendor/bin/Dist-linux-x86/lodepng/liblodepng.a -lopengl32.lib -lfreetype.lib -lpthread -ldl

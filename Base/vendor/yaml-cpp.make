@@ -19,7 +19,7 @@ endif
 # #############################################
 
 RESCOMP = windres
-DEFINES +=
+DEFINES += -DYAML_CPP_STATIC_DEFINE
 INCLUDES += -Iyaml-cpp/include
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
