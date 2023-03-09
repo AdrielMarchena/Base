@@ -74,6 +74,7 @@ Base/vendor/Lua/*
 #add all .lua
 !*.lua
 !*/Basetor/assets/font/
+!premake5.exe
 
 #misc
 

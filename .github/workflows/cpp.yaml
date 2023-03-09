@@ -56,9 +56,6 @@ jobs:
     - name: Fetch git submodules
       run: git submodule update --init --recursive
 
-    - name: Install premake5
-      run: winget install Premake.Premake.5.Beta
-
     - name: Running premake5
       run: .\premake5.exe vs2022
 
