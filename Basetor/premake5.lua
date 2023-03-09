@@ -1,7 +1,7 @@
 project "Basetor"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -18,7 +18,7 @@ project "Basetor"
 
 	includedirs
 	{
-		"%{IncludeDirectories.Base}",
+		"%{IncludeDirectories.CoreBase}",
 		"%{IncludeDirectories.Box2D}",
 		"%{IncludeDirectories.ImGui}",
 		"%{IncludeDirectories.yaml}",

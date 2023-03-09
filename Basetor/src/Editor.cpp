@@ -11,8 +11,11 @@
 #include "ImGuizmo.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "misc/PerlinNoise.h"
-namespace Base
-{
+
+namespace Base {
+
+#define CTRL_GUARD() if (!input::Keyboard::isPress(BASE_KEY_LEFT_CONTROL)) return
+
 #ifdef BASE_PROFILING
 	static void ProfileMenuItem()
 	{
@@ -57,6 +60,36 @@ namespace Base
 	void Editor::OnAttach()
 	{
 		BASE_PROFILE_FUNCTION();
+
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_Q, [&](Editor&)
+		{
+			CTRL_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = -1;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_T, [&](Editor&)
+		{
+			CTRL_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_R, [&](Editor&)
+		{
+			CTRL_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_E, [&](Editor&)
+		{
+			CTRL_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = ImGuizmo::OPERATION::SCALE;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_O, [&](Editor&)
+		{
+			CTRL_GUARD();
+			m_EditorCamera.ResetDirection();
+		});
 
 		//FontSpecifications font_specs;
 		//font_specs.width = 32;
@@ -122,66 +155,64 @@ namespace Base
 		noise2d.GenerateNoise(8);
 
 		{
-			
-
-			m_Entitys["Platform"] = m_Scene->CreateEntity("Platform"); //Create the Quad entity
-			m_Entitys["Platform"].AddComponent<Base::TextureComponent>(noise2d.GenerateNoiseTexture()); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Platform"].GetTransform();
-
-			plat_tranform.Translation = { 0.0f,0.0f,0.0f };
-			plat_tranform.Scale = { 1.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Platform"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Platform"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}
-
-		{
-			m_Entitys["Platform2"] = m_Scene->CreateEntity("Platform2"); //Create the Quad entity
-			m_Entitys["Platform2"].AddComponent<Base::TextureComponent>(noise2d.GenerateSeedTexture()); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Platform2"].GetTransform();
+			m_Entitys["Perlin_Noise_Seed"] = m_Scene->CreateEntity("Perlin_Noise_Seed"); //Create the Quad entity
+			m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::TextureComponent>(noise2d.GenerateSeedTexture()); //Add sprite (solid color)
+			auto& plat_tranform = m_Entitys["Perlin_Noise_Seed"].GetTransform();
 
 			plat_tranform.Translation = { 0.0f,0.0f, 0.0f };
 			plat_tranform.Scale = { 1.0f, 1.0f, 1.0f };
 			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
 
-			auto& quad_rbody = m_Entitys["Platform2"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Platform2"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}
-
-		/* {
-			m_Entitys["Platform3"] = m_Scene->CreateEntity("Platform3"); //Create the Quad entity
-			m_Entitys["Platform3"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Platform3"].GetTransform();
-
-			plat_tranform.Translation = { 0.0,-10.5, 0.0f };
-			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Platform3"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Platform3"].AddComponent<Base::BoxColider2DComponent>();
+			auto& quad_rbody = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::RigidBody2DComponent>();
+			auto& quad_bcol = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::BoxColider2DComponent>();
 
 			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
 		}
 
 		{
-			m_Entitys["Platform4"] = m_Scene->CreateEntity("Platform4"); //Create the Quad entity
-			m_Entitys["Platform4"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Platform4"].GetTransform();
+			m_Entitys["Perlin_Noise_Completed"] = m_Scene->CreateEntity("Perlin_Noise_Completed"); //Create the Quad entity
+			m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::TextureComponent>(noise2d.GenerateNoiseTexture()); //Add sprite (solid color)
+			auto& plat_tranform = m_Entitys["Perlin_Noise_Completed"].GetTransform();
+
+			plat_tranform.Translation = { 0.0f,0.0f,0.0f };
+			plat_tranform.Scale = { 1.0f, 1.0f, 1.0f };
+			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
+
+			auto& quad_rbody = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::RigidBody2DComponent>();
+			auto& quad_bcol = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::BoxColider2DComponent>();
+
+			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
+		}
+
+		{
+			m_Entitys["Green_Platform"] = m_Scene->CreateEntity("Green_Platform"); //Create the Quad entity
+			m_Entitys["Green_Platform"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
+			auto& plat_tranform = m_Entitys["Green_Platform"].GetTransform();
+
+			plat_tranform.Translation = { 0.0,-5.0, 0.0f };
+			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
+			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
+
+			auto& quad_rbody = m_Entitys["Green_Platform"].AddComponent<Base::RigidBody2DComponent>();
+			auto& quad_bcol = m_Entitys["Green_Platform"].AddComponent<Base::BoxColider2DComponent>();
+
+			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
+		}
+
+		{
+			m_Entitys["Base_Color_Platform"] = m_Scene->CreateEntity("Base_Color_Platform"); //Create the Quad entity
+			m_Entitys["Base_Color_Platform"].AddComponent<Base::SpriteComponent>(Color::Base_Color); //Add sprite (solid color)
+			auto& plat_tranform = m_Entitys["Base_Color_Platform"].GetTransform();
 
 			plat_tranform.Translation = { 0.0,-10.5, 0.0f };
 			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
 			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
 
-			auto& quad_rbody = m_Entitys["Platform4"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Platform4"].AddComponent<Base::BoxColider2DComponent>();
+			auto& quad_rbody = m_Entitys["Base_Color_Platform"].AddComponent<Base::RigidBody2DComponent>();
+			auto& quad_bcol = m_Entitys["Base_Color_Platform"].AddComponent<Base::BoxColider2DComponent>();
 
 			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}*/
+		}
 
 		//Create Runtime Camera
 		m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
@@ -195,6 +226,17 @@ namespace Base
 		Camera_Script.Bind<Base::OrthoCameraScript>();
 		m_Scene->StartNativeScript(m_Camera);
 		m_Scene->AwakeNativeScript(m_Camera);
+
+		m_PropertiesPanel.SetContext(m_Scene);
+
+		m_HierarchyPanel.SetContext(m_Scene);
+		m_HierarchyPanel.SetSelectedEntityCallBack([&](Entity entity)
+		{
+			if (entity)
+				BASE_INFO("Entity has been selected:\n\tTag: {0}\n\tUUID: {1}", entity.GetTag(), entity.GetID());
+			m_PropertiesPanel.SetSelectionContext(entity);
+			m_SelectedEntity = entity;
+		});
 	}
 
 	void Editor::OnUpdate(UpdateArgs args)
@@ -207,7 +249,7 @@ namespace Base
 		m_FramebufferRender->BindFrameBuffer();
 		Render2D::ClearColor();
 
-		if(m_MousePickingEnabled && m_ViewportFocused && m_ViewportHovered)
+		if (m_MousePickingEnabled && m_ViewportFocused && m_ViewportHovered)
 			m_FramebufferRender->ClearAttachment(1, -1);
 
 		if (m_Runtime)
@@ -218,31 +260,37 @@ namespace Base
 			m_Scene->OnUpdateEditor(args, m_EditorCamera);
 		}
 
-		
+
 		if (input::Keyboard::isPress(BASE_KEY_C))
 			m_SelectedEntity = m_Scene->GetPrimaryCamera();
 		else
-		if(input::Mouse::isPress(BASE_MOUSE_BUTTON_LEFT) && input::Keyboard::isPress(BASE_KEY_LEFT_SHIFT))
-			if (m_MousePickingEnabled && m_ViewportFocused && m_ViewportHovered)
-			{
-				//Select entity using id from pixel info
-				auto [mx, my] = ImGui::GetMousePos();
-				mx -= m_ViewportBounds[0].x;
-				my -= m_ViewportBounds[0].y;
-				glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
-				my = viewportSize.y - my;
-				int mouseX = (int)mx;
-				int mouseY = (int)my;
-
-				if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+			if (input::Mouse::isPress(BASE_MOUSE_BUTTON_LEFT) && input::Keyboard::isPress(BASE_KEY_LEFT_SHIFT))
+				if (m_MousePickingEnabled && m_ViewportFocused && m_ViewportHovered)
 				{
-					int pixel_data = m_FramebufferRender->ReadPixel(1, mouseX, mouseY);
-					if (pixel_data > -1)
-						m_SelectedEntity = { (entt::entity)pixel_data, m_Scene.get() };
-					else
-						m_SelectedEntity = {}; //Invalid Entity
+					//Select entity using id from pixel info
+					auto [mx, my] = ImGui::GetMousePos();
+					mx -= m_ViewportBounds[0].x;
+					my -= m_ViewportBounds[0].y;
+					glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+					my = viewportSize.y - my;
+					int mouseX = (int)mx;
+					int mouseY = (int)my;
+
+					if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+					{
+						int pixel_data = m_FramebufferRender->ReadPixel(1, mouseX, mouseY);
+						if (pixel_data > -1)
+						{
+							Entity ent = { (entt::entity)pixel_data, m_Scene.get() };
+							m_SelectedEntity = ent;
+							m_PropertiesPanel.SetSelectionContext(ent);
+						}
+						else
+						{
+							m_SelectedEntity = {}; //Invalid Entity
+						}
+					}
 				}
-			}
 
 		m_FramebufferRender->UnbindFrameBuffer();
 	}
@@ -325,7 +373,7 @@ namespace Base
 						window.SetTitleBar(enable_titlebar);
 
 					bool enable_resize = window.IsResizeble();
-					if (ImGui::Checkbox("Resizeble", &enable_resize))
+					if (ImGui::Checkbox("Resizable", &enable_resize))
 						window.SetResizeble(enable_resize);
 
 					ImGui::EndMenu();
@@ -352,8 +400,6 @@ namespace Base
 				ImGui::Text("Circle in scene: %d", Render2D::GetCircleStats().DrawCount);
 				ImGui::Text("Lines in scene: %d", Render2D::GetLineStats().DrawCount);
 				ImGui::Text("Draw Calls for this scene: %d", Render2D::GetDrawCallsCount());
-				
-
 
 				ImGui::EndMenu();
 			}
@@ -362,11 +408,11 @@ namespace Base
 			{
 				static bool p_on = false;
 				ImGui::Checkbox("Physics", &p_on);
-				if(ImGui::Button("Start Runtime"))
+				if (ImGui::Button("Start Runtime"))
 				{
 					m_Runtime = true;
 					m_MousePickingEnabled = false;
-					if(p_on)
+					if (p_on)
 						m_Scene->RuntimeInit();
 					if (m_SyncCameraZoom)
 					{
@@ -410,7 +456,7 @@ namespace Base
 		m_ViewportFocused = ImGui::IsWindowFocused();
 		m_ViewportHovered = ImGui::IsWindowHovered();
 		Application::Get().GetImGuiLayer().BlockEvents(!m_ViewportFocused || !m_ViewportHovered);
-		
+
 		ImVec2 viewport_size = ImGui::GetContentRegionAvail();
 		if (m_ViewportSize != *((glm::vec2*)&viewport_size))
 		{
@@ -469,43 +515,11 @@ namespace Base
 		ImGui::End(); //Viewport
 		ImGui::PopStyleVar();
 
-		ImGui::Begin("Quad physics");
-
-		if (m_SelectedEntity)
-			if(m_SelectedEntity.HasComponent< RigidBody2DComponent>() && m_SelectedEntity.HasComponent<BoxColider2DComponent>())
-			{
-				auto& ent_rbody = m_SelectedEntity.GetComponent<Base::RigidBody2DComponent>();
-				auto& ent_bcol = m_SelectedEntity.GetComponent<Base::BoxColider2DComponent>();
-
-				ImGui::SliderFloat("Friction", &ent_bcol.Friction, 0.0f, 1.0f);
-				ImGui::SliderFloat("Density", &ent_bcol.Density, 0.0f, 1.0f);
-				ImGui::SliderFloat("Restitution", &ent_bcol.Restitution, 0.0f, 1.0f);
-				ImGui::SliderFloat("RestitutionThreshold", &ent_bcol.RestitutionThreshold, 0.0f, 1.0f);
-			}
-			else if (m_SelectedEntity.HasComponent<CircleComponent>())
-			{
-				auto& circle = m_SelectedEntity.GetComponent<CircleComponent>();
-
-				ImGui::SliderFloat("Thickness", &circle.Thickness, 0.0f, 1.0f);
-				ImGui::SliderFloat("Fade", &circle.Fade, 0.0f, 1.0f);
-				ImGui::SliderFloat("Radius", &circle.Radius, 0.0f, 1.0f);
-
-				if (m_SelectedEntity.HasComponent<RigidBody2DComponent>() && m_SelectedEntity.HasComponent<CircleColider2DComponent>())
-				{
-					auto& ent_rbody = m_SelectedEntity.GetComponent<Base::RigidBody2DComponent>();
-					auto& ent_ccol = m_SelectedEntity.GetComponent<Base::CircleColider2DComponent>();
-
-					ImGui::SliderFloat("Friction", &ent_ccol.Friction, 0.0f, 1.0f);
-					ImGui::SliderFloat("Density", &ent_ccol.Density, 0.0f, 1.0f);
-					ImGui::SliderFloat("Restitution", &ent_ccol.Restitution, 0.0f, 1.0f);
-					ImGui::SliderFloat("RestitutionThreshold", &ent_ccol.RestitutionThreshold, 0.0f, 1.0f);
-					ImGui::SliderFloat("Radius", &ent_ccol.Radius, 0.0f, 1.0f);
-				}
-			}
-
-		ImGui::End();
+		m_HierarchyPanel.OnImGuiRender();
+		m_PropertiesPanel.OnImGuiRender();
 
 		ImGui::End(); //Dockspace
+
 	}
 
 	void Editor::OnDetach()
@@ -533,37 +547,13 @@ namespace Base
 		return false;
 	}
 
+
 	bool Editor::OnKeyboardPressed(Base::KeyPressedEvent& e)
 	{
-		switch (e.GetKeyCode())
+		if (m_KeyboardPressedCallbacks.find(e.GetKeyCode()) != m_KeyboardPressedCallbacks.end())
 		{
-			// Gizmos
-			case BASE_KEY_Q:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = -1;
-				break;
-			}
-			case BASE_KEY_W:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-				break;
-			}
-			case BASE_KEY_E:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-				break;
-			}
-			case BASE_KEY_R:
-			{
-				if (!ImGuizmo::IsUsing())
-					m_GizmoType = ImGuizmo::OPERATION::SCALE;
-				break;
-			}
+			m_KeyboardPressedCallbacks[e.GetKeyCode()](*this);
 		}
 		return false;
 	}
-
 }

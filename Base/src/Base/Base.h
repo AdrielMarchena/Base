@@ -19,6 +19,10 @@
 
 namespace Base
 {
+	template<typename T>
+	using KeyboardPressedCallback = std::function<void(T&)>;
+
+	typedef int Key_T;
 	//From The Cherno video
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
