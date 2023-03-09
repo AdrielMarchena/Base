@@ -232,8 +232,8 @@ namespace Base {
 		m_HierarchyPanel.SetContext(m_Scene);
 		m_HierarchyPanel.SetSelectedEntityCallBack([&](Entity entity)
 		{
-			if(entity)
-			BASE_INFO("Entity has been selected:\n\tTag: {0}\n\tUUID: {1}", entity.GetTag(), entity.GetID());
+			if (entity)
+				BASE_INFO("Entity has been selected:\n\tTag: {0}\n\tUUID: {1}", entity.GetTag(), entity.GetID());
 			m_PropertiesPanel.SetSelectionContext(entity);
 			m_SelectedEntity = entity;
 		});
