@@ -1,0 +1,81 @@
+name: C/C++ CI
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  buildLinux:
+    name: build-linux
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Install Packages
+      run: |
+        sudo apt update -qq
+        sudo apt install -y git build-essential g++ make zip unzip
+        sudo apt-get install -y --no-install-recommends libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libgl1-mesa-dev
+    - name: Fetch git submodules
+      run: git submodule update --init --recursive
+    
+    - name: premake5
+      run: ./premake5 gmake2
+
+    - name: make Debug x64
+      run: make config=debug_x64
+
+    - name: make Dist x64
+      run: make config=dist_x64
+      
+    - name: zip release
+      run: cp Basetor/bin/Dist-linux-x86_64/Editor/Editor Basetor/Editor && zip -r Basetor.zip Basetor/assets Basetor/Editor
+      
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        title: "Ubuntu Dist Build"
+        prerelease: false
+        draft: false
+        files: |
+          *.zip
+  buildWindows:
+    name: build-windows
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+          submodules: recursive
+
+    - name: Fetch git submodules
+      run: git submodule update --init --recursive
+
+    - name: Running premake5
+      run: .\premake5.exe vs2022
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Build app for Debug x64
+      run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Debug /p:Platform=x64
+
+    - name: Build app for Distribution x64
+      run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Dist /p:Platform=x64
+
+    - name: Zip Release
+      run: cp Basetor/bin/Dist-windows-x86_64/Basetor/Basetor.exe Basetor/Basetor.exe | 7z a -tzip -r Basetor.zip Basetor/Basetor.exe Basetor/assets
+
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "latest"
+        title: "Windows Dist Build"
+        prerelease: false
+        draft: false
+        files: |
+          *.zip
