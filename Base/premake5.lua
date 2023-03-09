@@ -1,7 +1,7 @@
 project "Base"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -66,7 +66,7 @@ project "Base"
 
 	postbuildcommands
 	{
-		--("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
+		("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
 	}
 
 	filter { 'files:vendor/Lua/lua.c' }

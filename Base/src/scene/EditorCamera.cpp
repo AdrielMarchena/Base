@@ -72,6 +72,17 @@ namespace Base
 		UpdateView();
 	}
 
+	void EditorCamera::ResetDirection() {
+		m_Distance = 10.0f;
+		m_Pitch = 0.0f;
+		m_Yaw = 0.0f;
+		m_FOV = 45.0f;
+		m_AspectRatio = 1.778f;
+		m_NearClip = 0.1f;
+		m_FarClip = 1000.0f;
+		UpdateView();
+	}
+
 	void EditorCamera::MousePan(const glm::vec2& delta)
 	{
 		auto [xSpeed, ySpeed] = PanSpeed();

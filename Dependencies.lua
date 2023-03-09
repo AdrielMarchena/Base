@@ -1,5 +1,6 @@
 IncludeDirectories = {}
-IncludeDirectories["Base"] = "%{wks.location}/Base/src/"
+IncludeDirectories["CoreBase"] = "%{wks.location}/Base/src/"
+IncludeDirectories["Base"] = "%{wks.location}/Base/include"
 IncludeDirectories["Box2D"] = "%{wks.location}/Base/vendor/Box2D/include"
 IncludeDirectories["debugbreak"] = "%{wks.location}/Base/vendor/debugbreak"
 IncludeDirectories["entt"] = "%{wks.location}/Base/vendor/entt/single_include"

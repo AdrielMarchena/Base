@@ -35,7 +35,7 @@ namespace Base
 		}
 
 		specs.Title = specs.Title != "" ? specs.Title : "Base";
-
+		
 		WindowProps().width = specs.Width;
 		WindowProps().height = specs.Height;
 

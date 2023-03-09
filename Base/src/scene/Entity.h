@@ -5,7 +5,6 @@
 #include "entt/entt.hpp"
 namespace Base
 {
-	
 	class Entity
 	{
 	public:
@@ -59,11 +58,33 @@ namespace Base
 			return m_Scene->m_Registry.get<Base::IDComponent>(m_EntityHandle).Id;
 		}
 
+		void SetChild(Entity* child);
+
+		// void SetParent(Entity* parent)
+		// {
+		// }
+
+		bool HasScene() const 
+		{
+			return m_Scene != nullptr;
+		}
+
+		bool HasChild() const
+		{
+			return m_Child != nullptr;
+		}
+
+		bool HasParent() const
+		{
+			return m_Parent != nullptr;
+		}
+
 		operator bool() const { return m_EntityHandle != entt::null; }
+		explicit operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
 		bool operator==(const Entity& other) const
 		{
-			return m_EntityHandle == other.m_EntityHandle;
+			return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene;
 		}
 
 		bool operator!=(const Entity& other) const
@@ -74,7 +95,7 @@ namespace Base
 	private:
 		entt::entity m_EntityHandle{ entt::null };
 		Scene* m_Scene = nullptr;
+		Entity* m_Child;
+		Entity* m_Parent;
 	};
 }
-
-

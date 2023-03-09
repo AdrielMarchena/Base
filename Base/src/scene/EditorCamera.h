@@ -53,10 +53,10 @@ namespace Base
 		float GetPitch() const { return m_Pitch; }
 		float GetYaw() const { return m_Yaw; }
 		void OnMouseScroll(MouseScrollEvent& e);
+		void ResetDirection();
 	private:
 		void UpdateProjection();
 		void UpdateView();
-
 
 		void MousePan(const glm::vec2& delta);
 		void MouseRotate(const glm::vec2& delta);
