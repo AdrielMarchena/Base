@@ -64,11 +64,6 @@ project "Base"
 		"YAML_CPP_STATIC_DEFINE"
 	}
 
-	postbuildcommands
-	{
-		("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
-	}
-
 	filter { 'files:vendor/Lua/lua.c' }
 		flags { 'NoPCH' }
 
@@ -114,6 +109,11 @@ project "Base"
 		{
 			"BASE_WINDOWS_BUILD",
 			"BASE_STATIC_BUILD"
+		}
+
+		postbuildcommands
+		{
+			("{COPYDIR} \"./src/**.h\" \"./include/Base\""),
 		}
 
 	filter "system:linux"
