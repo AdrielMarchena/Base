@@ -2,34 +2,30 @@
 #include "PerlinNoise.h"
 
 #include <random>
-namespace Base
-{
+namespace Base {
 
-	
+
 	static std::random_device s_RandomDevice;
 	static std::mt19937_64 s_Engine(s_RandomDevice());
 	static std::uniform_int_distribution<uint64_t> s_UniformDistribution;
 
-	//UUID::UUID()
-		//:m_UUID(s_UniformDistribution(s_Engine))
-	
-
 	PerlinNoise1D::PerlinNoise1D(uint32_t size)
 		:m_OutputSize(size)
 	{
+		srand((unsigned int)time(NULL));
 		m_NoiseSeed1D = new float[m_OutputSize];
 		m_PerlinNoise1D = new float[m_OutputSize];
 
-		for(uint32_t i = 0; i < m_OutputSize; i++)
+		for (uint32_t i = 0; i < m_OutputSize; i++)
 			m_NoiseSeed1D[i] = (float)std::rand() / (float)RAND_MAX;
 
 	}
 
 	PerlinNoise1D::~PerlinNoise1D()
 	{
-		if(m_NoiseSeed1D)
+		if (m_NoiseSeed1D)
 			delete[] m_NoiseSeed1D;
-		if(m_PerlinNoise1D)
+		if (m_PerlinNoise1D)
 			delete[] m_PerlinNoise1D;
 	}
 
@@ -102,9 +98,10 @@ namespace Base
 
 	//______________________________________________________________________________________________________________________________________
 
-	PerlinNoise2D::PerlinNoise2D(uint32_t w, uint32_t h)
-		:m_OutputWidth(w),m_OutputHeight(h)
+	PerlinNoise2D::PerlinNoise2D(uint32_t w, uint32_t h, int octaves, float bias)
+		:m_OutputWidth(w), m_OutputHeight(h), m_Bias(bias), m_Octaves(octaves)
 	{
+		srand((unsigned int)time(NULL));
 		m_NoiseSeed2D = new float[m_OutputWidth * m_OutputHeight];
 		m_PerlinNoise2D = new float[m_OutputWidth * m_OutputHeight];
 
@@ -125,18 +122,39 @@ namespace Base
 			delete[] m_PerlinNoise2D;
 	}
 
-	Ref<render::Texture> PerlinNoise2D::GenerateTexture(int w, int h, float* data)
+	static inline glm::vec3 bezier_2order_mix(const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, float_t t)
+	{
+		const glm::vec3 q0 = glm::mix(p0, p1, t);
+		const glm::vec3 q1 = glm::mix(p1, p2, t);
+
+		return glm::mix(q0, q1, t);
+	}
+
+	static glm::vec3 DecideColorMtb(float data, float precision)
+	{
+		static glm::vec3 colorMtpB = { 75.0f, 75.0f, 75.0f };
+		static glm::vec3 colorMtpG = { 225.0f, 225.0f, 225.0f };
+		static glm::vec3 colorMtpBG = (colorMtpB + colorMtpG) * 0.5f;
+
+		for (float i = precision; i <= 1; i += precision)
+			if (data <= i)
+				return bezier_2order_mix(colorMtpB, colorMtpBG, colorMtpG, i);
+		return bezier_2order_mix(colorMtpB, colorMtpBG, colorMtpG, data);
+	}
+
+	Ref<render::Texture> PerlinNoise2D::GenerateTexture(int w, int h, float* data, float precision)
 	{
 		TextureBufferType* Buffer = render::Texture::CreateTextureBuffer(w, h, 3);
-
+		static glm::vec3 mtp = { 255.0f, 255.0f, 255.0f };
 		for (unsigned int ix = 0; ix < h; ix++)
 		{
 			for (unsigned int iy = 0; iy < w; iy++)
 			{
-				int c = (*(data + iy * w + ix) * 255);
-				*(Buffer + ix * w * 3 + iy * 3 + 0) = c; // r
-				*(Buffer + ix * w * 3 + iy * 3 + 1) = c; // g
-				*(Buffer + ix * w * 3 + iy * 3 + 2) = c; // b
+				float c = (*(data + ix * w + iy));
+				auto color = DecideColorMtb(c, precision);
+				*(Buffer + ix * w * 3 + iy * 3 + 0) = fabs(color.r); // r
+				*(Buffer + ix * w * 3 + iy * 3 + 1) = fabs(color.g); // g
+				*(Buffer + ix * w * 3 + iy * 3 + 2) = fabs(color.b); // b
 			}
 		}
 
@@ -155,38 +173,38 @@ namespace Base
 		return tex;
 	}
 
-	void PerlinNoise2D::GenerateNoise(int octaves)
+	void PerlinNoise2D::GenerateNoise()
 	{
 		m_Bias = m_Bias < 0.2 ? 0.2 : m_Bias;
 		for (uint32_t x = 0; x < m_OutputWidth; x++)
-		for (uint32_t y = 0; y < m_OutputHeight; y++)
-		{
-			float fNoise = 0.0f;
-			float fScale = 1.0f;
-			float fScaleAcc = 0.0f;
-
-			for (int o = 0; o < octaves; o++)
+			for (uint32_t y = 0; y < m_OutputHeight; y++)
 			{
-				int nPitch = m_OutputWidth >> o;
-				int nSampleX1 = (x / nPitch) * nPitch;
-				int nSampleY1 = (y / nPitch) * nPitch;
+				float fNoise = 0.0f;
+				float fScale = 1.0f;
+				float fScaleAcc = 0.0f;
 
-				int nSampleX2 = (nSampleX1 + nPitch) % m_OutputWidth;
-				int nSampleY2 = (nSampleY1 + nPitch) % m_OutputWidth;
+				for (int o = 0; o < m_Octaves; o++)
+				{
+					int nPitch = m_OutputWidth >> o;
+					int nSampleX1 = (x / nPitch) * nPitch;
+					int nSampleY1 = (y / nPitch) * nPitch;
 
-				float fBlendX = (float)(x - nSampleX1) / (float)nPitch;
-				float fBlendY = (float)(y - nSampleY1) / (float)nPitch;
+					int nSampleX2 = (nSampleX1 + nPitch) % m_OutputWidth;
+					int nSampleY2 = (nSampleY1 + nPitch) % m_OutputWidth;
 
-				float fSampleT = (1.0f - fBlendX) * m_NoiseSeed2D[nSampleY1 * m_OutputWidth + nSampleX1] + fBlendX * m_NoiseSeed2D[nSampleY1 * m_OutputWidth + nSampleX2];
-				float fSampleB = (1.0f - fBlendX) * m_NoiseSeed2D[nSampleY2 * m_OutputWidth + nSampleX1] + fBlendX * m_NoiseSeed2D[nSampleY2 * m_OutputWidth + nSampleX2];
+					float fBlendX = (float)(x - nSampleX1) / (float)nPitch;
+					float fBlendY = (float)(y - nSampleY1) / (float)nPitch;
 
-				fScaleAcc += fScale;
-				fNoise += (fBlendY * (fSampleB - fSampleT) + fSampleT) * fScale;
-				fScale = fScale / m_Bias;
+					float fSampleT = (1.0f - fBlendX) * m_NoiseSeed2D[nSampleY1 * m_OutputWidth + nSampleX1] + fBlendX * m_NoiseSeed2D[nSampleY1 * m_OutputWidth + nSampleX2];
+					float fSampleB = (1.0f - fBlendX) * m_NoiseSeed2D[nSampleY2 * m_OutputWidth + nSampleX1] + fBlendX * m_NoiseSeed2D[nSampleY2 * m_OutputWidth + nSampleX2];
+
+					fScaleAcc += fScale;
+					fNoise += (fBlendY * (fSampleB - fSampleT) + fSampleT) * fScale;
+					fScale = fScale / m_Bias;
+				}
+				m_PerlinNoise2D[y * m_OutputWidth + x] = (fNoise / fScaleAcc);
+
 			}
-			m_PerlinNoise2D[y * m_OutputWidth + x] = (fNoise / fScaleAcc);
-
-		}
 
 		m_Generated = true;
 	}
@@ -199,7 +217,7 @@ namespace Base
 			return MakeRef<render::Texture>();
 		}
 
-		return GenerateTexture(m_OutputWidth,m_OutputHeight,m_PerlinNoise2D);
+		return GenerateTexture(m_OutputWidth, m_OutputHeight, m_PerlinNoise2D, m_ColorInterpolationPrecision);
 	}
 
 	Ref<render::Texture> PerlinNoise2D::GenerateSeedTexture()
@@ -210,7 +228,7 @@ namespace Base
 			return MakeRef<render::Texture>();
 		}
 
-		return GenerateTexture(m_OutputWidth, m_OutputHeight, m_NoiseSeed2D);
+		return GenerateTexture(m_OutputWidth, m_OutputHeight, m_NoiseSeed2D, m_ColorInterpolationPrecision);
 	}
 
 }

@@ -3,10 +3,8 @@
 
 #include "render/gl/Texture.h"
 
-namespace Base
-{
-	namespace utils
-	{
+namespace Base {
+	namespace utils {
 
 	}
 
@@ -37,20 +35,27 @@ namespace Base
 		uint32_t m_OutputWidth;
 		uint32_t m_OutputHeight;
 		bool m_Generated = false;
-		float m_Bias = 2.0f;
+		float m_Bias;
+		int m_Octaves;
+		float m_ColorInterpolationPrecision = 0.033f;
+
 	public:
 
-		PerlinNoise2D(uint32_t w = 256, uint32_t h = 256);
+		PerlinNoise2D(uint32_t w = 256, uint32_t h = 256, int octaves = 8, float bias = 1.50f);
 		PerlinNoise2D(const PerlinNoise2D&) = delete; //TODO: implement copy contructor to memcopy arrays
 		~PerlinNoise2D();
 
-		void GenerateNoise(int octaves);
+		void GenerateNoise();
+
+		void SetBias(float bias) { m_Bias = bias; }
+		void SetOctaves(float octaves) { m_Octaves = octaves; }
+		void SetColorInterpolationPrecision(float colorInterpolationPrecision) { m_ColorInterpolationPrecision = colorInterpolationPrecision; }
 
 		Ref<render::Texture> GenerateNoiseTexture();
 		Ref<render::Texture> GenerateSeedTexture();
 
 	private:
-		static Ref<render::Texture> GenerateTexture(int w, int h,float* data);
+		static Ref<render::Texture> GenerateTexture(int w, int h, float* data, float precision);
 	};
 
 

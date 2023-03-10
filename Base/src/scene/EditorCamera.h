@@ -7,8 +7,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>
 #include <utility>
-namespace Base
-{
+namespace Base {
 	class EditorCamera : public Camera
 	{
 	private:
@@ -22,8 +21,8 @@ namespace Base
 		float m_NearClip = 0.1f;
 		float m_FarClip = 1000.0f;
 
-		glm::vec3 m_Position = {0.0f,0.0f,0.0f};
-		glm::vec3 m_FocalPoint = {0.0f,0.0f, 0.0f};
+		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };
+		glm::vec3 m_FocalPoint = { 0.0f,0.0f, 0.0f };
 		glm::mat4 m_ViewMatrix;
 
 		glm::vec2 m_InitialMousePosition;
@@ -33,11 +32,12 @@ namespace Base
 		EditorCamera(float fov, float aspectRatio, float nearClip, float farClip);
 
 		void OnUpdate(const UpdateArgs& args);
-		
+
 		inline float GetDistance() const { return m_Distance; }
 		inline void GetDistance(float distance) { m_Distance = distance; }
 
-		void SetViewportSize(float width, float height) {
+		void SetViewportSize(float width, float height)
+		{
 			m_ViewportWidth = width; m_ViewportHeight = height; UpdateProjection();
 		}
 
@@ -54,6 +54,7 @@ namespace Base
 		float GetYaw() const { return m_Yaw; }
 		void OnMouseScroll(MouseScrollEvent& e);
 		void ResetDirection();
+		void SetFocalPoint(const glm::vec3& focal) { m_FocalPoint = focal; UpdateProjection(); UpdateView(); }
 	private:
 		void UpdateProjection();
 		void UpdateView();

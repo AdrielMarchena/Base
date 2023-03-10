@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PropertiesPanel.h"
+#include "scene/SceneCamera.h"
 
 #include <imgui.h>
 
@@ -73,6 +74,44 @@ namespace Base {
 			}
 		}
 
+		if (entity.HasComponent<Perlin2dComponent>())
+		{
+			if (ImGui::TreeNodeEx((void*)typeid(Perlin2dComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Perlin Component"))
+			{
+				auto& perlin = entity.GetComponent<Perlin2dComponent>();
+
+
+				bool changedO = ImGui::SliderInt("Octaves", &perlin.octaves, 1, 8);
+				bool changedB = ImGui::SliderFloat("Bias", &perlin.bias, 0.001f, 10.0f);
+				bool changedPrecision = ImGui::SliderFloat("Color interpolation precision", &perlin.colorInterpolationPrecision, 0.001f, 1.0f);
+				bool changedImportant = changedO || changedB;
+
+				if (changedPrecision && !changedImportant)
+				{
+					perlin.Noise->SetColorInterpolationPrecision(perlin.colorInterpolationPrecision);
+					if (entity.HasComponent<TextureComponent>())
+					{
+						auto& sprite = entity.GetComponent<TextureComponent>().Texture;
+						sprite = perlin.Noise->GenerateNoiseTexture();
+					}
+				}
+				else if (changedImportant)
+				{
+					perlin.Noise->SetOctaves(perlin.octaves);
+					perlin.Noise->SetBias(perlin.bias);
+					perlin.Noise->SetColorInterpolationPrecision(perlin.colorInterpolationPrecision);
+					perlin.Noise->GenerateNoise();
+					if (entity.HasComponent<TextureComponent>())
+					{
+						auto& sprite = entity.GetComponent<TextureComponent>().Texture;
+						sprite = perlin.Noise->GenerateNoiseTexture();
+					}
+				}
+
+				ImGui::TreePop();
+			}
+		}
+
 		// Physics
 		if (entity.HasComponent< RigidBody2DComponent>())
 		{
@@ -104,6 +143,34 @@ namespace Base {
 
 					ImGui::TreePop();
 				}
+			}
+		}
+
+		//Camera
+		if (entity.HasComponent<CameraComponent>())
+		{
+			if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Camera Component"))
+			{
+				auto& camera = entity.GetComponent<CameraComponent>();
+
+				static const char* projectionTypeString[] = { "Perspective", "Orthographic", "OrthographicPX" };
+				const char* currentProjection = projectionTypeString[(int)camera.Camera.GetProjectionType()];
+				if (ImGui::BeginCombo("Projection", currentProjection))
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						bool isSelected = currentProjection == projectionTypeString[i];
+						if (ImGui::Selectable(projectionTypeString[i]), isSelected)
+						{
+							currentProjection = projectionTypeString[i];
+							camera.Camera.SetProjectionType((SceneCamera::ProjectionType)i);
+						}
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndCombo();
+				}
+				ImGui::TreePop();
 			}
 		}
 	}

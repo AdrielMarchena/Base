@@ -4,11 +4,10 @@
 #include "input/Keyboard.h"
 #include "input/Mouse.h"
 
-namespace Base
-{
+namespace Base {
 	EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
-		:m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip), 
-		Camera(glm::perspective(glm::radians(fov),aspectRatio,nearClip,farClip))
+		:m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip),
+		Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
 	{
 		UpdateView();
 	}
@@ -36,7 +35,7 @@ namespace Base
 
 	glm::vec3 EditorCamera::GetUpDirection() const
 	{
-		return glm::rotate(GetOrientation(), glm::vec3(0.0f,1.0f,0.0f));
+		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	glm::quat EditorCamera::GetOrientation() const
@@ -72,7 +71,8 @@ namespace Base
 		UpdateView();
 	}
 
-	void EditorCamera::ResetDirection() {
+	void EditorCamera::ResetDirection()
+	{
 		m_Distance = 10.0f;
 		m_Pitch = 0.0f;
 		m_Yaw = 0.0f;
@@ -80,7 +80,10 @@ namespace Base
 		m_AspectRatio = 1.778f;
 		m_NearClip = 0.1f;
 		m_FarClip = 1000.0f;
+		m_FocalPoint = { 0.0f,0.0f,0.0f };
+		m_Position = { 0.0f,0.0f,0.0f };
 		UpdateView();
+		UpdateProjection();
 	}
 
 	void EditorCamera::MousePan(const glm::vec2& delta)

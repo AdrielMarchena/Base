@@ -7,10 +7,10 @@
 #include "ent/Animator.h"
 #include "uuid/UUID.h"
 #include "render/Text.h"
+#include "misc/PerlinNoise.h"
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>
-namespace Base
-{
+namespace Base {
 	struct IDComponent
 	{
 		UUID Id;
@@ -18,7 +18,9 @@ namespace Base
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
 		IDComponent(UUID uuid)
-			:Id(uuid){}
+			:Id(uuid)
+		{
+		}
 	};
 
 	struct TagComponent
@@ -28,21 +30,27 @@ namespace Base
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string& tag)
-			:Tag(tag) {}
+			:Tag(tag)
+		{
+		}
 	};
 
 	struct TransformComponent
 	{
-		
+
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Rotation =	{ 0.0f, 0.0f, 0.0f };
-		glm::vec3 Scale =		{ 1.0f, 1.0f, 1.0f };
+		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
 
 		TransformComponent()
-			:Translation(glm::vec3(0.0f, 0.0f, 0.0f)) {}
+			:Translation(glm::vec3(0.0f, 0.0f, 0.0f))
+		{
+		}
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& translation)
-			: Translation(translation) {}
+			: Translation(translation)
+		{
+		}
 
 
 		glm::mat4 GetTransform() const
@@ -62,7 +70,9 @@ namespace Base
 		TextureComponent() = default;
 		TextureComponent(const TextureComponent&) = default;
 		TextureComponent(Ref<render::Texture> texture)
-			:Texture(texture) {}
+			:Texture(texture)
+		{
+		}
 
 	};
 
@@ -73,7 +83,9 @@ namespace Base
 		AnimateComponent() = default;
 		AnimateComponent(const AnimateComponent&) = default;
 		AnimateComponent(const ett::Animator& animation)
-			:Animation(animation) {}
+			:Animation(animation)
+		{
+		}
 	};
 
 	struct SubTextureComponent //TODO: Check id this works (I think it still) + Serialize
@@ -83,7 +95,9 @@ namespace Base
 		SubTextureComponent() = default;
 		SubTextureComponent(const SubTextureComponent&) = default;
 		SubTextureComponent(const render::SubTexture& sub_texture)
-			:SubTexture(sub_texture) {}
+			:SubTexture(sub_texture)
+		{
+		}
 
 	};
 
@@ -94,7 +108,9 @@ namespace Base
 		SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent&) = default;
 		SpriteComponent(const glm::vec4& color)
-			:Color(color) {}
+			:Color(color)
+		{
+		}
 	};
 
 	struct CircleComponent
@@ -105,8 +121,10 @@ namespace Base
 
 		CircleComponent() = default;
 		CircleComponent(const CircleComponent&) = default;
-		CircleComponent(float radius, float thickness,float fade)
-			:Radius(radius), Thickness(thickness), Fade(fade) {}
+		CircleComponent(float radius, float thickness, float fade)
+			:Radius(radius), Thickness(thickness), Fade(fade)
+		{
+		}
 	};
 
 	struct CameraComponent
@@ -123,14 +141,14 @@ namespace Base
 	{
 		ScriptableEntity* Instance;
 
-		ScriptableEntity*(*InstantiateScript)();
+		ScriptableEntity* (*InstantiateScript)();
 		void(*DestroyScript)(NativeScriptComponent*);
 
 		template<typename T>
 		void Bind()
 		{
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-			DestroyScript = [](NativeScriptComponent* script) { delete script->Instance; script->Instance = nullptr;  };
+			DestroyScript = [](NativeScriptComponent* script) { delete script->Instance; script->Instance = nullptr; };
 		}
 	};
 
@@ -189,6 +207,18 @@ namespace Base
 
 		Text2DComponent() = default;
 		Text2DComponent(const Text2DComponent&) = default;
+	};
+
+	struct Perlin2dComponent
+	{
+		int octaves = 8;
+		float bias = 1.5f;
+		float colorInterpolationPrecision = 0.033f;
+
+		Scope<PerlinNoise2D> Noise;
+
+		Perlin2dComponent() = default;
+		// Perlin2dComponent(const Perlin2dComponent&) = default;
 	};
 
 	//Temp

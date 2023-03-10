@@ -32,6 +32,7 @@ namespace Base {
 		bool m_ViewportHovered = false;
 		bool m_MousePickingEnabled = true;
 		bool m_SyncCameraZoom = true;
+		bool m_CameraKeepFocusOnSelectedEntity = false;
 		int m_GizmoType = -1;
 
 		glm::vec2 m_ViewportSize{1366, 768};

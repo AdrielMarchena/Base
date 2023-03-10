@@ -151,17 +151,20 @@ namespace Base {
 			//m_Entitys["Text"].GetTransform().Rotation ={ 0.0f, 0.0f, 0.0f };
 		}
 
-		PerlinNoise2D noise2d;
-		noise2d.GenerateNoise(8);
-
+		PerlinNoise2D* p;
 		{
 			m_Entitys["Perlin_Noise_Seed"] = m_Scene->CreateEntity("Perlin_Noise_Seed"); //Create the Quad entity
-			m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::TextureComponent>(noise2d.GenerateSeedTexture()); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Perlin_Noise_Seed"].GetTransform();
 
-			plat_tranform.Translation = { 0.0f,0.0f, 0.0f };
-			plat_tranform.Scale = { 1.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
+			auto& perlin = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::Perlin2dComponent>();
+			perlin.Noise = MakeScope<PerlinNoise2D>();
+			p = perlin.Noise.get();
+			p->GenerateNoise();
+			m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::TextureComponent>(perlin.Noise->GenerateNoiseTexture()); //Add sprite (solid color)
+			auto& plat_transform = m_Entitys["Perlin_Noise_Seed"].GetTransform();
+
+			plat_transform.Translation = { 0.0f,0.0f, 0.0f };
+			plat_transform.Scale = { 1.0f, 1.0f, 1.0f };
+			plat_transform.Rotation = { 0.0f, 0.0f, 0.0f };
 
 			auto& quad_rbody = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::RigidBody2DComponent>();
 			auto& quad_bcol = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::BoxColider2DComponent>();
@@ -171,12 +174,12 @@ namespace Base {
 
 		{
 			m_Entitys["Perlin_Noise_Completed"] = m_Scene->CreateEntity("Perlin_Noise_Completed"); //Create the Quad entity
-			m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::TextureComponent>(noise2d.GenerateNoiseTexture()); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Perlin_Noise_Completed"].GetTransform();
+			m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::TextureComponent>(p->GenerateSeedTexture()); //Add sprite (solid color)
+			auto& plat_transform = m_Entitys["Perlin_Noise_Completed"].GetTransform();
 
-			plat_tranform.Translation = { 0.0f,0.0f,0.0f };
-			plat_tranform.Scale = { 1.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
+			plat_transform.Translation = { 0.0f,2.0f,0.0f };
+			plat_transform.Scale = { 1.0f, 1.0f, 1.0f };
+			plat_transform.Rotation = { 0.0f, 0.0f, 0.0f };
 
 			auto& quad_rbody = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::RigidBody2DComponent>();
 			auto& quad_bcol = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::BoxColider2DComponent>();
@@ -260,6 +263,11 @@ namespace Base {
 			m_Scene->OnUpdateEditor(args, m_EditorCamera);
 		}
 
+		if (m_CameraKeepFocusOnSelectedEntity && m_SelectedEntity)
+		{
+			auto& pos = m_SelectedEntity.GetComponent<TransformComponent>().Translation;
+			m_EditorCamera.SetFocalPoint(pos);
+		}
 
 		if (input::Keyboard::isPress(BASE_KEY_C))
 			m_SelectedEntity = m_Scene->GetPrimaryCamera();
@@ -390,6 +398,18 @@ namespace Base {
 					auto& spec = m_FramebufferRender->GetSpec();
 					spec.scale_factor = scalor;
 					m_FramebufferRender->InvalidateFrameBuffer();
+				}
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Camera"))
+			{
+				ImGui::Checkbox("Keep Focus on selected entity", &m_CameraKeepFocusOnSelectedEntity);
+
+				if (ImGui::Button("Go to selected entity") && m_SelectedEntity)
+				{
+					auto& pos = m_SelectedEntity.GetComponent<TransformComponent>().Translation;
+					m_EditorCamera.SetFocalPoint(pos);
 				}
 				ImGui::EndMenu();
 			}
