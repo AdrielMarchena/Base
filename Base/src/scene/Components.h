@@ -214,6 +214,8 @@ namespace Base {
 		int octaves = 8;
 		float bias = 1.5f;
 		float colorInterpolationPrecision = 0.033f;
+		glm::vec3 minimumColor = { 75.0f, 75.0f, 75.0f };
+		glm::vec3 maxColor = { 225.0f, 225.0f, 225.0f };
 
 		Scope<PerlinNoise2D> Noise;
 

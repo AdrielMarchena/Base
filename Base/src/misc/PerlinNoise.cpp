@@ -130,19 +130,15 @@ namespace Base {
 		return glm::mix(q0, q1, t);
 	}
 
-	static glm::vec3 DecideColorMtb(float data, float precision)
+	glm::vec3 PerlinNoise2D::DecideColorMtb(float data)
 	{
-		static glm::vec3 colorMtpB = { 75.0f, 75.0f, 75.0f };
-		static glm::vec3 colorMtpG = { 225.0f, 225.0f, 225.0f };
-		static glm::vec3 colorMtpBG = (colorMtpB + colorMtpG) * 0.5f;
-
-		for (float i = precision; i <= 1; i += precision)
+		for (float i = m_ColorInterpolationPrecision; i <= 1; i += m_ColorInterpolationPrecision)
 			if (data <= i)
-				return bezier_2order_mix(colorMtpB, colorMtpBG, colorMtpG, i);
-		return bezier_2order_mix(colorMtpB, colorMtpBG, colorMtpG, data);
+				return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, i);
+		return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, data);
 	}
 
-	Ref<render::Texture> PerlinNoise2D::GenerateTexture(int w, int h, float* data, float precision)
+	Ref<render::Texture> PerlinNoise2D::GenerateTexture(int w, int h, float* data, float precision, std::function<glm::vec3(float)> decideColor)
 	{
 		TextureBufferType* Buffer = render::Texture::CreateTextureBuffer(w, h, 3);
 		static glm::vec3 mtp = { 255.0f, 255.0f, 255.0f };
@@ -151,7 +147,7 @@ namespace Base {
 			for (unsigned int iy = 0; iy < w; iy++)
 			{
 				float c = (*(data + ix * w + iy));
-				auto color = DecideColorMtb(c, precision);
+				auto color = decideColor(c);
 				*(Buffer + ix * w * 3 + iy * 3 + 0) = fabs(color.r); // r
 				*(Buffer + ix * w * 3 + iy * 3 + 1) = fabs(color.g); // g
 				*(Buffer + ix * w * 3 + iy * 3 + 2) = fabs(color.b); // b
@@ -217,7 +213,13 @@ namespace Base {
 			return MakeRef<render::Texture>();
 		}
 
-		return GenerateTexture(m_OutputWidth, m_OutputHeight, m_PerlinNoise2D, m_ColorInterpolationPrecision);
+		return GenerateTexture(m_OutputWidth, m_OutputHeight, m_PerlinNoise2D, m_ColorInterpolationPrecision, [&](float data)
+		{
+			for (float i = m_ColorInterpolationPrecision; i <= 1; i += m_ColorInterpolationPrecision)
+				if (data <= i)
+					return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, i);
+			return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, data);
+		});
 	}
 
 	Ref<render::Texture> PerlinNoise2D::GenerateSeedTexture()
@@ -228,7 +230,13 @@ namespace Base {
 			return MakeRef<render::Texture>();
 		}
 
-		return GenerateTexture(m_OutputWidth, m_OutputHeight, m_NoiseSeed2D, m_ColorInterpolationPrecision);
+		return GenerateTexture(m_OutputWidth, m_OutputHeight, m_NoiseSeed2D, m_ColorInterpolationPrecision, [&](float data)
+		{
+			for (float i = m_ColorInterpolationPrecision; i <= 1; i += m_ColorInterpolationPrecision)
+				if (data <= i)
+					return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, i);
+			return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, data);
+		});
 	}
 
 }

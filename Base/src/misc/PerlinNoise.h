@@ -38,6 +38,9 @@ namespace Base {
 		float m_Bias;
 		int m_Octaves;
 		float m_ColorInterpolationPrecision = 0.033f;
+		glm::vec3 m_MinimumColor = { 75.0f, 75.0f, 75.0f };
+		glm::vec3 m_MaxColor = { 225.0f, 225.0f, 225.0f };
+		glm::vec3 m_MediumColor = (m_MinimumColor + m_MaxColor) * 0.5f;
 
 	public:
 
@@ -51,11 +54,16 @@ namespace Base {
 		void SetOctaves(float octaves) { m_Octaves = octaves; }
 		void SetColorInterpolationPrecision(float colorInterpolationPrecision) { m_ColorInterpolationPrecision = colorInterpolationPrecision; }
 
+		void SetMinumumColor(const glm::vec3& minimum) { m_MinimumColor = minimum; UpdateMedium(); }
+		void SetMaxColor(const glm::vec3& max) { m_MaxColor = max; UpdateMedium(); }
+
 		Ref<render::Texture> GenerateNoiseTexture();
 		Ref<render::Texture> GenerateSeedTexture();
 
 	private:
-		static Ref<render::Texture> GenerateTexture(int w, int h, float* data, float precision);
+		glm::vec3 DecideColorMtb(float data);
+		void UpdateMedium() { (m_MinimumColor + m_MaxColor) * 0.5f; }
+		static Ref<render::Texture> GenerateTexture(int w, int h, float* data, float precision, std::function<glm::vec3(float)> decideColor);
 	};
 
 

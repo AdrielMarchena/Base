@@ -80,15 +80,18 @@ namespace Base {
 			{
 				auto& perlin = entity.GetComponent<Perlin2dComponent>();
 
-
 				bool changedO = ImGui::SliderInt("Octaves", &perlin.octaves, 1, 8);
 				bool changedB = ImGui::SliderFloat("Bias", &perlin.bias, 0.001f, 10.0f);
+				bool changedMinimumColor = ImGui::SliderFloat3("Minimum color", &perlin.minimumColor.x, 0.0f, 255.0f);
+				bool changedMaxColor = ImGui::SliderFloat3("Max color", &perlin.maxColor.x, 0.0f, 255.0f);
 				bool changedPrecision = ImGui::SliderFloat("Color interpolation precision", &perlin.colorInterpolationPrecision, 0.001f, 1.0f);
-				bool changedImportant = changedO || changedB;
+				bool changedImportant = changedO || changedB || changedPrecision || changedMinimumColor || changedMaxColor;
 
-				if (changedPrecision && !changedImportant)
+				if ((changedPrecision || changedMinimumColor || changedMaxColor) && !changedImportant)
 				{
 					perlin.Noise->SetColorInterpolationPrecision(perlin.colorInterpolationPrecision);
+					perlin.Noise->SetMinumumColor(perlin.minimumColor);
+					perlin.Noise->SetMaxColor(perlin.maxColor);
 					if (entity.HasComponent<TextureComponent>())
 					{
 						auto& sprite = entity.GetComponent<TextureComponent>().Texture;
@@ -100,6 +103,8 @@ namespace Base {
 					perlin.Noise->SetOctaves(perlin.octaves);
 					perlin.Noise->SetBias(perlin.bias);
 					perlin.Noise->SetColorInterpolationPrecision(perlin.colorInterpolationPrecision);
+					perlin.Noise->SetMinumumColor(perlin.minimumColor);
+					perlin.Noise->SetMaxColor(perlin.maxColor);
 					perlin.Noise->GenerateNoise();
 					if (entity.HasComponent<TextureComponent>())
 					{
