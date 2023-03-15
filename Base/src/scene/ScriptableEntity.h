@@ -1,25 +1,24 @@
 #pragma once
 #include "Entity.h"
 #include "event/Events.h"
-namespace Base
-{
+namespace Base {
 	class ScriptableEntity
 	{
 	public:
 		ScriptableEntity();
-		virtual ~ScriptableEntity(){}
-		template<typename T>
+		virtual ~ScriptableEntity() {}
+		template<typename T> requires Derived<T, Component<T>>
 		T& GetComponent()
 		{
 			return m_Entity.GetComponent<T>();
 		}
 
 	protected:
-		virtual void OnCreate(){}
-		virtual void OnAwake(){}
-		virtual void OnUpdate(const UpdateArgs& args){}
-		virtual void OnDestroy(){}
-		virtual void OnEvent(Event& e){}
+		virtual void OnCreate() {}
+		virtual void OnAwake() {}
+		virtual void OnUpdate(const UpdateArgs& args) {}
+		virtual void OnDestroy() {}
+		virtual void OnEvent(Event& e) {}
 	private:
 		Entity m_Entity;
 		friend class Scene;

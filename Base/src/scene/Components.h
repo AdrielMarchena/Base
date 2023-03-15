@@ -10,8 +10,28 @@
 #include "misc/PerlinNoise.h"
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>
+#include <typeinfo>
 namespace Base {
-	struct IDComponent
+	template<typename T>
+	struct Component
+	{
+		static inline const std::string ComponentName = std::string();
+		static inline const UUID Uuid = UUID();
+
+		Component()
+		{
+			if (Component<T>::ComponentName == std::string())
+			{
+				const std::string n = typeid(T).name();
+				const_cast<std::string&>(Component<T>::ComponentName) = n.substr(n.find_last_of(':') + 1);
+			}
+		}
+		Component(const Component&) = default;
+		// virtual ~Component() = default;
+
+	};
+
+	struct IDComponent : public Component<IDComponent>
 	{
 		UUID Id;
 
@@ -23,7 +43,7 @@ namespace Base {
 		}
 	};
 
-	struct TagComponent
+	struct TagComponent : public Component<TagComponent>
 	{
 		std::string Tag = "";
 
@@ -35,7 +55,7 @@ namespace Base {
 		}
 	};
 
-	struct TransformComponent
+	struct TransformComponent : public Component<TransformComponent>
 	{
 
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
@@ -63,7 +83,7 @@ namespace Base {
 		}
 	};
 
-	struct TextureComponent //TODO: merge with sprite component maybe, no need for 2 components + Serialize
+	struct TextureComponent : public Component<TextureComponent> //TODO: merge with sprite component maybe, no need for 2 components + Serialize
 	{
 		Ref<render::Texture> Texture;
 
@@ -76,7 +96,7 @@ namespace Base {
 
 	};
 
-	struct AnimateComponent //TODO: This probbly don't work anymore, also, remove this namespace ett + Serialize
+	struct AnimateComponent : public Component<AnimateComponent> //TODO: This probbly don't work anymore, also, remove this namespace ett + Serialize
 	{
 		ett::Animator Animation;
 
@@ -88,7 +108,7 @@ namespace Base {
 		}
 	};
 
-	struct SubTextureComponent //TODO: Check id this works (I think it still) + Serialize
+	struct SubTextureComponent : public Component<SubTextureComponent> //TODO: Check id this works (I think it still) + Serialize
 	{
 		render::SubTexture SubTexture;
 
@@ -101,7 +121,7 @@ namespace Base {
 
 	};
 
-	struct SpriteComponent //TODO: See TextureComponent todo
+	struct SpriteComponent : public Component<SpriteComponent> //TODO: See TextureComponent todo
 	{
 		glm::vec4 Color = Color::Base_Color;
 
@@ -113,7 +133,7 @@ namespace Base {
 		}
 	};
 
-	struct CircleComponent
+	struct CircleComponent : public Component<CircleComponent>
 	{
 		float Radius = 1.0f;
 		float Thickness = 1.0f;
@@ -127,7 +147,7 @@ namespace Base {
 		}
 	};
 
-	struct CameraComponent
+	struct CameraComponent : public Component<CameraComponent>
 	{
 		Base::SceneCamera Camera;
 		bool Primary = true;
@@ -137,7 +157,7 @@ namespace Base {
 		CameraComponent(const CameraComponent&) = default;
 	};
 	class ScriptableEntity;
-	struct NativeScriptComponent
+	struct NativeScriptComponent : public Component<NativeScriptComponent>
 	{
 		ScriptableEntity* Instance;
 
@@ -152,7 +172,7 @@ namespace Base {
 		}
 	};
 
-	struct RigidBody2DComponent
+	struct RigidBody2DComponent : public Component<RigidBody2DComponent>
 	{
 		enum class BodyType
 		{
@@ -167,7 +187,7 @@ namespace Base {
 		RigidBody2DComponent(const RigidBody2DComponent&) = default;
 	};
 
-	struct BoxColider2DComponent
+	struct BoxColider2DComponent : public Component<BoxColider2DComponent>
 	{
 		glm::vec2 Offset = { 0.0f,0.0f };
 		glm::vec2 Size = { 0.5f,0.5f };
@@ -183,7 +203,7 @@ namespace Base {
 		BoxColider2DComponent(const BoxColider2DComponent&) = default;
 	};
 
-	struct CircleColider2DComponent
+	struct CircleColider2DComponent : public Component<CircleColider2DComponent>
 	{
 		glm::vec2 Offset = { 0.0f,0.0f };
 		glm::vec2 Size = { 0.5f,0.5f };
@@ -200,7 +220,7 @@ namespace Base {
 		CircleColider2DComponent(const CircleColider2DComponent&) = default;
 	};
 
-	struct Text2DComponent
+	struct Text2DComponent : public Component<Text2DComponent>
 	{
 		std::string Text;
 		Ref<Font> font;
@@ -209,7 +229,7 @@ namespace Base {
 		Text2DComponent(const Text2DComponent&) = default;
 	};
 
-	struct Perlin2dComponent
+	struct Perlin2dComponent : public Component<Perlin2dComponent>
 	{
 		int octaves = 8;
 		float bias = 1.5f;

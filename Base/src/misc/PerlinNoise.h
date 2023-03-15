@@ -54,7 +54,7 @@ namespace Base {
 		void SetOctaves(float octaves) { m_Octaves = octaves; }
 		void SetColorInterpolationPrecision(float colorInterpolationPrecision) { m_ColorInterpolationPrecision = colorInterpolationPrecision; }
 
-		void SetMinumumColor(const glm::vec3& minimum) { m_MinimumColor = minimum; UpdateMedium(); }
+		void SetMinimumColor(const glm::vec3& minimum) { m_MinimumColor = minimum; UpdateMedium(); }
 		void SetMaxColor(const glm::vec3& max) { m_MaxColor = max; UpdateMedium(); }
 
 		Ref<render::Texture> GenerateNoiseTexture();

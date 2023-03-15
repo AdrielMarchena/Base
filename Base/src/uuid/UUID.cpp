@@ -4,8 +4,7 @@
 #include <random>
 #include <unordered_map>
 #include "entt/entt.hpp"
-namespace Base
-{
+namespace Base {
 	static bool s_MetaInit = false;
 	static std::random_device s_RandomDevice;
 #ifdef BASE_USING_UUID_64_T

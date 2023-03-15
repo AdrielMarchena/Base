@@ -35,6 +35,16 @@ namespace Base {
 				m_OnEntitySelected({});
 			}
 		}
+
+		if (ImGui::BeginPopupContextWindow(0, 1, false))
+		{
+			if (ImGui::MenuItem("Create Empty Entity"))
+			{
+				m_Context->CreateEntity("Empty Entity");
+			}
+			ImGui::EndPopup();
+		}
+
 		ImGui::End();
 	}
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)
@@ -47,14 +57,29 @@ namespace Base {
 		{
 			m_SelectionContext = entity;
 			if (m_OnEntitySelected != nullptr) // TODO: Check if is the same entity (or leave like this, it's kind of a "rerun" of the callback this way)
-			{
 				m_OnEntitySelected(entity);
-			}
+		}
+		bool entityDeleted = false;
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Entity"))
+				entityDeleted = true;
+
+			ImGui::EndPopup();
 		}
 
 		if (opened)
-		{
 			ImGui::TreePop();
+
+		if (entityDeleted)
+		{
+			m_Context->DestroyEntity(entity);
+			if (m_SelectionContext == entity)
+			{
+				m_SelectionContext = {};
+				if (m_OnEntitySelected)
+					m_OnEntitySelected({});
+			}
 		}
 	}
 }

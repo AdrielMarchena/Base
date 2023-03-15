@@ -6,8 +6,7 @@
 #include "ScriptableEntity.h"
 #include "event/MouseEvent.h"
 #include <glm/gtc/matrix_transform.hpp>
-namespace Base
-{
+namespace Base {
 	/* Simple control script for orthographic cameras */
 	class OrthoCameraScript : public ScriptableEntity
 	{
@@ -63,7 +62,7 @@ namespace Base
 
 		bool OnMouseScroll(MouseScrollEvent& e)
 		{
-			if(zoom_enable)
+			if (zoom_enable)
 				ProcessMouseScroll(e.GetYOffset());
 			return true;
 		}
@@ -72,7 +71,7 @@ namespace Base
 	/*class PerspectiveScript : public ScriptableEntity
 	{
 	public:
-		enum class Camera_Movement : uint8_t 
+		enum class Camera_Movement : uint8_t
 		{
 			NONE,
 			FORWARD,
@@ -166,7 +165,7 @@ namespace Base
 			WorldUp = Up;
 			Front = {0.0f,0.0f,-1.0f};
 			Right = {0.0f,0.0f,0.0f};
-			
+
 			using ms = input::Mouse;
 			last_mouse = { (ms::gpos().x - ms::gprevPos().x), (ms::gprevPos().y - ms::gpos().y) };
 
@@ -187,7 +186,7 @@ namespace Base
 			WorldUp = Up;
 			Front = { 0.0f,0.0f,-1.0f };
 			Right = { 0.0f,0.0f,0.0f };
-			
+
 			using ms = input::Mouse;
 			last_mouse = { (ms::gpos().x - ms::gprevPos().x), (ms::gprevPos().y - ms::gpos().y) };
 

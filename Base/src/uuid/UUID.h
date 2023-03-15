@@ -12,8 +12,7 @@
 #endif
 #include <unordered_map>
 
-namespace Base
-{
+namespace Base {
 	/* uuid type */
 	typedef uint64_t UUID_T;
 #define BASE_USING_UUID_64_T
@@ -31,8 +30,7 @@ namespace Base
 	};
 }
 
-namespace std
-{
+namespace std {
 #ifdef BASE_USING_UUID_64_T
 	template<>
 	struct hash<Base::UUID>

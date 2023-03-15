@@ -1,10 +1,14 @@
 #pragma once
+
+#include "Base.h"
 #include "Scene.h"
 #include "Components.h"
 #include "utils/base_assert.h"
 #include "entt/entt.hpp"
-namespace Base
-{
+
+#include <concepts>
+namespace Base {
+
 	class Entity
 	{
 	public:
@@ -12,28 +16,30 @@ namespace Base
 		Entity(entt::entity handle, Scene* scene);
 		Entity(const Entity& other) = default;
 
-		template<typename T, typename... _Args>
+		template<typename T, typename... _Args> requires Derived<T, Component<T>>
 		T& AddComponent(_Args&&... args)
 		{
-			BASE_CORE_ASSERT(!HasComponent<T>(), "Entity already has component '{0}'! Try use .GetComponent<{0}>()",BASE_GET_PARSE_TYPE_NAME(T));
-			return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<_Args>(args)...);
+			BASE_CORE_ASSERT(!HasComponent<T>(), "Entity already has component '{0}'! Try use .GetComponent<{0}>()", BASE_GET_PARSE_TYPE_NAME(T));
+			T& component = m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<_Args>(args)...);
+			m_Scene->OnComponentAdded<T>(*this, component);
+			return component;
 		}
 
-		template<typename T>
+		template<typename T> requires Derived<T, Component<T>>
 		T& GetComponent()
 		{
 			BASE_CORE_ASSERT(HasComponent<T>(), "Entity does not have component '{0}'!", BASE_GET_PARSE_TYPE_NAME(T));
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
 
-		template<typename T>
+		template<typename T> requires Derived<T, Component<T>>
 		bool HasComponent()
 		{
 			bool r = m_Scene->m_Registry.any_of<T>(m_EntityHandle);
 			return r;
 		}
 
-		template<typename T>
+		template<typename T> requires Derived<T, Component<T>>
 		void RemoveComponent()
 		{
 			BASE_CORE_ASSERT(HasComponent<T>(), "Entity does not have component '{0}'!", BASE_GET_PARSE_TYPE_NAME(T));
@@ -42,7 +48,7 @@ namespace Base
 
 		TransformComponent& GetTransform()
 		{
-			BASE_CORE_ASSERT(HasComponent<Base::TransformComponent>(), "Entity has no TransformComponent!");
+			BASE_CORE_ASSERT(HasComponent<TransformComponent>(), "Entity has no TransformComponent!");
 			return m_Scene->m_Registry.get<Base::TransformComponent>(m_EntityHandle);
 		}
 
@@ -64,7 +70,7 @@ namespace Base
 		// {
 		// }
 
-		bool HasScene() const 
+		bool HasScene() const
 		{
 			return m_Scene != nullptr;
 		}
@@ -80,6 +86,7 @@ namespace Base
 		}
 
 		operator bool() const { return m_EntityHandle != entt::null; }
+		operator entt::entity() const { return m_EntityHandle; }
 		explicit operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 
 		bool operator==(const Entity& other) const

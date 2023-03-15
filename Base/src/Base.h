@@ -10,7 +10,6 @@
 #include "scene/Scene.h"
 #include "scene/Entity.h"
 #include "scene/Components.h"
-#include "scene/CameraScript.h"
 
 #include "input/Mouse.h"
 #include "input/Keyboard.h"

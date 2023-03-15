@@ -21,17 +21,17 @@
 
 #include "meta/factory.hpp"
 #include "meta/meta.hpp"
-namespace Base
-{
-	namespace utils
-	{
+
+#include <concepts>
+namespace Base {
+	namespace utils {
 		static inline b2BodyType Get2DBodyType(RigidBody2DComponent::BodyType type)
 		{
 			switch (type)
 			{
-				case RigidBody2DComponent::BodyType::Static: return b2BodyType::b2_staticBody;
-				case RigidBody2DComponent::BodyType::Dynamic: return b2BodyType::b2_dynamicBody;
-				case RigidBody2DComponent::BodyType::Kinematic: return b2BodyType::b2_kinematicBody;
+			case RigidBody2DComponent::BodyType::Static: return b2BodyType::b2_staticBody;
+			case RigidBody2DComponent::BodyType::Dynamic: return b2BodyType::b2_dynamicBody;
+			case RigidBody2DComponent::BodyType::Kinematic: return b2BodyType::b2_kinematicBody;
 			}
 			BASE_CORE_ASSERT(false, "Unknow body type");
 			return b2BodyType::b2_staticBody;
@@ -44,19 +44,18 @@ namespace Base
 
 		m_ViewPortWidth = WindowProps().width;
 		m_ViewPortHeight = WindowProps().height;
-		
+
 		OnViewPortResize(m_ViewPortWidth, m_ViewPortHeight);
 
-		static bool once = []() 
+		static bool once = []()
 		{
 			std::hash<std::string_view> hash{};
 			auto factory = entt::meta<Scene>().type(hash("Scene"));
 			factory.
 				data<&Scene::m_ViewPortWidth>(hash("m_ViewPortWidth")).
 				data<&Scene::m_ViewPortHeight>(hash("m_ViewPortHeight"));
-			return true; 
+			return true;
 		}();
-		
 	}
 
 	Scene::~Scene()
@@ -88,27 +87,33 @@ namespace Base
 				script.DestroyScript(&script);
 			}
 		});
-		
+
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		Entity entity = { m_Registry.create(), this };
-		entity.AddComponent<IDComponent>();
-		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Unnamed Entity" : name;
+		entity.AddComponent<IDComponent>();
+		entity.AddComponent<TransformComponent>();
 		return entity;
 	}
 
 	Entity Scene::CreateEntityWhithUUID(UUID uuid, const std::string& name)
 	{
 		Entity entity = { m_Registry.create(), this };
-		entity.AddComponent<IDComponent>(uuid);
-		entity.AddComponent<TransformComponent>();
 		auto& tag = entity.AddComponent<TagComponent>();
 		tag.Tag = name.empty() ? "Unnamed Entity" : name;
+		entity.AddComponent<IDComponent>(uuid);
+		entity.AddComponent<TransformComponent>();
+
 		return entity;
+	}
+
+	void Scene::DestroyEntity(Entity ent)
+	{
+		m_Registry.destroy(ent);
 	}
 
 	void Scene::StartNativeScript(Entity& ent)
@@ -157,7 +162,7 @@ namespace Base
 
 	void Scene::RuntimeInit()
 	{
-		m_PhysicWorld = new b2World({0.0f,-9.8f});
+		m_PhysicWorld = new b2World({ 0.0f,-9.8f });
 		auto view = m_Registry.view<RigidBody2DComponent>();
 		for (auto e : view)
 		{
@@ -179,7 +184,7 @@ namespace Base
 			if (entity.HasComponent<BoxColider2DComponent>())
 			{
 				auto& bc2d = entity.GetComponent<BoxColider2DComponent>();
-				
+
 				b2PolygonShape boxShape;
 				boxShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
 
@@ -192,7 +197,7 @@ namespace Base
 				body->CreateFixture(&fixtureDef);
 			}
 
-			if(entity.HasComponent<CircleColider2DComponent>())
+			if (entity.HasComponent<CircleColider2DComponent>())
 			{
 				auto& cc2d = entity.GetComponent<CircleColider2DComponent>();
 
@@ -240,10 +245,10 @@ namespace Base
 					TransformComponent com = transform;
 					for (auto c : text.Text)
 					{
-						D2D::DrawGlyph(com.GetTransform(),c,text.font, Color::White, (int)entity);
+						D2D::DrawGlyph(com.GetTransform(), c, text.font, Color::White, (int)entity);
 
 						double adv = text.font->GetGlyphsList()[c].Advance;
-						if(adv!=0.0)
+						if (adv != 0.0)
 							com.Translation.x += (adv / adv) * com.Scale.x;
 					}
 				}
@@ -344,8 +349,8 @@ namespace Base
 			BASE_PROFILE_SCOPE("2D Physic's Updates");
 			const int32_t velocityIterations = 6;
 			const int32_t positionIterations = 2;
-			
-				m_PhysicWorld->Step(args.dt, velocityIterations, positionIterations);
+
+			m_PhysicWorld->Step(args.dt, velocityIterations, positionIterations);
 
 			auto view = m_Registry.view<RigidBody2DComponent>();
 			for (auto e : view)
@@ -364,7 +369,7 @@ namespace Base
 
 		{//Render Scope
 			BASE_PROFILE_SCOPE("Scene Render Scope");
-			
+
 			Base::Camera* mainCamera2D = nullptr;
 			glm::mat4 cameraTransform2D;
 
@@ -456,7 +461,7 @@ namespace Base
 				}
 
 				{// Circle
-					
+
 					{//Draw Color Circles
 						auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
 						for (auto entity : view)
@@ -475,11 +480,9 @@ namespace Base
 							trans.Scale = glm::vec3(circle_def.Radius);
 							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, (int)entity);
 						}
-					
+
 					}
 				}
-
-				
 
 				//Finish the 2D rendering
 				D2D::EndBatch();
@@ -503,5 +506,102 @@ namespace Base
 
 		m_ViewPortWidth = w;
 		m_ViewPortHeight = h;
+	}
+
+	template<typename U, Derived<Component<U>> T>
+	void Scene::OnComponentAdded(Entity ent, T& component)
+	{
+		BASE_ERROR("This generic templated function should not be called");
+	}
+
+	template<>
+	void Scene::OnComponentAdded<IDComponent>(Entity ent, IDComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", IDComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TagComponent>(Entity ent, TagComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", TagComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TransformComponent>(Entity ent, TransformComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", TransformComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TextureComponent>(Entity ent, TextureComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", TextureComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<AnimateComponent>(Entity ent, AnimateComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", AnimateComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SubTextureComponent>(Entity ent, SubTextureComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", SubTextureComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SpriteComponent>(Entity ent, SpriteComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", SpriteComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CircleComponent>(Entity ent, CircleComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", CircleComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CameraComponent>(Entity ent, CameraComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", CameraComponent::ComponentName, ent.GetTag());
+		component.Camera.SetViewportSize(m_ViewPortWidth, m_ViewPortHeight);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity ent, NativeScriptComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", NativeScriptComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<RigidBody2DComponent>(Entity ent, RigidBody2DComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", RigidBody2DComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<BoxColider2DComponent>(Entity ent, BoxColider2DComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", BoxColider2DComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CircleColider2DComponent>(Entity ent, CircleColider2DComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", CircleColider2DComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<Text2DComponent>(Entity ent, Text2DComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", Text2DComponent::ComponentName, ent.GetTag());
+	}
+
+	template<>
+	void Scene::OnComponentAdded<Perlin2dComponent>(Entity ent, Perlin2dComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", Perlin2dComponent::ComponentName, ent.GetTag());
 	}
 }

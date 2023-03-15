@@ -1,5 +1,6 @@
 #ifndef BASE_API
 #include <memory>
+#include <concepts>
 
 #define BASE_API
 
@@ -8,17 +9,22 @@
 #define BASE_ZPOS(x) x[3][2]
 
 #if defined BASE_DEBUG || BASE_RELEASE
-	#define BASE_PROFILING //Temp
+#define BASE_PROFILING //Temp
 #endif
 
 #ifdef _DEBUG
-	#define BASE_DEBUG_CALL(x) x 
+#define BASE_DEBUG_CALL(x) x 
 #else
-	#define BASE_DEBUG_CALL(x)
+#define BASE_DEBUG_CALL(x)
 #endif
 
-namespace Base
-{
+namespace Base {
+	template<class T, class U>
+	concept Derived = std::is_base_of<U, T>::value;
+
+	template<class T, class U>
+	using EnableIfT = std::enable_if_t<std::is_base_of_v<U, T>, bool>;
+
 	template<typename T>
 	using KeyboardPressedCallback = std::function<void(T&)>;
 
@@ -27,7 +33,7 @@ namespace Base
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
 
-	template<typename T,class... _Args>
+	template<typename T, class... _Args>
 	Ref<T> MakeRef(_Args&&... args)
 	{
 		return std::make_shared<T>(std::forward<_Args>(args)...);

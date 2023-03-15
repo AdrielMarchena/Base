@@ -7,8 +7,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtx/quaternion.hpp>
 #include "utils/Generic.h"
-namespace Base
-{
+namespace Base {
 
 	static glm::vec2 tex_coords[] = {
 		{0.0f,0.0f},
@@ -62,8 +61,8 @@ namespace Base
 		m_IB = render::IndexBuffer::CreateIndexBuffer(sizeof(indices), indices);
 
 		QuadVertexPositions[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-		QuadVertexPositions[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
-		QuadVertexPositions[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
+		QuadVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
+		QuadVertexPositions[2] = { 0.5f,  0.5f, 0.0f, 1.0f };
 		QuadVertexPositions[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
 	}
 
@@ -75,6 +74,14 @@ namespace Base
 		m_Framebuffer->Invalidate();
 		SetUpShader();
 		SetUpPostEffects();
+	}
+
+	void FramebufferRender::ResizeFramebuffer(uint32_t w, uint32_t h)
+	{
+		BASE_CORE_ASSERT(w > 0 && h > 0, "framebuffer width or height can't be zero");
+		m_Specs.width = w;
+		m_Specs.height = h;
+		InvalidateFrameBuffer();
 	}
 
 	void FramebufferRender::BindFrameBuffer()
@@ -92,7 +99,7 @@ namespace Base
 	FramebufferRender::~FramebufferRender()
 	{
 		delete m_Shaders.release();
-		if(m_Buffer)
+		if (m_Buffer)
 			delete m_Buffer;
 	}
 
@@ -117,9 +124,9 @@ namespace Base
 	void FramebufferRender::AddShader(const Ref<render::Shader>& shader, const std::string& name)
 	{
 		const std::string sn = name.empty() ? shader->GetName() : name;
-		m_Shaders->Add(sn,shader);
+		m_Shaders->Add(sn, shader);
 	}
-	
+
 	void FramebufferRender::UseShader(const std::string& name)
 	{
 		m_CurrentShader = m_Shaders->Get(name);
@@ -150,7 +157,7 @@ namespace Base
 		float offset_x = 1.0f / m_Framebuffer->GetSpec().width;
 		float offset_y = 1.0f / m_Framebuffer->GetSpec().height;
 
-		std::vector<glm::vec2> offsets = 
+		std::vector<glm::vec2> offsets =
 		{
 			glm::vec2(-offset_x, offset_y),  glm::vec2(0.0f, offset_y),  glm::vec2(offset_x,offset_y),
 			glm::vec2(-offset_x, 0.0f),      glm::vec2(0.0f, 0.0f),      glm::vec2(offset_x,0.0f),
@@ -169,7 +176,7 @@ namespace Base
 
 		FramebufferPostEffect sharpen;
 		sharpen.offsets = offsets;
-		sharpen.kernel = 
+		sharpen.kernel =
 		{
 			 0.0f,-1.0f, 0.0f,
 			-1.0f, 5.0f,-1.0f,
@@ -204,7 +211,7 @@ namespace Base
 		{
 		   -1.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 0.0f,
-		    1.0f, 0.0f,-1.0f
+			1.0f, 0.0f,-1.0f
 		};
 		m_PostEffects["edge_detection1"] = edge_detection1;
 
@@ -230,7 +237,7 @@ namespace Base
 
 		FramebufferPostEffect gaussian_blur3x3;
 		gaussian_blur3x3.offsets = offsets;
-		dec = 1.0f/16.0f;
+		dec = 1.0f / 16.0f;
 		gaussian_blur3x3.kernel =
 		{
 			1.0f * dec, 2.0f * dec, 1.0f * dec,
@@ -259,7 +266,7 @@ namespace Base
 		{
 			1.0f * dec, 4.0f * dec,  6.0f * dec, 4.0f * dec, 1.0f * dec,
 			4.0f * dec,16.0f * dec, 24.0f * dec,16.0f * dec, 4.0f * dec,
-			6.0f * dec,24.0f * dec,-476.0f *dec,24.0f * dec,6.0f * dec,
+			6.0f * dec,24.0f * dec,-476.0f * dec,24.0f * dec,6.0f * dec,
 			4.0f * dec,16.0f * dec, 24.0f * dec,16.0f * dec, 4.0f * dec,
 			1.0f * dec, 4.0f * dec,  6.0f * dec, 4.0f * dec, 1.0f * dec
 		};
@@ -316,7 +323,7 @@ namespace Base
 	{
 		float u_Width = m_Framebuffer->GetSpec().width;
 		float u_Height = m_Framebuffer->GetSpec().height;
-		
+
 		m_CurrentShader->Bind();
 		m_CurrentShader->SetUniform1i("u_Framebuffer", 0);
 		m_CurrentShader->SetUniform1f("u_Width", u_Width);
@@ -339,8 +346,8 @@ namespace Base
 	{
 		glm::mat4 rotation = glm::toMat4(glm::quat(m_Rotation));
 		m_Transform = glm::translate(glm::mat4(1.0f), m_Position)
-					  * rotation
-					  * glm::scale(glm::mat4(1.0f), m_Scale);
+			* rotation
+			* glm::scale(glm::mat4(1.0f), m_Scale);
 
 		m_BufferPtr = m_Buffer;
 		for (size_t i = 0; i < 4; i++)

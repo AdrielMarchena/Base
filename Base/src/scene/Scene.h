@@ -6,10 +6,10 @@
 #include "entt/entt.hpp"
 #include "uuid/UUID.h"
 #include "EditorCamera.h"
-
+#include "Components.h"
+#include <concepts>
 class b2World;
-namespace Base
-{
+namespace Base {
 	class Entity;
 	class Scene
 	{
@@ -23,7 +23,9 @@ namespace Base
 
 		//Entity Stuff
 		Entity CreateEntity(const std::string& name = std::string());
-		Entity CreateEntityWhithUUID(UUID uuid,const std::string& name = std::string());
+		Entity CreateEntityWhithUUID(UUID uuid, const std::string& name = std::string());
+		void DestroyEntity(Entity ent);
+
 		void StartNativeScript(Entity& ent);
 		void DestroyNativeScript(Entity& ent);
 		void AwakeNativeScript(Entity& ent);
@@ -41,6 +43,8 @@ namespace Base
 		//ViewPort
 		void OnViewPortResize(uint32_t w, uint32_t h);
 
+		template<typename U, Derived<Component<U>> T>
+		void OnComponentAdded(Entity ent, T& component);
 	private:
 
 		uint32_t m_ViewPortWidth;
@@ -52,6 +56,7 @@ namespace Base
 		friend class Entity;
 		friend class SceneSerializer;
 		friend class SceneHierarchyPanel;
+		friend class PropertiesPanel;
 	};
 }
 

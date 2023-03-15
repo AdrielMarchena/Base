@@ -8,8 +8,10 @@
 #include "meta/factory.hpp"
 
 static bool s_Init = false;
-namespace Base
-{
+namespace Base {
+	// template<typename T>
+	// std::string Component<T>::ComponentName = std::string();
+
 	void Init::InitComponentsReflection()
 	{
 		return; //TODO: Fix this hole thing
@@ -45,7 +47,7 @@ namespace Base
 				}
 				debug_break();*/
 			}
-			
+
 			{
 				//TagComp
 				auto factory = entt::meta<TagComponent>().type(hash("TagComponent"));

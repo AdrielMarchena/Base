@@ -32,6 +32,7 @@ namespace Base {
 		ImGui::End();
 	}
 
+
 	void PropertiesPanel::DrawComponents()
 	{
 		auto& entity = m_SelectionContext;
@@ -48,13 +49,17 @@ namespace Base {
 			{
 				tag = std::string(buffer);
 			}
-		});
+		}, false);
 
 		DrawTreeComponent<TransformComponent>("Transform Component", [&]()
 		{
-			auto& translation = entity.GetComponent<TransformComponent>().Translation;
-			ImGui::DragFloat3("Position", &translation.x, 0.05f);
-		});
+			auto& transform = entity.GetComponent<TransformComponent>();
+			ImGui::DragFloat3("Position", &transform.Translation.x, 0.05f);
+			glm::vec3 rotation = glm::degrees(transform.Rotation);
+			ImGui::DragFloat3("Rotation", &rotation.x, 0.5f);
+			transform.Rotation = glm::radians(rotation);
+			ImGui::DragFloat3("Scale", &transform.Scale.x, 0.05f);
+		}, false);
 
 		DrawTreeComponent<CircleComponent>("Circle Component", [&]()
 		{
@@ -85,7 +90,7 @@ namespace Base {
 			if ((changedPrecision || changedMinimumColor || changedMaxColor) && !changedImportant)
 			{
 				perlin.Noise->SetColorInterpolationPrecision(perlin.colorInterpolationPrecision);
-				perlin.Noise->SetMinumumColor(perlin.minimumColor);
+				perlin.Noise->SetMinimumColor(perlin.minimumColor);
 				perlin.Noise->SetMaxColor(perlin.maxColor);
 				if (entity.HasComponent<TextureComponent>())
 				{
@@ -98,7 +103,7 @@ namespace Base {
 				perlin.Noise->SetOctaves(perlin.octaves);
 				perlin.Noise->SetBias(perlin.bias);
 				perlin.Noise->SetColorInterpolationPrecision(perlin.colorInterpolationPrecision);
-				perlin.Noise->SetMinumumColor(perlin.minimumColor);
+				perlin.Noise->SetMinimumColor(perlin.minimumColor);
 				perlin.Noise->SetMaxColor(perlin.maxColor);
 				perlin.Noise->GenerateNoise();
 				if (entity.HasComponent<TextureComponent>())
@@ -135,7 +140,7 @@ namespace Base {
 		}
 
 		//Camera
-		DrawTreeComponent<CircleColider2DComponent>("Circle Collider Component", [&]()
+		DrawTreeComponent<CameraComponent>("Camera Component", [&]()
 		{
 			auto& camera = entity.GetComponent<CameraComponent>();
 
@@ -157,5 +162,25 @@ namespace Base {
 				ImGui::EndCombo();
 			}
 		});
+
+		if (ImGui::Button("Add Component"))
+			ImGui::OpenPopup("Add Component");
+
+		if (ImGui::BeginPopup("Add Component"))
+		{
+			if (ImGui::MenuItem("Camera"))
+			{
+				m_SelectionContext.AddComponent<CameraComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			if (ImGui::MenuItem("Sprite"))
+			{
+				m_SelectionContext.AddComponent<SpriteComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
 	}
 }

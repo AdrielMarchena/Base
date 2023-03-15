@@ -132,6 +132,8 @@ namespace Base {
 
 	glm::vec3 PerlinNoise2D::DecideColorMtb(float data)
 	{
+		if (m_ColorInterpolationPrecision <= 0)
+			return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, 0.033);
 		for (float i = m_ColorInterpolationPrecision; i <= 1; i += m_ColorInterpolationPrecision)
 			if (data <= i)
 				return bezier_2order_mix(m_MinimumColor, m_MediumColor, m_MaxColor, i);

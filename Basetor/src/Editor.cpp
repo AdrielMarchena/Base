@@ -6,6 +6,7 @@
 #include "utils/Instrumentor.h"
 #include "utils/RandomList.h"
 #include "render/Text.h"
+#include "scene/CameraScript.h"
 
 #include "imgui.h"
 #include "ImGuizmo.h"
@@ -250,6 +251,17 @@ namespace Base {
 		using ms = Base::input::Mouse;
 
 		m_FramebufferRender->BindFrameBuffer();
+
+		if (auto spec = m_FramebufferRender->GetSpec();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+			(spec.width != m_ViewportSize.x || spec.height != m_ViewportSize.y))
+		{
+			m_FramebufferRender->ResizeFramebuffer((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+
+			m_Scene->OnViewPortResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		}
+
 		Render2D::ClearColor();
 
 		if (m_MousePickingEnabled && m_ViewportFocused && m_ViewportHovered)
@@ -539,7 +551,6 @@ namespace Base {
 		m_PropertiesPanel.OnImGuiRender();
 
 		ImGui::End(); //Dockspace
-
 	}
 
 	void Editor::OnDetach()
@@ -558,6 +569,15 @@ namespace Base {
 
 	bool Editor::OnWindowResize(Base::WindowResizeEvent& e)
 	{
+		if (auto spec = m_FramebufferRender->GetSpec();
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f &&
+			(spec.width != m_ViewportSize.x || spec.height != m_ViewportSize.y))
+		{
+			m_FramebufferRender->ResizeFramebuffer((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
+
+			m_Scene->OnViewPortResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+		}
 		return false;
 	}
 
