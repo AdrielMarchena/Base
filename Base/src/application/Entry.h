@@ -10,6 +10,7 @@ int main(int argc, char** argv)
 	try
 	{
 		Base::Log::Init();
+		Base::Init::InitComponents();
 
 		BASE_PROFILE_BEGIN_SESSION("Initialization", "Profiling_Init.json");
 		auto app = Base::CreateApplication(argc, argv);

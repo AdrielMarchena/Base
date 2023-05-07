@@ -2,13 +2,13 @@
 #include "SceneSerializer.h"
 #include "Entity.h"
 #include "utils/yaml_specializations.h"
+#include "render/gl/Texture.h"
 
 #include "yaml-cpp/yaml.h"
 #include <fstream>
 
 #include "ScriptableEntity.h"
-namespace Base
-{
+namespace Base {
 	static inline void SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
 		out << YAML::BeginMap;
@@ -16,7 +16,7 @@ namespace Base
 
 		if (entity.HasComponent<TagComponent>())
 		{
-			out << YAML::Key << "TagComponent";
+			out << YAML::Key << TagComponent::StructName;
 			out << YAML::BeginMap; //Tag
 
 			out << YAML::Key << "Tag" << YAML::Value << entity.GetTag();
@@ -26,7 +26,7 @@ namespace Base
 
 		if (entity.HasComponent<TransformComponent>())
 		{
-			out << YAML::Key << "TransformComponent";
+			out << YAML::Key << TransformComponent::StructName;
 			out << YAML::BeginMap; //Transform
 
 			auto& transform = entity.GetTransform();
@@ -38,9 +38,22 @@ namespace Base
 			out << YAML::EndMap; //Transform
 		}
 
+		if (entity.HasComponent<TextureComponent>())
+		{
+			out << YAML::Key << TextureComponent::StructName;
+			out << YAML::BeginMap; //Sprite
+
+			auto& texture = entity.GetComponent<TextureComponent>();
+
+			out << YAML::Key << "Path" << YAML::Value << texture.Texture->GetPath();
+			out << YAML::Key << "IsRelative" << YAML::Value << true; // TODO: Implement way to save texture path relative or full
+
+			out << YAML::EndMap; //Sprite
+		}
+
 		if (entity.HasComponent<SpriteComponent>())
 		{
-			out << YAML::Key << "SpriteComponent";
+			out << YAML::Key << SpriteComponent::StructName;
 			out << YAML::BeginMap; //Sprite
 
 			auto& sprite = entity.GetComponent<SpriteComponent>();
@@ -52,7 +65,7 @@ namespace Base
 
 		if (entity.HasComponent<CircleComponent>())
 		{
-			out << YAML::Key << "CircleComponent";
+			out << YAML::Key << CircleComponent::StructName;
 			out << YAML::BeginMap; //Circle
 
 			auto& circle = entity.GetComponent<CircleComponent>();
@@ -66,7 +79,7 @@ namespace Base
 
 		if (entity.HasComponent<CameraComponent>())
 		{
-			out << YAML::Key << "CameraComponent";
+			out << YAML::Key << CameraComponent::StructName;
 			out << YAML::BeginMap; //CameraComponent
 
 			auto& camera_comp = entity.GetComponent<CameraComponent>();
@@ -82,7 +95,7 @@ namespace Base
 			out << YAML::Key << "OrthographicNear" << YAML::Value << camera.GetOrthographicNearClip();
 			out << YAML::Key << "OrthographicFar" << YAML::Value << camera.GetOrthographicFarClip();
 			out << YAML::EndMap; //Camera
-			
+
 			out << YAML::Key << "Primary" << YAML::Value << camera_comp.Primary;
 			out << YAML::Key << "FixedAspectRatio" << YAML::Value << camera_comp.FixedAspectRatio;
 
@@ -91,7 +104,7 @@ namespace Base
 
 		if (entity.HasComponent<RigidBody2DComponent>())
 		{
-			out << YAML::Key << "RigidBody2DComponent";
+			out << YAML::Key << RigidBody2DComponent::StructName;
 			out << YAML::BeginMap; //RigidBody2D
 
 			auto& rbody = entity.GetComponent<RigidBody2DComponent>();
@@ -104,12 +117,12 @@ namespace Base
 
 		if (entity.HasComponent<BoxColider2DComponent>())
 		{
-			out << YAML::Key << "BoxColider2DComponent";
+			out << YAML::Key << BoxColider2DComponent::StructName;
 			out << YAML::BeginMap; //BoxColider2D
 
 			auto& bcol = entity.GetComponent<BoxColider2DComponent>();
 
-			out << YAML::Key << "Offset" << YAML::Value <<bcol.Offset;
+			out << YAML::Key << "Offset" << YAML::Value << bcol.Offset;
 			out << YAML::Key << "Size" << YAML::Value << bcol.Size;
 			out << YAML::Key << "Density" << YAML::Value << bcol.Density;
 			out << YAML::Key << "Friction" << YAML::Value << bcol.Friction;
@@ -117,6 +130,40 @@ namespace Base
 			out << YAML::Key << "RestitutionThreshold" << YAML::Value << bcol.RestitutionThreshold;
 
 			out << YAML::EndMap; //BoxColider2D
+		}
+
+		if (entity.HasComponent<CircleColider2DComponent>())
+		{
+			out << YAML::Key << CircleColider2DComponent::StructName;
+			out << YAML::BeginMap; //CircleColider2D
+
+			auto& bcol = entity.GetComponent<CircleColider2DComponent>();
+
+			out << YAML::Key << "Offset" << YAML::Value << bcol.Offset;
+			out << YAML::Key << "Size" << YAML::Value << bcol.Size;
+			out << YAML::Key << "Density" << YAML::Value << bcol.Density;
+			out << YAML::Key << "Friction" << YAML::Value << bcol.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << bcol.Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << bcol.RestitutionThreshold;
+			out << YAML::Key << "Radius" << YAML::Value << bcol.Radius;
+
+			out << YAML::EndMap; //CircleColider2D
+		}
+
+		if (entity.HasComponent<Perlin2dComponent>())
+		{
+			out << YAML::Key << Perlin2dComponent::StructName;
+			out << YAML::BeginMap; //Perlin2d
+
+			auto& perlin = entity.GetComponent<Perlin2dComponent>();
+
+			out << YAML::Key << "Octaves" << YAML::Value << perlin.octaves;
+			out << YAML::Key << "Bias" << YAML::Value << perlin.bias;
+			out << YAML::Key << "ColorInterpolationPrecision" << YAML::Value << perlin.colorInterpolationPrecision;
+			out << YAML::Key << "MinimumColor" << YAML::Value << perlin.minimumColor;
+			out << YAML::Key << "NaxColor" << YAML::Value << perlin.maxColor;
+
+			out << YAML::EndMap; //Perlin2d
 		}
 
 		out << YAML::EndMap; // Entity
@@ -133,7 +180,7 @@ namespace Base
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene" << YAML::Value << "Untitled";
 		out << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
-		
+
 		m_Scene->m_Registry.each([&](auto entityID)
 		{
 			Entity entity = { entityID, m_Scene.get() };
@@ -162,8 +209,8 @@ namespace Base
 		{
 			data = YAML::LoadFile(filepath);
 		}
-		catch (const YAML::ParserException& e) 
-		{ 
+		catch (const YAML::ParserException& e)
+		{
 			return false;
 		}
 		catch (const std::exception& e)
@@ -192,7 +239,7 @@ namespace Base
 
 				BASE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
-				Entity deserialized_entity = m_Scene->CreateEntityWhithUUID(uuid,name);
+				Entity deserialized_entity = m_Scene->CreateEntityWhithUUID(uuid, name);
 
 				//Transform
 				auto transformComponent = entity["TransformComponent"];
@@ -211,6 +258,14 @@ namespace Base
 					auto& spr = deserialized_entity.AddComponent<SpriteComponent>();
 
 					spr.Color = spriteComponent["Color"].as<glm::vec4>();
+				}
+
+				//Texture
+				auto textureComponent = entity["TextureComponent"];
+				if (textureComponent)
+				{
+					const std::string texturePath = textureComponent["Path"].as<std::string>();
+					auto& texture = deserialized_entity.AddComponent<TextureComponent>(Base::render::Texture::CreateTexture(texturePath, "TODO: RENAME THIS IDK"));
 				}
 
 				//Circle
@@ -246,7 +301,7 @@ namespace Base
 					cc.Primary = cameraComponent["Primary"].as<bool>();
 					cc.FixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
 				}
-				
+
 				//RigidBody2DComponent
 				auto rigiComponent = entity["RigidBody2DComponent"];
 				if (rigiComponent)
@@ -269,6 +324,35 @@ namespace Base
 					bbody.Friction = boxComponent["Friction"].as<float>();
 					bbody.Restitution = boxComponent["Restitution"].as<float>();
 					bbody.RestitutionThreshold = boxComponent["RestitutionThreshold"].as<float>();
+				}
+
+				//CircleColider2DComponent
+				auto circleColiderComponent = entity["CircleColider2DComponent"];
+				if (circleColiderComponent)
+				{
+					auto& circleBody = deserialized_entity.AddComponent<CircleColider2DComponent>();
+
+					circleBody.Offset = circleColiderComponent["Offset"].as<glm::vec2>();
+					circleBody.Size = circleColiderComponent["Size"].as<glm::vec2>();
+					circleBody.Density = circleColiderComponent["Density"].as<float>();
+					circleBody.Friction = circleColiderComponent["Friction"].as<float>();
+					circleBody.Restitution = circleColiderComponent["Restitution"].as<float>();
+					circleBody.RestitutionThreshold = circleColiderComponent["RestitutionThreshold"].as<float>();
+					circleBody.Radius = circleColiderComponent["Radius"].as<float>();
+				}
+
+				//Perlin2dComponent
+				auto perlinComponent = entity["Perlin2dComponent"];
+				if (perlinComponent)
+				{
+					auto& perlin = deserialized_entity.AddComponent<Perlin2dComponent>();
+
+					perlin.octaves = perlinComponent["Octaves"].as<float>();
+					perlin.bias = perlinComponent["Bias"].as<float>();
+					perlin.colorInterpolationPrecision = perlinComponent["colorInterpolationPrecision"].as<float>();
+					perlin.maxColor = perlinComponent["MaxColor"].as<glm::vec3>();
+					perlin.minimumColor = perlinComponent["MinimumColor"].as <glm::vec3>();
+					// perlin.Noise = perlinComponent["Noise"].as<float>();
 				}
 			}
 		}

@@ -15,15 +15,39 @@ namespace Base {
 	template<typename T>
 	struct Component
 	{
+		static inline const std::string StructName = std::string();
 		static inline const std::string ComponentName = std::string();
+		static inline const std::string RawComponentName = std::string();
+		static inline const std::string OnlyTheName = std::string();
+
 		static inline const UUID Uuid = UUID();
 
 		Component()
 		{
+			const std::string name = typeid(T).name();
+
+			if (Component<T>::RawComponentName == std::string())
+			{
+				const_cast<std::string&>(Component<T>::RawComponentName) = name;
+			}
+			if (Component<T>::StructName == std::string())
+			{
+				const std::string n = name;
+				const_cast<std::string&>(Component<T>::StructName) = n.substr(n.find_last_of(':') + 1);
+				BASE_CORE_ASSERT(name.find("Component") != std::string::npos, "'{0}' must have the suffix 'Component' to inherit from the struct 'Component<>\n\tExample : 'struct {0}Component : Component<{0}Component> ...''", Component<T>::StructName);
+
+			}
 			if (Component<T>::ComponentName == std::string())
 			{
-				const std::string n = typeid(T).name();
-				const_cast<std::string&>(Component<T>::ComponentName) = n.substr(n.find_last_of(':') + 1);
+				const_cast<std::string&>(Component<T>::ComponentName) = Component<T>::StructName;
+				const_cast<std::string&>(Component<T>::ComponentName).insert(Component<T>::StructName.find("Component"), " ");
+			}
+			if (Component<T>::OnlyTheName == std::string())
+			{
+				const_cast<std::string&>(Component<T>::OnlyTheName) = Component<T>::StructName;
+				const auto str = std::string("Component");
+				const auto ind = Component<T>::OnlyTheName.find(str);
+				const_cast<std::string&>(Component<T>::OnlyTheName).erase(Component<T>::OnlyTheName.begin() + ind, Component<T>::OnlyTheName.end());
 			}
 		}
 		Component(const Component&) = default;
@@ -178,7 +202,7 @@ namespace Base {
 		{
 			Static = 0, Dynamic, Kinematic
 		};
-		BodyType Type = BodyType::Static;
+		BodyType Type = BodyType::Dynamic;
 
 		bool FixedRotation = false;
 		void* RuntimeBody = nullptr;
@@ -244,9 +268,13 @@ namespace Base {
 	};
 
 	//Temp
-	class Init
+	struct Init
 	{
+		float Test = 0.0f;
+		Init() = default;
+		Init(const Init&) = default;
 	public:
 		static void InitComponentsReflection();
+		static void InitComponents();
 	};
 }

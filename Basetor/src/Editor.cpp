@@ -170,7 +170,7 @@ namespace Base {
 			auto& quad_rbody = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::RigidBody2DComponent>();
 			auto& quad_bcol = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::BoxColider2DComponent>();
 
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
+			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Dynamic;
 		}
 
 		{
@@ -185,7 +185,7 @@ namespace Base {
 			auto& quad_rbody = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::RigidBody2DComponent>();
 			auto& quad_bcol = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::BoxColider2DComponent>();
 
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
+			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Dynamic;
 		}
 
 		{

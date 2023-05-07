@@ -17,6 +17,7 @@ namespace Base {
 		Entity(const Entity& other) = default;
 
 		template<typename T, typename... _Args> requires Derived<T, Component<T>>
+		[[reason_not_used("T must inherit from 'Component<T>'")]]
 		T& AddComponent(_Args&&... args)
 		{
 			BASE_CORE_ASSERT(!HasComponent<T>(), "Entity already has component '{0}'! Try use .GetComponent<{0}>()", BASE_GET_PARSE_TYPE_NAME(T));

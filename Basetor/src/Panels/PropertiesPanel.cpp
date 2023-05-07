@@ -117,6 +117,26 @@ namespace Base {
 		// Physics
 		if (entity.HasComponent< RigidBody2DComponent>())
 		{
+			auto& body = entity.GetComponent<Base::RigidBody2DComponent>();
+			static const char* bodyType[] = { "Static", "Dynamic", "Kinematic" };
+			const char* currentBodyType = bodyType[(int)body.Type];
+
+			if (ImGui::BeginCombo("Body Type", currentBodyType))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					bool isSelected = currentBodyType == bodyType[i];
+					if (ImGui::Selectable(bodyType[i], isSelected))
+					{
+						currentBodyType = bodyType[i];
+						body.Type = (RigidBody2DComponent::BodyType)i;
+					}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+
 			DrawTreeComponent<BoxColider2DComponent>("Box Collider Component", [&]()
 			{
 				auto& ent_bcol = entity.GetComponent<Base::BoxColider2DComponent>();
@@ -151,7 +171,7 @@ namespace Base {
 				for (int i = 0; i < 3; i++)
 				{
 					bool isSelected = currentProjection == projectionTypeString[i];
-					if (ImGui::Selectable(projectionTypeString[i]), isSelected)
+					if (ImGui::Selectable(projectionTypeString[i], isSelected))
 					{
 						currentProjection = projectionTypeString[i];
 						camera.Camera.SetProjectionType((SceneCamera::ProjectionType)i);
@@ -168,17 +188,30 @@ namespace Base {
 
 		if (ImGui::BeginPopup("Add Component"))
 		{
-			if (ImGui::MenuItem("Camera"))
-			{
-				m_SelectionContext.AddComponent<CameraComponent>();
-				ImGui::CloseCurrentPopup();
-			}
+			// if (ImGui::MenuItem("Camera"))
+			// {
+			// 	m_SelectionContext.AddComponent<CameraComponent>();
+			// 	ImGui::CloseCurrentPopup();
+			// }
+			// 
+			// if (ImGui::MenuItem("Sprite"))
+			// {
+			// 	m_SelectionContext.AddComponent<SpriteComponent>();
+			// 	ImGui::CloseCurrentPopup();
+			// }
 
-			if (ImGui::MenuItem("Sprite"))
-			{
-				m_SelectionContext.AddComponent<SpriteComponent>();
-				ImGui::CloseCurrentPopup();
-			}
+			AddComponent<CameraComponent>();
+			AddComponent<SpriteComponent>();
+			AddComponent<TextureComponent>();
+			// AddComponent<AnimateComponent>();
+			// AddComponent<SubTextureComponent>();
+			AddComponent<CircleComponent>();
+			// AddComponent<NativeScriptComponent>();
+			AddComponent<RigidBody2DComponent>();
+			AddComponent<BoxColider2DComponent>();
+			AddComponent<CircleColider2DComponent>();
+			// AddComponent<Text2DComponent>();
+			// AddComponent<Perlin2dComponent>();
 
 			ImGui::EndPopup();
 		}

@@ -14,17 +14,16 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "glad/glad.h"
-namespace Base
-{
-	namespace utils
-	{
+namespace Base {
+	namespace utils {
 		inline static void rotate(glm::vec3 vertices[4], float rotation, const glm::vec3& rotationCenter, const glm::vec3& axis)
 		{
 			const glm::mat4 translationMatrix = glm::translate(glm::identity<glm::mat4>(), -rotationCenter);
 			const glm::mat4 rotationMatrix = glm::rotate(glm::identity<glm::mat4>(), rotation, axis);
 			const glm::mat4 reverseTranslationMatrix = glm::translate(glm::identity<glm::mat4>(), rotationCenter);
 
-			for (size_t i = 0; i < 4; i++) {
+			for (size_t i = 0; i < 4; i++)
+			{
 				vertices[i] = glm::vec3(
 					reverseTranslationMatrix * rotationMatrix * translationMatrix * glm::vec4(vertices[i], 1.0f));
 			}
@@ -217,7 +216,7 @@ namespace Base
 
 		//Global
 		uint8_t g_WhiteTextureSlot = 0;
-		
+
 		uint64_t DrawCalls = 0;
 	} m_Data;
 
@@ -315,7 +314,7 @@ namespace Base
 
 		m_Data.CircleIB = m_Data.QuadIB;
 		m_Data.CircleIB->Bind();
-		
+
 		utils::SampleTextureOnShader(m_Shaders->Get("Circle"), MaxTexture, m_Data.CircleTextureSlots);
 
 		//Lines
@@ -383,7 +382,7 @@ namespace Base
 		m_Data.CircleBufferPtr = m_Data.CircleBuffer;
 		m_Data.CircleIndexCount = 0;
 		m_Data.CircleTextureSlotIndex = 1;
-		
+
 		m_Data.TextBufferPtr = m_Data.TextBuffer;
 		m_Data.TextIndexCount = 0;
 		m_Data.TextTextureSlotIndex = 1;
@@ -446,7 +445,7 @@ namespace Base
 			//End Quads
 			GLsizeiptr size = (uint8_t*)m_Data.QuadBufferPtr - (uint8_t*)m_Data.QuadBuffer;
 			m_Data.QuadVB->Bind();
-			m_Data.QuadVB->SubData(size,m_Data.QuadBuffer);
+			m_Data.QuadVB->SubData(size, m_Data.QuadBuffer);
 			m_Data.QuadVB->Unbind();
 		}
 
@@ -534,7 +533,7 @@ namespace Base
 
 			m_Data.LineVA->Bind();
 
-			GLCall(glDrawArrays(GL_LINES, 0 , m_Data.LineCount));
+			GLCall(glDrawArrays(GL_LINES, 0, m_Data.LineCount));
 			m_Data.DrawCalls++;
 
 			m_Data.LineCount = 0;
@@ -633,22 +632,22 @@ namespace Base
 		DrawQuad(utils::pos_trans(position, size), color, entityID);
 	}
 
-	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4], int32_t entityID,float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4 color[4], int32_t entityID, float_t rotation, const glm::vec3& axis)
 	{
-		DrawQuad(utils::pos_trans(position, size), color,entityID);
+		DrawQuad(utils::pos_trans(position, size), color, entityID);
 	}
 
-	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, int32_t entityID,const glm::vec4& color,float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, Ref<Texture> texture, int32_t entityID, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		DrawQuad(utils::pos_trans(position, size), texture, entityID ,color);
+		DrawQuad(utils::pos_trans(position, size), texture, entityID, color);
 	}
 
-	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture, int32_t entityID,const glm::vec4& color, float_t rotation, const glm::vec3& axis)
+	void Render2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const SubTexture& sub_texture, int32_t entityID, const glm::vec4& color, float_t rotation, const glm::vec3& axis)
 	{
-		DrawQuad(utils::pos_trans(position, size), sub_texture, entityID ,color);
+		DrawQuad(utils::pos_trans(position, size), sub_texture, entityID, color);
 	}
 
-	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color,int32_t entityID)
+	void Render2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int32_t entityID)
 	{
 		if (m_Data.QuadIndexCount >= MaxQuadIndexCount)
 		{
@@ -680,7 +679,7 @@ namespace Base
 			BeginBatch();
 		}
 
-		for (size_t i = 0; i < 4 ; i++)
+		for (size_t i = 0; i < 4; i++)
 		{
 			m_Data.QuadBufferPtr->Position = transform * QuadVertexPositions[i];
 			m_Data.QuadBufferPtr->Color = color[i];
@@ -790,10 +789,10 @@ namespace Base
 		for (int i = 0; i < 4; i++)
 			quadLines[i] = transform * QuadVertexPositions[i];
 
-		DrawLine(quadLines[0], quadLines[1], color,entityID);
-		DrawLine(quadLines[1], quadLines[2], color,entityID);
-		DrawLine(quadLines[2], quadLines[3], color,entityID);
-		DrawLine(quadLines[3], quadLines[0], color,entityID);
+		DrawLine(quadLines[0], quadLines[1], color, entityID);
+		DrawLine(quadLines[1], quadLines[2], color, entityID);
+		DrawLine(quadLines[2], quadLines[3], color, entityID);
+		DrawLine(quadLines[3], quadLines[0], color, entityID);
 	}
 
 	void Render2D::DrawLine(const glm::vec3& origin, const glm::vec3& dest, const glm::vec4& color, int32_t entityID)
@@ -827,10 +826,10 @@ namespace Base
 		for (float i = precision; i < 1; i += precision)
 		{
 			acting_interpol = utils::bezier_3order_mix(origin, p1, p2, dest, i);
-			DrawLine(*acting_origin, acting_interpol, color,entityID);
+			DrawLine(*acting_origin, acting_interpol, color, entityID);
 			acting_origin = &acting_interpol;
 		}
-		DrawLine(*acting_origin, dest, color,entityID); // Connect the last line with the destination
+		DrawLine(*acting_origin, dest, color, entityID); // Connect the last line with the destination
 	}
 
 	void Render2D::DrawCurveLine(const glm::vec3& origin, const glm::vec3& p1, const glm::vec3& dest, const glm::vec4& color, int32_t entityID, float_t precision)
@@ -1004,7 +1003,7 @@ namespace Base
 		texs.reserve(text.size());
 		for (auto c : text)
 		{
-			DrawGlyph(transform,c,font,color,entityID);
+			DrawGlyph(transform, c, font, color, entityID);
 		}
 	}
 

@@ -157,4 +157,22 @@ namespace Base {
 			s_Init = true;
 		}
 	}
+	void Init::InitComponents()
+	{
+		IDComponent();
+		TagComponent();
+		TransformComponent();
+		TextureComponent();
+		AnimateComponent();
+		SubTextureComponent();
+		SpriteComponent();
+		CircleComponent();
+		CameraComponent();
+		NativeScriptComponent();
+		RigidBody2DComponent();
+		BoxColider2DComponent();
+		CircleColider2DComponent();
+		Text2DComponent();
+		Perlin2dComponent();
+	}
 }

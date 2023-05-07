@@ -73,6 +73,7 @@ void main()
 
 	int index = int(v_TexIndex);
 	o_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
+	o_Color.a *= circle;
 
 	o_EntityID = v_EntityID;
 }

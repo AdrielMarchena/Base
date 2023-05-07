@@ -34,15 +34,15 @@ uniform int kernel_size;
 
 void main()
 {
-    if(kernel_size > 0)
-    {
-        vec3 cl = vec3(0.0f);
-        for(int i = 0; i < kernel_size; i++)
-            cl += vec3(texture(u_Framebuffer, v_TexCoord + offsets[i % offset_size])) * kernel_5x5_slot[i];
-        o_Color = vec4(cl,1.0f);
-
-    }
-    else
+    // if(kernel_size > 0)
+    // {
+    //     vec3 cl = vec3(0.0f);
+    //     for(int i = 0; i < kernel_size; i++)
+    //         cl += vec3(texture(u_Framebuffer, v_TexCoord + offsets[i % offset_size])) * kernel_5x5_slot[i];
+    //     o_Color = vec4(cl,1.0f);
+    // 
+    // }
+    // else
         o_Color = texture(u_Framebuffer, v_TexCoord);
 }
 
