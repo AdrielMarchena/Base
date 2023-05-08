@@ -6,15 +6,15 @@
 #include "script/LuaContext.h"
 #include "utils/Instrumentor.h"
 #include "render/render2D.h"
+#include "Scripting/ScriptEngine.h"
 #include "args/UpdateArgs.h"
 #include "render/Colors.h"
 #include "GLFW/glfw3.h"
 
-namespace Base
-{
+namespace Base {
 	Application* Application::m_AppInstance = nullptr;
 	Application::Application(int argc, char** argv)
-		:m_ConsoleArgs(argc,argv)
+		:m_ConsoleArgs(argc, argv)
 	{
 		BASE_PROFILE_FUNCTION();
 
@@ -35,7 +35,7 @@ namespace Base
 		}
 
 		specs.Title = specs.Title != "" ? specs.Title : "Base";
-		
+
 		WindowProps().width = specs.Width;
 		WindowProps().height = specs.Height;
 
@@ -47,7 +47,9 @@ namespace Base
 
 		Render2D::Init();
 		glm::vec3 darker = glm::vec3(Color::Base_Analogous_2.r, Color::Base_Analogous_2.g, Color::Base_Analogous_2.b) * 0.128f;
-		Render2D::SetClearColor(glm::vec4(darker,1.0f));
+		Render2D::SetClearColor(glm::vec4(darker, 1.0f));
+
+		ScriptEngine::Init();
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
@@ -55,9 +57,10 @@ namespace Base
 
 	Application::~Application()
 	{
-		if(m_LuaContext)
+		if (m_LuaContext)
 			delete m_LuaContext;
 		Render2D::Dispose();
+		ScriptEngine::Shutdown();
 	}
 
 	void Application::Run()
@@ -83,7 +86,7 @@ namespace Base
 			//Game Update 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate(deltaTime);
-			
+
 			m_ImGuiLayer->ImGuiInitFrame();
 
 			for (Layer* layer : m_LayerStack)
@@ -98,7 +101,7 @@ namespace Base
 	void Application::OnEvent(Event& e)
 	{
 		EventDispatcher disp(e);
-		
+
 		disp.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 
 		//m_ImGuiLayer->OnEvent(e);

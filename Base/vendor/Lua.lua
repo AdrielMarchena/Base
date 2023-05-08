@@ -1,6 +1,7 @@
 project "Lua"
 	kind "StaticLib"
 	language "C"
+	staticruntime "off"
 
 	targetdir ("Lua/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("Lua/bin-int/" .. outputdir .. "/%{prj.name}")

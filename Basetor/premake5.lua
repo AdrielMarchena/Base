@@ -2,6 +2,8 @@ project "Basetor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
+	linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
+	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -35,6 +37,7 @@ project "Basetor"
 	links
 	{
 		"Base",
+		-- "libucrtd.lib",
 		"Box2D",
 		"yaml-cpp",
 		"Glad",
@@ -46,12 +49,14 @@ project "Basetor"
 		"msdf-atlas-gen",
 		--"freetype.lib",
 		"stb_image",
-		"lodepng"
+		"lodepng",
 	}
 
 	defines
 	{
-		"YAML_CPP_STATIC_DEFINE"
+		"YAML_CPP_STATIC_DEFINE",
+		"MONO_USE_STATIC_C_RUNTIME",
+		"MONO_USE_STATIC_LIBMONO"
 	}
 
 	filter { "platforms:x64", "system:windows" }
@@ -67,8 +72,7 @@ project "Basetor"
 		}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
+		cppdialect "C++20"
 		systemversion "latest"
 
 		defines
@@ -77,8 +81,7 @@ project "Basetor"
 		}
 	
 	filter "system:linux"
-		cppdialect "C++17"
-		staticruntime "On"
+		cppdialect "C++20"
 		systemversion "latest"
 
 		defines
@@ -105,11 +108,11 @@ project "Basetor"
 		defines "BASE_DIST"
 		optimize "On"
 
-	--filter { "system:windows", "configurations:Debug" }
-	--	buildoptions "/MTd"
-	--
-	--filter { "system:windows", "configurations:Release" }
-	--	buildoptions "/MT"
-	--
-	--filter { "system:windows", "configurations:Dist" }
-	--	buildoptions "/MT"
+	-- filter { "system:windows", "configurations:Debug" }
+	-- 	buildoptions "/MTd"
+	-- 
+	-- filter { "system:windows", "configurations:Release" }
+	-- 	buildoptions "/MT"
+	-- 
+	-- filter { "system:windows", "configurations:Dist" }
+	-- 	buildoptions "/MT"
