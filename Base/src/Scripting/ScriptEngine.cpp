@@ -13,7 +13,7 @@ namespace Base {
 
 		MonoAssembly* CoreAssembly = nullptr;
 	};
-	static ScriptEngineData* s_Data;
+	static ScriptEngineData* s_Data = nullptr;
 
 
 	void ScriptEngine::Init()
@@ -25,8 +25,7 @@ namespace Base {
 	void ScriptEngine::Shutdown()
 	{
 		ShutdownMono();
-		if (s_Data != nullptr)
-			delete s_Data;
+		delete s_Data;
 	}
 
 	MonoAssembly* LoadCSharpAssembly(const std::string& assemblyPath);
@@ -44,12 +43,46 @@ namespace Base {
 
 		s_Data->CoreAssembly = LoadCSharpAssembly("Resources/Scripts/Base-ScriptCore.dll");
 		PrintAssemblyTypes(s_Data->CoreAssembly);
+
+		// create an object
+		MonoImage* assemblyImage = mono_assembly_get_image(s_Data->CoreAssembly);
+		MonoClass* monoClass = mono_class_from_name(assemblyImage, "Base", "Main");
+
+		MonoObject* instance = mono_object_new(s_Data->AppDomain, monoClass);
+		mono_runtime_object_init(instance);
+
+		MonoMethod* monoMethodMessage = mono_class_get_method_from_name(monoClass, "PrintMessage", 0);
+		mono_runtime_invoke(monoMethodMessage, instance, nullptr, nullptr);
+
+		int value = 10;
+		void* param = &value;
+
+		MonoMethod* monoMethodMessagePar = mono_class_get_method_from_name(monoClass, "PrintInt", 1);
+		mono_runtime_invoke(monoMethodMessagePar, instance, &param, nullptr);
+
+		int value2 = 1450;
+		void* params[2] =
+		{
+			&value,
+			&value2,
+		};
+
+		MonoMethod* monoMethodMessageParInts = mono_class_get_method_from_name(monoClass, "PrintInts", 2);
+		mono_runtime_invoke(monoMethodMessageParInts, instance, params, nullptr);
+
+		MonoString* monoMessageParam = mono_string_new(s_Data->AppDomain, "Hello world from C++ to C# to C++");
+		void* monoMessageParamPtr = monoMessageParam;
+
+		MonoMethod* monoMethodMessageCustom = mono_class_get_method_from_name(monoClass, "PrintCustomMessage", 1);
+		mono_runtime_invoke(monoMethodMessageCustom, instance, &monoMessageParamPtr, nullptr);
 	}
 
 	void ScriptEngine::ShutdownMono()
 	{
-		mono_domain_finalize(s_Data->RootDomain, 0);
-		mono_domain_finalize(s_Data->AppDomain, 0);
+		// mono_jit_cleanup(s_Data->RootDomain);
+		s_Data->RootDomain = nullptr;
+		// mono_domain_unload(s_Data->AppDomain);
+		s_Data->AppDomain = nullptr;
 	}
 
 	char* ReadBytes(const std::string& filepath, uint32_t* outSize)
