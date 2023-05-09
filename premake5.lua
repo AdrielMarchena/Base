@@ -47,9 +47,12 @@ include "Base/vendor/msdfgen.lua"
 include "Base/vendor/msdf-atlas-gen.lua"
 include "Base/vendor/stb_image.lua"
 include "Base/vendor/lodepng.lua"
-group ""
 
---Projects
+group "Core"
 include "Base"
+include "Base-ScriptCore"
+
+group "Tools"
+--Projects
 include "Basetor"
 --include "Sandbox"

@@ -56,11 +56,11 @@ project "msdfgen"
 		runtime "Release"
 		symbols "on"
 
-	filter { "system:windows", "configurations:Debug" }
-		buildoptions "/MTd"
-	
-	filter { "system:windows", "configurations:Release" }
-		buildoptions "/MT"
-	
-	filter { "system:windows", "configurations:Dist" }
-		buildoptions "/MT"
+	-- filter { "system:windows", "configurations:Debug" }
+	-- 	buildoptions "/MTd"
+	-- 
+	-- filter { "system:windows", "configurations:Release" }
+	-- 	buildoptions "/MT"
+	-- 
+	-- filter { "system:windows", "configurations:Dist" }
+	-- 	buildoptions "/MT"

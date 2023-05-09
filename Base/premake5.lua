@@ -2,12 +2,14 @@ project "Base"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
+	linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
+	staticruntime "off"
 	
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "pch.h"
-	pchsource ( "src/pch.cpp" )
+	-- pchheader "pch.h"
+	-- pchsource "src/pch.cpp"
 
 	files 
 	{
@@ -41,10 +43,12 @@ project "Base"
 		"%{IncludeDirectories.msdfgen}",
 		"%{IncludeDirectories.msdf_atlas_gen}",
 		"%{IncludeDirectories.meta}",
+		"%{IncludeDirectories.mono}",
 	}
 
 	links
 	{
+		-- "msvcrt.lib",
 		"Box2D",
 		"yaml-cpp",
 		"Glad",
@@ -56,7 +60,16 @@ project "Base"
 		"msdf-atlas-gen",
 		"freetype.lib",
 		"stb_image",
-		"lodepng"
+		"lodepng",
+		"%{Library.mono}",
+		-- "%{Library.monoR}",
+		-- "%{Library.monoP}",
+		-- "%{Library.monoG}",
+		"%{Library.WinSock}",
+		"%{Library.Winmm}",
+		"%{Library.WinVersion}",
+		"%{Library.WinOldNames}",
+		"%{Library.WinBCrypt}",
 	}
 
 	defines
@@ -64,6 +77,8 @@ project "Base"
 		"YAML_CPP_STATIC_DEFINE"
 	}
 
+	filter { 'files:vendor/mono/include/mono/**.h' }
+		flags { 'NoPCH' }
 	filter { 'files:vendor/Lua/lua.c' }
 		flags { 'NoPCH' }
 
@@ -101,8 +116,8 @@ project "Base"
 		}
 
 	filter "system:Windows"
-		cppdialect "C++17"
-		staticruntime "On"
+		cppdialect "C++20"
+		staticruntime "off"
 		systemversion "latest"
 
 		defines
@@ -117,8 +132,8 @@ project "Base"
 		}
 
 	filter "system:linux"
-		cppdialect "C++17"
-		staticruntime "On"
+		cppdialect "C++20"
+		staticruntime "off"
 		systemversion "latest"
 
 		defines
@@ -145,11 +160,11 @@ project "Base"
 		defines "BASE_DIST"
 		optimize "On"
 
-	--filter { "system:windows", "configurations:Debug" }
-	--	buildoptions "/MTd"
-	--
-	--filter { "system:windows", "configurations:Release" }
-	--	buildoptions "/MT"
-	--
-	--filter { "system:windows", "configurations:Dist" }
-	--	buildoptions "/MT"
+	-- filter { "system:windows", "configurations:Debug" }
+	-- 	buildoptions "/MTd"
+	-- 
+	-- filter { "system:windows", "configurations:Release" }
+	-- 	buildoptions "/MT"
+	-- 
+	-- filter { "system:windows", "configurations:Dist" }
+	-- 	buildoptions "/MT"

@@ -17,11 +17,29 @@ IncludeDirectories["Lua"] = "%{wks.location}/Base/vendor/Lua"
 IncludeDirectories["msdfgen"] = "%{wks.location}/Base/vendor/msdfgen"
 IncludeDirectories["msdf_atlas_gen"] = "%{wks.location}/Base/vendor/msdf-atlas-gen"
 IncludeDirectories["meta"] = "%{wks.location}/Base/vendor/meta/src"
+IncludeDirectories["mono"] = "%{wks.location}/Base/vendor/mono/include"
 
 LibDirectories = {}
+LibDirectories["Mono"] = "%{wks.location}/Base/vendor/mono/lib/%{cfg.buildcfg}"
 
 filter "platforms:x64"
 	LibDirectories["freetype"] = "%{wks.location}/Base/vendor/msdfgen/freetype/win64"
 	
 filter "platforms:x86"
 	LibDirectories["freetype"] = "%{wks.location}/Base/vendor/msdfgen/freetype/win32"
+
+Library = {}
+Library["mono"] = "%{LibDirectories.Mono}/libmono-static-sgen.lib"
+Library["monoR"] = "%{LibDirectories.Mono}/MonoPosixHelper.lib"
+Library["monoP"] = "%{LibDirectories.Mono}/libmonoruntime-sgen.lib"
+Library["monoG"] = "%{LibDirectories.Mono}/libgcmonosgen.lib"
+Library["monoE"] = "%{LibDirectories.Mono}/eglib.lib"
+Library["monoM"] = "%{LibDirectories.Mono}/eglib.lib"
+
+-- Windows
+
+Library["WinSock"] = "Ws2_32.lib"
+Library["Winmm"] = "Winmm.lib"
+Library["WinVersion"] = "Version.lib"
+Library["WinOldNames"] = "OLDNAMES.lib"
+Library["WinBCrypt"] = "Bcrypt.lib"
