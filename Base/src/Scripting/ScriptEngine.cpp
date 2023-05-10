@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ScriptEngine.h"
 
+#include <glm/glm.hpp>
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
@@ -28,6 +29,19 @@ namespace Base {
 		delete s_Data;
 	}
 
+	static void NativeLog(MonoString* text, int parameter)
+	{
+		char* t = mono_string_to_utf8(text);
+		BASE_DEBUG_LOG("text: '{0}' parameter: '{1}'", t, parameter);
+		mono_free(t);
+	}
+
+	static void NativeLogVector3(glm::vec3* parameter, glm::vec3* outResult)
+	{
+		BASE_WARN("Value: '[ {0}, {1}, {2} ]'", parameter->x, parameter->y, parameter->z);
+		*outResult = glm::cross(*parameter, glm::vec3(parameter->x, parameter->y, -parameter->z));
+	}
+
 	MonoAssembly* LoadCSharpAssembly(const std::string& assemblyPath);
 	void PrintAssemblyTypes(MonoAssembly* assembly);
 	void ScriptEngine::InitMono()
@@ -47,6 +61,9 @@ namespace Base {
 		// create an object
 		MonoImage* assemblyImage = mono_assembly_get_image(s_Data->CoreAssembly);
 		MonoClass* monoClass = mono_class_from_name(assemblyImage, "Base", "Main");
+
+		mono_add_internal_call("Base.Main::NativeLog", NativeLog);
+		mono_add_internal_call("Base.Main::NativeLogVector3", NativeLogVector3);
 
 		MonoObject* instance = mono_object_new(s_Data->AppDomain, monoClass);
 		mono_runtime_object_init(instance);
@@ -75,6 +92,7 @@ namespace Base {
 
 		MonoMethod* monoMethodMessageCustom = mono_class_get_method_from_name(monoClass, "PrintCustomMessage", 1);
 		mono_runtime_invoke(monoMethodMessageCustom, instance, &monoMessageParamPtr, nullptr);
+
 	}
 
 	void ScriptEngine::ShutdownMono()

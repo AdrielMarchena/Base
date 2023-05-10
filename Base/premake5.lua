@@ -4,7 +4,7 @@ project "Base"
 	cppdialect "C++20"
 	linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
 	staticruntime "off"
-	
+
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
