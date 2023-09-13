@@ -32,15 +32,15 @@ Entities:
     TagComponent:
       Tag: Circle
     TransformComponent:
-      Translation: [0, 0, 0]
-      Scale: [1.00000095, 1.00000095, 1]
+      Translation: [0, -7.31418514, 0]
+      Scale: [1, 1, 1]
       Rotation: [0, 0, -2.88916636]
     SpriteComponent:
       Color: [0.054054141, 1, 0, 1]
     CircleComponent:
       Radius: 1
-      Thickness: 1
-      Fade: 0.00499999989
+      Thickness: 0.111000001
+      Fade: 0.145999998
     RigidBody2DComponent:
       BodyType: 1
       FixedRotation: false
@@ -94,7 +94,7 @@ Entities:
     TagComponent:
       Tag: Main2D_Camera
     TransformComponent:
-      Translation: [0.751756668, -0.00140047073, 0]
+      Translation: [0.751756668, -1.29699314, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     CameraComponent:
@@ -103,7 +103,7 @@ Entities:
         PerspectiveFOV: 0.785398185
         PerspectiveNear: 0.00999999978
         PerspectiveFar: 1000
-        OrthographicSize: 34.8155594
+        OrthographicSize: 26.6200943
         OrthographicNear: -1
         OrthographicFar: 1
       Primary: true
