@@ -31,6 +31,7 @@ namespace Base {
 		void AwakeNativeScript(Entity& ent);
 		/* Return the fist Primary camera it finds */
 		Entity GetPrimaryCamera();
+		Entity GetEntityByUUID(UUID uuid);
 
 		//Runtime
 		void RuntimeInit();
@@ -49,6 +50,7 @@ namespace Base {
 
 		uint32_t m_ViewPortWidth;
 		uint32_t m_ViewPortHeight;
+		std::unordered_map<UUID, entt::entity> m_EntityMap;
 
 		b2World* m_PhysicWorld = nullptr;
 

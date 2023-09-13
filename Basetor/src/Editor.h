@@ -35,7 +35,7 @@ namespace Base {
 		bool m_CameraKeepFocusOnSelectedEntity = false;
 		int m_GizmoType = -1;
 
-		glm::vec2 m_ViewportSize{1366, 768};
+		glm::vec2 m_ViewportSize{ 1366, 768 };
 		glm::vec2 m_ViewportBounds[2];
 	public:
 		Editor(const std::string& name = "Editor");
@@ -49,5 +49,8 @@ namespace Base {
 		bool OnWindowResize(Base::WindowResizeEvent& e);
 		bool OnMouseScroll(Base::MouseScrollEvent& e);
 		bool OnKeyboardPressed(Base::KeyPressedEvent& e);
+
+	private:
+		void AttachKeys();
 	};
 }

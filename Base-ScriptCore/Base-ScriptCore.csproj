@@ -21,7 +21,8 @@
     <OutputPath>..\Basetor\Resources\Scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\Basetor\Resources\Scripts\Intermediates\x64\Debug\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -33,7 +34,8 @@
     <OutputPath>..\Basetor\Resources\Scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\Basetor\Resources\Scripts\Intermediates\x86\Debug\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -45,7 +47,8 @@
     <OutputPath>..\Basetor\Resources\Scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\Basetor\Resources\Scripts\Intermediates\x64\Release\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -57,7 +60,8 @@
     <OutputPath>..\Basetor\Resources\Scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\Basetor\Resources\Scripts\Intermediates\x86\Release\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -69,7 +73,8 @@
     <OutputPath>..\Basetor\Resources\Scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\Basetor\Resources\Scripts\Intermediates\x64\Dist\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -81,7 +86,8 @@
     <OutputPath>..\Basetor\Resources\Scripts\</OutputPath>
     <BaseIntermediateOutputPath>..\Basetor\Resources\Scripts\Intermediates\x86\Dist\</BaseIntermediateOutputPath>
     <IntermediateOutputPath>$(BaseIntermediateOutputPath)</IntermediateOutputPath>
-    <DefineConstants></DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -98,7 +104,13 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x86' ">
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Main.cs" />
+    <Compile Include="Source\Demo.cs" />
+    <Compile Include="Source\Entity.cs" />
+    <Compile Include="Source\Input.cs" />
+    <Compile Include="Source\InternalCalls.cs" />
+    <Compile Include="Source\KeyCode.cs" />
+    <Compile Include="Source\Player.cs" />
+    <Compile Include="Source\Vector3.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

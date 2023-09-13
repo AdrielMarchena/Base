@@ -45,9 +45,6 @@ namespace Base {
 		FramebufferQuad* m_Buffer = nullptr;
 		FramebufferQuad* m_BufferPtr = nullptr;
 
-		std::unordered_map<std::string, FramebufferPostEffect> m_PostEffects;
-		FramebufferPostEffect* m_CurrentPostEffect = nullptr;
-
 		glm::vec3 m_Position = { 0.0f,0.0f,0.0f };
 		glm::vec3 m_Scale = { 1.0f,1.0f,1.0f };
 		glm::vec3 m_Rotation = { 0.0f,0.0f,0.0f };
@@ -77,9 +74,6 @@ namespace Base {
 		int ReadPixel(uint32_t index, int x, int y) { return m_Framebuffer->ReadPixel(index, x, y); }
 		void ClearAttachment(uint32_t index, int value) { m_Framebuffer->ClearAttachment(index, value); }
 
-		void UsePostEffect(const std::string& name);
-		const std::unordered_map<std::string, FramebufferPostEffect>& GetPostEffects() const { return m_PostEffects; }
-
 		void SetQuadPosition(const glm::vec3& position) { m_Position = position; CalculateQuadTransform(); }
 		void SetQuadScale(const glm::vec3& scale) { m_Scale = scale;		 CalculateQuadTransform(); }
 		void SetQuadRotation(const glm::vec3& rotation) { m_Rotation = rotation; CalculateQuadTransform(); }
@@ -94,8 +88,6 @@ namespace Base {
 
 		void SetUpFramebuffer();
 		void SetUpShader();
-		void SetUpPostEffects();
-		void UpdatePostEffects();
 	};
 
 }

@@ -2,6 +2,8 @@
 #include "PropertiesPanel.h"
 #include "scene/SceneCamera.h"
 
+#include "Scripting/ScriptEngine.h"
+
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -183,6 +185,27 @@ namespace Base {
 			}
 		});
 
+		DrawTreeComponent<ScriptComponent>("Script Component", [&]()
+		{
+			auto& ent_scr = entity.GetComponent<Base::ScriptComponent>();
+			bool scriptClassExists = ScriptEngine::EntityClassExists(ent_scr.Name);
+
+			static char buffer[256];
+			memset(buffer, 0, sizeof(buffer));
+			strcpy_s(buffer, sizeof(buffer), ent_scr.Name.c_str());
+
+			if (!scriptClassExists)
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.2f, 0.3f, 1.0f));
+
+			if (ImGui::InputText("Class", buffer, sizeof(buffer)))
+			{
+				ent_scr.Name = std::string(buffer);
+			}
+
+			if (!scriptClassExists)
+				ImGui::PopStyleColor();
+		});
+
 		if (ImGui::Button("Add Component"))
 			ImGui::OpenPopup("Add Component");
 
@@ -207,6 +230,7 @@ namespace Base {
 			// AddComponent<SubTextureComponent>();
 			AddComponent<CircleComponent>();
 			// AddComponent<NativeScriptComponent>();
+			AddComponent<ScriptComponent>();
 			AddComponent<RigidBody2DComponent>();
 			AddComponent<BoxColider2DComponent>();
 			AddComponent<CircleColider2DComponent>();

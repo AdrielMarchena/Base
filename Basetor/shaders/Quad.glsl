@@ -1,5 +1,5 @@
 #type vertex
-#version 400 core
+#version 450 core
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec4 a_Color;
 layout(location = 2) in vec2 a_TexCoord;
@@ -57,5 +57,8 @@ void main()
 	o_EntityID = v_EntityID;
 
 	int index = int(v_TexIndex);
-	o_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
+	if(index == 0)
+		o_Color = v_Color;
+	else
+		o_Color = texture(u_Textures[index], v_TexCoord) * v_Color;
 }

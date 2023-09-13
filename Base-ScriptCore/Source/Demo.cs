@@ -1,30 +1,11 @@
-using System;
-using System.Runtime.CompilerServices;
+﻿using System;
 
 namespace Base
 {
-
-    public struct Vector3
-    {
-        public float X, Y, Z;
-
-        public Vector3(float x, float y, float z)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-        }
-
-        public string str()
-        {
-            return X + " " + Y + " " + Z;
-        }
-    }
-
-    public class Main
+    public class Demo
     {
         public float FloatVar { get; set; }
-        public Main()
+        public Demo()
         {
             Console.WriteLine("Main constructor!");
 
@@ -32,6 +13,8 @@ namespace Base
             var res = Log(ref vec);
 
             Log(res.str(), 0);
+            InternalCalls.NativeLogVector3Dot(ref vec, out Vector3 result);
+            Console.WriteLine(result.str());
         }
 
         public void PrintMessage()
@@ -58,19 +41,13 @@ namespace Base
 
         public void Log(string text, int parameter)
         {
-            NativeLog(text, parameter);
+            InternalCalls.NativeLog(text, parameter);
         }
 
         public Vector3 Log(ref Vector3 parameter)
         {
-            NativeLogVector3(ref parameter, out Vector3 vec);
+            InternalCalls.NativeLogVector3(ref parameter, out Vector3 vec);
             return vec;
         }
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern static void NativeLog(string text, int parameter);
-
-        [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        extern static void NativeLogVector3(ref Vector3 parameter, out Vector3 result);
     }
 }

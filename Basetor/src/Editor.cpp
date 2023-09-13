@@ -15,6 +15,7 @@
 
 namespace Base {
 
+#define ALT_GUARD() if (!input::Keyboard::isPress(BASE_KEY_LEFT_ALT)) return
 #define CTRL_GUARD() if (!input::Keyboard::isPress(BASE_KEY_LEFT_CONTROL)) return
 
 #ifdef BASE_PROFILING
@@ -62,50 +63,15 @@ namespace Base {
 	{
 		BASE_PROFILE_FUNCTION();
 
-		m_KeyboardPressedCallbacks.emplace(BASE_KEY_Q, [&](Editor&)
-		{
-			CTRL_GUARD();
-			if (!ImGuizmo::IsUsing())
-				m_GizmoType = -1;
-		});
-		m_KeyboardPressedCallbacks.emplace(BASE_KEY_T, [&](Editor&)
-		{
-			CTRL_GUARD();
-			if (!ImGuizmo::IsUsing())
-				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
-		});
-		m_KeyboardPressedCallbacks.emplace(BASE_KEY_R, [&](Editor&)
-		{
-			CTRL_GUARD();
-			if (!ImGuizmo::IsUsing())
-				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
-		});
-		m_KeyboardPressedCallbacks.emplace(BASE_KEY_E, [&](Editor&)
-		{
-			CTRL_GUARD();
-			if (!ImGuizmo::IsUsing())
-				m_GizmoType = ImGuizmo::OPERATION::SCALE;
-		});
-		m_KeyboardPressedCallbacks.emplace(BASE_KEY_O, [&](Editor&)
-		{
-			CTRL_GUARD();
-			m_EditorCamera.ResetDirection();
-		});
-
-		//FontSpecifications font_specs;
-		//font_specs.width = 32;
-		//font_specs.height = 32;
-		//font_specs.LoadAsync = true;
-		//Ref<Font> font_con;
-		//font_con = MakeRef<Font>("assets/fonts/consola.ttf", font_specs);
+		AttachKeys();
 
 		m_Scene = MakeRef<Scene>(); //Create scene
 
 		m_Serializer = MakeScope<SceneSerializer>(m_Scene);
 
-		FrameBufferRenderSpecification specs;
 		int w = Base::WindowProps().width;
 		int h = Base::WindowProps().height;
+		FrameBufferRenderSpecification specs;
 		specs.width = w;
 		specs.height = h;
 		specs.scale_factor = 1.0f;
@@ -115,122 +81,48 @@ namespace Base {
 		m_Scene->OnViewPortResize(w, h);
 		m_EditorCamera.SetViewportSize(w, h);
 
-		//if (m_Serializer->Deserialize("assets/scenes/scene4.base"))
-		//{
-		//	auto scene_camera = m_Scene->GetPrimaryCamera();
-		//	if (scene_camera)
-		//		m_Camera = scene_camera;
-		//	else
-		//		m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
-		//	
-		//	auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
-
-		//	if (!m_Camera.HasComponent< CameraComponent>())
-		//	{
-		//		m_Camera.AddComponent<Base::CameraComponent>();
-		//	}
-
-		//	auto& Camera_comp = m_Camera.GetComponent<Base::CameraComponent>();
-		//	Camera_comp.Camera.SetViewportSize(w, h);
-
-		//	Camera_Script.Bind<Base::OrthoCameraScript>();
-		//	
-		//	auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
-
-		//	m_Scene->StartNativeScript(m_Camera);
-		//	m_Scene->AwakeNativeScript(m_Camera);
-		//	return;
-		//}
-
+		if (m_Serializer->Deserialize("assets/scenes/scene2.base"))
 		{
-			//m_Entitys["Text"] = m_Scene->CreateEntity("Text");
-			//auto& tex = m_Entitys["Text"].AddComponent<Base::Text2DComponent>();
-			//tex.Font = font_con;
-			//tex.Text = "Adriel";
-			//m_Entitys["Text"].GetTransform().Scale ={ 1.0f, 1.0f, 1.0f };
-			//m_Entitys["Text"].GetTransform().Translation ={ 0.0f, 0.0f, 0.0f };
-			//m_Entitys["Text"].GetTransform().Rotation ={ 0.0f, 0.0f, 0.0f };
+			auto scene_camera = m_Scene->GetPrimaryCamera();
+			if (scene_camera)
+				m_Camera = scene_camera;
+			else
+				m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
+
+			auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
+
+			if (!m_Camera.HasComponent< CameraComponent>())
+			{
+				m_Camera.AddComponent<Base::CameraComponent>();
+			}
+
+			auto& Camera_comp = m_Camera.GetComponent<Base::CameraComponent>();
+			Camera_comp.Camera.SetViewportSize(w, h);
+
+			Camera_Script.Bind<Base::OrthoCameraScript>();
+
+			auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
+
+			m_Scene->StartNativeScript(m_Camera);
+			m_Scene->AwakeNativeScript(m_Camera);
+		}
+		else
+		{
+			//Create Runtime Camera
+			m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
+			auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
+			auto& Camera_comp = m_Camera.AddComponent<Base::CameraComponent>();
+			Camera_comp.Primary = true;
+
+			Camera_comp.Camera.SetViewportSize(w, h);
+
+			auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
+			Camera_Script.Bind<Base::OrthoCameraScript>();
+			m_Scene->StartNativeScript(m_Camera);
+			m_Scene->AwakeNativeScript(m_Camera);
 		}
 
-		PerlinNoise2D* p;
-		{
-			m_Entitys["Perlin_Noise_Seed"] = m_Scene->CreateEntity("Perlin_Noise_Seed"); //Create the Quad entity
-
-			auto& perlin = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::Perlin2dComponent>();
-			perlin.Noise = MakeScope<PerlinNoise2D>();
-			p = perlin.Noise.get();
-			p->GenerateNoise();
-			m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::TextureComponent>(perlin.Noise->GenerateNoiseTexture()); //Add sprite (solid color)
-			auto& plat_transform = m_Entitys["Perlin_Noise_Seed"].GetTransform();
-
-			plat_transform.Translation = { 0.0f,0.0f, 0.0f };
-			plat_transform.Scale = { 1.0f, 1.0f, 1.0f };
-			plat_transform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Perlin_Noise_Seed"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Dynamic;
-		}
-
-		{
-			m_Entitys["Perlin_Noise_Completed"] = m_Scene->CreateEntity("Perlin_Noise_Completed"); //Create the Quad entity
-			m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::TextureComponent>(p->GenerateSeedTexture()); //Add sprite (solid color)
-			auto& plat_transform = m_Entitys["Perlin_Noise_Completed"].GetTransform();
-
-			plat_transform.Translation = { 0.0f,2.0f,0.0f };
-			plat_transform.Scale = { 1.0f, 1.0f, 1.0f };
-			plat_transform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Perlin_Noise_Completed"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Dynamic;
-		}
-
-		{
-			m_Entitys["Green_Platform"] = m_Scene->CreateEntity("Green_Platform"); //Create the Quad entity
-			m_Entitys["Green_Platform"].AddComponent<Base::SpriteComponent>(Color::Green); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Green_Platform"].GetTransform();
-
-			plat_tranform.Translation = { 0.0,-5.0, 0.0f };
-			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Green_Platform"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Green_Platform"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}
-
-		{
-			m_Entitys["Base_Color_Platform"] = m_Scene->CreateEntity("Base_Color_Platform"); //Create the Quad entity
-			m_Entitys["Base_Color_Platform"].AddComponent<Base::SpriteComponent>(Color::Base_Color); //Add sprite (solid color)
-			auto& plat_tranform = m_Entitys["Base_Color_Platform"].GetTransform();
-
-			plat_tranform.Translation = { 0.0,-10.5, 0.0f };
-			plat_tranform.Scale = { 20.0f, 1.0f, 1.0f };
-			plat_tranform.Rotation = { 0.0f, 0.0f, 0.0f };
-
-			auto& quad_rbody = m_Entitys["Base_Color_Platform"].AddComponent<Base::RigidBody2DComponent>();
-			auto& quad_bcol = m_Entitys["Base_Color_Platform"].AddComponent<Base::BoxColider2DComponent>();
-
-			quad_rbody.Type = Base::RigidBody2DComponent::BodyType::Static;
-		}
-
-		//Create Runtime Camera
-		m_Camera = m_Scene->CreateEntity("Main2D_Camera"); //Create camera entity
-		auto& Camera_Transform = m_Camera.GetComponent<Base::TransformComponent>();
-		auto& Camera_comp = m_Camera.AddComponent<Base::CameraComponent>();
-		Camera_comp.Primary = true;
-
-		Camera_comp.Camera.SetViewportSize(w, h);
-
-		auto& Camera_Script = m_Camera.AddComponent<Base::NativeScriptComponent>();
-		Camera_Script.Bind<Base::OrthoCameraScript>();
-		m_Scene->StartNativeScript(m_Camera);
-		m_Scene->AwakeNativeScript(m_Camera);
-
+		// Set up Panels
 		m_PropertiesPanel.SetContext(m_Scene);
 
 		m_HierarchyPanel.SetContext(m_Scene);
@@ -444,8 +336,8 @@ namespace Base {
 				{
 					m_Runtime = true;
 					m_MousePickingEnabled = false;
-					if (p_on)
-						m_Scene->RuntimeInit();
+					// if (p_on)
+					m_Scene->RuntimeInit();
 					if (m_SyncCameraZoom)
 					{
 						float dist = m_EditorCamera.GetDistance();
@@ -595,5 +487,42 @@ namespace Base {
 			m_KeyboardPressedCallbacks[e.GetKeyCode()](*this);
 		}
 		return false;
+	}
+	void Editor::AttachKeys()
+	{
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_0, [&](Editor&)
+		{
+			ALT_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = -1;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_1, [&](Editor&)
+		{
+			ALT_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_2, [&](Editor&)
+		{
+			ALT_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = ImGuizmo::OPERATION::ROTATE;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_3, [&](Editor&)
+		{
+			ALT_GUARD();
+			if (!ImGuizmo::IsUsing())
+				m_GizmoType = ImGuizmo::OPERATION::SCALE;
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_5, [&](Editor&)
+		{
+			ALT_GUARD();
+			m_EditorCamera.ResetDirection();
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_S, [&](Editor&)
+		{
+			CTRL_GUARD();
+			m_Serializer->Serialize("assets/scenes/scene2.base");
+		});
 	}
 }

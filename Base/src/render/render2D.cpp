@@ -362,9 +362,9 @@ namespace Base {
 
 		//GLOBAL GL CONFIGS
 		GLCall(glEnable(GL_DEPTH_TEST));
-		GLCall(glEnable(GL_BLEND));
 		GLCall(glEnable(GL_LINE_SMOOTH));
 		//GLCall(glEnable(GL_MULTISAMPLE));
+		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 	}
 

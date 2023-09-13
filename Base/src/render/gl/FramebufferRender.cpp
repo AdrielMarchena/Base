@@ -29,8 +29,6 @@ namespace Base {
 		//Create FrameBuffer
 		SetUpFramebuffer();
 		SetUpShader();
-		SetUpPostEffects();
-		UsePostEffect("none");
 
 		m_Buffer = new FramebufferQuad[4];
 		m_BufferPtr = m_Buffer;
@@ -73,7 +71,6 @@ namespace Base {
 		m_Framebuffer->m_Specs.height = m_Specs.height * m_Specs.scale_factor;
 		m_Framebuffer->Invalidate();
 		SetUpShader();
-		SetUpPostEffects();
 	}
 
 	void FramebufferRender::ResizeFramebuffer(uint32_t w, uint32_t h)
@@ -133,166 +130,6 @@ namespace Base {
 		SetUpShader();
 	}
 
-	/*Empty string will set to identity*/
-	void FramebufferRender::UsePostEffect(const std::string& name)
-	{
-		if (m_CurrentPostEffect)
-			m_CurrentPostEffect->active = false;
-		if (name.empty() || utils::ToLower(name) == "none")
-		{
-			m_CurrentPostEffect = nullptr;
-		}
-		else
-		{
-			m_CurrentPostEffect = &m_PostEffects[name];
-			m_CurrentPostEffect->active = true;
-		}
-		UpdatePostEffects();
-	}
-
-	void FramebufferRender::SetUpPostEffects()
-	{
-		//I was getting a small value for the width and height here, 
-		//it was a bug that make a nice effect actually (only with the sharpen kernel tho)
-		float offset_x = 1.0f / m_Framebuffer->GetSpec().width;
-		float offset_y = 1.0f / m_Framebuffer->GetSpec().height;
-
-		std::vector<glm::vec2> offsets =
-		{
-			glm::vec2(-offset_x, offset_y),  glm::vec2(0.0f, offset_y),  glm::vec2(offset_x,offset_y),
-			glm::vec2(-offset_x, 0.0f),      glm::vec2(0.0f, 0.0f),      glm::vec2(offset_x,0.0f),
-			glm::vec2(-offset_x, -offset_y), glm::vec2(0.0f, -offset_y), glm::vec2(offset_x,-offset_y)
-		};
-
-		FramebufferPostEffect identity;
-		identity.offsets = offsets;
-		identity.kernel =
-		{
-			 0.0f, 0.0f, 0.0f,
-			 0.0f, 1.0f, 0.0f,
-			 0.0f, 0.0f, 0.0f,
-		};
-		m_PostEffects["identity"] = identity;
-
-		FramebufferPostEffect sharpen;
-		sharpen.offsets = offsets;
-		sharpen.kernel =
-		{
-			 0.0f,-1.0f, 0.0f,
-			-1.0f, 5.0f,-1.0f,
-			 0.0f,-1.0f, 0.0f
-		};
-		m_PostEffects["sharpen"] = sharpen;
-
-		FramebufferPostEffect box_blur;
-		box_blur.offsets = offsets;
-		float dec = 1.0f / 9.0f;
-		box_blur.kernel =
-		{
-			dec,dec,dec,
-			dec,dec,dec,
-			dec,dec,dec
-		};
-		m_PostEffects["box_blur"] = box_blur;
-
-		FramebufferPostEffect edge_detection0;
-		edge_detection0.offsets = offsets;
-		edge_detection0.kernel =
-		{
-			1.0f, 1.0f,1.0f,
-			1.0f,-8.0f,1.0f,
-			1.0f, 1.0f,1.0f
-		};
-		m_PostEffects["edge_detection0"] = edge_detection0;
-
-		FramebufferPostEffect edge_detection1;
-		edge_detection1.offsets = offsets;
-		edge_detection1.kernel =
-		{
-		   -1.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 0.0f,
-			1.0f, 0.0f,-1.0f
-		};
-		m_PostEffects["edge_detection1"] = edge_detection1;
-
-		FramebufferPostEffect edge_detection2;
-		edge_detection2.offsets = offsets;
-		edge_detection2.kernel =
-		{
-			0.0f,-1.0f, 0.0f,
-		   -1.0f, 4.0f,-1.0f,
-			0.0f,-1.0f, 0.0f
-		};
-		m_PostEffects["edge_detection2"] = edge_detection2;
-
-		FramebufferPostEffect edge_detection3;
-		edge_detection3.offsets = offsets;
-		edge_detection3.kernel =
-		{
-			-1.0f,-1.0f,-1.0f,
-			-1.0f, 8.0f,-1.0f,
-			-1.0f,-1.0f,-1.0f
-		};
-		m_PostEffects["edge_detection3"] = edge_detection3;
-
-		FramebufferPostEffect gaussian_blur3x3;
-		gaussian_blur3x3.offsets = offsets;
-		dec = 1.0f / 16.0f;
-		gaussian_blur3x3.kernel =
-		{
-			1.0f * dec, 2.0f * dec, 1.0f * dec,
-			2.0f * dec, 4.0f * dec, 2.0f * dec,
-			1.0f * dec, 2.0f * dec, 1.0f * dec
-		};
-		m_PostEffects["gaussian_blur3x3"] = gaussian_blur3x3;
-
-		FramebufferPostEffect gaussian_blur5x5;
-		gaussian_blur5x5.offsets = offsets;
-		dec = 1.0f / 256.0f;
-		gaussian_blur5x5.kernel =
-		{
-			1.0f * dec, 4.0f * dec, 6.0f * dec, 4.0f * dec, 1.0f * dec,
-			4.0f * dec,16.0f * dec,24.0f * dec,16.0f * dec, 4.0f * dec,
-			6.0f * dec,24.0f * dec,36.0f * dec,24.0f * dec, 6.0f * dec,
-			4.0f * dec,16.0f * dec,24.0f * dec,16.0f * dec, 4.0f * dec,
-			1.0f * dec, 4.0f * dec, 6.0f * dec, 4.0f * dec, 1.0f * dec
-		};
-		m_PostEffects["gaussian_blur5x5"] = gaussian_blur5x5;
-
-		FramebufferPostEffect unsharp_masking;
-		unsharp_masking.offsets = offsets;
-		dec = -(1.0f / 256.0f);
-		unsharp_masking.kernel =
-		{
-			1.0f * dec, 4.0f * dec,  6.0f * dec, 4.0f * dec, 1.0f * dec,
-			4.0f * dec,16.0f * dec, 24.0f * dec,16.0f * dec, 4.0f * dec,
-			6.0f * dec,24.0f * dec,-476.0f * dec,24.0f * dec,6.0f * dec,
-			4.0f * dec,16.0f * dec, 24.0f * dec,16.0f * dec, 4.0f * dec,
-			1.0f * dec, 4.0f * dec,  6.0f * dec, 4.0f * dec, 1.0f * dec
-		};
-		m_PostEffects["unsharp_masking"] = unsharp_masking;
-
-		FramebufferPostEffect sobel_feldman;
-		sobel_feldman.offsets = offsets;
-		sobel_feldman.kernel =
-		{
-			-1.0f, 0.0f, 1.0f,
-			-2.0f, 0.0f, 2.0f,
-			-1.0f, 0.0f, 1.0f,
-		};
-		m_PostEffects["sobel_feldman"] = sobel_feldman;
-
-		FramebufferPostEffect victor_gordan;
-		victor_gordan.offsets = offsets;
-		victor_gordan.kernel =
-		{
-			-2.0f,-1.0f, 0.0f,
-			-1.0f, 1.0f, 1.0f,
-			 0.0f, 1.0f, 2.0f,
-		};
-		m_PostEffects["victor_gordan"] = victor_gordan;
-	}
-
 	void FramebufferRender::SetUpFramebuffer()
 	{
 		//Create FrameBuffer
@@ -301,22 +138,6 @@ namespace Base {
 		frame_spec.width = m_Specs.width * m_Specs.scale_factor;
 		frame_spec.height = m_Specs.height * m_Specs.scale_factor;
 		m_Framebuffer = MakeScope<Framebuffer>(frame_spec);
-	}
-
-	void FramebufferRender::UpdatePostEffects()
-	{
-		if (m_CurrentPostEffect)
-		{
-			float offset_x = 1.0f / m_Framebuffer->GetSpec().width;
-			float offset_y = 1.0f / m_Framebuffer->GetSpec().height;
-
-			m_CurrentPostEffect->offsets = {
-				glm::vec2(-offset_x, offset_y),  glm::vec2(0.0f, offset_y),  glm::vec2(offset_x,offset_y),
-				glm::vec2(-offset_x, 0.0f),      glm::vec2(0.0f, 0.0f),      glm::vec2(offset_x,0.0f),
-				glm::vec2(-offset_x, -offset_y), glm::vec2(0.0f, -offset_y), glm::vec2(offset_x,-offset_y)
-			};
-		}
-		SetUpShader();
 	}
 
 	void FramebufferRender::SetUpShader()
@@ -328,18 +149,6 @@ namespace Base {
 		m_CurrentShader->SetUniform1i("u_Framebuffer", 0);
 		m_CurrentShader->SetUniform1f("u_Width", u_Width);
 		m_CurrentShader->SetUniform1f("u_Height", u_Height);
-		if (m_CurrentPostEffect)
-		{
-			int kernel_size = m_CurrentPostEffect->kernel.size();
-			m_CurrentShader->SetUniform1i("kernel_size", kernel_size);
-			m_CurrentShader->SetUniform1fv("kernel_5x5_slot", kernel_size, m_CurrentPostEffect->kernel.data());
-
-			int offset_size = m_CurrentPostEffect->offsets.size();
-			m_CurrentShader->SetUniform1i("offset_size", offset_size);
-			m_CurrentShader->SetUniform1fv("offsets", offset_size, &m_CurrentPostEffect->offsets[0][0]);
-		}
-		else
-			m_CurrentShader->SetUniform1i("kernel_size", 0);
 	}
 
 	void FramebufferRender::CalculateQuadTransform()
