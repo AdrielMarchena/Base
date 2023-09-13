@@ -132,6 +132,17 @@ namespace Base {
 			out << YAML::EndMap; //BoxColider2D
 		}
 
+		if (entity.HasComponent<ScriptComponent>())
+		{
+			out << YAML::Key << ScriptComponent::StructName;
+			out << YAML::BeginMap; //ScriptComponent
+
+			auto& script = entity.GetComponent<ScriptComponent>();
+			out << YAML::Key << "Name" << YAML::Value << script.Name;
+
+			out << YAML::EndMap; //ScriptComponent
+		}
+
 		if (entity.HasComponent<CircleColider2DComponent>())
 		{
 			out << YAML::Key << CircleColider2DComponent::StructName;
@@ -266,6 +277,15 @@ namespace Base {
 				{
 					const std::string texturePath = textureComponent["Path"].as<std::string>();
 					auto& texture = deserialized_entity.AddComponent<TextureComponent>(Base::render::Texture::CreateTexture(texturePath, "TODO: RENAME THIS IDK"));
+				}
+
+				// Script
+				auto scriptComponent = entity["ScriptComponent"];
+				if (scriptComponent)
+				{
+					auto& script = deserialized_entity.AddComponent<ScriptComponent>();
+
+					script.Name = scriptComponent["Name"].as<std::string>();
 				}
 
 				//Circle

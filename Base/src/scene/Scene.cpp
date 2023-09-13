@@ -7,6 +7,7 @@
 #include "Components.h"
 #include "utils/Instrumentor.h"
 #include "ScriptableEntity.h"
+#include "Scripting/ScriptEngine.h"
 
 #include "input/Keyboard.h"
 
@@ -40,22 +41,10 @@ namespace Base {
 
 	Scene::Scene()
 	{
-		Init::InitComponentsReflection();
-
 		m_ViewPortWidth = WindowProps().width;
 		m_ViewPortHeight = WindowProps().height;
 
 		OnViewPortResize(m_ViewPortWidth, m_ViewPortHeight);
-
-		static bool once = []()
-		{
-			std::hash<std::string_view> hash{};
-			auto factory = entt::meta<Scene>().type(hash("Scene"));
-			factory.
-				data<&Scene::m_ViewPortWidth>(hash("m_ViewPortWidth")).
-				data<&Scene::m_ViewPortHeight>(hash("m_ViewPortHeight"));
-			return true;
-		}();
 	}
 
 	Scene::~Scene()
@@ -92,12 +81,7 @@ namespace Base {
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
-		Entity entity = { m_Registry.create(), this };
-		auto& tag = entity.AddComponent<TagComponent>();
-		tag.Tag = name.empty() ? "Unnamed Entity" : name;
-		entity.AddComponent<IDComponent>();
-		entity.AddComponent<TransformComponent>();
-		return entity;
+		return CreateEntityWhithUUID(UUID(), name);
 	}
 
 	Entity Scene::CreateEntityWhithUUID(UUID uuid, const std::string& name)
@@ -108,12 +92,15 @@ namespace Base {
 		entity.AddComponent<IDComponent>(uuid);
 		entity.AddComponent<TransformComponent>();
 
+		m_EntityMap[uuid] = entity;
+
 		return entity;
 	}
 
 	void Scene::DestroyEntity(Entity ent)
 	{
 		m_Registry.destroy(ent);
+		m_EntityMap.erase(ent.GetID());
 	}
 
 	void Scene::StartNativeScript(Entity& ent)
@@ -158,6 +145,15 @@ namespace Base {
 			}
 		}
 		return cam;
+	}
+
+	Entity Scene::GetEntityByUUID(UUID uuid)
+	{
+		if (m_EntityMap.find(uuid) != m_EntityMap.end())
+		{
+			return { m_EntityMap.at(uuid), this };
+		}
+		return {};
 	}
 
 	void Scene::RuntimeInit()
@@ -214,10 +210,23 @@ namespace Base {
 				body->CreateFixture(&fixtureDef);
 			}
 		}
+
+		//Script
+		{
+			ScriptEngine::OnRuntimeStart(this);
+
+			auto view = m_Registry.view<ScriptComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e,this };
+				ScriptEngine::OnCreateEntity(entity);
+			}
+		}
 	}
 
 	void Scene::RuntimeStop()
 	{
+		ScriptEngine::OnRuntimeStop();
 		if (m_PhysicWorld)
 		{
 			delete m_PhysicWorld;
@@ -263,9 +272,10 @@ namespace Base {
 				for (auto entity : view)
 				{
 					auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-					D2D::DrawQuad(position.GetTransform(), spr.Color, (int)entity);
-					glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
-					//D2D::DrawOutLineQuad(position.GetTransform(), out_color, (int)entity);
+					if (spr.Texture)
+						D2D::DrawQuad(position.GetTransform(), spr.Texture, (int)entity, spr.Color);
+					else
+						D2D::DrawQuad(position.GetTransform(), spr.Color, (int)entity);
 				}
 			}
 
@@ -302,7 +312,6 @@ namespace Base {
 		}
 
 		{// Circle
-
 			{//Draw Color Circles
 				auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
 				for (auto entity : view)
@@ -342,6 +351,18 @@ namespace Base {
 				if (script.Instance)
 					script.Instance->OnUpdate(args);
 			});
+		}
+
+		//Script
+		{
+			ScriptEngine::OnRuntimeStart(this);
+
+			auto view = m_Registry.view<ScriptComponent>();
+			for (auto e : view)
+			{
+				Entity entity = { e,this };
+				ScriptEngine::OnUpdateEntity(entity, args.dt);
+			}
 		}
 
 		if (m_PhysicWorld)
@@ -488,7 +509,6 @@ namespace Base {
 				D2D::EndBatch();
 				D2D::Flush();
 			}
-
 		}//End Render Scope
 	}
 
@@ -567,6 +587,12 @@ namespace Base {
 	{
 		BASE_TRACE("'{0}' Added to Entity {1}", CameraComponent::ComponentName, ent.GetTag());
 		component.Camera.SetViewportSize(m_ViewPortWidth, m_ViewPortHeight);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<ScriptComponent>(Entity ent, ScriptComponent& component)
+	{
+		BASE_TRACE("'{0}' Added to Entity {1}", ScriptComponent::ComponentName, ent.GetTag());
 	}
 
 	template<>

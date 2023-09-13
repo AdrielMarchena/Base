@@ -46,8 +46,7 @@ namespace Base {
 		m_FrameCount = 0;
 
 		Render2D::Init();
-		glm::vec3 darker = glm::vec3(Color::Base_Analogous_2.r, Color::Base_Analogous_2.g, Color::Base_Analogous_2.b) * 0.128f;
-		Render2D::SetClearColor(glm::vec4(darker, 1.0f));
+		Render2D::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 
 		ScriptEngine::Init();
 

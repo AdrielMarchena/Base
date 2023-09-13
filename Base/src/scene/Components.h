@@ -64,6 +64,7 @@ namespace Base {
 		IDComponent(UUID uuid)
 			:Id(uuid)
 		{
+			char a = 'a';
 		}
 	};
 
@@ -148,11 +149,20 @@ namespace Base {
 	struct SpriteComponent : public Component<SpriteComponent> //TODO: See TextureComponent todo
 	{
 		glm::vec4 Color = Color::Base_Color;
+		Ref<render::Texture> Texture;
 
 		SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent&) = default;
 		SpriteComponent(const glm::vec4& color)
 			:Color(color)
+		{
+		}
+		SpriteComponent(Ref<render::Texture> texture)
+			:Texture(texture)
+		{
+		}
+		SpriteComponent(Ref<render::Texture> texture, const glm::vec4& color)
+			:Texture(texture), Color(color)
 		{
 		}
 	};
@@ -180,6 +190,15 @@ namespace Base {
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent&) = default;
 	};
+
+	struct ScriptComponent : public Component<ScriptComponent>
+	{
+		std::string Name;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
+	};
+
 	class ScriptableEntity;
 	struct NativeScriptComponent : public Component<NativeScriptComponent>
 	{
@@ -274,7 +293,6 @@ namespace Base {
 		Init() = default;
 		Init(const Init&) = default;
 	public:
-		static void InitComponentsReflection();
 		static void InitComponents();
 	};
 }

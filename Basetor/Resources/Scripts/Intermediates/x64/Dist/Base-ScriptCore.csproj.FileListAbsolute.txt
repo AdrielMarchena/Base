@@ -1,0 +1,4 @@
+C:\Proj\Pessoal\Cpp\Base\Basetor\Resources\Scripts\Intermediates\x64\Dist\Base-ScriptCore.csproj.AssemblyReference.cache
+C:\Proj\Pessoal\Cpp\Base\Basetor\Resources\Scripts\Intermediates\x64\Dist\Base-ScriptCore.csproj.CoreCompileInputs.cache
+C:\Proj\Pessoal\Cpp\Base\Basetor\Resources\Scripts\Intermediates\x64\Dist\Base-ScriptCore.dll
+C:\Proj\Pessoal\Cpp\Base\Basetor\Resources\Scripts\Base-ScriptCore.dll
