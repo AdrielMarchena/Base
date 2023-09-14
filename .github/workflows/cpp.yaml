@@ -16,6 +16,9 @@ jobs:
       with:
           submodules: recursive
 
+    - name: Commit Hash
+      uses: prompt/actions-commit-hash@v3.0.0
+
     - name: Fetch git submodules
       run: git submodule update --init --recursive
 
@@ -38,7 +41,7 @@ jobs:
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         title: "Windows Dist Build"
-        automatic_release_tag: $(git rev-parse --short "${{ github.sha }}")
+        automatic_release_tag: ${{ steps.commit.outputs.short }}
         prerelease: false
         draft: false
         files: |
