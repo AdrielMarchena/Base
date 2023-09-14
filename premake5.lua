@@ -32,6 +32,15 @@ workspace "Base"
 	filter "system:Unix"
 		system "linux"
 
+	filter { "system:windows", "configurations:Debug" }
+		buildoptions "/MTd"
+	
+	filter { "system:windows", "configurations:Release" }
+		buildoptions "/MT"
+	
+	filter { "system:windows", "configurations:Dist" }
+		buildoptions "/MT"
+
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 group "Dependencies"
