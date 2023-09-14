@@ -28,17 +28,17 @@ jobs:
     #- name: Build app for Debug x64
     #  run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Debug /p:Platform=x64
 
-    - name: Build app for Distribution x64
-      run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Dist /p:Platform=x64
+    #- name: Build app for Distribution x64
+    #  run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Dist /p:Platform=x64
 
-    - name: Zip Release
-      run: cp Basetor/bin/Dist-windows-x86_64/Basetor/Basetor.exe Basetor/Basetor.exe | 7z a -tzip -r Basetor.zip Basetor/Basetor.exe Basetor/assets Basetor/mono Basetor/Resources Basetor/configurations.lua Basetor/shaders Basetor/imgui.ini Basetor/configurations.lua
+    # - name: Zip Release
+    #   run: cp Basetor/bin/Dist-windows-x86_64/Basetor/Basetor.exe Basetor/Basetor.exe | 7z a -tzip -r Basetor.zip Basetor/Basetor.exe Basetor/assets Basetor/mono Basetor/Resources Basetor/configurations.lua Basetor/shaders Basetor/imgui.ini Basetor/configurations.lua
 
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         title: "Windows Dist Build"
-        automatic_release_tag: ${{ github.head_ref }}.${{ github.sha }}
+        automatic_release_tag: ${{ github.sha }}
         prerelease: false
         draft: false
         files: |
