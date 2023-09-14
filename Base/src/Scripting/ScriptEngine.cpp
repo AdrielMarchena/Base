@@ -77,6 +77,7 @@ namespace Base {
 		LoadAssembly("Resources/Scripts/Base-ScriptCore.dll");
 		LoadAssemblyClasses(s_Data->CoreAssembly);
 
+		ScriptGlue::RegisterComponents();
 		ScriptGlue::RegisterFunctions();
 
 		RunExample();
@@ -215,6 +216,11 @@ namespace Base {
 		return instance;
 	}
 
+	MonoImage* ScriptEngine::GetCoreAssemblyImage()
+	{
+		return s_Data->CoreAssemblyImage;
+	}
+
 	// Script Class
 
 	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className)
@@ -254,13 +260,15 @@ namespace Base {
 
 	void ScriptInstance::InvokeOnCreate()
 	{
-		m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod, nullptr, nullptr);
+		if (m_OnCreateMethod != nullptr)
+			m_ScriptClass->InvokeMethod(m_Instance, m_OnCreateMethod, nullptr, nullptr);
 	}
 
 	void ScriptInstance::InvokeOnUpdate(float ts)
 	{
 		void* paramTs = &ts;
-		m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMethod, &paramTs, nullptr);
+		if (m_OnUpdateMethod != nullptr)
+			m_ScriptClass->InvokeMethod(m_Instance, m_OnUpdateMethod, &paramTs, nullptr);
 	}
 
 	// Example

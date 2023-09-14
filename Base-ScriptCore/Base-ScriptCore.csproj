@@ -104,13 +104,16 @@
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Dist|x86' ">
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\Base\Scene\Component.cs" />
+    <Compile Include="Source\Base\Scene\RigidBody2DComponent.cs" />
+    <Compile Include="Source\Base\Scene\TransformComponent.cs" />
     <Compile Include="Source\Demo.cs" />
-    <Compile Include="Source\Entity.cs" />
-    <Compile Include="Source\Input.cs" />
-    <Compile Include="Source\InternalCalls.cs" />
-    <Compile Include="Source\KeyCode.cs" />
+    <Compile Include="Source\Base\Entity.cs" />
+    <Compile Include="Source\Base\Input.cs" />
+    <Compile Include="Source\Base\InternalCalls.cs" />
+    <Compile Include="Source\Base\KeyCode.cs" />
     <Compile Include="Source\Player.cs" />
-    <Compile Include="Source\Vector3.cs" />
+    <Compile Include="Source\Base\Vector3.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

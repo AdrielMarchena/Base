@@ -2,23 +2,24 @@
 #include "Components.h"
 
 namespace Base {
+
+	template<typename... T>
+	void InitComponent()
+	{
+		([]()
+		{
+			T();
+		}(), ...);
+	}
+
+	template<typename... T>
+	void InitComponent(ComponentGroup<T...>)
+	{
+		InitComponent <T...>();
+	}
+
 	void Init::InitComponents()
 	{
-		IDComponent();
-		TagComponent();
-		TransformComponent();
-		TextureComponent();
-		AnimateComponent();
-		SubTextureComponent();
-		SpriteComponent();
-		ScriptComponent();
-		CircleComponent();
-		CameraComponent();
-		NativeScriptComponent();
-		RigidBody2DComponent();
-		BoxColider2DComponent();
-		CircleColider2DComponent();
-		Text2DComponent();
-		Perlin2dComponent();
+		InitComponent(AllComponent{});
 	}
 }

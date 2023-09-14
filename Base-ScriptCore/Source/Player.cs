@@ -1,17 +1,26 @@
 ﻿using Base;
+using System;
 
 namespace Sandbox
 {
     public class Player : Entity
     {
+        private TransformComponent m_Transform;
+        private RigidBody2DComponent m_Body;
         void OnCreate()
         {
+            m_Transform = GetComponent<TransformComponent>();
+            m_Body = GetComponent<RigidBody2DComponent>();
+            bool hasC = HasComponent<TransformComponent>();
+
+            Console.WriteLine($"{hasC}");
+            // m_Transform.Translation = Vector3.Zero;
         }
 
         void OnUpdate(float ts)
         {
             float speed = 25.0f;
-            Vector3 velocity = Vector3.Zero;
+            Vector2 velocity = Vector2.Zero;
 
             if (Input.IsPressed(KeyCode.Up))
             {
@@ -31,9 +40,11 @@ namespace Sandbox
                 velocity.X = 1;
             }
 
-            Vector3 translation = Translation;
-            translation += (velocity * speed * ts);
-            Translation = translation;
+            m_Body.ApplyLinearImpulseToCenter(velocity * speed * ts, true);
+
+            // Vector3 translation = Translation;
+            // translation += new Vector3(velocity * speed * ts, 0);
+            // Translation = translation;
         }
     }
 }

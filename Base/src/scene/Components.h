@@ -32,7 +32,7 @@ namespace Base {
 			}
 			if (Component<T>::StructName == std::string())
 			{
-				const std::string n = name;
+				const std::string_view n = name;
 				const_cast<std::string&>(Component<T>::StructName) = n.substr(n.find_last_of(':') + 1);
 				BASE_CORE_ASSERT(name.find("Component") != std::string::npos, "'{0}' must have the suffix 'Component' to inherit from the struct 'Component<>\n\tExample : 'struct {0}Component : Component<{0}Component> ...''", Component<T>::StructName);
 
@@ -285,6 +285,31 @@ namespace Base {
 		Perlin2dComponent() = default;
 		// Perlin2dComponent(const Perlin2dComponent&) = default;
 	};
+
+	template<typename... Component>
+	struct ComponentGroup
+	{
+	};
+
+	using AllComponent = ComponentGroup
+		<
+		IDComponent,
+		TagComponent,
+		TransformComponent,
+		TextureComponent,
+		AnimateComponent,
+		SubTextureComponent,
+		SpriteComponent,
+		ScriptComponent,
+		CircleComponent,
+		CameraComponent,
+		NativeScriptComponent,
+		RigidBody2DComponent,
+		BoxColider2DComponent,
+		CircleColider2DComponent,
+		Text2DComponent,
+		Perlin2dComponent
+		>;
 
 	//Temp
 	struct Init

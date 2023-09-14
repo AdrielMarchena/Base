@@ -14,8 +14,7 @@
 #include "utils/Instrumentor.h"
 #define CALLBACK_STATIC_CAST(type,window) static_cast<type*>(glfwGetWindowUserPointer(window))
 
-namespace Base
-{
+namespace Base {
 	static bool s_GLFWInitialized = false;
 	static bool s_GLADInitialized = false;
 
@@ -39,6 +38,12 @@ namespace Base
 	bool WindowsWindow::GetVSync() const
 	{
 		return m_Data.VSync_On;
+	}
+
+	void WindowsWindow::SetTitlebarText(const std::string& title)
+	{
+		m_Data.Title = title;
+		glfwSetWindowTitle(m_Window, title.c_str());
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
@@ -69,7 +74,7 @@ namespace Base
 			SetTitleBar(IsTitleBar());
 			SetResizeble(IsResizeble());
 		}
-		
+
 		m_Data.Fullscreen = enabled;
 	}
 
@@ -126,8 +131,8 @@ namespace Base
 		{
 			//Window things
 			if (glfwInit() == GLFW_FALSE)
-				BASE_CORE_ASSERT(false,"Error on glfw initialization");
-			
+				BASE_CORE_ASSERT(false, "Error on glfw initialization");
+
 			BASE_TRACE("GLFW Initialized!");
 			s_GLFWInitialized = true;
 
@@ -158,7 +163,7 @@ namespace Base
 			m_Data.YPos = (vid_mode->height * 0.5f) - (m_Specs.Height * 0.5f);
 			glfwSetWindowPos(m_Window, m_Data.XPos, m_Data.YPos);
 		}
-		if(!m_Specs.Fullscreen)
+		if (!m_Specs.Fullscreen)
 			BASE_TRACE("Window Created, size is {0}x{1}", m_Data.Width, m_Data.Height);
 		else
 			BASE_TRACE("Window Created, in fullscreen", m_Data.Width, m_Data.Height);
@@ -200,7 +205,7 @@ namespace Base
 			data->EventCallback(evt);
 		});
 
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double_t xPos, double_t yPos) 
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double_t xPos, double_t yPos)
 		{
 			auto data = CALLBACK_STATIC_CAST(WindowData, window);
 			input::Mouse::on_mouse_cursor(xPos, yPos);
@@ -211,7 +216,7 @@ namespace Base
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int32_t key, int32_t action, int32_t mods)
 		{
 			auto data = CALLBACK_STATIC_CAST(WindowData, window);
-			
+
 			input::Mouse::on_mouse_button(key, action, mods);
 			switch (action)
 			{
@@ -221,7 +226,7 @@ namespace Base
 				data->EventCallback(evt);
 				break;
 			}
-				
+
 			case GLFW_RELEASE:
 			{
 				MouseButtonReleaseEvent evt(key);
@@ -259,12 +264,12 @@ namespace Base
 		});
 
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t keycode)
-			{
-				auto data = CALLBACK_STATIC_CAST(WindowData, window);
-				//input::Keyboard::on_keyboard_button(keycode, 0, GLFW_PRESS, 0);
-				KeyTypedEvent event(keycode);
-				data->EventCallback(event);
-			});
+		{
+			auto data = CALLBACK_STATIC_CAST(WindowData, window);
+			//input::Keyboard::on_keyboard_button(keycode, 0, GLFW_PRESS, 0);
+			KeyTypedEvent event(keycode);
+			data->EventCallback(event);
+		});
 
 	}
 

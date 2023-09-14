@@ -4,8 +4,7 @@
 
 #include "GLFW/glfw3.h"
 #include "render/gl/GLContext.h"
-namespace Base
-{
+namespace Base {
 	class WindowsWindow : public Window
 	{
 	private:
@@ -42,6 +41,8 @@ namespace Base
 
 		int32_t GetWidth() const override { return m_Data.Width; }
 		int32_t GetHeight() const override { return m_Data.Height; }
+		std::string GetTitlebar() const override { return m_Data.Title; }
+		void SetTitlebarText(const std::string& title) override;
 
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		virtual void SetVSync(bool enabled) override;
