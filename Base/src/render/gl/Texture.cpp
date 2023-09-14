@@ -157,9 +157,13 @@ namespace Base {
 		Ref<Texture> Texture::CreateTexture(const std::string& path, const std::string& name)
 		{
 			auto info = GetImageInfo(path);
+			if (!info)
+			{
+				return nullptr;
+			}
 			info.Name = name;
 			info.KeepSourceBuffer = true;
-			return MakeRef<Texture>(GetImageInfo(path), path);
+			return MakeRef<Texture>(info, path);
 		}
 
 		void Texture::CreatePng(const std::string& path, const TextureSpecifications& image_info)
@@ -251,8 +255,11 @@ namespace Base {
 			std::vector<unsigned char> image;
 
 			unsigned error = lodepng::decode(image, w, h, path);
-			if (error) //TODO: Deal properly with this error
-				BASE_CORE_ASSERT(false, lodepng_error_text(error));
+			if (error)
+			{
+				BASE_ERROR("Could not load image on path: '{0}'\nERROR: {1}", path, lodepng_error_text(error));
+				return info;
+			}
 
 			info.Width = w;
 			info.Height = h;
@@ -301,7 +308,8 @@ namespace Base {
 				if (px)
 					stbi_image_free(px);
 				info.Buffer = nullptr;
-				BASE_CORE_ASSERT(false, "Failed to load image");
+				BASE_ERROR("Could not load image on path: '{0}'\nERROR: {1}", path, er);
+				return info;
 			}
 			info.Buffer = px;
 

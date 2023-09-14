@@ -108,19 +108,6 @@ namespace Base {
 		}
 	};
 
-	struct TextureComponent : public Component<TextureComponent> //TODO: merge with sprite component maybe, no need for 2 components + Serialize
-	{
-		Ref<render::Texture> Texture;
-
-		TextureComponent() = default;
-		TextureComponent(const TextureComponent&) = default;
-		TextureComponent(Ref<render::Texture> texture)
-			:Texture(texture)
-		{
-		}
-
-	};
-
 	struct AnimateComponent : public Component<AnimateComponent> //TODO: This probbly don't work anymore, also, remove this namespace ett + Serialize
 	{
 		ett::Animator Animation;
@@ -146,7 +133,7 @@ namespace Base {
 
 	};
 
-	struct SpriteComponent : public Component<SpriteComponent> //TODO: See TextureComponent todo
+	struct SpriteComponent : public Component<SpriteComponent>
 	{
 		glm::vec4 Color = Color::Base_Color;
 		Ref<render::Texture> Texture;
@@ -296,7 +283,6 @@ namespace Base {
 		IDComponent,
 		TagComponent,
 		TransformComponent,
-		TextureComponent,
 		AnimateComponent,
 		SubTextureComponent,
 		SpriteComponent,

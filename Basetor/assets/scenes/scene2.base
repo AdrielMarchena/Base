@@ -42,15 +42,16 @@ Entities:
     TagComponent:
       Tag: Circle
     TransformComponent:
-      Translation: [6.41971731, -7.63209724, 0]
+      Translation: [3.03843904, 6.05827475, 0]
       Scale: [1, 1, 1]
-      Rotation: [0, 0, 66.6117325]
+      Rotation: [0, 0, 290.56665]
     SpriteComponent:
       Color: [0.054054141, 1, 0, 1]
+      Texture: assets/images/foca-nene.png
     CircleComponent:
       Radius: 1
-      Thickness: 0.111000001
-      Fade: 0.145999998
+      Thickness: 1
+      Fade: 0.528999984
     RigidBody2DComponent:
       BodyType: 1
       FixedRotation: false
@@ -104,7 +105,7 @@ Entities:
     TagComponent:
       Tag: Main2D_Camera
     TransformComponent:
-      Translation: [0.751756668, -0.865482569, 0]
+      Translation: [0.751756668, -1.37190008, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     CameraComponent:
@@ -113,7 +114,7 @@ Entities:
         PerspectiveFOV: 0.785398185
         PerspectiveNear: 0.00999999978
         PerspectiveFar: 1000
-        OrthographicSize: 35.4973221
+        OrthographicSize: 33.6804695
         OrthographicNear: -1
         OrthographicFar: 1
       Primary: true
@@ -122,11 +123,12 @@ Entities:
     TagComponent:
       Tag: Player
     TransformComponent:
-      Translation: [-6.17784548, -8.53306103, 0]
+      Translation: [0.805128396, -8.53514671, 0]
       Scale: [1, 1, 1]
-      Rotation: [0, 0, -40.8448868]
+      Rotation: [0, 0, -6.28318453]
     SpriteComponent:
-      Color: [0.200000003, 0.5, 0.800000012, 1]
+      Color: [1, 1, 1, 1]
+      Texture: assets/images/foca-nene.png
     RigidBody2DComponent:
       BodyType: 1
       FixedRotation: false

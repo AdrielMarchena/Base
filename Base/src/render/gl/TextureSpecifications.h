@@ -74,7 +74,9 @@ namespace Base
 
 		uint32_t InternalFormat = 0; //If zero, will guess using Channels value
 		uint32_t DataFormat = 0; //If zero, will guess using Channels value
-		GL_TexType Type = GL_TexType::UNSIGNED_INT; //If zero, GL_UNSIGNED_BYTE
+		GL_TexType Type = GL_TexType::UNSIGNED_BYTE; //If zero, GL_UNSIGNED_BYTE
+
+		operator bool() const { return Buffer != nullptr; }
 	};
 
 	class GLSwitch

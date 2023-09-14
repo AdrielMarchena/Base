@@ -38,19 +38,6 @@ namespace Base {
 			out << YAML::EndMap; //Transform
 		}
 
-		if (entity.HasComponent<TextureComponent>())
-		{
-			out << YAML::Key << TextureComponent::StructName;
-			out << YAML::BeginMap; //Sprite
-
-			auto& texture = entity.GetComponent<TextureComponent>();
-
-			out << YAML::Key << "Path" << YAML::Value << texture.Texture->GetPath();
-			out << YAML::Key << "IsRelative" << YAML::Value << true; // TODO: Implement way to save texture path relative or full
-
-			out << YAML::EndMap; //Sprite
-		}
-
 		if (entity.HasComponent<SpriteComponent>())
 		{
 			out << YAML::Key << SpriteComponent::StructName;
@@ -59,6 +46,8 @@ namespace Base {
 			auto& sprite = entity.GetComponent<SpriteComponent>();
 
 			out << YAML::Key << "Color" << YAML::Value << sprite.Color;
+			if(sprite.Texture && sprite.Texture->GetPath() != "")
+				out << YAML::Key << "Texture" << YAML::Value << sprite.Texture->GetPath();
 
 			out << YAML::EndMap; //Sprite
 		}
@@ -269,14 +258,10 @@ namespace Base {
 					auto& spr = deserialized_entity.AddComponent<SpriteComponent>();
 
 					spr.Color = spriteComponent["Color"].as<glm::vec4>();
-				}
-
-				//Texture
-				auto textureComponent = entity["TextureComponent"];
-				if (textureComponent)
-				{
-					const std::string texturePath = textureComponent["Path"].as<std::string>();
-					auto& texture = deserialized_entity.AddComponent<TextureComponent>(Base::render::Texture::CreateTexture(texturePath, "TODO: RENAME THIS IDK"));
+					if (spriteComponent["Texture"])
+					{
+						spr.Texture = render::Texture::CreateTexture(spriteComponent["Texture"].as<std::string>());
+					}
 				}
 
 				// Script

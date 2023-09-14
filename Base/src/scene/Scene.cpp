@@ -279,16 +279,6 @@ namespace Base {
 				}
 			}
 
-			{//Draw Textures
-				auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
-				for (auto entity : view)
-				{
-					auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
-					if (spr.Texture)
-						D2D::DrawQuad(position.GetTransform(), spr.Texture, (int)entity);
-				}
-			}
-
 			{//Draw SubTextures
 				auto view = m_Registry.view<TransformComponent, SubTextureComponent>(entt::exclude<CircleComponent>);
 				for (auto entity : view)
@@ -318,19 +308,11 @@ namespace Base {
 				{
 					auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
 					//trans.Scale = glm::vec3(circle_def.Radius);
-					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color, (int)entity);
+					if(spr.Texture)
+						D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Texture, (int)entity);
+					else
+						D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color, (int)entity);
 				}
-			}
-
-			{//Draw Texture Circles
-				auto view = m_Registry.view<TransformComponent, CircleComponent, TextureComponent>();
-				for (auto entity : view)
-				{
-					auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-					//trans.Scale = glm::vec3(circle_def.Radius);
-					D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, (int)entity);
-				}
-
 			}
 		}
 
@@ -443,19 +425,14 @@ namespace Base {
 						for (auto entity : view)
 						{
 							auto&& [position, spr] = view.get<TransformComponent, SpriteComponent>(entity);
-							D2D::DrawQuad(position.GetTransform(), spr.Color, (int)entity);
-							glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
-							D2D::DrawOutLineQuad(position.GetTransform(), out_color, (int)entity);
-						}
-					}
 
-					{//Draw Textures
-						auto view = m_Registry.view<TransformComponent, TextureComponent>(entt::exclude<CircleComponent>);
-						for (auto entity : view)
-						{
-							auto&& [position, spr] = view.get<TransformComponent, TextureComponent>(entity);
-							if (spr.Texture)
-								D2D::DrawQuad(position.GetTransform(), spr.Texture, (int)entity);
+							if(spr.Texture)
+								D2D::DrawQuad(position.GetTransform(), spr.Texture ,(int)entity, spr.Color);
+							else
+								D2D::DrawQuad(position.GetTransform(), spr.Color, (int)entity);
+
+							// glm::vec4 out_color = { 1.0f,0.0f ,0.0f ,1.0f };
+							// D2D::DrawOutLineQuad(position.GetTransform(), out_color, (int)entity);
 						}
 					}
 
@@ -481,27 +458,16 @@ namespace Base {
 					}
 				}
 
-				{// Circle
-
-					{//Draw Color Circles
-						auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
-						for (auto entity : view)
-						{
-							auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
-							trans.Scale = glm::vec3(circle_def.Radius);
+				{// Cirvcle
+					auto view = m_Registry.view<TransformComponent, CircleComponent, SpriteComponent>();
+					for (auto entity : view)
+					{
+						auto&& [trans, circle_def, spr] = view.get<TransformComponent, CircleComponent, SpriteComponent>(entity);
+						//trans.Scale = glm::vec3(circle_def.Radius);
+						if (spr.Texture)
+							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Texture, (int)entity);
+						else
 							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, spr.Color, (int)entity);
-						}
-					}
-
-					{//Draw Texture Circles
-						auto view = m_Registry.view<TransformComponent, CircleComponent, TextureComponent>();
-						for (auto entity : view)
-						{
-							auto&& [trans, circle_def, tex] = view.get<TransformComponent, CircleComponent, TextureComponent>(entity);
-							trans.Scale = glm::vec3(circle_def.Radius);
-							D2D::DrawCircle(trans.GetTransform(), circle_def.Radius, circle_def.Fade, circle_def.Thickness, tex.Texture, (int)entity);
-						}
-
 					}
 				}
 
@@ -550,12 +516,6 @@ namespace Base {
 	void Scene::OnComponentAdded<TransformComponent>(Entity ent, TransformComponent& component)
 	{
 		BASE_TRACE("'{0}' Added to Entity {1}", TransformComponent::ComponentName, ent.GetTag());
-	}
-
-	template<>
-	void Scene::OnComponentAdded<TextureComponent>(Entity ent, TextureComponent& component)
-	{
-		BASE_TRACE("'{0}' Added to Entity {1}", TextureComponent::ComponentName, ent.GetTag());
 	}
 
 	template<>

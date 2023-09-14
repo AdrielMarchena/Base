@@ -76,6 +76,19 @@ namespace Base {
 		{
 			auto& sprite = entity.GetComponent<SpriteComponent>();
 			ImGui::ColorEdit4("Color", glm::value_ptr(sprite.Color));
+
+			static std::string texPath;
+			static char buffer[256];
+			memset(buffer, 0, sizeof(buffer));
+
+			if(ImGui::InputText("Path", buffer, sizeof(buffer)))
+			{
+				texPath = std::string(buffer);
+			}
+			if(ImGui::Button("Load Texture"))
+			{
+				sprite.Texture = render::Texture::CreateTexture(texPath);
+			}
 		});
 
 		DrawTreeComponent<Perlin2dComponent>("Perlin Component", [&]()
@@ -94,9 +107,9 @@ namespace Base {
 				perlin.Noise->SetColorInterpolationPrecision(perlin.colorInterpolationPrecision);
 				perlin.Noise->SetMinimumColor(perlin.minimumColor);
 				perlin.Noise->SetMaxColor(perlin.maxColor);
-				if (entity.HasComponent<TextureComponent>())
+				if (entity.HasComponent<SpriteComponent>())
 				{
-					auto& sprite = entity.GetComponent<TextureComponent>().Texture;
+					auto& sprite = entity.GetComponent<SpriteComponent>().Texture;
 					sprite = perlin.Noise->GenerateNoiseTexture();
 				}
 			}
@@ -108,9 +121,9 @@ namespace Base {
 				perlin.Noise->SetMinimumColor(perlin.minimumColor);
 				perlin.Noise->SetMaxColor(perlin.maxColor);
 				perlin.Noise->GenerateNoise();
-				if (entity.HasComponent<TextureComponent>())
+				if (entity.HasComponent<SpriteComponent>())
 				{
-					auto& sprite = entity.GetComponent<TextureComponent>().Texture;
+					auto& sprite = entity.GetComponent<SpriteComponent>().Texture;
 					sprite = perlin.Noise->GenerateNoiseTexture();
 				}
 			}
@@ -225,7 +238,6 @@ namespace Base {
 
 			AddComponent<CameraComponent>();
 			AddComponent<SpriteComponent>();
-			AddComponent<TextureComponent>();
 			// AddComponent<AnimateComponent>();
 			// AddComponent<SubTextureComponent>();
 			AddComponent<CircleComponent>();
