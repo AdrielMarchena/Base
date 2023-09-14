@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include "input/Keyboard.h"
+#include "message/GlobalMessenger.h"
 
 #include "script/LuaContext.h"
 #include "utils/Instrumentor.h"
@@ -13,6 +14,7 @@
 
 namespace Base {
 	Application* Application::m_AppInstance = nullptr;
+	UUID s_NotifyFpsCountId = 0;
 	Application::Application(int argc, char** argv)
 		:m_ConsoleArgs(argc, argv)
 	{
@@ -52,6 +54,20 @@ namespace Base {
 
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
+
+		const std::string title = specs.Title;
+
+		GlobalMessenger::AddChannel("fps_count");
+		s_NotifyFpsCountId = GlobalMessenger::ListenChannel("fps_count", [title](Message message)
+		{
+			std::string titleBar = title;
+			static const std::string token = "(%FPS%)";
+			auto location = titleBar.find(token);
+
+			titleBar.replace(location, token.length(), message.getEvent());
+
+			m_AppInstance->GetWindow().SetTitlebarText(titleBar);
+		});
 	}
 
 	Application::~Application()
@@ -68,11 +84,14 @@ namespace Base {
 		double lastFrame = 0.0;
 		BASE_TRACE("Game loop starting!");
 
+		double deltaTimeFpsCount = 0.0;
+		double lastFrameFpsCount = 0.0;
+
+		double fpsCount = 0.0;
+
 		m_Running = true;
 		while (m_Running)
 		{
-			if (input::Keyboard::isPress(BASE_KEY_LEFT_CONTROL) && input::Keyboard::isPress(BASE_KEY_Q))
-				Close();
 			BASE_PROFILE_SCOPE("Loop");
 			//Check Events
 			m_Window->OnUpdate();
@@ -81,6 +100,16 @@ namespace Base {
 			double currentTime = glfwGetTime();
 			deltaTime = currentTime - lastFrame;
 			lastFrame = currentTime;
+			fpsCount++;
+
+			if (currentTime - lastFrameFpsCount >= 1.0)
+			{
+				const std::string vsync = fmt::format(" VSync {}", GetWindow().GetVSync() ? "On" : "Off");
+				GlobalMessenger::SendMessageC("fps_count", Message{ fmt::format("Fps: {}{}", fpsCount, vsync) });
+				GlobalMessenger::NotifyChannel("fps_count");
+				lastFrameFpsCount = currentTime;
+				fpsCount = 0.0;
+			}
 
 			//Game Update 
 			for (Layer* layer : m_LayerStack)

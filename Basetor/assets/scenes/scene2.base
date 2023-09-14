@@ -9,6 +9,16 @@ Entities:
       Rotation: [0, 0, 0]
     SpriteComponent:
       Color: [0.200000003, 0.5, 0.800000012, 1]
+    RigidBody2DComponent:
+      BodyType: 0
+      FixedRotation: false
+    BoxColider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshold: 0.5
   - Entity: 5543769214186686457
     TagComponent:
       Tag: block_3
@@ -32,25 +42,25 @@ Entities:
     TagComponent:
       Tag: Circle
     TransformComponent:
-      Translation: [0, 0, 0]
-      Scale: [1.00000095, 1.00000095, 1]
-      Rotation: [0, 0, -2.88916636]
+      Translation: [6.41971731, -7.63209724, 0]
+      Scale: [1, 1, 1]
+      Rotation: [0, 0, 66.6117325]
     SpriteComponent:
       Color: [0.054054141, 1, 0, 1]
     CircleComponent:
       Radius: 1
-      Thickness: 1
-      Fade: 0.00499999989
+      Thickness: 0.111000001
+      Fade: 0.145999998
     RigidBody2DComponent:
       BodyType: 1
       FixedRotation: false
     CircleColider2DComponent:
       Offset: [0, 0]
       Size: [0.5, 0.5]
-      Density: 0.741999984
-      Friction: 0.5
+      Density: 1
+      Friction: 1
       Restitution: 1
-      RestitutionThreshold: 0.5
+      RestitutionThreshold: 1
       Radius: 0.5
   - Entity: 13452784250620255987
     TagComponent:
@@ -94,7 +104,7 @@ Entities:
     TagComponent:
       Tag: Main2D_Camera
     TransformComponent:
-      Translation: [0.751756668, -0.00140047073, 0]
+      Translation: [0.751756668, -0.865482569, 0]
       Scale: [1, 1, 1]
       Rotation: [0, 0, 0]
     CameraComponent:
@@ -103,7 +113,7 @@ Entities:
         PerspectiveFOV: 0.785398185
         PerspectiveNear: 0.00999999978
         PerspectiveFar: 1000
-        OrthographicSize: 34.8155594
+        OrthographicSize: 35.4973221
         OrthographicNear: -1
         OrthographicFar: 1
       Primary: true
@@ -112,10 +122,20 @@ Entities:
     TagComponent:
       Tag: Player
     TransformComponent:
-      Translation: [1, 2, 0]
+      Translation: [-6.17784548, -8.53306103, 0]
       Scale: [1, 1, 1]
-      Rotation: [0, 0, 0]
+      Rotation: [0, 0, -40.8448868]
     SpriteComponent:
       Color: [0.200000003, 0.5, 0.800000012, 1]
+    RigidBody2DComponent:
+      BodyType: 1
+      FixedRotation: false
+    BoxColider2DComponent:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0
     ScriptComponent:
       Name: Sandbox.Player

@@ -38,8 +38,12 @@ namespace Base {
 
 		static void LoadAssemblyClasses(MonoAssembly* assembly);
 		static MonoObject* InstantiateClass(MonoClass* monoClass);
+
+		static MonoImage* GetCoreAssemblyImage();
+
 		friend class ScriptClass;
 		friend class Scene;
+		friend class ScriptGlue;
 	};
 
 	// ScriptClass

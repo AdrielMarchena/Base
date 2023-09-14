@@ -522,7 +522,8 @@ namespace Base {
 		m_KeyboardPressedCallbacks.emplace(BASE_KEY_S, [&](Editor&)
 		{
 			CTRL_GUARD();
-			m_Serializer->Serialize("assets/scenes/scene2.base");
+			if(!m_Runtime)
+				m_Serializer->Serialize("assets/scenes/scene2.base");
 		});
 	}
 }
