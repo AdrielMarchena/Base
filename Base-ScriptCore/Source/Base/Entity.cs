@@ -30,6 +30,18 @@ namespace Base
             return InternalCalls.Entity_HasComponent(Id, componentType);
         }
 
+        public void AddComponent<T>() where T : Component, new()
+        {
+            Type componentType = typeof(T);
+            InternalCalls.Entity_HasComponent(Id, componentType);
+        }
+
+        public void RemoveComponent<T>() where T : Component, new()
+        {
+            Type componentType = typeof(T);
+            InternalCalls.Entity_RemoveComponent(Id, componentType);
+        }
+
         public T GetComponent<T>() where T : Component, new()
         {
             if (!HasComponent<T>())

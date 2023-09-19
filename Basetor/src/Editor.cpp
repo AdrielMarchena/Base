@@ -78,6 +78,7 @@ namespace Base {
 		m_FramebufferRender = MakeScope<FramebufferRender>(specs);
 
 		m_EditorCamera = Base::EditorCamera(45.0f, w / h, 0.01f, 1000.0f);
+		m_EditorCamera.ResetDirection(28.0f);
 		m_Scene->OnViewPortResize(w, h);
 		m_EditorCamera.SetViewportSize(w, h);
 
@@ -514,16 +515,19 @@ namespace Base {
 			if (!ImGuizmo::IsUsing())
 				m_GizmoType = ImGuizmo::OPERATION::SCALE;
 		});
-		m_KeyboardPressedCallbacks.emplace(BASE_KEY_5, [&](Editor&)
-		{
-			ALT_GUARD();
-			m_EditorCamera.ResetDirection();
-		});
 		m_KeyboardPressedCallbacks.emplace(BASE_KEY_S, [&](Editor&)
 		{
 			CTRL_GUARD();
 			if(!m_Runtime)
 				m_Serializer->Serialize("assets/scenes/scene2.base");
+		});
+		m_KeyboardPressedCallbacks.emplace(BASE_KEY_O, [&](Editor&)
+		{
+			auto pos = m_EditorCamera.GetPosition();
+			BASE_INFO("{0},{1},{2}", pos.x, pos.y, pos.z);
+			ALT_GUARD();
+			if (!m_Runtime)
+				m_EditorCamera.ResetDirection();
 		});
 	}
 }

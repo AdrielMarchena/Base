@@ -136,6 +136,7 @@ namespace Base {
 			static const char* bodyType[] = { "Static", "Dynamic", "Kinematic" };
 			const char* currentBodyType = bodyType[(int)body.Type];
 
+			ImGui::Checkbox("Fix Rotation", &body.FixedRotation);
 			if (ImGui::BeginCombo("Body Type", currentBodyType))
 			{
 				for (int i = 0; i < 3; i++)
@@ -150,6 +151,7 @@ namespace Base {
 						ImGui::SetItemDefaultFocus();
 				}
 				ImGui::EndCombo();
+
 			}
 
 			DrawTreeComponent<BoxColider2DComponent>("Box Collider Component", [&]()
