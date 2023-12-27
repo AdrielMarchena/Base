@@ -1,0 +1,86 @@
+name: C/C++ CI
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  buildWindowsDebug:
+    name: build-windows-debug
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+          submodules: recursive
+
+    - name: Fetch git submodules
+      run: git submodule update --init --recursive
+
+    - name: Running premake5
+      run: .\premake5.exe vs2022
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Build app for Debug x64
+      run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Debug /p:Platform=x64
+
+  buildWindowsRelease:
+    name: build-windows-release
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+          submodules: recursive
+
+    - name: Fetch git submodules
+      run: git submodule update --init --recursive
+
+    - name: Running premake5
+      run: .\premake5.exe vs2022
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Build app for Release x64
+      run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Release /p:Platform=x64
+
+  buildWindowsDist:
+    name: build-windows-dist
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+      with:
+          submodules: recursive
+
+    - name: Fetch git submodules
+      run: git submodule update --init --recursive
+
+    - name: Running premake5
+      run: .\premake5.exe vs2022
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Build app for Distribution x64
+      run: msbuild Base.sln -t:rebuild -verbosity:normal -property:Configuration=Dist /p:Platform=x64
+
+    - name: Zip Release
+      run: cp Basetor/bin/Dist-windows-x86_64/Basetor/Basetor.exe Basetor/Basetor.exe | 7z a -tzip -r Basetor.zip Basetor/Basetor.exe Basetor/assets Basetor/mono Basetor/Resources
+
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        title: "Windows Release Build"
+        automatic_release_tag: "latest"
+        prerelease: false
+        draft: false
+        files: |
+          *.zip
