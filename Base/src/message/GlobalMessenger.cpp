@@ -21,7 +21,7 @@ namespace Base {
 		return id;
 	}
 
-	void MessageBus::remoteReceiver(UUID messageReceiverId)
+	void MessageBus::removeReceiver(UUID messageReceiverId)
 	{
 		if (m_Receivers.find(messageReceiverId) == m_Receivers.end())
 			return;
@@ -76,6 +76,15 @@ namespace Base {
 		return true;
 	}
 
+	bool GlobalMessenger::NotifyAllChannel()
+	{
+		for (auto& channel : s_Channels)
+		{
+			channel.second.notify();
+		}
+		return false;
+	}
+
 	bool GlobalMessenger::SendMessageC(const std::string& channel, Message message)
 	{
 		if (!ChannelExists(channel)) return false;
@@ -96,7 +105,7 @@ namespace Base {
 	{
 		if (!ChannelExists(channel)) return;
 
-		s_Channels[channel].remoteReceiver(messageReceiverId);
+		s_Channels[channel].removeReceiver(messageReceiverId);
 	}
 
 }

@@ -68,6 +68,10 @@ namespace Base {
 
 			m_AppInstance->GetWindow().SetTitlebarText(titleBar);
 		});
+
+		if (m_LuaContext)
+			delete m_LuaContext;
+		m_LuaContext = nullptr;
 	}
 
 	Application::~Application()
@@ -95,7 +99,8 @@ namespace Base {
 			BASE_PROFILE_SCOPE("Loop");
 			//Check Events
 			m_Window->OnUpdate();
-
+			GlobalMessenger::NotifyAllChannel();
+			
 			// Delta Time and FPS calculations
 			double currentTime = glfwGetTime();
 			deltaTime = currentTime - lastFrame;
@@ -106,7 +111,6 @@ namespace Base {
 			{
 				const std::string vsync = fmt::format(" VSync {}", GetWindow().GetVSync() ? "On" : "Off");
 				GlobalMessenger::SendMessageC("fps_count", Message{ fmt::format("Fps: {}{}", fpsCount, vsync) });
-				GlobalMessenger::NotifyChannel("fps_count");
 				lastFrameFpsCount = currentTime;
 				fpsCount = 0.0;
 			}

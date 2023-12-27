@@ -2,7 +2,7 @@ project "Base"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
-	linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
+	-- linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
 	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
