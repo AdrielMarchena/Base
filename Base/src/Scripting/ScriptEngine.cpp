@@ -51,7 +51,7 @@ namespace Base {
 		}
 	}
 	void RunExample();
-
+	
 	struct ScriptEngineData
 	{
 		MonoDomain* RootDomain = nullptr;
@@ -170,7 +170,7 @@ namespace Base {
 
 		s_Data->RootDomain = rootDomain;
 	}
-
+	
 	void ScriptEngine::ShutdownMono()
 	{
 		if (s_Data->DemoClass != nullptr)

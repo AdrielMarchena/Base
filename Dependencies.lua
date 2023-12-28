@@ -18,6 +18,7 @@ IncludeDirectories["msdfgen"] = "%{wks.location}/Base/vendor/msdfgen"
 IncludeDirectories["msdf_atlas_gen"] = "%{wks.location}/Base/vendor/msdf-atlas-gen"
 IncludeDirectories["meta"] = "%{wks.location}/Base/vendor/meta/src"
 IncludeDirectories["mono"] = "%{wks.location}/Base/vendor/mono/include"
+IncludeDirectories["reflect_cpp"] = "%{wks.location}/Base/vendor/reflect-cpp/include"
 
 LibDirectories = {}
 LibDirectories["Mono"] = "%{wks.location}/Base/vendor/mono/lib/%{cfg.buildcfg}"
@@ -43,3 +44,6 @@ Library["Winmm"] = "Winmm.lib"
 Library["WinVersion"] = "Version.lib"
 Library["WinOldNames"] = "OLDNAMES.lib"
 Library["WinBCrypt"] = "Bcrypt.lib"
+
+SourceDir = {}
+SourceDir["reflect_cpp"] = "%{wks.location}/Base/vendor/reflect-cpp/src"

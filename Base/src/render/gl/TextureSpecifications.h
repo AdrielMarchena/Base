@@ -64,8 +64,8 @@ namespace Base
 		float TextureLodBias = -1.0f;
 		bool GenerateMipMap = true;
 
-		TextureSpecifications(const TextureSpecifications&) = default;
-		TextureSpecifications() = default;
+		// TextureSpecifications(const TextureSpecifications&) = default;
+		// TextureSpecifications() = default;
 
 		// Buffer options
 		bool DeleteSourceBuffer = false; // Set to true to delete the buffer on texture creation

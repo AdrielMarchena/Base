@@ -11,6 +11,17 @@
 #include "args/UpdateArgs.h"
 #include "render/Colors.h"
 #include "GLFW/glfw3.h"
+#include "rfl.hpp"
+
+// using ValidatedInt
+
+struct Person {
+	std::string last_name = "Simpson";
+	std::string town = "Springfield";
+	unsigned int age;
+	rfl::Validator<int, rfl::Minimum<0>, rfl::Maximum<130>> Age;
+	std::vector<Person> children;
+};
 
 namespace Base {
 	Application* Application::m_AppInstance = nullptr;
@@ -94,6 +105,14 @@ namespace Base {
 		double fpsCount = 0.0;
 
 		m_Running = true;
+
+		
+
+		for (const auto& f : rfl::fields<Person>()) {
+			
+			std::cout << "name: " << f.name() << ", type: " << f.type() << std::endl;
+		}
+
 		while (m_Running)
 		{
 			BASE_PROFILE_SCOPE("Loop");
@@ -144,7 +163,7 @@ namespace Base {
 			(*--it)->OnEvent(e);
 		}
 	}
-
+	
 	void Application::PushLayer(Layer* layer)
 	{
 		m_LayerStack.PushLayer(layer);
