@@ -75,7 +75,7 @@
 #    - uses: "marvinpinto/action-automatic-releases@latest"
 #      with:
 #        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-#        automatic_release_tag: "${{ steps.commit.outputs.short }}"
+#        automatic_release_tag: "latest"
 #        title: "Ubuntu Dist Build"
 #        prerelease: false
 #        draft: false
