@@ -71,7 +71,7 @@ namespace Base {
 		UpdateView();
 	}
 
-	void EditorCamera::ResetDirection()
+	void EditorCamera::ResetDirection(float distance)
 	{
 		m_Distance = 10.0f;
 		m_Pitch = 0.0f;
@@ -81,7 +81,7 @@ namespace Base {
 		m_NearClip = 0.1f;
 		m_FarClip = 1000.0f;
 		m_FocalPoint = { 0.0f,0.0f,0.0f };
-		m_Position = { 0.0f,0.0f,0.0f };
+		m_Position = { 0.0f,0.0f,0.0f, };
 		UpdateView();
 		UpdateProjection();
 	}

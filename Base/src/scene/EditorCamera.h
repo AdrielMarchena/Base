@@ -53,8 +53,9 @@ namespace Base {
 		float GetPitch() const { return m_Pitch; }
 		float GetYaw() const { return m_Yaw; }
 		void OnMouseScroll(MouseScrollEvent& e);
-		void ResetDirection();
+		void ResetDirection(float distance = 28.0f);
 		void SetFocalPoint(const glm::vec3& focal) { m_FocalPoint = focal; UpdateProjection(); UpdateView(); }
+		void SetPosition(const glm::vec3& position) { m_Position = position; UpdateProjection(); };
 	private:
 		void UpdateProjection();
 		void UpdateView();
