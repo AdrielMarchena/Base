@@ -1,8 +1,8 @@
 project "Base"
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++20"
-	linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
+	cppdialect "C++latest"
+	-- linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
 	staticruntime "off"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -21,7 +21,8 @@ project "Base"
 		"vendor/ImGuizmo/ImGuizmo.cpp",
 
 		--"vendor/Lua/lua.h",
-		"vendor/Lua/lua.c"
+		"vendor/Lua/lua.c",
+		--"%{SourceDir.reflect_cpp}/**.c",
 	}
 
 	includedirs
@@ -44,6 +45,7 @@ project "Base"
 		"%{IncludeDirectories.msdf_atlas_gen}",
 		"%{IncludeDirectories.meta}",
 		"%{IncludeDirectories.mono}",
+		"%{IncludeDirectories.reflect_cpp}",
 	}
 
 	links
@@ -116,7 +118,7 @@ project "Base"
 		}
 
 	filter "system:Windows"
-		cppdialect "C++20"
+		cppdialect "C++latest"
 		staticruntime "off"
 		systemversion "latest"
 
@@ -132,7 +134,7 @@ project "Base"
 		}
 
 	filter "system:linux"
-		cppdialect "C++20"
+		cppdialect "C++latest"
 		staticruntime "off"
 		systemversion "latest"
 

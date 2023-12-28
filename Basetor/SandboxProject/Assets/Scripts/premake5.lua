@@ -1,6 +1,5 @@
-include "Dependencies.lua"
-workspace "Base"
-	startproject "Basetor"
+workspace "Sandbox"
+	startproject "Sandbox"
 
 	platforms
 	{
@@ -43,27 +42,39 @@ workspace "Base"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
-BaseRootDir = "../"
+project "Sandbox"
+	kind "SharedLib"
+	language "C#"
+	dotnetframework "4.7.2"
 
-group "Dependencies"
+	targetdir ("Binaries")
+	objdir ("Intermediates")
 
---Libs
-include "Base/vendor/glfw.lua"
-include "Base/vendor/imgui.lua"
-include "Base/vendor/glad.lua"
-include "Base/vendor/yaml-cpp.lua"
-include "Base/vendor/Box2D.lua"
-include "Base/vendor/Lua.lua"
-include "Base/vendor/msdfgen.lua"
-include "Base/vendor/msdf-atlas-gen.lua"
-include "Base/vendor/stb_image.lua"
-include "Base/vendor/lodepng.lua"
+	files
+	{
+		"Source/**.cs",
+		"Properties/**.cs",
+	}
+	
+	links
+	{
+		"Base-ScriptCore"
+	}
 
-group "Core"
-include "Base"
-include "Base-ScriptCore"
+	filter "configurations:Debug"
+		optimize "Off"
+		symbols "Default"
 
-group "Tools"
---Projects
-include "Basetor"
---include "Sandbox"
+	filter "configurations:Release"
+		optimize "On"
+		symbols "Default"
+
+	filter "configurations:Dist"
+		optimize "On"
+		symbols "Off"
+
+group "Base"
+
+include "../../../../Base-ScriptCore"
+
+group ""

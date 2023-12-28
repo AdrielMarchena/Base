@@ -26,7 +26,7 @@ namespace Base {
 		~MessageBus() = default;
 
 		UUID addReceiver(std::function<void(Message)> messageReceiver);
-		void remoteReceiver(UUID messageReceiverId);
+		void removeReceiver(UUID messageReceiverId);
 
 		void sendMessage(Message message);
 
@@ -50,6 +50,8 @@ namespace Base {
 
 		/* return false if channel dos not exists */
 		static bool NotifyChannel(const std::string& channel);
+
+		static bool NotifyAllChannel();
 
 		/* return false if channel dos not exists */
 		static bool SendMessageC(const std::string& channel, Message message);

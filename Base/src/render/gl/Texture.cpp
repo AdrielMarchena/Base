@@ -9,7 +9,6 @@
 #include "lodepng.h"
 
 #include "utils/Generic.h"
-
 namespace Base {
 	namespace render {
 

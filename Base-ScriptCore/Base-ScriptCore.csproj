@@ -107,7 +107,6 @@
     <Compile Include="Source\Base\Scene\TransformComponent.cs" />
     <Compile Include="Source\Base\Vector3.cs" />
     <Compile Include="Source\Demo.cs" />
-    <Compile Include="Source\Player.cs" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

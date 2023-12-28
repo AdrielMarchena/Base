@@ -23,22 +23,4 @@ namespace Base {
 		:m_UUID(uuid)
 	{
 	}
-	bool UUID::MetaInit()
-	{
-		if (!s_MetaInit)
-		{
-			std::hash<std::string_view> hash{};
-			{
-				//UUID
-				auto factory = entt::meta<UUID>().type(hash("UUID"));
-				factory.
-					data<&UUID::m_UUID>(hash("m_UUID"));
-				factory.ctor<>();
-				factory.ctor<const UUID&>();
-			}
-
-			s_MetaInit = true;
-		}
-		return s_MetaInit;
-	}
 }

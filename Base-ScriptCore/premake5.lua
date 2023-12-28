@@ -3,8 +3,8 @@ project "Base-ScriptCore"
 	language "C#"
 	dotnetframework "4.7.2"
 
-	targetdir ("%{wks.location}/Basetor/Resources/Scripts")
-	objdir ("%{wks.location}/Basetor/Resources/Scripts/Intermediates")
+	targetdir ("../Basetor/Resources/Scripts")
+	objdir ("../Basetor/Resources/Scripts/Intermediates")
 
 	files
 	{

@@ -1,7 +1,7 @@
 project "Basetor"
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++20"
+	cppdialect "C++latest"
 	linkoptions { "/NODEFAULTLIB:LIBCMTD, msvcrtd.lib" }
 	staticruntime "off"
 
@@ -16,6 +16,7 @@ project "Basetor"
 		"src/**.h",
 		"src/**.cpp",
 		"src/**.c",
+		--"%{SourceDir.reflect_cpp}/**.c",
 	}
 
 	includedirs
@@ -31,6 +32,7 @@ project "Basetor"
 		"%{IncludeDirectories.ImGuizmo}",
 		"%{IncludeDirectories.Lua}",
 		"%{IncludeDirectories.msdfgen}",
+		"%{IncludeDirectories.reflect_cpp}",
 		"src/"
 	}
 
@@ -72,7 +74,7 @@ project "Basetor"
 		}
 
 	filter "system:windows"
-		cppdialect "C++20"
+		cppdialect "C++latest"
 		systemversion "latest"
 
 		defines
@@ -81,7 +83,7 @@ project "Basetor"
 		}
 	
 	filter "system:linux"
-		cppdialect "C++20"
+		cppdialect "C++latest"
 		systemversion "latest"
 
 		defines
